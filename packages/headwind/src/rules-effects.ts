@@ -99,37 +99,6 @@ export const borderStyleRule: UtilityRule = (parsed) => {
 }
 
 export const outlineRule: UtilityRule = (parsed, config) => {
-  if (parsed.utility === 'outline') {
-    if (!parsed.value) {
-      return { 'outline-width': '1px' }
-    }
-    const widths: Record<string, string> = {
-      0: '0px',
-      1: '1px',
-      2: '2px',
-      4: '4px',
-      8: '8px',
-    }
-    return { 'outline-width': widths[parsed.value] || parsed.value }
-  }
-
-  // Outline colors
-  if (parsed.utility === 'outline' && parsed.value) {
-    const parts = parsed.value.split('-')
-    if (parts.length === 2) {
-      const [colorName, shade] = parts
-      const colorValue = config.theme.colors[colorName]
-      if (typeof colorValue === 'object' && colorValue[shade]) {
-        return { 'outline-color': colorValue[shade] }
-      }
-    }
-    // Direct color
-    const directColor = config.theme.colors[parsed.value]
-    if (typeof directColor === 'string') {
-      return { 'outline-color': directColor }
-    }
-  }
-
   // Outline offset
   if (parsed.utility === 'outline-offset' && parsed.value) {
     const offsets: Record<string, string> = {
@@ -142,6 +111,7 @@ export const outlineRule: UtilityRule = (parsed, config) => {
     return { 'outline-offset': offsets[parsed.value] || parsed.value }
   }
 
+  // Outline styles
   const outlineStyles: Record<string, string> = {
     'outline-none': 'none',
     'outline-solid': 'solid',
@@ -151,6 +121,43 @@ export const outlineRule: UtilityRule = (parsed, config) => {
   }
   if (parsed.raw.startsWith('outline-') && outlineStyles[parsed.raw]) {
     return { 'outline-style': outlineStyles[parsed.raw] }
+  }
+
+  if (parsed.utility === 'outline') {
+    if (!parsed.value) {
+      return { 'outline-width': '1px' }
+    }
+
+    // Check for colors first (e.g., outline-blue-500)
+    const parts = parsed.value.split('-')
+    if (parts.length === 2) {
+      const [colorName, shade] = parts
+      const colorValue = config.theme.colors[colorName]
+      if (typeof colorValue === 'object' && colorValue[shade]) {
+        return { 'outline-color': colorValue[shade] }
+      }
+    }
+
+    // Direct color (e.g., outline-black)
+    const directColor = config.theme.colors[parsed.value]
+    if (typeof directColor === 'string') {
+      return { 'outline-color': directColor }
+    }
+
+    // Check for width values
+    const widths: Record<string, string> = {
+      0: '0px',
+      1: '1px',
+      2: '2px',
+      4: '4px',
+      8: '8px',
+    }
+    if (widths[parsed.value]) {
+      return { 'outline-width': widths[parsed.value] }
+    }
+
+    // Fallback to raw value as width
+    return { 'outline-width': parsed.value }
   }
 }
 

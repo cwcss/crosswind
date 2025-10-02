@@ -169,7 +169,17 @@ export const insetRule: UtilityRule = (parsed, config) => {
   if (!props || !parsed.value)
     return undefined
 
-  const value = config.theme.spacing[parsed.value] || parsed.value
+  // Handle negative values
+  let value: string
+  if (parsed.value.startsWith('-')) {
+    const positiveValue = parsed.value.slice(1)
+    const spacing = config.theme.spacing[positiveValue]
+    value = spacing ? `-${spacing}` : parsed.value
+  }
+  else {
+    value = config.theme.spacing[parsed.value] || parsed.value
+  }
+
   const result: Record<string, string> = {}
   for (const prop of props) {
     result[prop] = value

@@ -33,6 +33,23 @@ export function parseClass(className: string): ParsedClass {
   const utility = parts[parts.length - 1]
   const variants = parts.slice(0, -1)
 
+  // Check for full utility names that should not be split (display utilities)
+  const fullUtilityNames = [
+    'inline-block',
+    'inline-flex',
+    'inline-grid',
+  ]
+  if (fullUtilityNames.includes(utility)) {
+    return {
+      raw: className,
+      variants,
+      utility,
+      value: undefined,
+      important,
+      arbitrary: false,
+    }
+  }
+
   // Check for arbitrary values: w-[100px] or bg-[#ff0000]
   const arbitraryMatch = utility.match(/^([a-z-]+?)-\[(.+?)\]$/)
   if (arbitraryMatch) {
