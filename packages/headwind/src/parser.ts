@@ -33,7 +33,58 @@ export function parseClass(className: string): ParsedClass {
     }
   }
 
-  // Regular parsing
+  // Handle compound utilities with specific prefixes
+  // grid-cols-3, grid-rows-2, translate-x-4, etc.
+  const compoundPrefixes = [
+    'grid-cols',
+    'grid-rows',
+    'grid-flow',
+    'auto-cols',
+    'auto-rows',
+    'col-start',
+    'col-end',
+    'row-start',
+    'row-end',
+    'translate-x',
+    'translate-y',
+    'scale-x',
+    'scale-y',
+    'skew-x',
+    'skew-y',
+    'scroll-m',
+    'scroll-mx',
+    'scroll-my',
+    'scroll-mt',
+    'scroll-mr',
+    'scroll-mb',
+    'scroll-ml',
+    'scroll-p',
+    'scroll-px',
+    'scroll-py',
+    'scroll-pt',
+    'scroll-pr',
+    'scroll-pb',
+    'scroll-pl',
+    'gap-x',
+    'gap-y',
+    'overflow-x',
+    'overflow-y',
+  ]
+
+  for (const prefix of compoundPrefixes) {
+    if (utility.startsWith(prefix + '-')) {
+      return {
+        raw: className,
+        variants,
+        utility: prefix,
+        value: utility.slice(prefix.length + 1),
+        important,
+        arbitrary: false,
+      }
+    }
+  }
+
+  // Regular parsing - split on last dash
   const match = utility.match(/^([a-z-]+?)(?:-(.+))?$/)
   if (!match) {
     return {

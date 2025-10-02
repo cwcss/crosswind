@@ -5,7 +5,17 @@ import type { UtilityRule } from './rules'
 // Filter utilities
 export const filterRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'blur' && parsed.value) {
-    return { filter: `blur(${parsed.value}px)` }
+    const blurMap: Record<string, string> = {
+      none: '0',
+      sm: '4px',
+      DEFAULT: '8px',
+      md: '12px',
+      lg: '16px',
+      xl: '24px',
+      '2xl': '40px',
+      '3xl': '64px',
+    }
+    return { filter: `blur(${blurMap[parsed.value] || parsed.value})` }
   }
   if (parsed.utility === 'brightness' && parsed.value) {
     return { filter: `brightness(${Number(parsed.value) / 100})` }
