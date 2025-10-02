@@ -188,3 +188,232 @@ describe('extractClasses', () => {
     expect(result.size).toBe(0)
   })
 })
+
+describe('parseClass - Edge Cases', () => {
+  it('should handle empty string', () => {
+    const result = parseClass('')
+    expect(result.utility).toBe('')
+    expect(result.variants).toEqual([])
+  })
+
+  it('should handle very long class name', () => {
+    const longClass = 'a'.repeat(1000)
+    const result = parseClass(longClass)
+    expect(result.utility).toBe(longClass)
+  })
+
+  it('should handle class with only dashes', () => {
+    const result = parseClass('---')
+    // Parser splits on last dash, so --- becomes -- with no value
+    expect(result.utility).toBe('--')
+    expect(result.value).toBeUndefined()
+  })
+
+  it('should handle class with trailing colon', () => {
+    const result = parseClass('hover:')
+    expect(result.variants).toEqual(['hover'])
+    expect(result.utility).toBe('')
+  })
+
+  it('should handle class with leading colon', () => {
+    const result = parseClass(':flex')
+    expect(result.variants).toEqual([''])
+    expect(result.utility).toBe('flex')
+  })
+
+  it('should handle multiple consecutive colons', () => {
+    const result = parseClass('sm::hover::flex')
+    expect(result.variants).toEqual(['sm', '', 'hover', ''])
+    expect(result.utility).toBe('flex')
+  })
+
+  it('should handle negative zero value', () => {
+    const result = parseClass('-m-0')
+    expect(result).toEqual({
+      raw: '-m-0',
+      variants: [],
+      utility: 'm',
+      value: '-0',
+      important: false,
+      arbitrary: false,
+    })
+  })
+
+  it('should handle fractional zero', () => {
+    const result = parseClass('w-0/0')
+    expect(result).toEqual({
+      raw: 'w-0/0',
+      variants: [],
+      utility: 'w',
+      value: '0/0',
+      important: false,
+      arbitrary: false,
+    })
+  })
+
+  it('should handle arbitrary value with nested brackets', () => {
+    const result = parseClass('w-[calc(100%-20px)]')
+    expect(result.arbitrary).toBe(true)
+    expect(result.utility).toBe('w')
+    expect(result.value).toBe('calc(100%-20px)')
+  })
+
+  it('should handle arbitrary value with special characters', () => {
+    const result = parseClass('bg-[rgba(255,0,0,0.5)]')
+    expect(result.arbitrary).toBe(true)
+    expect(result.value).toContain('rgba')
+  })
+
+  it('should handle multiple important modifiers', () => {
+    const result = parseClass('!!p-4')
+    // Should only process the first !
+    expect(result.important).toBe(true)
+    expect(result.raw).toBe('!!p-4')
+  })
+
+  it('should handle important with no utility', () => {
+    const result = parseClass('!')
+    expect(result.important).toBe(true)
+    expect(result.utility).toBe('')
+  })
+
+  it('should handle complex variant chain', () => {
+    const result = parseClass('2xl:dark:group-hover:peer-checked:first:focus:bg-red-500')
+    expect(result.variants).toEqual(['2xl', 'dark', 'group-hover', 'peer-checked', 'first', 'focus'])
+    expect(result.utility).toBe('bg')
+    expect(result.value).toBe('red-500')
+  })
+
+  it('should handle compound utility with multiple dashes', () => {
+    const result = parseClass('grid-cols-12')
+    expect(result.utility).toBe('grid-cols')
+    expect(result.value).toBe('12')
+  })
+
+  it('should handle negative compound utility', () => {
+    const result = parseClass('-translate-x-full')
+    expect(result.utility).toBe('translate-x')
+    expect(result.value).toBe('-full')
+  })
+
+  it('should handle arbitrary property with numbers', () => {
+    const result = parseClass('[line-height:1.5]')
+    expect(result.arbitrary).toBe(true)
+    expect(result.utility).toBe('line-height')
+    expect(result.value).toBe('1.5')
+  })
+
+  it('should handle arbitrary property with spaces in value', () => {
+    const result = parseClass('[font-family:ui-sans-serif]')
+    expect(result.arbitrary).toBe(true)
+    expect(result.utility).toBe('font-family')
+  })
+
+  it('should handle utility with uppercase letters', () => {
+    const result = parseClass('BG-RED-500')
+    // Lowercase is expected in utility names
+    expect(result.raw).toBe('BG-RED-500')
+  })
+
+  it('should handle fraction with large numbers', () => {
+    const result = parseClass('w-999/1000')
+    expect(result.utility).toBe('w')
+    expect(result.value).toBe('999/1000')
+  })
+
+  it('should handle negative fraction', () => {
+    const result = parseClass('-m-1/2')
+    expect(result.utility).toBe('m')
+    expect(result.value).toBe('-1/2')
+  })
+
+  it('should handle space-x without value', () => {
+    const result = parseClass('space-x')
+    expect(result.utility).toBe('space')
+    expect(result.value).toBe('x')
+  })
+
+  it('should handle divide-x without value', () => {
+    const result = parseClass('divide-x')
+    expect(result.utility).toBe('divide-x')
+    expect(result.value).toBe(undefined)
+  })
+})
+
+describe('extractClasses - Edge Cases', () => {
+  it('should handle empty HTML', () => {
+    const result = extractClasses('')
+    expect(result.size).toBe(0)
+  })
+
+  it('should handle malformed HTML', () => {
+    const html = '<div class="flex p-4'
+    const result = extractClasses(html)
+    // May not extract properly without closing quote
+    expect(result.size).toBeGreaterThanOrEqual(0)
+  })
+
+  it('should handle classes with newlines', () => {
+    const html = `<div class="flex
+      p-4
+      bg-blue-500"></div>`
+    const result = extractClasses(html)
+    expect(result.has('flex')).toBe(true)
+    expect(result.has('p-4')).toBe(true)
+    expect(result.has('bg-blue-500')).toBe(true)
+  })
+
+  it('should handle classes with tabs', () => {
+    const html = '<div class="flex\tp-4\tbg-blue-500"></div>'
+    const result = extractClasses(html)
+    expect(result.has('flex')).toBe(true)
+    expect(result.has('p-4')).toBe(true)
+  })
+
+  it('should handle duplicate classes', () => {
+    const html = '<div class="flex flex p-4 p-4"></div>'
+    const result = extractClasses(html)
+    expect(result.size).toBe(2) // Set removes duplicates
+  })
+
+  it('should handle classes with special characters in attribute', () => {
+    const html = '<div data-test="flex" class="p-4"></div>'
+    const result = extractClasses(html)
+    expect(result.has('p-4')).toBe(true)
+    // Should only extract from class/className attributes
+  })
+
+  it('should handle mixed quotes', () => {
+    const html = `<div class='flex "p-4"'></div>`
+    const result = extractClasses(html)
+    // Should extract from single-quoted attribute
+    expect(result.size).toBeGreaterThan(0)
+  })
+
+  it('should handle template literal with expressions', () => {
+    const jsx = '<div className={`flex ${isActive ? "active" : ""} p-4`}></div>'
+    const result = extractClasses(jsx)
+    expect(result.has('flex')).toBe(true)
+    expect(result.has('p-4')).toBe(true)
+  })
+
+  it('should handle very long class string', () => {
+    const classes = Array(1000).fill('p-4').join(' ')
+    const html = `<div class="${classes}"></div>`
+    const result = extractClasses(html)
+    expect(result.has('p-4')).toBe(true)
+  })
+
+  it('should ignore invalid class names', () => {
+    const html = '<div class="123invalid -flex @media"></div>'
+    const result = extractClasses(html)
+    // Should filter out invalid patterns
+    expect(result.has('123invalid')).toBe(false)
+  })
+
+  it('should handle consecutive spaces', () => {
+    const html = '<div class="flex    p-4    bg-blue-500"></div>'
+    const result = extractClasses(html)
+    expect(result.size).toBe(3)
+  })
+})

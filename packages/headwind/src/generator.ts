@@ -151,6 +151,62 @@ export class CSSGenerator {
       else if (variant === 'after' && this.config.variants.after) {
         selector += '::after'
       }
+      else if (variant === 'marker' && this.config.variants.marker) {
+        selector += '::marker'
+      }
+      else if (variant === 'placeholder' && this.config.variants.placeholder) {
+        selector += '::placeholder'
+      }
+      else if (variant === 'selection' && this.config.variants.selection) {
+        selector += '::selection'
+      }
+      else if (variant === 'file' && this.config.variants.file) {
+        selector += '::file-selector-button'
+      }
+      // Form state pseudo-classes
+      else if (variant === 'required' && this.config.variants.required) {
+        selector += ':required'
+      }
+      else if (variant === 'valid' && this.config.variants.valid) {
+        selector += ':valid'
+      }
+      else if (variant === 'invalid' && this.config.variants.invalid) {
+        selector += ':invalid'
+      }
+      else if (variant === 'read-only' && this.config.variants['read-only']) {
+        selector += ':read-only'
+      }
+      else if (variant === 'autofill' && this.config.variants.autofill) {
+        selector += ':autofill'
+      }
+      // Additional state pseudo-classes
+      else if (variant === 'open' && this.config.variants.open) {
+        selector += '[open]'
+      }
+      else if (variant === 'closed' && this.config.variants.closed) {
+        selector += ':not([open])'
+      }
+      else if (variant === 'empty' && this.config.variants.empty) {
+        selector += ':empty'
+      }
+      else if (variant === 'enabled' && this.config.variants.enabled) {
+        selector += ':enabled'
+      }
+      else if (variant === 'only' && this.config.variants.only) {
+        selector += ':only-child'
+      }
+      else if (variant === 'target' && this.config.variants.target) {
+        selector += ':target'
+      }
+      else if (variant === 'indeterminate' && this.config.variants.indeterminate) {
+        selector += ':indeterminate'
+      }
+      else if (variant === 'default' && this.config.variants.default) {
+        selector += ':default'
+      }
+      else if (variant === 'optional' && this.config.variants.optional) {
+        selector += ':optional'
+      }
       // Group/Peer variants
       else if (variant.startsWith('group-') && this.config.variants.group) {
         const groupVariant = variant.slice(6) // Remove 'group-'

@@ -36,7 +36,8 @@ export interface VariantConfig {
   // Pseudo-elements
   before: boolean
   after: boolean
-  // Pseudo-classes
+  marker: boolean
+  // Pseudo-classes - Basic
   first: boolean
   last: boolean
   odd: boolean
@@ -47,6 +48,25 @@ export interface VariantConfig {
   checked: boolean
   'focus-within': boolean
   'focus-visible': boolean
+  // Pseudo-classes - Form states
+  placeholder: boolean
+  selection: boolean
+  file: boolean
+  required: boolean
+  valid: boolean
+  invalid: boolean
+  'read-only': boolean
+  autofill: boolean
+  // Pseudo-classes - Additional states
+  open: boolean
+  closed: boolean
+  empty: boolean
+  enabled: boolean
+  only: boolean
+  target: boolean
+  indeterminate: boolean
+  default: boolean
+  optional: boolean
   // Media
   print: boolean
   // Direction

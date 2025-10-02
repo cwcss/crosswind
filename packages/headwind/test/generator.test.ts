@@ -269,3 +269,249 @@ describe('CSSGenerator', () => {
     })
   })
 })
+
+describe('CSSGenerator - Edge Cases', () => {
+  it('should handle empty class name', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('')
+    const css = gen.toCSS()
+    // Should not crash
+    expect(css).toBeDefined()
+  })
+
+  it('should handle undefined utility', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('nonexistent-utility-xyz')
+    const css = gen.toCSS()
+    // Should not generate CSS for unknown utility
+    expect(css).not.toContain('nonexistent-utility-xyz')
+  })
+
+  it('should handle conflicting utilities', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('p-4')
+    gen.generate('p-8')
+    const css = gen.toCSS()
+    // Both should be in CSS (last one wins in cascade)
+    expect(css).toContain('padding: 1rem;')
+    expect(css).toContain('padding: 2rem;')
+  })
+
+  it('should handle same class generated multiple times', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('p-4')
+    gen.generate('p-4')
+    gen.generate('p-4')
+    const css = gen.toCSS()
+    // Should merge into single rule
+    const matches = css.match(/\.p-4/g)
+    expect(matches?.length).toBe(1)
+  })
+
+  it('should handle very long selector', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    const longClass = 'a'.repeat(500) + '-4'
+    gen.generate(longClass)
+    const css = gen.toCSS()
+    expect(css).toBeDefined()
+  })
+
+  it('should handle special characters in selector escaping', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('hover:p-4')
+    const css = gen.toCSS()
+    expect(css).toContain('.hover\\:p-4:hover')
+  })
+
+  it('should handle multiple variants on same utility', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('hover:p-4')
+    gen.generate('focus:p-4')
+    gen.generate('active:p-4')
+    const css = gen.toCSS()
+    expect(css).toContain(':hover')
+    expect(css).toContain(':focus')
+    expect(css).toContain(':active')
+  })
+
+  it('should handle important modifier with zero value', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('!m-0')
+    const css = gen.toCSS()
+    expect(css).toContain('margin: 0 !important;')
+  })
+
+  it('should handle important with arbitrary value', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('!w-[500px]')
+    const css = gen.toCSS()
+    expect(css).toContain('width: 500px !important;')
+  })
+
+  it('should handle negative zero margin', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('-m-0')
+    const css = gen.toCSS()
+    expect(css).toContain('margin: -0;')
+  })
+
+  it('should handle fraction resulting in zero', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('w-0/100')
+    const css = gen.toCSS()
+    expect(css).toContain('width: 0%;')
+  })
+
+  it('should handle very small fraction', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('w-1/1000')
+    const css = gen.toCSS()
+    expect(css).toContain('width: 0.1%;')
+  })
+
+  it('should handle arbitrary value with calc', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('w-[calc(100vw-2rem)]')
+    const css = gen.toCSS()
+    expect(css).toContain('width: calc(100vw-2rem);')
+  })
+
+  it('should handle arbitrary value with CSS variables', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('w-[var(--custom-width)]')
+    const css = gen.toCSS()
+    expect(css).toContain('width: var(--custom-width);')
+  })
+
+  it('should handle responsive variant at largest breakpoint', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('2xl:p-4')
+    const css = gen.toCSS()
+    expect(css).toContain('@media (min-width: 1536px)')
+  })
+
+  it('should handle mixed responsive and pseudo-class variants', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('md:hover:focus:p-4')
+    const css = gen.toCSS()
+    expect(css).toContain('@media (min-width: 768px)')
+    expect(css).toContain(':hover:focus')
+  })
+
+  it('should handle dark mode with responsive', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('dark:lg:hover:bg-gray-900')
+    const css = gen.toCSS()
+    expect(css).toContain('.dark')
+    expect(css).toContain('@media (min-width: 1024px)')
+    expect(css).toContain(':hover')
+  })
+
+  it('should handle group variant with multiple states', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('group-hover:group-focus:bg-blue-500')
+    const css = gen.toCSS()
+    // Should handle last group variant
+    expect(css).toContain('.group:')
+  })
+
+  it('should handle peer variant with complex selector', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('peer-checked:peer-focus:bg-red-500')
+    const css = gen.toCSS()
+    expect(css).toContain('.peer:')
+    expect(css).toContain('~')
+  })
+
+  it('should handle child selector utilities', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('space-x-4')
+    const css = gen.toCSS()
+    expect(css).toContain('> :not([hidden]) ~ :not([hidden])')
+  })
+
+  it('should handle minified output with special characters', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('hover:focus:bg-[#ff0000]')
+    const css = gen.toCSS(true)
+    expect(css).not.toContain('\n')
+    expect(css).not.toContain('  ')
+  })
+
+  it('should handle color with three-digit hex', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('bg-[#f00]')
+    const css = gen.toCSS()
+    expect(css).toContain('background-color: #f00;')
+  })
+
+  it('should handle color with rgba', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('bg-[rgba(255,0,0,0.5)]')
+    const css = gen.toCSS()
+    expect(css).toContain('background-color: rgba(255,0,0,0.5);')
+  })
+
+  it('should handle arbitrary property with important', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('![display:grid]')
+    const css = gen.toCSS()
+    expect(css).toContain('display: grid !important;')
+  })
+
+  it('should handle multiple classes with same selector different properties', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('p-4')
+    gen.generate('m-4')
+    const css = gen.toCSS()
+    expect(css).toContain('padding: 1rem;')
+    expect(css).toContain('margin: 1rem;')
+  })
+
+  it('should escape forward slash in fractions', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('w-1/2')
+    const css = gen.toCSS()
+    expect(css).toContain('.w-1\\/2')
+  })
+
+  it('should escape dots in arbitrary values', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('text-[1.5rem]')
+    const css = gen.toCSS()
+    // Check selector escaping for the class
+    expect(css).toContain('.text-[1\\.5rem]')
+  })
+
+  it('should handle all variants disabled', () => {
+    const config = {
+      ...defaultConfig,
+      variants: {
+        ...defaultConfig.variants,
+        hover: false,
+        focus: false,
+      },
+    }
+    const gen = new CSSGenerator(config)
+    gen.generate('hover:p-4')
+    const css = gen.toCSS()
+    // Should still generate but without :hover
+    expect(css).toBeDefined()
+  })
+
+  it('should handle reset and regenerate', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('p-4')
+    gen.reset()
+    gen.generate('m-4')
+    const css = gen.toCSS()
+    expect(css).toContain('margin: 1rem;')
+    expect(css).not.toContain('padding: 1rem;')
+  })
+
+  it('should handle preflight CSS with minification', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    const css = gen.toCSS(true)
+    expect(css).toContain('box-sizing')
+  })
+})

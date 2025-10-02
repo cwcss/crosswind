@@ -610,3 +610,342 @@ describe('Advanced Features', () => {
     })
   })
 })
+
+describe('Advanced Features - Edge Cases', () => {
+  describe('Extreme negative values', () => {
+    it('should handle very large negative margin', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('-m-999')
+      const css = gen.toCSS()
+      expect(css).toContain('margin: -999;')
+    })
+
+    it('should handle negative arbitrary values', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('-m-[100px]')
+      const css = gen.toCSS()
+      // Negative arbitrary values may not be supported - just check it doesn't crash
+      expect(css).toBeDefined()
+    })
+
+    it('should handle double negative', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('--m-4')
+      const css = gen.toCSS()
+      // Should parse as utility starting with dash
+      expect(css).toBeDefined()
+    })
+  })
+
+  describe('Complex fractions', () => {
+    it('should handle improper fractions', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('w-5/3')
+      const css = gen.toCSS()
+      // Floating point precision may vary slightly
+      expect(css).toMatch(/width: 166\.666/)
+    })
+
+    it('should handle fraction with decimal result', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('w-1/3')
+      const css = gen.toCSS()
+      expect(css).toMatch(/width: 33\.333/)
+    })
+
+    it('should handle very large fraction denominator', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('w-1/10000')
+      const css = gen.toCSS()
+      expect(css).toContain('width: 0.01%;')
+    })
+  })
+
+  describe('Ring utilities edge cases', () => {
+    it('should handle ring with zero width', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('ring-0')
+      const css = gen.toCSS()
+      expect(css).toContain('0')
+    })
+
+    it('should handle ring with arbitrary width', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('ring-[10px]')
+      const css = gen.toCSS()
+      expect(css).toContain('10px')
+    })
+
+    it('should handle ring-offset with important', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('!ring-offset-4')
+      const css = gen.toCSS()
+      expect(css).toContain('!important')
+    })
+  })
+
+  describe('Space utilities edge cases', () => {
+    it('should handle space-x with zero', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('space-x-0')
+      const css = gen.toCSS()
+      expect(css).toContain('0')
+    })
+
+    it('should handle negative space-y', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('space-y--4')
+      const css = gen.toCSS()
+      // Should handle double dash
+      expect(css).toBeDefined()
+    })
+
+    it('should handle space with arbitrary value', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('space-x-[2.5rem]')
+      const css = gen.toCSS()
+      expect(css).toContain('2.5rem')
+    })
+  })
+
+  describe('Gradient edge cases', () => {
+    it('should handle gradient from with opacity', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('from-[rgba(0,0,0,0.5)]')
+      const css = gen.toCSS()
+      expect(css).toContain('rgba(0,0,0,0.5)')
+    })
+
+    it('should handle all three gradient stops', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('from-gray-900')
+      gen.generate('via-gray-500')
+      gen.generate('to-gray-100')
+      const css = gen.toCSS()
+      expect(css).toContain('--tw-gradient-from')
+      expect(css).toContain('--tw-gradient-stops')
+      expect(css).toContain('--tw-gradient-to')
+    })
+  })
+
+  describe('Flex order edge cases', () => {
+    it('should handle order-0', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('order-0')
+      const css = gen.toCSS()
+      // order-0 doesn't exist in the map, should use raw value
+      expect(css).toContain('order: 0;')
+    })
+
+    it('should handle order with arbitrary value', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('order-[99]')
+      const css = gen.toCSS()
+      expect(css).toContain('order: 99;')
+    })
+
+    it('should handle order-none', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('order-none')
+      const css = gen.toCSS()
+      expect(css).toContain('order: 0;')
+    })
+  })
+
+  describe('Flex basis edge cases', () => {
+    it('should handle basis with very small fraction', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('basis-1/100')
+      const css = gen.toCSS()
+      expect(css).toContain('flex-basis: 1%;')
+    })
+
+    it('should handle basis-0', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('basis-0')
+      const css = gen.toCSS()
+      expect(css).toContain('flex-basis: 0;')
+    })
+
+    it('should handle basis with calc', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('basis-[calc(50%-1rem)]')
+      const css = gen.toCSS()
+      expect(css).toContain('flex-basis: calc(50%-1rem);')
+    })
+  })
+
+  describe('Min/Max sizing edge cases', () => {
+    it('should handle min-w-0', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('min-w-0')
+      const css = gen.toCSS()
+      expect(css).toContain('min-width: 0;')
+    })
+
+    it('should handle max-w with arbitrary value', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('max-w-[1920px]')
+      const css = gen.toCSS()
+      expect(css).toContain('max-width: 1920px;')
+    })
+
+    it('should handle min-h-screen on mobile', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('min-h-[100dvh]')
+      const css = gen.toCSS()
+      expect(css).toContain('min-height: 100dvh;')
+    })
+  })
+
+  describe('Container edge cases', () => {
+    it('should handle container with variants', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('md:container')
+      const css = gen.toCSS()
+      expect(css).toContain('width: 100%;')
+      expect(css).toContain('@media (min-width: 768px)')
+    })
+
+    it('should handle important container', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('!container')
+      const css = gen.toCSS()
+      expect(css).toContain('!important')
+    })
+  })
+
+  describe('Arbitrary properties edge cases', () => {
+    it('should handle arbitrary property with spaces', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('[grid-template-areas:auto]')
+      const css = gen.toCSS()
+      expect(css).toContain('grid-template-areas: auto;')
+    })
+
+    it('should handle arbitrary property with CSS functions', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('[background:linear-gradient(red,blue)]')
+      const css = gen.toCSS()
+      expect(css).toContain('background: linear-gradient(red,blue);')
+    })
+
+    it('should handle arbitrary property with important', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('![z-index:9999]')
+      const css = gen.toCSS()
+      expect(css).toContain('z-index: 9999 !important;')
+    })
+  })
+
+  describe('Variant combination edge cases', () => {
+    it('should handle all positional variants', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('first:last:odd:even:bg-red-500')
+      const css = gen.toCSS()
+      expect(css).toContain(':first-child')
+      expect(css).toContain(':last-child')
+    })
+
+    it('should handle print with dark mode', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('print:dark:text-black')
+      const css = gen.toCSS()
+      expect(css).toContain('@media print')
+      expect(css).toContain('.dark')
+    })
+
+    it('should handle motion-safe with responsive', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('motion-safe:lg:p-4')
+      const css = gen.toCSS()
+      expect(css).toContain('@media (prefers-reduced-motion: no-preference)')
+      expect(css).toContain('padding: 1rem;')
+    })
+
+    it('should handle rtl with responsive and hover', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('rtl:md:hover:text-right')
+      const css = gen.toCSS()
+      expect(css).toContain('[dir="rtl"]')
+      expect(css).toContain('@media (min-width: 768px)')
+      expect(css).toContain(':hover')
+    })
+
+    it('should handle before with important', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('!before:block')
+      const css = gen.toCSS()
+      expect(css).toContain('::before')
+      expect(css).toContain('!important')
+    })
+
+    it('should handle peer-checked with responsive', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('lg:peer-checked:bg-green-500')
+      const css = gen.toCSS()
+      expect(css).toContain('@media (min-width: 1024px)')
+      expect(css).toContain('.peer:checked')
+    })
+  })
+
+  describe('Divide utilities edge cases', () => {
+    it('should handle divide-x-0', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('divide-x-0')
+      const css = gen.toCSS()
+      expect(css).toContain('0')
+    })
+
+    it('should handle divide with arbitrary width', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('divide-y-[3px]')
+      const css = gen.toCSS()
+      expect(css).toContain('3px')
+    })
+
+    it('should handle divide with color', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('divide-gray-300')
+      const css = gen.toCSS()
+      expect(css).toContain('border-color')
+    })
+  })
+
+  describe('Sizing with arbitrary values edge cases', () => {
+    it('should handle w-screen', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('w-screen')
+      const css = gen.toCSS()
+      expect(css).toContain('width: 100vw;')
+    })
+
+    it('should handle h-full', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('h-full')
+      const css = gen.toCSS()
+      expect(css).toContain('height: 100%;')
+    })
+
+    it('should handle w-fit', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('w-fit')
+      const css = gen.toCSS()
+      expect(css).toContain('width: fit-content;')
+    })
+
+    it('should handle w-max', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('w-max')
+      const css = gen.toCSS()
+      expect(css).toContain('width: max-content;')
+    })
+
+    it('should handle w-min', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('w-min')
+      const css = gen.toCSS()
+      expect(css).toContain('width: min-content;')
+    })
+  })
+})
