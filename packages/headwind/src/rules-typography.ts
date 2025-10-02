@@ -105,7 +105,7 @@ export const listStyleTypeRule: UtilityRule = (parsed) => {
   }
 }
 
-export const textDecorationRule: UtilityRule = (parsed) => {
+export const textDecorationRule: UtilityRule = (parsed, config) => {
   const decorations: Record<string, string> = {
     underline: 'underline',
     overline: 'overline',
@@ -124,10 +124,61 @@ export const textDecorationRule: UtilityRule = (parsed) => {
       dashed: 'dashed',
       wavy: 'wavy',
     }
-    return { 'text-decoration-style': styles[parsed.value] || parsed.value }
+
+    // Check if it's a style
+    if (styles[parsed.value]) {
+      return { 'text-decoration-style': styles[parsed.value] }
+    }
+
+    // Check if it's a thickness
+    const thicknesses: Record<string, string> = {
+      auto: 'auto',
+      from: 'from-font',
+      0: '0px',
+      1: '1px',
+      2: '2px',
+      4: '4px',
+      8: '8px',
+    }
+    if (thicknesses[parsed.value]) {
+      return { 'text-decoration-thickness': thicknesses[parsed.value] }
+    }
+
+    // Otherwise treat it as a color: decoration-blue-500
+    const parts = parsed.value.split('-')
+    if (parts.length === 2) {
+      const [colorName, shade] = parts
+      const colorValue = config.theme.colors[colorName]
+      if (typeof colorValue === 'object' && colorValue[shade]) {
+        return { 'text-decoration-color': colorValue[shade] }
+      }
+    }
+
+    // Direct color
+    const directColor = config.theme.colors[parsed.value]
+    if (typeof directColor === 'string') {
+      return { 'text-decoration-color': directColor }
+    }
+
+    // Fallback
+    return { 'text-decoration-color': parsed.value }
   }
 
   return undefined
+}
+
+export const underlineOffsetRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'underline-offset' && parsed.value) {
+    const offsets: Record<string, string> = {
+      auto: 'auto',
+      0: '0px',
+      1: '1px',
+      2: '2px',
+      4: '4px',
+      8: '8px',
+    }
+    return { 'text-underline-offset': offsets[parsed.value] || parsed.value }
+  }
 }
 
 export const textTransformRule: UtilityRule = (parsed) => {
@@ -232,6 +283,33 @@ export const contentRule: UtilityRule = (parsed) => {
   }
 }
 
+export const lineHeightRule: UtilityRule = (parsed, config) => {
+  if (parsed.utility === 'leading') {
+    if (!parsed.value) {
+      return undefined
+    }
+
+    const lineHeights: Record<string, string> = {
+      none: '1',
+      tight: '1.25',
+      snug: '1.375',
+      normal: '1.5',
+      relaxed: '1.625',
+      loose: '2',
+      3: '.75rem',
+      4: '1rem',
+      5: '1.25rem',
+      6: '1.5rem',
+      7: '1.75rem',
+      8: '2rem',
+      9: '2.25rem',
+      10: '2.5rem',
+    }
+
+    return { 'line-height': lineHeights[parsed.value] || parsed.value }
+  }
+}
+
 export const typographyRules: UtilityRule[] = [
   fontFamilyRule,
   fontSmoothingRule,
@@ -239,11 +317,13 @@ export const typographyRules: UtilityRule[] = [
   fontStretchRule,
   fontVariantNumericRule,
   letterSpacingRule,
+  lineHeightRule,
   lineClampRule,
   listStyleImageRule,
   listStylePositionRule,
   listStyleTypeRule,
   textDecorationRule,
+  underlineOffsetRule,
   textTransformRule,
   textOverflowRule,
   textWrapRule,

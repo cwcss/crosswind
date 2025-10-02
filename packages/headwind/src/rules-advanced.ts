@@ -43,6 +43,11 @@ export const minMaxSizingRule: UtilityRule = (parsed) => {
 // Ring utilities
 export const ringRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'ring') {
+    // Handle ring-inset
+    if (parsed.value === 'inset') {
+      return { '--tw-ring-inset': 'inset' }
+    }
+
     const widths: Record<string, string> = {
       0: '0',
       1: '1px',
@@ -132,8 +137,44 @@ export const spaceRule: UtilityRule = (parsed, config) => {
   }
 }
 
+// Border style utilities
+export const borderStyleRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'border' && parsed.value) {
+    const styles: Record<string, string> = {
+      solid: 'solid',
+      dashed: 'dashed',
+      dotted: 'dotted',
+      double: 'double',
+      hidden: 'hidden',
+      none: 'none',
+    }
+    if (styles[parsed.value]) {
+      return { 'border-style': styles[parsed.value] }
+    }
+  }
+}
+
 // Divide utilities (borders between children)
 export const divideRule: UtilityRule = (parsed, config) => {
+  // Handle divide styles: divide-solid, divide-dashed, divide-dotted
+  if (parsed.utility === 'divide' && parsed.value) {
+    const styles: Record<string, string> = {
+      solid: 'solid',
+      dashed: 'dashed',
+      dotted: 'dotted',
+      double: 'double',
+      none: 'none',
+    }
+    if (styles[parsed.value]) {
+      return {
+        properties: {
+          'border-style': styles[parsed.value],
+        },
+        childSelector: '> :not([hidden]) ~ :not([hidden])',
+      }
+    }
+  }
+
   if (parsed.utility === 'divide-x') {
     const widths: Record<string, string> = {
       0: '0',
@@ -332,6 +373,7 @@ export const arbitraryPropertyRule: UtilityRule = (parsed) => {
 export const advancedRules: UtilityRule[] = [
   minMaxSizingRule,
   ringRule,
+  borderStyleRule,
   spaceRule,
   divideRule,
   gradientStopsRule,

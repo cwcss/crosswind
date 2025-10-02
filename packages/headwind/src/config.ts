@@ -23,6 +23,19 @@ export const defaultConfig: HeadwindConfig = {
         800: '#1f2937',
         900: '#111827',
       },
+      red: {
+        500: '#ef4444',
+        700: '#b91c1c',
+      },
+      blue: {
+        500: '#3b82f6',
+      },
+      green: {
+        500: '#22c55e',
+      },
+      yellow: {
+        100: '#fef9c3',
+      },
     },
     spacing: {
       0: '0',

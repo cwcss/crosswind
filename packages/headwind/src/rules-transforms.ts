@@ -25,11 +25,24 @@ export const scaleRule: UtilityRule = (parsed) => {
     const scale = parsed.value ? Number(parsed.value) / 100 : 1
     return { transform: `scaleY(${scale})` }
   }
+  if (parsed.utility === 'scale-z') {
+    const scale = parsed.value ? Number(parsed.value) / 100 : 1
+    return { transform: `scaleZ(${scale})` }
+  }
 }
 
 export const rotateRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'rotate' && parsed.value) {
     return { transform: `rotate(${parsed.value}deg)` }
+  }
+  if (parsed.utility === 'rotate-x' && parsed.value) {
+    return { transform: `rotateX(${parsed.value}deg)` }
+  }
+  if (parsed.utility === 'rotate-y' && parsed.value) {
+    return { transform: `rotateY(${parsed.value}deg)` }
+  }
+  if (parsed.utility === 'rotate-z' && parsed.value) {
+    return { transform: `rotateZ(${parsed.value}deg)` }
   }
 }
 
@@ -57,6 +70,18 @@ export const translateRule: UtilityRule = (parsed, config) => {
       value = config.theme.spacing[parsed.value] || parsed.value
     }
     return { transform: `translateY(${value})` }
+  }
+  if (parsed.utility === 'translate-z' && parsed.value) {
+    let value: string
+    if (parsed.value.startsWith('-')) {
+      const positiveValue = parsed.value.slice(1)
+      const spacing = config.theme.spacing[positiveValue]
+      value = spacing ? `-${spacing}` : parsed.value
+    }
+    else {
+      value = config.theme.spacing[parsed.value] || parsed.value
+    }
+    return { transform: `translateZ(${value})` }
   }
 }
 

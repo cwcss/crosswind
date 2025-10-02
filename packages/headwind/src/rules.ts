@@ -167,24 +167,65 @@ export const colorRule: UtilityRule = (parsed, config) => {
   if (!prop || !parsed.value)
     return undefined
 
+  // Check for opacity modifier: "blue-500/50" -> 50% opacity
+  let opacity: number | undefined
+  let colorValue = parsed.value
+
+  if (parsed.value.includes('/')) {
+    const slashIndex = parsed.value.lastIndexOf('/')
+    const opacityStr = parsed.value.slice(slashIndex + 1)
+    colorValue = parsed.value.slice(0, slashIndex)
+    opacity = Number.parseInt(opacityStr, 10) / 100
+  }
+
+  // Helper to apply opacity to color
+  const applyOpacity = (color: string, opacity: number): string => {
+    // If color is hex (#rrggbb), convert to rgb with alpha
+    if (color.startsWith('#')) {
+      const hex = color.slice(1)
+      const r = Number.parseInt(hex.slice(0, 2), 16)
+      const g = Number.parseInt(hex.slice(2, 4), 16)
+      const b = Number.parseInt(hex.slice(4, 6), 16)
+      return `rgb(${r} ${g} ${b} / ${opacity})`
+    }
+    // If color already has rgb/rgba format, add/replace alpha
+    if (color.startsWith('rgb')) {
+      const rgbMatch = color.match(/rgb\((\d+)\s+(\d+)\s+(\d+)/)
+      if (rgbMatch) {
+        return `rgb(${rgbMatch[1]} ${rgbMatch[2]} ${rgbMatch[3]} / ${opacity})`
+      }
+    }
+    // Fallback: use opacity as-is with the color
+    return color
+  }
+
   // Parse color value: "blue-500" -> colors.blue[500]
-  const parts = parsed.value.split('-')
+  const parts = colorValue.split('-')
   if (parts.length === 2) {
     const [colorName, shade] = parts
-    const colorValue = config.theme.colors[colorName]
-    if (typeof colorValue === 'object' && colorValue[shade]) {
-      return { [prop]: colorValue[shade] }
+    const themeColorValue = config.theme.colors[colorName]
+    if (typeof themeColorValue === 'object' && themeColorValue[shade]) {
+      const finalColor = opacity !== undefined
+        ? applyOpacity(themeColorValue[shade], opacity)
+        : themeColorValue[shade]
+      return { [prop]: finalColor }
     }
   }
 
   // Direct color: "black" -> colors.black
-  const directColor = config.theme.colors[parsed.value]
+  const directColor = config.theme.colors[colorValue]
   if (typeof directColor === 'string') {
-    return { [prop]: directColor }
+    const finalColor = opacity !== undefined
+      ? applyOpacity(directColor, opacity)
+      : directColor
+    return { [prop]: finalColor }
   }
 
-  // Fallback to raw value for custom colors like "bg-#ff0000"
-  return { [prop]: parsed.value }
+  // Fallback to raw value for custom colors
+  const finalColor = opacity !== undefined
+    ? applyOpacity(colorValue, opacity)
+    : colorValue
+  return { [prop]: finalColor }
 }
 
 // Typography utilities
@@ -233,14 +274,32 @@ export const borderWidthRule: UtilityRule = (parsed) => {
     if (!parsed.value) {
       return { 'border-width': '1px' }
     }
-    const sideMap: Record<string, string> = {
+    const sideMap: Record<string, string | string[]> = {
       t: 'border-top-width',
       r: 'border-right-width',
       b: 'border-bottom-width',
       l: 'border-left-width',
     }
+
+    // Handle border-x and border-y shortcuts
+    if (parsed.value === 'x') {
+      return {
+        'border-left-width': '1px',
+        'border-right-width': '1px',
+      }
+    }
+    if (parsed.value === 'y') {
+      return {
+        'border-top-width': '1px',
+        'border-bottom-width': '1px',
+      }
+    }
+
     const prop = sideMap[parsed.value]
-    return prop ? { [prop]: '1px' } : undefined
+    if (typeof prop === 'string') {
+      return { [prop]: '1px' }
+    }
+    return undefined
   }
 }
 

@@ -60,8 +60,13 @@ export function parseClass(className: string): ParsedClass {
     'row-end',
     'translate-x',
     'translate-y',
+    'translate-z',
     'scale-x',
     'scale-y',
+    'scale-z',
+    'rotate-x',
+    'rotate-y',
+    'rotate-z',
     'skew-x',
     'skew-y',
     'scroll-m',
@@ -89,6 +94,7 @@ export function parseClass(className: string): ParsedClass {
     'space-x',
     'space-y',
     'ring-offset',
+    'underline-offset',
     'backdrop-blur',
     'backdrop-brightness',
     'backdrop-contrast',
@@ -169,6 +175,20 @@ export function parseClass(className: string): ParsedClass {
         important,
         arbitrary: false,
       }
+    }
+  }
+
+  // Check for color opacity modifiers: bg-blue-500/50, text-red-500/75
+  // Must come before fractional values to avoid conflict
+  const opacityMatch = utility.match(/^([a-z-]+?)-(.+?)\/(\d+)$/)
+  if (opacityMatch && ['bg', 'text', 'border', 'ring', 'placeholder', 'divide'].includes(opacityMatch[1])) {
+    return {
+      raw: className,
+      variants,
+      utility: opacityMatch[1],
+      value: `${opacityMatch[2]}/${opacityMatch[3]}`,
+      important,
+      arbitrary: false,
     }
   }
 
