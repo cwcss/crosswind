@@ -119,6 +119,39 @@ export const perspectiveRule: UtilityRule = (parsed) => {
   return values[parsed.raw] ? { perspective: values[parsed.raw] } : undefined
 }
 
+export const perspectiveOriginRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'perspective-origin' && parsed.value) {
+    const origins: Record<string, string> = {
+      'center': 'center',
+      'top': 'top',
+      'top-right': 'top right',
+      'right': 'right',
+      'bottom-right': 'bottom right',
+      'bottom': 'bottom',
+      'bottom-left': 'bottom left',
+      'left': 'left',
+      'top-left': 'top left',
+    }
+    return { 'perspective-origin': origins[parsed.value] || parsed.value }
+  }
+}
+
+export const backfaceVisibilityRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'backface-visible': 'visible',
+    'backface-hidden': 'hidden',
+  }
+  return values[parsed.raw] ? { 'backface-visibility': values[parsed.raw] } : undefined
+}
+
+export const transformStyleRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'transform-flat': 'flat',
+    'transform-3d': 'preserve-3d',
+  }
+  return values[parsed.raw] ? { 'transform-style': values[parsed.raw] } : undefined
+}
+
 // Transition utilities
 export const transitionPropertyRule: UtilityRule = (parsed) => {
   const properties: Record<string, string> = {
@@ -155,6 +188,14 @@ export const transitionDelayRule: UtilityRule = (parsed) => {
   }
 }
 
+export const transitionBehaviorRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'transition-behavior-normal': 'normal',
+    'transition-behavior-allow-discrete': 'allow-discrete',
+  }
+  return values[parsed.raw] ? { 'transition-behavior': values[parsed.raw] } : undefined
+}
+
 export const animationRule: UtilityRule = (parsed) => {
   const animations: Record<string, string> = {
     'animate-none': 'none',
@@ -174,7 +215,11 @@ export const transformsRules: UtilityRule[] = [
   skewRule,
   transformOriginRule,
   perspectiveRule,
+  perspectiveOriginRule,
+  backfaceVisibilityRule,
+  transformStyleRule,
   transitionPropertyRule,
+  transitionBehaviorRule,
   transitionDurationRule,
   transitionTimingRule,
   transitionDelayRule,

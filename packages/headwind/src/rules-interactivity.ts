@@ -38,6 +38,18 @@ export const filterRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'hue-rotate' && parsed.value) {
     return { filter: `hue-rotate(${parsed.value}deg)` }
   }
+  if (parsed.utility === 'drop-shadow') {
+    const shadows: Record<string, string> = {
+      sm: 'drop-shadow(0 1px 1px rgb(0 0 0 / 0.05))',
+      DEFAULT: 'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06))',
+      md: 'drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06))',
+      lg: 'drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))',
+      xl: 'drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08))',
+      '2xl': 'drop-shadow(0 25px 25px rgb(0 0 0 / 0.15))',
+      none: 'drop-shadow(0 0 #0000)',
+    }
+    return { filter: parsed.value ? (shadows[parsed.value] || `drop-shadow(${parsed.value})`) : shadows.DEFAULT }
+  }
 }
 
 export const backdropFilterRule: UtilityRule = (parsed) => {
@@ -143,6 +155,14 @@ export const colorSchemeRule: UtilityRule = (parsed) => {
     'color-scheme-light-dark': 'light dark',
   }
   return schemes[parsed.raw] ? { 'color-scheme': schemes[parsed.raw] } : undefined
+}
+
+export const fieldSizingRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'field-sizing-content': 'content',
+    'field-sizing-fixed': 'fixed',
+  }
+  return values[parsed.raw] ? { 'field-sizing': values[parsed.raw] } : undefined
 }
 
 export const cursorRule: UtilityRule = (parsed) => {
@@ -399,6 +419,7 @@ export const interactivityRules: UtilityRule[] = [
   appearanceRule,
   caretColorRule,
   colorSchemeRule,
+  fieldSizingRule,
   cursorRule,
   pointerEventsRule,
   resizeRule,

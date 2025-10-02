@@ -6,6 +6,7 @@ import { interactivityRules } from './rules-interactivity'
 import { layoutRules } from './rules-layout'
 import { transformsRules } from './rules-transforms'
 import { typographyRules } from './rules-typography'
+import { formsRules } from './rules-forms'
 
 export type UtilityRule = (parsed: ParsedClass, config: HeadwindConfig) => Record<string, string> | UtilityRuleResult | undefined
 
@@ -73,6 +74,31 @@ export const alignItemsRule: UtilityRule = (parsed) => {
     'items-stretch': 'stretch',
   }
   return values[parsed.raw] ? { 'align-items': values[parsed.raw] } : undefined
+}
+
+export const justifyItemsRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'justify-items-start': 'start',
+    'justify-items-end': 'end',
+    'justify-items-center': 'center',
+    'justify-items-stretch': 'stretch',
+  }
+  return values[parsed.raw] ? { 'justify-items': values[parsed.raw] } : undefined
+}
+
+export const alignContentRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'content-normal': 'normal',
+    'content-center': 'center',
+    'content-start': 'flex-start',
+    'content-end': 'flex-end',
+    'content-between': 'space-between',
+    'content-around': 'space-around',
+    'content-evenly': 'space-evenly',
+    'content-baseline': 'baseline',
+    'content-stretch': 'stretch',
+  }
+  return values[parsed.raw] ? { 'align-content': values[parsed.raw] } : undefined
 }
 
 // Spacing utilities (margin, padding)
@@ -324,6 +350,8 @@ export const builtInRules: UtilityRule[] = [
   flexRule,
   justifyContentRule,
   alignItemsRule,
+  justifyItemsRule,
+  alignContentRule,
 
   // Grid rules
   ...gridRules,
@@ -342,6 +370,9 @@ export const builtInRules: UtilityRule[] = [
 
   // Interactivity, SVG, and accessibility
   ...interactivityRules,
+
+  // Forms utilities
+  ...formsRules,
 
   // Spacing and sizing rules
   spacingRule,

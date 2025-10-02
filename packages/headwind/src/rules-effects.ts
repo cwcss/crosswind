@@ -98,7 +98,7 @@ export const borderStyleRule: UtilityRule = (parsed) => {
   return styles[parsed.raw] ? { 'border-style': styles[parsed.raw] } : undefined
 }
 
-export const outlineRule: UtilityRule = (parsed) => {
+export const outlineRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'outline') {
     if (!parsed.value) {
       return { 'outline-width': '1px' }
@@ -111,6 +111,35 @@ export const outlineRule: UtilityRule = (parsed) => {
       8: '8px',
     }
     return { 'outline-width': widths[parsed.value] || parsed.value }
+  }
+
+  // Outline colors
+  if (parsed.utility === 'outline' && parsed.value) {
+    const parts = parsed.value.split('-')
+    if (parts.length === 2) {
+      const [colorName, shade] = parts
+      const colorValue = config.theme.colors[colorName]
+      if (typeof colorValue === 'object' && colorValue[shade]) {
+        return { 'outline-color': colorValue[shade] }
+      }
+    }
+    // Direct color
+    const directColor = config.theme.colors[parsed.value]
+    if (typeof directColor === 'string') {
+      return { 'outline-color': directColor }
+    }
+  }
+
+  // Outline offset
+  if (parsed.utility === 'outline-offset' && parsed.value) {
+    const offsets: Record<string, string> = {
+      0: '0px',
+      1: '1px',
+      2: '2px',
+      4: '4px',
+      8: '8px',
+    }
+    return { 'outline-offset': offsets[parsed.value] || parsed.value }
   }
 
   const outlineStyles: Record<string, string> = {
@@ -187,6 +216,102 @@ export const backgroundBlendModeRule: UtilityRule = (parsed) => {
   }
 }
 
+// Mask utilities
+export const maskRule: UtilityRule = (parsed) => {
+  // mask-clip
+  if (parsed.utility === 'mask-clip' && parsed.value) {
+    const clips: Record<string, string> = {
+      'border': 'border-box',
+      'padding': 'padding-box',
+      'content': 'content-box',
+      'text': 'text',
+      'fill': 'fill-box',
+      'stroke': 'stroke-box',
+      'view': 'view-box',
+      'no-clip': 'no-clip',
+    }
+    return { 'mask-clip': clips[parsed.value] || parsed.value }
+  }
+
+  // mask-composite
+  if (parsed.utility === 'mask-composite' && parsed.value) {
+    const composites = ['add', 'subtract', 'intersect', 'exclude']
+    return composites.includes(parsed.value) ? { 'mask-composite': parsed.value } : undefined
+  }
+
+  // mask-image
+  if (parsed.utility === 'mask-image' && parsed.value) {
+    if (parsed.value === 'none') {
+      return { 'mask-image': 'none' }
+    }
+    return { 'mask-image': `url(${parsed.value})` }
+  }
+
+  // mask-mode
+  if (parsed.utility === 'mask-mode' && parsed.value) {
+    const modes = ['alpha', 'luminance', 'match-source']
+    return modes.includes(parsed.value) ? { 'mask-mode': parsed.value } : undefined
+  }
+
+  // mask-origin
+  if (parsed.utility === 'mask-origin' && parsed.value) {
+    const origins: Record<string, string> = {
+      'border': 'border-box',
+      'padding': 'padding-box',
+      'content': 'content-box',
+      'fill': 'fill-box',
+      'stroke': 'stroke-box',
+      'view': 'view-box',
+    }
+    return { 'mask-origin': origins[parsed.value] || parsed.value }
+  }
+
+  // mask-position
+  if (parsed.utility === 'mask-position' && parsed.value) {
+    const positions: Record<string, string> = {
+      'center': 'center',
+      'top': 'top',
+      'right': 'right',
+      'bottom': 'bottom',
+      'left': 'left',
+      'top-left': 'top left',
+      'top-right': 'top right',
+      'bottom-left': 'bottom left',
+      'bottom-right': 'bottom right',
+    }
+    return { 'mask-position': positions[parsed.value] || parsed.value }
+  }
+
+  // mask-repeat
+  if (parsed.utility === 'mask-repeat' && parsed.value) {
+    const repeats: Record<string, string> = {
+      'repeat': 'repeat',
+      'no-repeat': 'no-repeat',
+      'repeat-x': 'repeat-x',
+      'repeat-y': 'repeat-y',
+      'round': 'round',
+      'space': 'space',
+    }
+    return { 'mask-repeat': repeats[parsed.value] || parsed.value }
+  }
+
+  // mask-size
+  if (parsed.utility === 'mask-size' && parsed.value) {
+    const sizes: Record<string, string> = {
+      'auto': 'auto',
+      'cover': 'cover',
+      'contain': 'contain',
+    }
+    return { 'mask-size': sizes[parsed.value] || parsed.value }
+  }
+
+  // mask-type
+  if (parsed.utility === 'mask-type' && parsed.value) {
+    const types = ['alpha', 'luminance']
+    return types.includes(parsed.value) ? { 'mask-type': parsed.value } : undefined
+  }
+}
+
 export const effectsRules: UtilityRule[] = [
   backgroundAttachmentRule,
   backgroundClipRule,
@@ -202,4 +327,5 @@ export const effectsRules: UtilityRule[] = [
   opacityRule,
   mixBlendModeRule,
   backgroundBlendModeRule,
+  maskRule,
 ]

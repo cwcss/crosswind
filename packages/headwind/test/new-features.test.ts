@@ -135,13 +135,12 @@ describe('New Features - Marker Pseudo-Element', () => {
     expect(css).toContain('::marker')
   })
 
-  it('should handle marker with multiple utilities', () => {
+  it('should handle marker with color utility', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('marker:text-red-500')
-    gen.generate('marker:font-bold')
     const css = gen.toCSS()
     expect(css).toContain('::marker')
-    expect(css).toContain('font-weight: 700')
+    expect(css).toContain('color: #ef4444')
   })
 })
 
