@@ -8,44 +8,249 @@
 
 # headwind
 
-This is an opinionated TypeScript Starter kit to help kick-start development of your next Bun package.
+A blazingly fast, utility-first CSS framework built with Bun. Headwind generates only the CSS you need by scanning your files for utility classes, providing Tailwind CSS-compatible utilities with exceptional performance.
 
 ## Features
 
-This Starter Kit comes pre-configured with the following:
-
-- 🛠️ [Powerful Build Process](https://github.com/oven-sh/bun) - via Bun
-- 💪🏽 [Fully Typed APIs](https://www.typescriptlang.org/) - via TypeScript
-- 📚 [Documentation-ready](https://vitepress.dev/) - via VitePress
-- ⌘ [CLI & Binary](https://www.npmjs.com/package/bunx) - via Bun & CAC
-- 🧪 [Built With Testing In Mind](https://bun.sh/docs/cli/test) - pre-configured unit-testing powered by [Bun](https://bun.sh/docs/cli/test)
-- 🤖 [Renovate](https://renovatebot.com/) - optimized & automated PR dependency updates
-- 🎨 [ESLint](https://eslint.org/) - for code linting _(and formatting)_
-- 📦️ [pkg.pr.new](https://pkg.pr.new) - Continuous (Preview) Releases for your libraries
-- 🐙 [GitHub Actions](https://github.com/features/actions) - runs your CI _(fixes code style issues, tags releases & creates its changelogs, runs the test suite, etc.)_
+- ⚡️ **Blazingly Fast** - Built with Bun for exceptional performance (1000+ utilities in <10ms)
+- 🎯 **On-Demand Generation** - Only generates CSS for utilities you actually use
+- 🎨 **Tailwind-Compatible** - Familiar utility classes and syntax
+- 💪 **Fully Typed** - Complete TypeScript support with type-safe configuration
+- 🔧 **Highly Configurable** - Customize theme, colors, spacing, variants, and more
+- 📦 **Zero Dependencies** - Minimal footprint, maximum performance
+- 🔥 **Hot Reload** - Watch mode for instant rebuilds during development
+- 🎭 **Variant Support** - Responsive, state (hover, focus, etc.), dark mode, and custom variants
+- ✨ **Modern CSS Features** - Grid, Flexbox, animations, transforms, filters, and more
+- 🧪 **Thoroughly Tested** - 860+ tests including comprehensive performance benchmarks
+- 🚀 **Production Ready** - Minification, preflight CSS, and optimized builds
+- ⌨️ **CLI & API** - Use via command line or programmatic API
 
 ## Get Started
 
-It's rather simple to get your package development started:
+### Installation
 
 ```bash
-# you may use this GitHub template or the following command:
-bunx degit stacksjs/ts-starter my-pkg
-cd my-pkg
-
-bun i # install all deps
-bun run build # builds the library for production-ready use
-
-# after you have successfully committed, you may create a "release"
-bun run release # automates git commits, versioning, and changelog generations
+bun add headwind
+# or
+npm install headwind
 ```
 
-_Check out the package.json scripts for more commands._
+### Quick Start
+
+1. **Create a configuration file** (`headwind.config.ts`):
+
+```typescript
+import type { HeadwindConfig } from 'headwind'
+
+export default {
+  content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
+  output: './dist/styles.css',
+  minify: true,
+} satisfies Partial<HeadwindConfig>
+```
+
+2. **Add utility classes to your HTML**:
+
+```html
+<div class="flex items-center justify-between p-4 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600">
+  <h1 class="text-2xl font-bold">Hello Headwind!</h1>
+</div>
+```
+
+3. **Build your CSS**:
+
+```bash
+# Build once
+bunx headwind build
+
+# Build and watch for changes
+bunx headwind watch
+
+# Build with options
+bunx headwind build --output ./dist/styles.css --minify
+```
+
+### Programmatic API
+
+You can also use Headwind programmatically:
+
+```typescript
+import { build } from 'headwind'
+
+const result = await build({
+  content: ['./src/**/*.html'],
+  output: './dist/styles.css',
+  minify: true,
+})
+
+console.log(`Generated ${result.classes.size} classes in ${result.duration}ms`)
+```
+
+## Configuration
+
+Headwind supports extensive configuration options:
+
+```typescript
+import type { HeadwindConfig } from 'headwind'
+
+export default {
+  // Content sources to scan for utility classes
+  content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
+
+  // Output CSS file path
+  output: './dist/styles.css',
+
+  // Minify output CSS
+  minify: false,
+
+  // Enable watch mode
+  watch: false,
+
+  // Enable verbose logging
+  verbose: false,
+
+  // Theme customization
+  theme: {
+    colors: {
+      primary: '#3b82f6',
+      secondary: '#10b981',
+      // ... extend or override default colors
+    },
+    spacing: {
+      // ... customize spacing scale
+    },
+    fontSize: {
+      // ... customize font sizes
+    },
+    // ... and more
+  },
+
+  // Shortcuts (utility aliases)
+  shortcuts: {
+    btn: 'px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600',
+    card: 'p-6 bg-white rounded-lg shadow-md',
+  },
+
+  // Custom variants
+  variants: {
+    // ... configure breakpoints, states, etc.
+  },
+
+  // Safelist (always include these classes)
+  safelist: ['bg-red-500', 'text-green-500'],
+
+  // Blocklist (never include these classes)
+  blocklist: ['debug-*'],
+
+  // Custom rules
+  rules: [],
+
+  // Preflight CSS (normalize/reset styles)
+  preflights: [],
+
+  // Presets
+  presets: [],
+} satisfies Partial<HeadwindConfig>
+```
+
+## Available Utilities
+
+Headwind provides a comprehensive set of utility classes compatible with Tailwind CSS:
+
+- **Layout**: display, position, overflow, z-index, etc.
+- **Flexbox & Grid**: flex, grid, gap, align, justify, etc.
+- **Spacing**: margin, padding with full scale support
+- **Sizing**: width, height, min/max sizes
+- **Typography**: font family, size, weight, line height, text alignment, etc.
+- **Backgrounds**: colors, gradients, images, position, size
+- **Borders**: width, color, radius, style
+- **Effects**: shadow, opacity, blend modes, filters
+- **Transforms**: translate, rotate, scale, skew
+- **Transitions & Animations**: duration, timing, delay
+- **Interactivity**: cursor, pointer events, user select, scroll behavior
+- **Advanced**: mask utilities, backdrop filters, ring utilities
+
+### Variants
+
+- **Responsive**: `sm:`, `md:`, `lg:`, `xl:`, `2xl:`
+- **State**: `hover:`, `focus:`, `active:`, `disabled:`, `visited:`, `checked:`
+- **Pseudo-elements**: `before:`, `after:`, `placeholder:`, `selection:`
+- **Group/Peer**: `group-hover:`, `peer-focus:`
+- **Dark mode**: `dark:`
+- **Positional**: `first:`, `last:`, `odd:`, `even:`
+- **Important**: `!` prefix (e.g., `!text-red-500`)
+
+### Arbitrary Values
+
+Headwind supports arbitrary values for maximum flexibility:
+
+```html
+<div class="w-[500px] h-[calc(100vh-4rem)] bg-[#1da1f2] text-[clamp(1rem,5vw,3rem)]">
+  Custom values!
+</div>
+```
 
 ## Testing
 
+Headwind includes a comprehensive test suite with 860+ tests:
+
 ```bash
+# Run all tests
 bun test
+
+# Run specific test files
+bun test test/performance.test.ts
+
+# Run tests in watch mode
+bun test --watch
+```
+
+### Test Coverage
+
+- **Core Functionality**: Parser, generator, scanner, builder
+- **Utilities**: Layout, typography, colors, spacing, grid, flexbox
+- **Variants**: Responsive, state, pseudo-elements, combinations
+- **Advanced Features**: Shortcuts, custom rules, arbitrary values
+- **Performance**: Benchmarks for generation speed and memory efficiency
+- **Edge Cases**: Invalid inputs, complex nesting, duplicate handling
+
+## Performance
+
+Headwind is designed for speed. Here are some benchmarks from our test suite:
+
+- **Simple utilities**: ~7ms for 1,000 utilities
+- **Complex utilities** (with variants): ~9ms for 1,000 utilities
+- **Arbitrary values**: ~3ms for 1,000 utilities
+- **CSS output**: ~1ms for 1,000 rules
+
+All benchmarks run on Bun runtime. Your results may vary based on hardware.
+
+## Development
+
+To contribute to Headwind development:
+
+```bash
+# Clone the repository
+git clone https://github.com/stacksjs/headwind.git
+cd headwind
+
+# Install dependencies
+bun install
+
+# Run tests
+bun test
+
+# Run tests in watch mode
+bun test --watch
+
+# Run performance benchmarks
+bun test test/performance.test.ts
+
+# Type check
+bun run typecheck
+
+# Build the package
+bun run build
 ```
 
 ## Changelog
@@ -55,6 +260,14 @@ Please see our [releases](https://github.com/stackjs/headwind/releases) page for
 ## Contributing
 
 Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
+
+We welcome contributions! Whether it's:
+
+- 🐛 Bug reports and fixes
+- ✨ New utility classes or features
+- 📝 Documentation improvements
+- ⚡️ Performance optimizations
+- 🧪 Additional test coverage
 
 ## Community
 

@@ -2,7 +2,7 @@
   "name": "headwind",
   "type": "module",
   "version": "0.0.0",
-  "description": "Like our `ts-starter`, but optimized for monorepos.",
+  "description": "A blazingly fast, utility-first CSS framework built with Bun. Generates only the CSS you need by scanning your files for utility classes.",
   "author": "Chris Breuer <chris@stacksjs.org>",
   "license": "MIT",
   "homepage": "https://github.com/stacksjs/headwind#readme",
@@ -14,10 +14,16 @@
     "url": "https://github.com/stacksjs/headwind/issues"
   },
   "keywords": [
-    "monorepo",
-    "ts-starter",
+    "css",
+    "utility-first",
+    "tailwind",
+    "css-framework",
+    "bun",
+    "performance",
     "headwind",
-    "template"
+    "atomic-css",
+    "typescript",
+    "on-demand"
   ],
   "exports": {
     ".": {

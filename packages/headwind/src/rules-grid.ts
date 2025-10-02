@@ -62,15 +62,15 @@ export const gridColumnRule: UtilityRule = (parsed) => {
     }
     // Handle arbitrary values: col-span-[15] -> span 15 / span 15
     if (parsed.arbitrary) {
-      return { 'grid-column': `span ${parsed.value} / span ${parsed.value}` }
+      return { 'grid-column': `span ${parsed.value} / span ${parsed.value}` } as Record<string, string>
     }
-    return { 'grid-column': spans[parsed.value] || parsed.value }
+    return { 'grid-column': spans[parsed.value] || parsed.value } as Record<string, string>
   }
   if (parsed.utility === 'col-start' && parsed.value) {
-    return { 'grid-column-start': parsed.value }
+    return { 'grid-column-start': parsed.value } as Record<string, string>
   }
   if (parsed.utility === 'col-end' && parsed.value) {
-    return { 'grid-column-end': parsed.value }
+    return { 'grid-column-end': parsed.value } as Record<string, string>
   }
 }
 
@@ -116,15 +116,15 @@ export const gridRowRule: UtilityRule = (parsed) => {
     }
     // Handle arbitrary values: row-span-[15] -> span 15 / span 15
     if (parsed.arbitrary) {
-      return { 'grid-row': `span ${parsed.value} / span ${parsed.value}` }
+      return { 'grid-row': `span ${parsed.value} / span ${parsed.value}` } as Record<string, string>
     }
-    return { 'grid-row': spans[parsed.value] || parsed.value }
+    return { 'grid-row': spans[parsed.value] || parsed.value } as Record<string, string>
   }
   if (parsed.utility === 'row-start' && parsed.value) {
-    return { 'grid-row-start': parsed.value }
+    return { 'grid-row-start': parsed.value } as Record<string, string>
   }
   if (parsed.utility === 'row-end' && parsed.value) {
-    return { 'grid-row-end': parsed.value }
+    return { 'grid-row-end': parsed.value } as Record<string, string>
   }
 }
 
@@ -168,13 +168,13 @@ export const gridAutoRowsRule: UtilityRule = (parsed) => {
 
 export const gapRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'gap' && parsed.value) {
-    return { gap: config.theme.spacing[parsed.value] || parsed.value }
+    return { gap: config.theme.spacing[parsed.value] || parsed.value } as Record<string, string>
   }
   if (parsed.utility === 'gap-x' && parsed.value) {
-    return { 'column-gap': config.theme.spacing[parsed.value] || parsed.value }
+    return { 'column-gap': config.theme.spacing[parsed.value] || parsed.value } as Record<string, string>
   }
   if (parsed.utility === 'gap-y' && parsed.value) {
-    return { 'row-gap': config.theme.spacing[parsed.value] || parsed.value }
+    return { 'row-gap': config.theme.spacing[parsed.value] || parsed.value } as Record<string, string>
   }
 }
 

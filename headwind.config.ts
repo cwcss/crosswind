@@ -1,7 +1,7 @@
 import type { HeadwindOptions } from './packages/headwind/src/types'
 
-const config: HeadwindOptions = {
+const config = {
   verbose: true,
-}
+} satisfies Partial<HeadwindOptions>
 
-export default config
+export default config as Partial<HeadwindOptions>

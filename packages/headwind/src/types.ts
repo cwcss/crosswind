@@ -3,6 +3,7 @@ export interface HeadwindConfig {
   output: string
   minify: boolean
   watch: boolean
+  verbose?: boolean
   theme: Theme
   shortcuts: Record<string, string | string[]>
   rules: CustomRule[]

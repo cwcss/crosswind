@@ -118,7 +118,7 @@ export const outlineRule: UtilityRule = (parsed, config) => {
       4: '4px',
       8: '8px',
     }
-    return { 'outline-offset': offsets[parsed.value] || parsed.value }
+    return { 'outline-offset': offsets[parsed.value] || parsed.value } as Record<string, string>
   }
 
   // Outline styles
@@ -131,13 +131,13 @@ export const outlineRule: UtilityRule = (parsed, config) => {
       'double': 'double',
     }
     if (outlineStyles[parsed.value]) {
-      return { 'outline-style': outlineStyles[parsed.value] }
+      return { 'outline-style': outlineStyles[parsed.value] } as Record<string, string>
     }
   }
 
   if (parsed.utility === 'outline') {
     if (!parsed.value) {
-      return { 'outline-width': '1px' }
+      return { 'outline-width': '1px' } as Record<string, string>
     }
 
     // Check for colors first (e.g., outline-blue-500)
@@ -146,14 +146,14 @@ export const outlineRule: UtilityRule = (parsed, config) => {
       const [colorName, shade] = parts
       const colorValue = config.theme.colors[colorName]
       if (typeof colorValue === 'object' && colorValue[shade]) {
-        return { 'outline-color': colorValue[shade] }
+        return { 'outline-color': colorValue[shade] } as Record<string, string>
       }
     }
 
     // Direct color (e.g., outline-black)
     const directColor = config.theme.colors[parsed.value]
     if (typeof directColor === 'string') {
-      return { 'outline-color': directColor }
+      return { 'outline-color': directColor } as Record<string, string>
     }
 
     // Check for width values
@@ -165,11 +165,11 @@ export const outlineRule: UtilityRule = (parsed, config) => {
       8: '8px',
     }
     if (widths[parsed.value]) {
-      return { 'outline-width': widths[parsed.value] }
+      return { 'outline-width': widths[parsed.value] } as Record<string, string>
     }
 
     // Fallback to raw value as width
-    return { 'outline-width': parsed.value }
+    return { 'outline-width': parsed.value } as Record<string, string>
   }
 }
 
@@ -249,27 +249,27 @@ export const maskRule: UtilityRule = (parsed) => {
       'view': 'view-box',
       'no-clip': 'no-clip',
     }
-    return { 'mask-clip': clips[parsed.value] || parsed.value }
+    return { 'mask-clip': clips[parsed.value] || parsed.value } as Record<string, string>
   }
 
   // mask-composite
   if (parsed.utility === 'mask-composite' && parsed.value) {
     const composites = ['add', 'subtract', 'intersect', 'exclude']
-    return composites.includes(parsed.value) ? { 'mask-composite': parsed.value } : undefined
+    return composites.includes(parsed.value) ? { 'mask-composite': parsed.value } as Record<string, string> : undefined
   }
 
   // mask-image
   if (parsed.utility === 'mask-image' && parsed.value) {
     if (parsed.value === 'none') {
-      return { 'mask-image': 'none' }
+      return { 'mask-image': 'none' } as Record<string, string>
     }
-    return { 'mask-image': `url(${parsed.value})` }
+    return { 'mask-image': `url(${parsed.value})` } as Record<string, string>
   }
 
   // mask-mode
   if (parsed.utility === 'mask-mode' && parsed.value) {
     const modes = ['alpha', 'luminance', 'match-source']
-    return modes.includes(parsed.value) ? { 'mask-mode': parsed.value } : undefined
+    return modes.includes(parsed.value) ? { 'mask-mode': parsed.value } as Record<string, string> : undefined
   }
 
   // mask-origin
@@ -282,7 +282,7 @@ export const maskRule: UtilityRule = (parsed) => {
       'stroke': 'stroke-box',
       'view': 'view-box',
     }
-    return { 'mask-origin': origins[parsed.value] || parsed.value }
+    return { 'mask-origin': origins[parsed.value] || parsed.value } as Record<string, string>
   }
 
   // mask-position
@@ -298,7 +298,7 @@ export const maskRule: UtilityRule = (parsed) => {
       'bottom-left': 'bottom left',
       'bottom-right': 'bottom right',
     }
-    return { 'mask-position': positions[parsed.value] || parsed.value }
+    return { 'mask-position': positions[parsed.value] || parsed.value } as Record<string, string>
   }
 
   // mask-repeat
@@ -311,7 +311,7 @@ export const maskRule: UtilityRule = (parsed) => {
       'round': 'round',
       'space': 'space',
     }
-    return { 'mask-repeat': repeats[parsed.value] || parsed.value }
+    return { 'mask-repeat': repeats[parsed.value] || parsed.value } as Record<string, string>
   }
 
   // mask-size
@@ -321,13 +321,13 @@ export const maskRule: UtilityRule = (parsed) => {
       'cover': 'cover',
       'contain': 'contain',
     }
-    return { 'mask-size': sizes[parsed.value] || parsed.value }
+    return { 'mask-size': sizes[parsed.value] || parsed.value } as Record<string, string>
   }
 
   // mask-type
   if (parsed.utility === 'mask-type' && parsed.value) {
     const types = ['alpha', 'luminance']
-    return types.includes(parsed.value) ? { 'mask-type': parsed.value } : undefined
+    return types.includes(parsed.value) ? { 'mask-type': parsed.value } as Record<string, string> : undefined
   }
 }
 

@@ -121,7 +121,7 @@ export const textDecorationRule: UtilityRule = (parsed, config) => {
     'no-underline': 'none',
   }
   if (decorations[parsed.raw]) {
-    return { 'text-decoration-line': decorations[parsed.raw] }
+    return { 'text-decoration-line': decorations[parsed.raw] } as Record<string, string>
   }
 
   if (parsed.utility === 'decoration' && parsed.value) {
@@ -135,7 +135,7 @@ export const textDecorationRule: UtilityRule = (parsed, config) => {
 
     // Check if it's a style
     if (styles[parsed.value]) {
-      return { 'text-decoration-style': styles[parsed.value] }
+      return { 'text-decoration-style': styles[parsed.value] } as Record<string, string>
     }
 
     // Check if it's a thickness
@@ -149,12 +149,12 @@ export const textDecorationRule: UtilityRule = (parsed, config) => {
       8: '8px',
     }
     if (thicknesses[parsed.value]) {
-      return { 'text-decoration-thickness': thicknesses[parsed.value] }
+      return { 'text-decoration-thickness': thicknesses[parsed.value] } as Record<string, string>
     }
 
     // Handle arbitrary thickness
     if (parsed.arbitrary) {
-      return { 'text-decoration-thickness': parsed.value }
+      return { 'text-decoration-thickness': parsed.value } as Record<string, string>
     }
 
     // Otherwise treat it as a color: decoration-blue-500
@@ -163,18 +163,18 @@ export const textDecorationRule: UtilityRule = (parsed, config) => {
       const [colorName, shade] = parts
       const colorValue = config.theme.colors[colorName]
       if (typeof colorValue === 'object' && colorValue[shade]) {
-        return { 'text-decoration-color': colorValue[shade] }
+        return { 'text-decoration-color': colorValue[shade] } as Record<string, string>
       }
     }
 
     // Direct color
     const directColor = config.theme.colors[parsed.value]
     if (typeof directColor === 'string') {
-      return { 'text-decoration-color': directColor }
+      return { 'text-decoration-color': directColor } as Record<string, string>
     }
 
     // Fallback
-    return { 'text-decoration-color': parsed.value }
+    return { 'text-decoration-color': parsed.value } as Record<string, string>
   }
 
   return undefined
@@ -270,10 +270,10 @@ export const wordBreakRule: UtilityRule = (parsed) => {
     return {
       'overflow-wrap': 'normal',
       'word-break': 'normal',
-    }
+    } as Record<string, string>
   }
   if (parsed.raw === 'break-words') {
-    return { 'overflow-wrap': 'break-word' }
+    return { 'overflow-wrap': 'break-word' } as Record<string, string>
   }
   const breaks: Record<string, string> = {
     'break-all': 'break-all',

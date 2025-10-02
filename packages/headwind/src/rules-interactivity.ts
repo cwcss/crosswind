@@ -293,8 +293,8 @@ export const scrollSnapRule: UtilityRule = (parsed) => {
   }
   if (types[parsed.raw]) {
     return parsed.raw.includes('mandatory') || parsed.raw.includes('proximity')
-      ? { 'scroll-snap-type': types[parsed.raw] }
-      : { 'scroll-snap-type': types[parsed.raw] }
+      ? { 'scroll-snap-type': types[parsed.raw] } as Record<string, string>
+      : { 'scroll-snap-type': types[parsed.raw] } as Record<string, string>
   }
 
   const aligns: Record<string, string> = {
@@ -304,7 +304,7 @@ export const scrollSnapRule: UtilityRule = (parsed) => {
     'snap-align-none': 'none',
   }
   if (aligns[parsed.raw]) {
-    return { 'scroll-snap-align': aligns[parsed.raw] }
+    return { 'scroll-snap-align': aligns[parsed.raw] } as Record<string, string>
   }
 
   const stops: Record<string, string> = {
@@ -312,7 +312,7 @@ export const scrollSnapRule: UtilityRule = (parsed) => {
     'snap-always': 'always',
   }
   if (stops[parsed.raw]) {
-    return { 'scroll-snap-stop': stops[parsed.raw] }
+    return { 'scroll-snap-stop': stops[parsed.raw] } as Record<string, string>
   }
 }
 

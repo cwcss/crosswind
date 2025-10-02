@@ -27,21 +27,21 @@ export const minMaxSizingRule: UtilityRule = (parsed, config) => {
 
   if (parsed.utility === 'min-w' && parsed.value) {
     const value = config.theme.spacing[parsed.value] || minMaxMap[parsed.value] || parsed.value
-    return { 'min-width': value }
+    return { 'min-width': value } as Record<string, string>
   }
   if (parsed.utility === 'max-w' && parsed.value) {
     const value = config.theme.spacing[parsed.value] || minMaxMap[parsed.value] || parsed.value
-    return { 'max-width': value }
+    return { 'max-width': value } as Record<string, string>
   }
   if (parsed.utility === 'min-h' && parsed.value) {
-    const hMap = { ...minMaxMap, screen: '100vh' }
+    const hMap: Record<string, string> = { ...minMaxMap, screen: '100vh' }
     const value = config.theme.spacing[parsed.value] || hMap[parsed.value] || parsed.value
-    return { 'min-height': value }
+    return { 'min-height': value } as Record<string, string>
   }
   if (parsed.utility === 'max-h' && parsed.value) {
-    const hMap = { ...minMaxMap, screen: '100vh' }
+    const hMap: Record<string, string> = { ...minMaxMap, screen: '100vh' }
     const value = config.theme.spacing[parsed.value] || hMap[parsed.value] || parsed.value
-    return { 'max-height': value }
+    return { 'max-height': value } as Record<string, string>
   }
 }
 
@@ -50,7 +50,7 @@ export const ringRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'ring') {
     // Handle ring-inset
     if (parsed.value === 'inset') {
-      return { '--tw-ring-inset': 'inset' }
+      return { '--tw-ring-inset': 'inset' } as Record<string, string>
     }
 
     const widths: Record<string, string> = {
@@ -66,7 +66,7 @@ export const ringRule: UtilityRule = (parsed, config) => {
       '--tw-ring-offset-shadow': 'var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color)',
       '--tw-ring-shadow': `var(--tw-ring-inset) 0 0 0 calc(${width} + var(--tw-ring-offset-width)) var(--tw-ring-color)`,
       'box-shadow': 'var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)',
-    }
+    } as Record<string, string>
   }
 
   if (parsed.utility === 'ring-offset' && parsed.value) {
@@ -77,7 +77,7 @@ export const ringRule: UtilityRule = (parsed, config) => {
       4: '4px',
       8: '8px',
     }
-    return { '--tw-ring-offset-width': widths[parsed.value] || parsed.value }
+    return { '--tw-ring-offset-width': widths[parsed.value] || parsed.value } as Record<string, string>
   }
 
   if (parsed.utility === 'ring-offset-color' || (parsed.utility === 'ring-offset' && parsed.value)) {
@@ -90,7 +90,7 @@ export const ringRule: UtilityRule = (parsed, config) => {
         const shade = parts[parts.length - 1]
         const colorValue = config.theme.colors[colorName]
         if (typeof colorValue === 'object' && colorValue[shade]) {
-          return { '--tw-ring-offset-color': colorValue[shade] }
+          return { '--tw-ring-offset-color': colorValue[shade] } as Record<string, string>
         }
       }
     }
@@ -115,7 +115,7 @@ export const spaceRule: UtilityRule = (parsed, config) => {
         '--tw-space-x-reverse': '0',
         'margin-right': `calc(${spacing} * var(--tw-space-x-reverse))`,
         'margin-left': `calc(${spacing} * calc(1 - var(--tw-space-x-reverse)))`,
-      },
+      } as Record<string, string>,
       childSelector: '> :not([hidden]) ~ :not([hidden])',
     }
   }
@@ -136,7 +136,7 @@ export const spaceRule: UtilityRule = (parsed, config) => {
         '--tw-space-y-reverse': '0',
         'margin-top': `calc(${spacing} * calc(1 - var(--tw-space-y-reverse)))`,
         'margin-bottom': `calc(${spacing} * var(--tw-space-y-reverse))`,
-      },
+      } as Record<string, string>,
       childSelector: '> :not([hidden]) ~ :not([hidden])',
     }
   }
@@ -174,7 +174,7 @@ export const divideRule: UtilityRule = (parsed, config) => {
       return {
         properties: {
           'border-style': styles[parsed.value],
-        },
+        } as Record<string, string>,
         childSelector: '> :not([hidden]) ~ :not([hidden])',
       }
     }
@@ -195,7 +195,7 @@ export const divideRule: UtilityRule = (parsed, config) => {
         '--tw-divide-x-reverse': '0',
         'border-right-width': `calc(${width} * var(--tw-divide-x-reverse))`,
         'border-left-width': `calc(${width} * calc(1 - var(--tw-divide-x-reverse)))`,
-      },
+      } as Record<string, string>,
       childSelector: '> :not([hidden]) ~ :not([hidden])',
     }
   }
@@ -215,7 +215,7 @@ export const divideRule: UtilityRule = (parsed, config) => {
         '--tw-divide-y-reverse': '0',
         'border-top-width': `calc(${width} * calc(1 - var(--tw-divide-y-reverse)))`,
         'border-bottom-width': `calc(${width} * var(--tw-divide-y-reverse))`,
-      },
+      } as Record<string, string>,
       childSelector: '> :not([hidden]) ~ :not([hidden])',
     }
   }
@@ -231,7 +231,7 @@ export const divideRule: UtilityRule = (parsed, config) => {
         return {
           properties: {
             'border-color': colorValue[shade],
-          },
+          } as Record<string, string>,
           childSelector: '> :not([hidden]) ~ :not([hidden])',
         }
       }
@@ -260,7 +260,7 @@ export const gradientStopsRule: UtilityRule = (parsed, config) => {
       '--tw-gradient-from': color,
       '--tw-gradient-to': 'rgb(255 255 255 / 0)',
       '--tw-gradient-stops': 'var(--tw-gradient-from), var(--tw-gradient-to)',
-    }
+    } as Record<string, string>
   }
 
   if (parsed.utility === 'via' && parsed.value) {
@@ -268,14 +268,14 @@ export const gradientStopsRule: UtilityRule = (parsed, config) => {
     return {
       '--tw-gradient-to': 'rgb(255 255 255 / 0)',
       '--tw-gradient-stops': `var(--tw-gradient-from), ${color}, var(--tw-gradient-to)`,
-    }
+    } as Record<string, string>
   }
 
   if (parsed.utility === 'to' && parsed.value) {
     const color = getColor(parsed.value)
     return {
       '--tw-gradient-to': color,
-    }
+    } as Record<string, string>
   }
 }
 
