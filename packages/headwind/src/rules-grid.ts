@@ -89,14 +89,17 @@ export const gridRowRule: UtilityRule = (parsed) => {
 }
 
 export const gridAutoFlowRule: UtilityRule = (parsed) => {
-  const flows: Record<string, string> = {
-    'grid-flow-row': 'row',
-    'grid-flow-col': 'column',
-    'grid-flow-dense': 'dense',
-    'grid-flow-row-dense': 'row dense',
-    'grid-flow-col-dense': 'column dense',
+  if (parsed.utility === 'grid-flow' && parsed.value) {
+    const flows: Record<string, string> = {
+      'row': 'row',
+      'col': 'column',
+      'dense': 'dense',
+      'row-dense': 'row dense',
+      'col-dense': 'column dense',
+    }
+    return flows[parsed.value] ? { 'grid-auto-flow': flows[parsed.value] } : undefined
   }
-  return flows[parsed.raw] ? { 'grid-auto-flow': flows[parsed.raw] } : undefined
+  return undefined
 }
 
 export const gridAutoColumnsRule: UtilityRule = (parsed) => {
@@ -136,37 +139,49 @@ export const gapRule: UtilityRule = (parsed, config) => {
 }
 
 export const placeContentRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'place-content-center': 'center',
-    'place-content-start': 'start',
-    'place-content-end': 'end',
-    'place-content-between': 'space-between',
-    'place-content-around': 'space-around',
-    'place-content-evenly': 'space-evenly',
-    'place-content-stretch': 'stretch',
+  if (parsed.utility === 'place' && parsed.value && parsed.value.startsWith('content-')) {
+    const val = parsed.value.replace('content-', '')
+    const values: Record<string, string> = {
+      'center': 'center',
+      'start': 'start',
+      'end': 'end',
+      'between': 'space-between',
+      'around': 'space-around',
+      'evenly': 'space-evenly',
+      'stretch': 'stretch',
+    }
+    return values[val] ? { 'place-content': values[val] } : undefined
   }
-  return values[parsed.raw] ? { 'place-content': values[parsed.raw] } : undefined
+  return undefined
 }
 
 export const placeItemsRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'place-items-start': 'start',
-    'place-items-end': 'end',
-    'place-items-center': 'center',
-    'place-items-stretch': 'stretch',
+  if (parsed.utility === 'place' && parsed.value && parsed.value.startsWith('items-')) {
+    const val = parsed.value.replace('items-', '')
+    const values: Record<string, string> = {
+      'start': 'start',
+      'end': 'end',
+      'center': 'center',
+      'stretch': 'stretch',
+    }
+    return values[val] ? { 'place-items': values[val] } : undefined
   }
-  return values[parsed.raw] ? { 'place-items': values[parsed.raw] } : undefined
+  return undefined
 }
 
 export const placeSelfRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'place-self-auto': 'auto',
-    'place-self-start': 'start',
-    'place-self-end': 'end',
-    'place-self-center': 'center',
-    'place-self-stretch': 'stretch',
+  if (parsed.utility === 'place' && parsed.value && parsed.value.startsWith('self-')) {
+    const val = parsed.value.replace('self-', '')
+    const values: Record<string, string> = {
+      'auto': 'auto',
+      'start': 'start',
+      'end': 'end',
+      'center': 'center',
+      'stretch': 'stretch',
+    }
+    return values[val] ? { 'place-self': values[val] } : undefined
   }
-  return values[parsed.raw] ? { 'place-self': values[parsed.raw] } : undefined
+  return undefined
 }
 
 export const gridRules: UtilityRule[] = [

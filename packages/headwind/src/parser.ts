@@ -33,11 +33,26 @@ export function parseClass(className: string): ParsedClass {
   const utility = parts[parts.length - 1]
   const variants = parts.slice(0, -1)
 
-  // Check for full utility names that should not be split (display utilities)
+  // Check for full utility names that should not be split
   const fullUtilityNames = [
+    // Display utilities
     'inline-block',
     'inline-flex',
     'inline-grid',
+    // Flex utilities without values
+    'flex-row',
+    'flex-row-reverse',
+    'flex-col',
+    'flex-col-reverse',
+    'flex-wrap',
+    'flex-wrap-reverse',
+    'flex-nowrap',
+    'flex-1',
+    'flex-auto',
+    'flex-initial',
+    'flex-none',
+    'flex-grow',
+    'flex-shrink',
   ]
   if (fullUtilityNames.includes(utility)) {
     return {
@@ -123,6 +138,8 @@ export function parseClass(className: string): ParsedClass {
     'hue-rotate',
     'drop-shadow',
     'mask-clip',
+    'flex-grow',
+    'flex-shrink',
     'mask-composite',
     'mask-image',
     'mask-mode',

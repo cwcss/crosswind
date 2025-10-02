@@ -3,7 +3,7 @@ import { loadConfig } from 'bunfig'
 import { tailwindPreflight } from './preflight'
 
 export const defaultConfig: HeadwindConfig = {
-  content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
+  content: ['./src/**/*.{html,js,ts,jsx,tsx,stx}'],
   output: './dist/headwind.css',
   minify: true,
   watch: false,
@@ -39,6 +39,7 @@ export const defaultConfig: HeadwindConfig = {
     },
     spacing: {
       0: '0',
+      px: '1px',
       1: '0.25rem',
       2: '0.5rem',
       3: '0.75rem',

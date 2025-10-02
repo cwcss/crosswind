@@ -92,11 +92,14 @@ export const borderSpacingRule: UtilityRule = (parsed, config) => {
 }
 
 export const tableLayoutRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'table-auto': 'auto',
-    'table-fixed': 'fixed',
+  if (parsed.utility === 'table' && parsed.value) {
+    const values: Record<string, string> = {
+      'auto': 'auto',
+      'fixed': 'fixed',
+    }
+    return values[parsed.value] ? { 'table-layout': values[parsed.value] } : undefined
   }
-  return values[parsed.raw] ? { 'table-layout': values[parsed.raw] } : undefined
+  return undefined
 }
 
 export const captionSideRule: UtilityRule = (parsed) => {

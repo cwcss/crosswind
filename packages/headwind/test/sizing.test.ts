@@ -216,3 +216,219 @@ describe('Sizing Utilities', () => {
     })
   })
 })
+
+  describe('Edge Cases', () => {
+    describe('Width edge cases', () => {
+      it('should handle w-0', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-0')
+        expect(gen.toCSS()).toContain('width: 0;')
+      })
+
+      it('should handle w-px (1px)', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-px')
+        expect(gen.toCSS()).toContain('width: 1px;')
+      })
+
+      it('should handle width with calc()', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-[calc(100vw-2rem)]')
+        expect(gen.toCSS()).toContain('width: calc(100vw-2rem);')
+      })
+
+      it('should handle width with CSS variables', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-[var(--custom-width)]')
+        expect(gen.toCSS()).toContain('width: var(--custom-width);')
+      })
+
+      it('should handle width with clamp()', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-[clamp(200px,50vw,600px)]')
+        expect(gen.toCSS()).toContain('width: clamp(200px,50vw,600px);')
+      })
+
+      it('should handle width with min()', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-[min(100%,500px)]')
+        expect(gen.toCSS()).toContain('width: min(100%,500px);')
+      })
+
+      it('should handle width with max()', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-[max(300px,50%)]')
+        expect(gen.toCSS()).toContain('width: max(300px,50%);')
+      })
+
+      it('should handle width 100dvw', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-[100dvw]')
+        expect(gen.toCSS()).toContain('width: 100dvw;')
+      })
+
+      it('should handle width with ch units', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-[80ch]')
+        expect(gen.toCSS()).toContain('width: 80ch;')
+      })
+    })
+
+    describe('Height edge cases', () => {
+      it('should handle h-0', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('h-0')
+        expect(gen.toCSS()).toContain('height: 0;')
+      })
+
+      it('should handle h-px', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('h-px')
+        expect(gen.toCSS()).toContain('height: 1px;')
+      })
+
+      it('should handle height with svh units', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('h-[100svh]')
+        expect(gen.toCSS()).toContain('height: 100svh;')
+      })
+
+      it('should handle height with dvh units', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('h-[100dvh]')
+        expect(gen.toCSS()).toContain('height: 100dvh;')
+      })
+
+      it('should handle height with lvh units', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('h-[100lvh]')
+        expect(gen.toCSS()).toContain('height: 100lvh;')
+      })
+
+      it('should handle height with calc()', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('h-[calc(100vh-80px)]')
+        expect(gen.toCSS()).toContain('height: calc(100vh-80px);')
+      })
+    })
+
+    describe('Fractional edge cases', () => {
+      it('should handle w-1/12', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-1/12')
+        expect(gen.toCSS()).toMatch(/width: 8\.333/)
+      })
+
+      it('should handle w-11/12', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-11/12')
+        expect(gen.toCSS()).toMatch(/width: 91\.666/)
+      })
+
+      it('should handle w-full (100%)', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-full')
+        expect(gen.toCSS()).toContain('width: 100%;')
+      })
+
+      it('should handle fraction with result > 100%', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-[5/4]')
+        expect(gen.toCSS()).toContain('width: 125%;')
+      })
+
+      it('should handle very precise fraction', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-[1/7]')
+        expect(gen.toCSS()).toMatch(/width: 14\.285/)
+      })
+    })
+
+    describe('Min/Max edge cases', () => {
+      it('should handle min-w-0', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('min-w-0')
+        expect(gen.toCSS()).toContain('min-width: 0;')
+      })
+
+      it('should handle max-w-none', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('max-w-none')
+        expect(gen.toCSS()).toContain('max-width: none;')
+      })
+
+      it('should handle min-h-0', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('min-h-0')
+        expect(gen.toCSS()).toContain('min-height: 0;')
+      })
+
+      it('should handle max-h-none', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('max-h-none')
+        expect(gen.toCSS()).toContain('max-height: none;')
+      })
+
+      it('should handle min-w with calc()', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('min-w-[calc(100%-40px)]')
+        expect(gen.toCSS()).toContain('min-width: calc(100%-40px);')
+      })
+
+      it('should handle max-w with vw', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('max-w-[90vw]')
+        expect(gen.toCSS()).toContain('max-width: 90vw;')
+      })
+
+      it('should handle min-h-screen', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('min-h-screen')
+        expect(gen.toCSS()).toContain('min-height: 100vh;')
+      })
+
+      it('should handle max-h-screen', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('max-h-screen')
+        expect(gen.toCSS()).toContain('max-height: 100vh;')
+      })
+    })
+
+    describe('Size with variants', () => {
+      it('should handle sizing with important', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('!w-full')
+        expect(gen.toCSS()).toContain('width: 100% !important;')
+      })
+
+      it('should handle sizing with hover', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('hover:w-auto')
+        const css = gen.toCSS()
+        expect(css).toContain(':hover')
+        expect(css).toContain('width: auto;')
+      })
+
+      it('should handle sizing with responsive', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('lg:w-1/2')
+        const css = gen.toCSS()
+        expect(css).toContain('@media (min-width: 1024px)')
+        expect(css).toContain('width: 50%;')
+      })
+    })
+
+    describe('Container query units', () => {
+      it('should handle width with cqw', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-[50cqw]')
+        expect(gen.toCSS()).toContain('width: 50cqw;')
+      })
+
+      it('should handle height with cqh', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('h-[80cqh]')
+        expect(gen.toCSS()).toContain('height: 80cqh;')
+      })
+    })
+  })

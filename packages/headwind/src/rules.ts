@@ -31,7 +31,7 @@ export const flexDirectionRule: UtilityRule = (parsed) => {
     'flex-col': 'column',
     'flex-col-reverse': 'column-reverse',
   }
-  return directions[parsed.raw] ? { 'flex-direction': directions[parsed.raw] } : undefined
+  return directions[parsed.utility] ? { 'flex-direction': directions[parsed.utility] } : undefined
 }
 
 export const flexWrapRule: UtilityRule = (parsed) => {
@@ -40,65 +40,121 @@ export const flexWrapRule: UtilityRule = (parsed) => {
     'flex-wrap-reverse': 'wrap-reverse',
     'flex-nowrap': 'nowrap',
   }
-  return wraps[parsed.raw] ? { 'flex-wrap': wraps[parsed.raw] } : undefined
+  return wraps[parsed.utility] ? { 'flex-wrap': wraps[parsed.utility] } : undefined
 }
 
 export const flexRule: UtilityRule = (parsed) => {
-  const flexValues: Record<string, string> = {
-    'flex-1': '1 1 0%',
-    'flex-auto': '1 1 auto',
-    'flex-initial': '0 1 auto',
-    'flex-none': 'none',
+  if (parsed.utility === 'flex' || parsed.utility.startsWith('flex-')) {
+    // Handle named flex values
+    const flexValues: Record<string, string> = {
+      'flex-1': '1 1 0%',
+      'flex-auto': '1 1 auto',
+      'flex-initial': '0 1 auto',
+      'flex-none': 'none',
+    }
+    if (flexValues[parsed.utility]) {
+      return { flex: flexValues[parsed.utility] }
+    }
+    // Handle arbitrary flex values
+    if (parsed.utility === 'flex' && parsed.arbitrary && parsed.value) {
+      return { flex: parsed.value.replace(/_/g, ' ') }
+    }
   }
-  return flexValues[parsed.raw] ? { flex: flexValues[parsed.raw] } : undefined
+  return undefined
+}
+
+export const flexGrowRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'flex-grow' && !parsed.value) {
+    return { 'flex-grow': '1' }
+  }
+  if (parsed.utility === 'flex-grow' && parsed.value) {
+    return { 'flex-grow': parsed.value }
+  }
+}
+
+export const flexShrinkRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'flex-shrink' && !parsed.value) {
+    return { 'flex-shrink': '1' }
+  }
+  if (parsed.utility === 'flex-shrink' && parsed.value) {
+    return { 'flex-shrink': parsed.value }
+  }
 }
 
 export const justifyContentRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'justify-start': 'flex-start',
-    'justify-end': 'flex-end',
-    'justify-center': 'center',
-    'justify-between': 'space-between',
-    'justify-around': 'space-around',
-    'justify-evenly': 'space-evenly',
+  if (parsed.utility === 'justify' && parsed.value) {
+    const values: Record<string, string> = {
+      'start': 'flex-start',
+      'end': 'flex-end',
+      'center': 'center',
+      'between': 'space-between',
+      'around': 'space-around',
+      'evenly': 'space-evenly',
+    }
+    // Handle named values
+    if (values[parsed.value]) {
+      return { 'justify-content': values[parsed.value] }
+    }
+    // Handle arbitrary values
+    if (parsed.arbitrary) {
+      return { 'justify-content': parsed.value }
+    }
   }
-  return values[parsed.raw] ? { 'justify-content': values[parsed.raw] } : undefined
+  return undefined
 }
 
 export const alignItemsRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'items-start': 'flex-start',
-    'items-end': 'flex-end',
-    'items-center': 'center',
-    'items-baseline': 'baseline',
-    'items-stretch': 'stretch',
+  if (parsed.utility === 'items' && parsed.value) {
+    const values: Record<string, string> = {
+      'start': 'flex-start',
+      'end': 'flex-end',
+      'center': 'center',
+      'baseline': 'baseline',
+      'stretch': 'stretch',
+    }
+    // Handle named values
+    if (values[parsed.value]) {
+      return { 'align-items': values[parsed.value] }
+    }
+    // Handle arbitrary values
+    if (parsed.arbitrary) {
+      return { 'align-items': parsed.value }
+    }
   }
-  return values[parsed.raw] ? { 'align-items': values[parsed.raw] } : undefined
+  return undefined
 }
 
 export const justifyItemsRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'justify-items-start': 'start',
-    'justify-items-end': 'end',
-    'justify-items-center': 'center',
-    'justify-items-stretch': 'stretch',
+  // Parsed as utility="justify", value="items-center"
+  // Need to reconstruct full utility name
+  if (parsed.utility === 'justify' && parsed.value && parsed.value.startsWith('items-')) {
+    const values: Record<string, string> = {
+      'items-start': 'start',
+      'items-end': 'end',
+      'items-center': 'center',
+      'items-stretch': 'stretch',
+    }
+    return values[parsed.value] ? { 'justify-items': values[parsed.value] } : undefined
   }
-  return values[parsed.raw] ? { 'justify-items': values[parsed.raw] } : undefined
+  return undefined
 }
 
 export const alignContentRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'content-normal': 'normal',
-    'content-center': 'center',
-    'content-start': 'flex-start',
-    'content-end': 'flex-end',
-    'content-between': 'space-between',
-    'content-around': 'space-around',
-    'content-evenly': 'space-evenly',
-    'content-baseline': 'baseline',
-    'content-stretch': 'stretch',
+  if (parsed.utility === 'content' && parsed.value) {
+    const values: Record<string, string> = {
+      'normal': 'normal',
+      'center': 'center',
+      'start': 'flex-start',
+      'end': 'flex-end',
+      'between': 'space-between',
+      'around': 'space-around',
+      'evenly': 'space-evenly',
+      'baseline': 'baseline',
+      'stretch': 'stretch',
+    }
+    return values[parsed.value] ? { 'align-content': values[parsed.value] } : undefined
   }
-  return values[parsed.raw] ? { 'align-content': values[parsed.raw] } : undefined
+  return undefined
 }
 
 // Spacing utilities (margin, padding)
@@ -143,7 +199,7 @@ export const spacingRule: UtilityRule = (parsed, config) => {
 }
 
 // Width and height utilities
-export const sizingRule: UtilityRule = (parsed) => {
+export const sizingRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'w' && parsed.value) {
     const sizeMap: Record<string, string> = {
       full: '100%',
@@ -158,7 +214,9 @@ export const sizingRule: UtilityRule = (parsed) => {
       const [num, denom] = parsed.value.split('/').map(Number)
       return { width: `${(num / denom) * 100}%` }
     }
-    return { width: sizeMap[parsed.value] || parsed.value }
+    // Check spacing config first, then sizeMap, then raw value
+    const value = config.theme.spacing[parsed.value] || sizeMap[parsed.value] || parsed.value
+    return { width: value }
   }
 
   if (parsed.utility === 'h' && parsed.value) {
@@ -175,7 +233,9 @@ export const sizingRule: UtilityRule = (parsed) => {
       const [num, denom] = parsed.value.split('/').map(Number)
       return { height: `${(num / denom) * 100}%` }
     }
-    return { height: sizeMap[parsed.value] || parsed.value }
+    // Check spacing config first, then sizeMap, then raw value
+    const value = config.theme.spacing[parsed.value] || sizeMap[parsed.value] || parsed.value
+    return { height: value }
   }
 
   return undefined
@@ -225,6 +285,16 @@ export const colorRule: UtilityRule = (parsed, config) => {
     return color
   }
 
+  // Handle special color keywords
+  const specialColors: Record<string, string> = {
+    current: 'currentColor',
+    transparent: 'transparent',
+    inherit: 'inherit',
+  }
+  if (specialColors[colorValue]) {
+    return { [prop]: specialColors[colorValue] }
+  }
+
   // Parse color value: "blue-500" -> colors.blue[500]
   const parts = colorValue.split('-')
   if (parts.length === 2) {
@@ -268,18 +338,21 @@ export const fontSizeRule: UtilityRule = (parsed, config) => {
 }
 
 export const fontWeightRule: UtilityRule = (parsed) => {
-  const weights: Record<string, string> = {
-    'font-thin': '100',
-    'font-extralight': '200',
-    'font-light': '300',
-    'font-normal': '400',
-    'font-medium': '500',
-    'font-semibold': '600',
-    'font-bold': '700',
-    'font-extrabold': '800',
-    'font-black': '900',
+  if (parsed.utility === 'font' && parsed.value) {
+    const weights: Record<string, string> = {
+      'thin': '100',
+      'extralight': '200',
+      'light': '300',
+      'normal': '400',
+      'medium': '500',
+      'semibold': '600',
+      'bold': '700',
+      'extrabold': '800',
+      'black': '900',
+    }
+    return weights[parsed.value] ? { 'font-weight': weights[parsed.value] } : undefined
   }
-  return weights[parsed.raw] ? { 'font-weight': weights[parsed.raw] } : undefined
+  return undefined
 }
 
 export const textAlignRule: UtilityRule = (parsed) => {
@@ -348,6 +421,8 @@ export const builtInRules: UtilityRule[] = [
   flexDirectionRule,
   flexWrapRule,
   flexRule,
+  flexGrowRule,
+  flexShrinkRule,
   justifyContentRule,
   alignItemsRule,
   justifyItemsRule,

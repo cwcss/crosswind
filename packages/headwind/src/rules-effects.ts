@@ -4,22 +4,29 @@ import type { UtilityRule } from './rules'
 
 // Background utilities
 export const backgroundAttachmentRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'bg-fixed': 'fixed',
-    'bg-local': 'local',
-    'bg-scroll': 'scroll',
+  if (parsed.utility === 'bg' && parsed.value) {
+    const values: Record<string, string> = {
+      'fixed': 'fixed',
+      'local': 'local',
+      'scroll': 'scroll',
+    }
+    return values[parsed.value] ? { 'background-attachment': values[parsed.value] } : undefined
   }
-  return values[parsed.raw] ? { 'background-attachment': values[parsed.raw] } : undefined
+  return undefined
 }
 
 export const backgroundClipRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'bg-clip-border': 'border-box',
-    'bg-clip-padding': 'padding-box',
-    'bg-clip-content': 'content-box',
-    'bg-clip-text': 'text',
+  if (parsed.utility === 'bg' && parsed.value && parsed.value.startsWith('clip-')) {
+    const val = parsed.value.replace('clip-', '')
+    const values: Record<string, string> = {
+      'border': 'border-box',
+      'padding': 'padding-box',
+      'content': 'content-box',
+      'text': 'text',
+    }
+    return values[val] ? { 'background-clip': values[val] } : undefined
   }
-  return values[parsed.raw] ? { 'background-clip': values[parsed.raw] } : undefined
+  return undefined
 }
 
 export const backgroundImageRule: UtilityRule = (parsed) => {
@@ -87,15 +94,18 @@ export const backgroundSizeRule: UtilityRule = (parsed) => {
 
 // Border utilities
 export const borderStyleRule: UtilityRule = (parsed) => {
-  const styles: Record<string, string> = {
-    'border-solid': 'solid',
-    'border-dashed': 'dashed',
-    'border-dotted': 'dotted',
-    'border-double': 'double',
-    'border-hidden': 'hidden',
-    'border-none': 'none',
+  if (parsed.utility === 'border' && parsed.value) {
+    const styles: Record<string, string> = {
+      'solid': 'solid',
+      'dashed': 'dashed',
+      'dotted': 'dotted',
+      'double': 'double',
+      'hidden': 'hidden',
+      'none': 'none',
+    }
+    return styles[parsed.value] ? { 'border-style': styles[parsed.value] } : undefined
   }
-  return styles[parsed.raw] ? { 'border-style': styles[parsed.raw] } : undefined
+  return undefined
 }
 
 export const outlineRule: UtilityRule = (parsed, config) => {
@@ -112,15 +122,17 @@ export const outlineRule: UtilityRule = (parsed, config) => {
   }
 
   // Outline styles
-  const outlineStyles: Record<string, string> = {
-    'outline-none': 'none',
-    'outline-solid': 'solid',
-    'outline-dashed': 'dashed',
-    'outline-dotted': 'dotted',
-    'outline-double': 'double',
-  }
-  if (parsed.raw.startsWith('outline-') && outlineStyles[parsed.raw]) {
-    return { 'outline-style': outlineStyles[parsed.raw] }
+  if (parsed.utility === 'outline' && parsed.value) {
+    const outlineStyles: Record<string, string> = {
+      'none': 'none',
+      'solid': 'solid',
+      'dashed': 'dashed',
+      'dotted': 'dotted',
+      'double': 'double',
+    }
+    if (outlineStyles[parsed.value]) {
+      return { 'outline-style': outlineStyles[parsed.value] }
+    }
   }
 
   if (parsed.utility === 'outline') {

@@ -269,3 +269,401 @@ describe('Flexbox Utilities', () => {
     })
   })
 })
+
+describe('Edge Cases', () => {
+  describe('Gap utilities', () => {
+    it('should generate gap-4', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('gap-4')
+      expect(gen.toCSS()).toContain('gap: 1rem;')
+    })
+
+    it('should generate gap-x-2', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('gap-x-2')
+      expect(gen.toCSS()).toContain('column-gap: 0.5rem;')
+    })
+
+    it('should generate gap-y-8', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('gap-y-8')
+      expect(gen.toCSS()).toContain('row-gap: 2rem;')
+    })
+
+    it('should handle gap-0', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('gap-0')
+      expect(gen.toCSS()).toContain('gap: 0;')
+    })
+
+    it('should handle gap-px', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('gap-px')
+      expect(gen.toCSS()).toContain('gap: 1px;')
+    })
+
+    it('should handle gap with arbitrary value', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('gap-[2.5rem]')
+      expect(gen.toCSS()).toContain('gap: 2.5rem;')
+    })
+  })
+
+  describe('Flex grow and shrink', () => {
+    it('should generate flex-grow', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('flex-grow')
+      expect(gen.toCSS()).toContain('flex-grow: 1;')
+    })
+
+    it('should generate flex-grow-0', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('flex-grow-0')
+      expect(gen.toCSS()).toContain('flex-grow: 0;')
+    })
+
+    it('should generate flex-shrink', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('flex-shrink')
+      expect(gen.toCSS()).toContain('flex-shrink: 1;')
+    })
+
+    it('should generate flex-shrink-0', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('flex-shrink-0')
+      expect(gen.toCSS()).toContain('flex-shrink: 0;')
+    })
+
+    it('should handle arbitrary grow value', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('flex-grow-[2]')
+      expect(gen.toCSS()).toContain('flex-grow: 2;')
+    })
+
+    it('should handle arbitrary shrink value', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('flex-shrink-[3]')
+      expect(gen.toCSS()).toContain('flex-shrink: 3;')
+    })
+  })
+
+  describe('Align content', () => {
+    it('should generate content-normal', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('content-normal')
+      expect(gen.toCSS()).toContain('align-content: normal;')
+    })
+
+    it('should generate content-center', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('content-center')
+      expect(gen.toCSS()).toContain('align-content: center;')
+    })
+
+    it('should generate content-start', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('content-start')
+      expect(gen.toCSS()).toContain('align-content: flex-start;')
+    })
+
+    it('should generate content-end', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('content-end')
+      expect(gen.toCSS()).toContain('align-content: flex-end;')
+    })
+
+    it('should generate content-between', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('content-between')
+      expect(gen.toCSS()).toContain('align-content: space-between;')
+    })
+
+    it('should generate content-around', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('content-around')
+      expect(gen.toCSS()).toContain('align-content: space-around;')
+    })
+
+    it('should generate content-evenly', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('content-evenly')
+      expect(gen.toCSS()).toContain('align-content: space-evenly;')
+    })
+
+    it('should generate content-baseline', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('content-baseline')
+      expect(gen.toCSS()).toContain('align-content: baseline;')
+    })
+
+    it('should generate content-stretch', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('content-stretch')
+      expect(gen.toCSS()).toContain('align-content: stretch;')
+    })
+  })
+
+  describe('Justify items', () => {
+    it('should generate justify-items-start', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('justify-items-start')
+      expect(gen.toCSS()).toContain('justify-items: start;')
+    })
+
+    it('should generate justify-items-end', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('justify-items-end')
+      expect(gen.toCSS()).toContain('justify-items: end;')
+    })
+
+    it('should generate justify-items-center', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('justify-items-center')
+      expect(gen.toCSS()).toContain('justify-items: center;')
+    })
+
+    it('should generate justify-items-stretch', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('justify-items-stretch')
+      expect(gen.toCSS()).toContain('justify-items: stretch;')
+    })
+  })
+
+  describe('Order edge cases', () => {
+    it('should handle negative order', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('order-[-1]')
+      expect(gen.toCSS()).toContain('order: -1;')
+    })
+
+    it('should handle very large order', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('order-[999999]')
+      expect(gen.toCSS()).toContain('order: 999999;')
+    })
+
+    it('should handle order-2 through order-12', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      for (let i = 2; i <= 12; i++) {
+        gen.generate(`order-${i}`)
+      }
+      const css = gen.toCSS()
+      expect(css).toBeDefined()
+    })
+  })
+
+  describe('Flex basis edge cases', () => {
+    it('should handle basis with spacing values', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('basis-4')
+      expect(gen.toCSS()).toContain('flex-basis: 1rem;')
+    })
+
+    it('should handle basis-px', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('basis-px')
+      expect(gen.toCSS()).toContain('flex-basis: 1px;')
+    })
+
+    it('should handle basis with CSS variables', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('basis-[var(--basis-width)]')
+      expect(gen.toCSS()).toContain('flex-basis: var(--basis-width);')
+    })
+
+    it('should handle basis with min()', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('basis-[min(50%,300px)]')
+      expect(gen.toCSS()).toContain('flex-basis: min(50%,300px);')
+    })
+
+    it('should handle basis with clamp()', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('basis-[clamp(100px,50%,500px)]')
+      expect(gen.toCSS()).toContain('flex-basis: clamp(100px,50%,500px);')
+    })
+  })
+
+  describe('Arbitrary values', () => {
+    it('should handle arbitrary flex direction', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('flex-[0_1_250px]')
+      expect(gen.toCSS()).toContain('flex: 0 1 250px;')
+    })
+
+    it('should handle arbitrary justify-content', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('justify-[flex-start]')
+      expect(gen.toCSS()).toContain('justify-content: flex-start;')
+    })
+
+    it('should handle arbitrary align-items', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('items-[baseline]')
+      expect(gen.toCSS()).toContain('align-items: baseline;')
+    })
+  })
+
+  describe('Flexbox with variants', () => {
+    it('should handle flex with hover', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('hover:flex')
+      const css = gen.toCSS()
+      expect(css).toContain(':hover')
+      expect(css).toContain('display: flex;')
+    })
+
+    it('should handle flex-direction with responsive', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('md:flex-col')
+      const css = gen.toCSS()
+      expect(css).toContain('@media (min-width: 768px)')
+      expect(css).toContain('flex-direction: column;')
+    })
+
+    it('should handle gap with important', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('!gap-4')
+      expect(gen.toCSS()).toContain('gap: 1rem !important;')
+    })
+
+    it('should handle justify-content with dark mode', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('dark:justify-center')
+      const css = gen.toCSS()
+      expect(css).toContain('.dark')
+      expect(css).toContain('justify-content: center;')
+    })
+
+    it('should handle multiple variant combinations', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('lg:hover:flex-row')
+      const css = gen.toCSS()
+      expect(css).toContain('@media (min-width: 1024px)')
+      expect(css).toContain(':hover')
+      expect(css).toContain('flex-direction: row;')
+    })
+  })
+
+  describe('Align self edge cases', () => {
+    it('should generate self-auto', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('self-auto')
+      expect(gen.toCSS()).toContain('align-self: auto;')
+    })
+
+    it('should generate self-stretch', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('self-stretch')
+      expect(gen.toCSS()).toContain('align-self: stretch;')
+    })
+
+    it('should generate self-baseline', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('self-baseline')
+      expect(gen.toCSS()).toContain('align-self: baseline;')
+    })
+  })
+
+  describe('Place content', () => {
+    it('should generate place-content-center', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-content-center')
+      expect(gen.toCSS()).toContain('place-content: center;')
+    })
+
+    it('should generate place-content-start', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-content-start')
+      expect(gen.toCSS()).toContain('place-content: start;')
+    })
+
+    it('should generate place-content-end', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-content-end')
+      expect(gen.toCSS()).toContain('place-content: end;')
+    })
+
+    it('should generate place-content-between', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-content-between')
+      expect(gen.toCSS()).toContain('place-content: space-between;')
+    })
+
+    it('should generate place-content-around', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-content-around')
+      expect(gen.toCSS()).toContain('place-content: space-around;')
+    })
+
+    it('should generate place-content-evenly', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-content-evenly')
+      expect(gen.toCSS()).toContain('place-content: space-evenly;')
+    })
+
+    it('should generate place-content-stretch', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-content-stretch')
+      expect(gen.toCSS()).toContain('place-content: stretch;')
+    })
+  })
+
+  describe('Place items', () => {
+    it('should generate place-items-center', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-items-center')
+      expect(gen.toCSS()).toContain('place-items: center;')
+    })
+
+    it('should generate place-items-start', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-items-start')
+      expect(gen.toCSS()).toContain('place-items: start;')
+    })
+
+    it('should generate place-items-end', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-items-end')
+      expect(gen.toCSS()).toContain('place-items: end;')
+    })
+
+    it('should generate place-items-stretch', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-items-stretch')
+      expect(gen.toCSS()).toContain('place-items: stretch;')
+    })
+  })
+
+  describe('Place self', () => {
+    it('should generate place-self-center', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-self-center')
+      expect(gen.toCSS()).toContain('place-self: center;')
+    })
+
+    it('should generate place-self-start', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-self-start')
+      expect(gen.toCSS()).toContain('place-self: start;')
+    })
+
+    it('should generate place-self-end', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-self-end')
+      expect(gen.toCSS()).toContain('place-self: end;')
+    })
+
+    it('should generate place-self-auto', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-self-auto')
+      expect(gen.toCSS()).toContain('place-self: auto;')
+    })
+
+    it('should generate place-self-stretch', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('place-self-stretch')
+      expect(gen.toCSS()).toContain('place-self: stretch;')
+    })
+  })
+})

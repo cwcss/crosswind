@@ -3,13 +3,14 @@ import type { UtilityRule } from './rules'
 // Advanced utilities
 
 // Min/Max sizing
-export const minMaxSizingRule: UtilityRule = (parsed) => {
+export const minMaxSizingRule: UtilityRule = (parsed, config) => {
   const minMaxMap: Record<string, string> = {
     0: '0',
     full: '100%',
     min: 'min-content',
     max: 'max-content',
     fit: 'fit-content',
+    none: 'none',
     xs: '20rem',
     sm: '24rem',
     md: '28rem',
@@ -25,18 +26,22 @@ export const minMaxSizingRule: UtilityRule = (parsed) => {
   }
 
   if (parsed.utility === 'min-w' && parsed.value) {
-    return { 'min-width': minMaxMap[parsed.value] || parsed.value }
+    const value = config.theme.spacing[parsed.value] || minMaxMap[parsed.value] || parsed.value
+    return { 'min-width': value }
   }
   if (parsed.utility === 'max-w' && parsed.value) {
-    return { 'max-width': minMaxMap[parsed.value] || parsed.value }
+    const value = config.theme.spacing[parsed.value] || minMaxMap[parsed.value] || parsed.value
+    return { 'max-width': value }
   }
   if (parsed.utility === 'min-h' && parsed.value) {
     const hMap = { ...minMaxMap, screen: '100vh' }
-    return { 'min-height': hMap[parsed.value] || parsed.value }
+    const value = config.theme.spacing[parsed.value] || hMap[parsed.value] || parsed.value
+    return { 'min-height': value }
   }
   if (parsed.utility === 'max-h' && parsed.value) {
     const hMap = { ...minMaxMap, screen: '100vh' }
-    return { 'max-height': hMap[parsed.value] || parsed.value }
+    const value = config.theme.spacing[parsed.value] || hMap[parsed.value] || parsed.value
+    return { 'max-height': value }
   }
 }
 
