@@ -14,48 +14,91 @@ export const transformRule: UtilityRule = (parsed) => {
 
 export const scaleRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'scale') {
-    const scale = parsed.value ? Number(parsed.value) / 100 : 1
+    if (!parsed.value) return { transform: 'scale(1)' }
+    // If arbitrary, use value as-is
+    if (parsed.arbitrary) {
+      return { transform: `scale(${parsed.value})` }
+    }
+    const scale = Number(parsed.value) / 100
     return { transform: `scale(${scale})` }
   }
   if (parsed.utility === 'scale-x') {
-    const scale = parsed.value ? Number(parsed.value) / 100 : 1
+    if (!parsed.value) return { transform: 'scaleX(1)' }
+    if (parsed.arbitrary) {
+      return { transform: `scaleX(${parsed.value})` }
+    }
+    const scale = Number(parsed.value) / 100
     return { transform: `scaleX(${scale})` }
   }
   if (parsed.utility === 'scale-y') {
-    const scale = parsed.value ? Number(parsed.value) / 100 : 1
+    if (!parsed.value) return { transform: 'scaleY(1)' }
+    if (parsed.arbitrary) {
+      return { transform: `scaleY(${parsed.value})` }
+    }
+    const scale = Number(parsed.value) / 100
     return { transform: `scaleY(${scale})` }
   }
   if (parsed.utility === 'scale-z') {
-    const scale = parsed.value ? Number(parsed.value) / 100 : 1
+    if (!parsed.value) return { transform: 'scaleZ(1)' }
+    if (parsed.arbitrary) {
+      return { transform: `scaleZ(${parsed.value})` }
+    }
+    const scale = Number(parsed.value) / 100
     return { transform: `scaleZ(${scale})` }
   }
 }
 
 export const rotateRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'rotate' && parsed.value) {
-    return { transform: `rotate(${parsed.value}deg)` }
+    // If arbitrary or already has unit, use as-is, otherwise add deg
+    const value = parsed.arbitrary || parsed.value.includes('deg') || parsed.value.includes('rad') || parsed.value.includes('turn')
+      ? parsed.value
+      : `${parsed.value}deg`
+    return { transform: `rotate(${value})` }
   }
   if (parsed.utility === 'rotate-x' && parsed.value) {
-    return { transform: `rotateX(${parsed.value}deg)` }
+    const value = parsed.arbitrary || parsed.value.includes('deg') || parsed.value.includes('rad') || parsed.value.includes('turn')
+      ? parsed.value
+      : `${parsed.value}deg`
+    return { transform: `rotateX(${value})` }
   }
   if (parsed.utility === 'rotate-y' && parsed.value) {
-    return { transform: `rotateY(${parsed.value}deg)` }
+    const value = parsed.arbitrary || parsed.value.includes('deg') || parsed.value.includes('rad') || parsed.value.includes('turn')
+      ? parsed.value
+      : `${parsed.value}deg`
+    return { transform: `rotateY(${value})` }
   }
   if (parsed.utility === 'rotate-z' && parsed.value) {
-    return { transform: `rotateZ(${parsed.value}deg)` }
+    const value = parsed.arbitrary || parsed.value.includes('deg') || parsed.value.includes('rad') || parsed.value.includes('turn')
+      ? parsed.value
+      : `${parsed.value}deg`
+    return { transform: `rotateZ(${value})` }
   }
 }
 
 export const translateRule: UtilityRule = (parsed, config) => {
+  const getTranslateValue = (val: string): string => {
+    // Handle fractions: 1/2 -> 50%, 1/3 -> 33.333333%, etc.
+    if (val.includes('/')) {
+      const [num, denom] = val.split('/')
+      const percentage = (Number(num) / Number(denom)) * 100
+      return `${percentage}%`
+    }
+    // Handle special keywords
+    if (val === 'full') return '100%'
+    if (val === 'half') return '50%'
+    // Check spacing config
+    return config.theme.spacing[val] || val
+  }
+
   if (parsed.utility === 'translate-x' && parsed.value) {
     let value: string
     if (parsed.value.startsWith('-')) {
       const positiveValue = parsed.value.slice(1)
-      const spacing = config.theme.spacing[positiveValue]
-      value = spacing ? `-${spacing}` : parsed.value
+      value = `-${getTranslateValue(positiveValue)}`
     }
     else {
-      value = config.theme.spacing[parsed.value] || parsed.value
+      value = getTranslateValue(parsed.value)
     }
     return { transform: `translateX(${value})` }
   }
@@ -63,11 +106,10 @@ export const translateRule: UtilityRule = (parsed, config) => {
     let value: string
     if (parsed.value.startsWith('-')) {
       const positiveValue = parsed.value.slice(1)
-      const spacing = config.theme.spacing[positiveValue]
-      value = spacing ? `-${spacing}` : parsed.value
+      value = `-${getTranslateValue(positiveValue)}`
     }
     else {
-      value = config.theme.spacing[parsed.value] || parsed.value
+      value = getTranslateValue(parsed.value)
     }
     return { transform: `translateY(${value})` }
   }
@@ -75,11 +117,10 @@ export const translateRule: UtilityRule = (parsed, config) => {
     let value: string
     if (parsed.value.startsWith('-')) {
       const positiveValue = parsed.value.slice(1)
-      const spacing = config.theme.spacing[positiveValue]
-      value = spacing ? `-${spacing}` : parsed.value
+      value = `-${getTranslateValue(positiveValue)}`
     }
     else {
-      value = config.theme.spacing[parsed.value] || parsed.value
+      value = getTranslateValue(parsed.value)
     }
     return { transform: `translateZ(${value})` }
   }
@@ -87,36 +128,56 @@ export const translateRule: UtilityRule = (parsed, config) => {
 
 export const skewRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'skew-x' && parsed.value) {
-    return { transform: `skewX(${parsed.value}deg)` }
+    const value = parsed.arbitrary || parsed.value.includes('deg') || parsed.value.includes('rad') || parsed.value.includes('turn')
+      ? parsed.value
+      : `${parsed.value}deg`
+    return { transform: `skewX(${value})` }
   }
   if (parsed.utility === 'skew-y' && parsed.value) {
-    return { transform: `skewY(${parsed.value}deg)` }
+    const value = parsed.arbitrary || parsed.value.includes('deg') || parsed.value.includes('rad') || parsed.value.includes('turn')
+      ? parsed.value
+      : `${parsed.value}deg`
+    return { transform: `skewY(${value})` }
   }
 }
 
 export const transformOriginRule: UtilityRule = (parsed) => {
-  const origins: Record<string, string> = {
-    'origin-center': 'center',
-    'origin-top': 'top',
-    'origin-top-right': 'top right',
-    'origin-right': 'right',
-    'origin-bottom-right': 'bottom right',
-    'origin-bottom': 'bottom',
-    'origin-bottom-left': 'bottom left',
-    'origin-left': 'left',
-    'origin-top-left': 'top left',
+  if (parsed.utility === 'origin' && parsed.value) {
+    // Handle arbitrary values with underscores as spaces
+    if (parsed.arbitrary) {
+      return { 'transform-origin': parsed.value.replace(/_/g, ' ') }
+    }
+    // Handle predefined values
+    const origins: Record<string, string> = {
+      'center': 'center',
+      'top': 'top',
+      'top-right': 'top right',
+      'right': 'right',
+      'bottom-right': 'bottom right',
+      'bottom': 'bottom',
+      'bottom-left': 'bottom left',
+      'left': 'left',
+      'top-left': 'top left',
+    }
+    return origins[parsed.value] ? { 'transform-origin': origins[parsed.value] } : undefined
   }
-  return origins[parsed.raw] ? { 'transform-origin': origins[parsed.raw] } : undefined
+  return undefined
 }
 
 export const perspectiveRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'perspective' && parsed.value) {
+    // If value is 'none', use as-is
+    if (parsed.value === 'none') {
+      return { perspective: 'none' }
+    }
+    // If arbitrary or already has unit, use as-is
+    if (parsed.arbitrary || parsed.value.includes('px') || parsed.value.includes('rem') || parsed.value.includes('em')) {
+      return { perspective: parsed.value }
+    }
+    // Otherwise add px
     return { perspective: `${parsed.value}px` }
   }
-  const values: Record<string, string> = {
-    'perspective-none': 'none',
-  }
-  return values[parsed.raw] ? { perspective: values[parsed.raw] } : undefined
+  return undefined
 }
 
 export const perspectiveOriginRule: UtilityRule = (parsed) => {

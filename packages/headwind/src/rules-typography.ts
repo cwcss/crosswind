@@ -65,7 +65,15 @@ export const letterSpacingRule: UtilityRule = (parsed) => {
       wider: '0.05em',
       widest: '0.1em',
     }
-    return parsed.value ? { 'letter-spacing': values[parsed.value] || parsed.value } : undefined
+    if (!parsed.value) {
+      return undefined
+    }
+    // Handle negative values
+    if (parsed.value.startsWith('-')) {
+      const positiveValue = parsed.value.slice(1)
+      return { 'letter-spacing': `-${values[positiveValue] || positiveValue}` }
+    }
+    return { 'letter-spacing': values[parsed.value] || parsed.value }
   }
 }
 
@@ -133,7 +141,7 @@ export const textDecorationRule: UtilityRule = (parsed, config) => {
     // Check if it's a thickness
     const thicknesses: Record<string, string> = {
       auto: 'auto',
-      from: 'from-font',
+      'from-font': 'from-font',
       0: '0px',
       1: '1px',
       2: '2px',
@@ -142,6 +150,11 @@ export const textDecorationRule: UtilityRule = (parsed, config) => {
     }
     if (thicknesses[parsed.value]) {
       return { 'text-decoration-thickness': thicknesses[parsed.value] }
+    }
+
+    // Handle arbitrary thickness
+    if (parsed.arbitrary) {
+      return { 'text-decoration-thickness': parsed.value }
     }
 
     // Otherwise treat it as a color: decoration-blue-500
@@ -216,6 +229,12 @@ export const textWrapRule: UtilityRule = (parsed) => {
 
 export const textIndentRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'indent' && parsed.value) {
+    // Handle negative values
+    if (parsed.value.startsWith('-')) {
+      const positiveValue = parsed.value.slice(1)
+      const spacing = config.theme.spacing[positiveValue] || positiveValue
+      return { 'text-indent': `-${spacing}` }
+    }
     return { 'text-indent': config.theme.spacing[parsed.value] || parsed.value }
   }
 }
@@ -247,9 +266,16 @@ export const whiteSpaceRule: UtilityRule = (parsed) => {
 }
 
 export const wordBreakRule: UtilityRule = (parsed) => {
+  if (parsed.raw === 'break-normal') {
+    return {
+      'overflow-wrap': 'normal',
+      'word-break': 'normal',
+    }
+  }
+  if (parsed.raw === 'break-words') {
+    return { 'overflow-wrap': 'break-word' }
+  }
   const breaks: Record<string, string> = {
-    'break-normal': 'normal',
-    'break-words': 'break-word',
     'break-all': 'break-all',
     'break-keep': 'keep-all',
   }
@@ -279,7 +305,12 @@ export const contentRule: UtilityRule = (parsed) => {
     const values: Record<string, string> = {
       none: 'none',
     }
-    return { content: values[parsed.value] || `"${parsed.value}"` }
+    // If value is already quoted or is a special value, use as-is
+    if (values[parsed.value] || parsed.value.startsWith('"') || parsed.value.startsWith("'")) {
+      return { content: values[parsed.value] || parsed.value }
+    }
+    // Otherwise wrap in quotes
+    return { content: `"${parsed.value}"` }
   }
 }
 

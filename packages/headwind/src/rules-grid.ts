@@ -43,6 +43,29 @@ export const gridColumnRule: UtilityRule = (parsed) => {
     }
     return parsed.value ? { 'grid-column': spans[parsed.value] || parsed.value } : undefined
   }
+  if (parsed.utility === 'col-span' && parsed.value) {
+    const spans: Record<string, string> = {
+      auto: 'auto',
+      1: 'span 1 / span 1',
+      2: 'span 2 / span 2',
+      3: 'span 3 / span 3',
+      4: 'span 4 / span 4',
+      5: 'span 5 / span 5',
+      6: 'span 6 / span 6',
+      7: 'span 7 / span 7',
+      8: 'span 8 / span 8',
+      9: 'span 9 / span 9',
+      10: 'span 10 / span 10',
+      11: 'span 11 / span 11',
+      12: 'span 12 / span 12',
+      full: '1 / -1',
+    }
+    // Handle arbitrary values: col-span-[15] -> span 15 / span 15
+    if (parsed.arbitrary) {
+      return { 'grid-column': `span ${parsed.value} / span ${parsed.value}` }
+    }
+    return { 'grid-column': spans[parsed.value] || parsed.value }
+  }
   if (parsed.utility === 'col-start' && parsed.value) {
     return { 'grid-column-start': parsed.value }
   }
@@ -79,6 +102,23 @@ export const gridRowRule: UtilityRule = (parsed) => {
       'span-full': '1 / -1',
     }
     return parsed.value ? { 'grid-row': spans[parsed.value] || parsed.value } : undefined
+  }
+  if (parsed.utility === 'row-span' && parsed.value) {
+    const spans: Record<string, string> = {
+      auto: 'auto',
+      1: 'span 1 / span 1',
+      2: 'span 2 / span 2',
+      3: 'span 3 / span 3',
+      4: 'span 4 / span 4',
+      5: 'span 5 / span 5',
+      6: 'span 6 / span 6',
+      full: '1 / -1',
+    }
+    // Handle arbitrary values: row-span-[15] -> span 15 / span 15
+    if (parsed.arbitrary) {
+      return { 'grid-row': `span ${parsed.value} / span ${parsed.value}` }
+    }
+    return { 'grid-row': spans[parsed.value] || parsed.value }
   }
   if (parsed.utility === 'row-start' && parsed.value) {
     return { 'grid-row-start': parsed.value }

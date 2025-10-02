@@ -212,11 +212,11 @@ export const sizingRule: UtilityRule = (parsed, config) => {
     // Handle fractions: 1/2 -> 50%
     if (parsed.value.includes('/')) {
       const [num, denom] = parsed.value.split('/').map(Number)
-      return { width: `${(num / denom) * 100}%` }
+      return { width: `${(num / denom) * 100}%` } as Record<string, string>
     }
     // Check spacing config first, then sizeMap, then raw value
     const value = config.theme.spacing[parsed.value] || sizeMap[parsed.value] || parsed.value
-    return { width: value }
+    return { width: value } as Record<string, string>
   }
 
   if (parsed.utility === 'h' && parsed.value) {
@@ -231,11 +231,11 @@ export const sizingRule: UtilityRule = (parsed, config) => {
     // Handle fractions: 3/4 -> 75%
     if (parsed.value.includes('/')) {
       const [num, denom] = parsed.value.split('/').map(Number)
-      return { height: `${(num / denom) * 100}%` }
+      return { height: `${(num / denom) * 100}%` } as Record<string, string>
     }
     // Check spacing config first, then sizeMap, then raw value
     const value = config.theme.spacing[parsed.value] || sizeMap[parsed.value] || parsed.value
-    return { height: value }
+    return { height: value } as Record<string, string>
   }
 
   return undefined
@@ -327,18 +327,26 @@ export const colorRule: UtilityRule = (parsed, config) => {
 // Typography utilities
 export const fontSizeRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'text' && parsed.value) {
+    // Handle arbitrary values first
+    if (parsed.arbitrary) {
+      return { 'font-size': parsed.value } as Record<string, string>
+    }
     const fontSize = config.theme.fontSize[parsed.value]
     if (fontSize) {
       return {
         'font-size': fontSize[0],
         'line-height': fontSize[1].lineHeight,
-      }
+      } as Record<string, string>
     }
   }
 }
 
 export const fontWeightRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'font' && parsed.value) {
+    // Handle arbitrary values first
+    if (parsed.arbitrary) {
+      return { 'font-weight': parsed.value }
+    }
     const weights: Record<string, string> = {
       'thin': '100',
       'extralight': '200',
@@ -385,18 +393,18 @@ export const borderWidthRule: UtilityRule = (parsed) => {
       return {
         'border-left-width': '1px',
         'border-right-width': '1px',
-      }
+      } as Record<string, string>
     }
     if (parsed.value === 'y') {
       return {
         'border-top-width': '1px',
         'border-bottom-width': '1px',
-      }
+      } as Record<string, string>
     }
 
     const prop = sideMap[parsed.value]
     if (typeof prop === 'string') {
-      return { [prop]: '1px' }
+      return { [prop]: '1px' } as Record<string, string>
     }
     return undefined
   }

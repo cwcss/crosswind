@@ -86,6 +86,8 @@ export function parseClass(className: string): ParsedClass {
     'grid-flow',
     'auto-cols',
     'auto-rows',
+    'col-span',
+    'row-span',
     'col-start',
     'col-end',
     'row-start',
