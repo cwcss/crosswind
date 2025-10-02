@@ -417,3 +417,91 @@ describe('extractClasses - Edge Cases', () => {
     expect(result.size).toBe(3)
   })
 })
+
+describe('parseClass - Extreme Edge Cases', () => {
+  it('should handle null-like strings', () => {
+    expect(() => parseClass('null')).not.toThrow()
+    expect(() => parseClass('undefined')).not.toThrow()
+    expect(() => parseClass('NaN')).not.toThrow()
+  })
+
+  it('should handle numbers as class names', () => {
+    const result = parseClass('123')
+    expect(result.utility).toBe('123')
+    expect(result.value).toBeUndefined()
+  })
+
+  it('should handle special characters in class names', () => {
+    expect(() => parseClass('@apply')).not.toThrow()
+    expect(() => parseClass('$variable')).not.toThrow()
+    expect(() => parseClass('#id-like')).not.toThrow()
+  })
+
+  it('should handle unicode characters', () => {
+    const result = parseClass('w-[20px]') // Normal
+    expect(result.arbitrary).toBe(true)
+
+    const result2 = parseClass('text-[📝]') // Emoji
+    expect(result2.arbitrary).toBe(true)
+  })
+
+  it('should handle extremely nested brackets', () => {
+    const result = parseClass('w-[calc(calc(100%-10px)-5px)]')
+    expect(result.arbitrary).toBe(true)
+    expect(result.value).toContain('calc')
+  })
+
+  it('should handle URL in arbitrary value', () => {
+    const result = parseClass('bg-[url(https://example.com/image.jpg)]')
+    expect(result.arbitrary).toBe(true)
+    expect(result.value).toContain('url')
+  })
+
+  it('should handle data URL in arbitrary value', () => {
+    const result = parseClass('bg-[url(data:image/svg+xml;base64,ABC123)]')
+    expect(result.arbitrary).toBe(true)
+    expect(result.value).toContain('data:')
+  })
+
+  it('should handle CSS variables in arbitrary value', () => {
+    const result = parseClass('w-[var(--custom-width)]')
+    expect(result.arbitrary).toBe(true)
+    expect(result.value).toContain('var(--')
+  })
+
+  it('should handle clamp in arbitrary value', () => {
+    const result = parseClass('text-[clamp(1rem,5vw,3rem)]')
+    expect(result.arbitrary).toBe(true)
+    expect(result.value).toContain('clamp')
+  })
+
+  it('should handle min/max in arbitrary value', () => {
+    const result = parseClass('w-[min(100%,500px)]')
+    expect(result.arbitrary).toBe(true)
+    expect(result.value).toContain('min')
+  })
+
+  it('should handle zero with units', () => {
+    expect(() => parseClass('w-[0px]')).not.toThrow()
+    expect(() => parseClass('h-[0rem]')).not.toThrow()
+    expect(() => parseClass('p-[0em]')).not.toThrow()
+  })
+
+  it('should handle extremely large numbers', () => {
+    const result = parseClass('w-[99999999px]')
+    expect(result.arbitrary).toBe(true)
+    expect(result.value).toBe('99999999px')
+  })
+
+  it('should handle extremely small numbers', () => {
+    const result = parseClass('w-[0.0001px]')
+    expect(result.arbitrary).toBe(true)
+    expect(result.value).toBe('0.0001px')
+  })
+
+  it('should handle scientific notation', () => {
+    const result = parseClass('w-[1e10px]')
+    expect(result.arbitrary).toBe(true)
+    expect(result.value).toBe('1e10px')
+  })
+})

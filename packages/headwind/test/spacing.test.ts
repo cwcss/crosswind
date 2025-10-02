@@ -357,4 +357,38 @@ describe('Spacing Utilities', () => {
         expect(css).toContain('margin-left: 1rem;')
       })
     })
+
+    describe('Edge cases', () => {
+      it('should handle zero spacing', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('p-0')
+        gen.generate('m-0')
+        const css = gen.toCSS()
+        expect(css).toContain('0')
+      })
+
+      it('should handle negative zero', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('-m-0')
+        gen.generate('-p-0')
+        const css = gen.toCSS()
+        expect(css).toContain('margin')
+      })
+
+      it('should handle decimal spacing values', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('p-0.5')
+        gen.generate('m-2.5')
+        const css = gen.toCSS()
+        expect(css.length).toBeGreaterThan(0)
+      })
+
+      it('should handle negative fractional spacing', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('-m-1/2')
+        gen.generate('-translate-x-1/2')
+        const css = gen.toCSS()
+        expect(css).toContain('-')
+      })
+    })
   })

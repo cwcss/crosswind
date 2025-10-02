@@ -514,4 +514,84 @@ describe('CSSGenerator - Edge Cases', () => {
     const css = gen.toCSS(true)
     expect(css).toContain('box-sizing')
   })
+
+  describe('Extreme Edge Cases', () => {
+    it('should handle generating the same class 1000 times', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      for (let i = 0; i < 1000; i++) {
+        gen.generate('w-4')
+      }
+      const css = gen.toCSS()
+      // Should only have one .w-4 rule
+      const matches = css.match(/\.w-4\s*\{/g) || []
+      expect(matches.length).toBe(1)
+    })
+
+    it('should handle generating invalid utilities without crashing', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      expect(() => gen.generate('')).not.toThrow()
+      expect(() => gen.generate('   ')).not.toThrow()
+      expect(() => gen.generate('invalid-utility-xyz-123')).not.toThrow()
+      expect(() => gen.generate('!!!!!')).not.toThrow()
+      expect(() => gen.generate(':::::')).not.toThrow()
+    })
+
+    it('should handle generating utilities with null/undefined-like names', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      expect(() => gen.generate('null')).not.toThrow()
+      expect(() => gen.generate('undefined')).not.toThrow()
+      expect(() => gen.generate('false')).not.toThrow()
+    })
+
+    it('should handle very long arbitrary values', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      const longValue = 'a'.repeat(1000)
+      gen.generate(`w-[${longValue}]`)
+      const css = gen.toCSS()
+      expect(css).toContain(longValue)
+    })
+
+    it('should handle generating arbitrary property with colon in value', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('[background-image:url(http://example.com)]')
+      const css = gen.toCSS()
+      expect(css.length).toBeGreaterThan(0)
+    })
+
+    it('should handle malformed arbitrary syntax', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      expect(() => gen.generate('w-[')).not.toThrow() // Missing closing bracket
+      expect(() => gen.generate('w-]')).not.toThrow() // Missing opening bracket
+      expect(() => gen.generate('w-[[]]')).not.toThrow() // Double brackets
+      expect(() => gen.generate('w-[[]')).not.toThrow() // Unbalanced
+    })
+
+    it('should handle generating with no config theme colors', () => {
+      const gen = new CSSGenerator({ ...defaultConfig, theme: { ...defaultConfig.theme, colors: {} } })
+      gen.generate('bg-blue-500')
+      gen.generate('text-red-500')
+      // Should not crash even if colors don't exist
+      expect(() => gen.toCSS()).not.toThrow()
+    })
+
+    it('should handle generating with no spacing scale', () => {
+      const gen = new CSSGenerator({ ...defaultConfig, theme: { ...defaultConfig.theme, spacing: {} } })
+      gen.generate('p-4')
+      gen.generate('m-8')
+      // Should fall back to raw values
+      expect(() => gen.toCSS()).not.toThrow()
+    })
+
+    it('should handle important modifier on invalid utility', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('!invalid-utility-name')
+      expect(() => gen.toCSS()).not.toThrow()
+    })
+
+    it('should handle multiple variants on invalid utility', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('sm:md:lg:invalid-utility')
+      expect(() => gen.toCSS()).not.toThrow()
+    })
+  })
 })

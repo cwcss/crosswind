@@ -41,8 +41,8 @@ export const backgroundImageRule: UtilityRule = (parsed) => {
       'gradient-to-l': 'linear-gradient(to left, var(--tw-gradient-stops))',
       'gradient-to-tl': 'linear-gradient(to top left, var(--tw-gradient-stops))',
     }
-    if (gradients[`gradient-${parsed.value}`]) {
-      return { 'background-image': gradients[`gradient-${parsed.value}`] }
+    if (gradients[parsed.value]) {
+      return { 'background-image': gradients[parsed.value] } as Record<string, string>
     }
   }
 }

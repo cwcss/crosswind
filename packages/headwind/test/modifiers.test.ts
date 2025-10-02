@@ -355,5 +355,63 @@ describe('Modifiers', () => {
         expect(css).toContain('margin: 0.5rem !important;')
       })
     })
+
+    describe('Extreme variant stacking', () => {
+      it('should handle 10+ stacked variants', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('sm:md:lg:xl:2xl:hover:focus:active:dark:group-hover:w-4')
+        const css = gen.toCSS()
+        expect(css).toContain('width')
+      })
+
+      it('should handle duplicate variants', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('hover:hover:hover:bg-blue-500')
+        const css = gen.toCSS()
+        expect(css).toContain('background-color')
+      })
+
+      it('should handle conflicting responsive variants', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('sm:lg:md:xl:w-full')
+        const css = gen.toCSS()
+        // Should handle all variants even if order seems wrong
+        expect(css.length).toBeGreaterThan(0)
+      })
+
+      it('should handle all pseudo-class variants together', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('hover:focus:active:visited:disabled:checked:bg-red-500')
+        const css = gen.toCSS()
+        expect(css).toContain(':hover')
+        expect(css).toContain(':focus')
+      })
+
+      it('should handle mixing responsive and pseudo-elements', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('md:before:content-["test"]')
+        gen.generate('lg:after:block')
+        const css = gen.toCSS()
+        expect(css).toContain('::before')
+        expect(css).toContain('::after')
+      })
+
+      it('should handle group and peer variants together', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('group-hover:peer-focus:bg-blue-500')
+        const css = gen.toCSS()
+        // Complex stacking of group and peer variants
+        // Generator handles these by applying the variants in order
+        expect(css).toContain('background-color')
+        expect(css).toContain('#3b82f6')
+      })
+
+      it('should handle important with all variant types', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('!sm:hover:dark:first:bg-red-500')
+        const css = gen.toCSS()
+        expect(css).toContain('!important')
+      })
+    })
   })
 })

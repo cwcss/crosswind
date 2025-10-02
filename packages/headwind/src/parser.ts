@@ -29,6 +29,22 @@ export function parseClass(className: string): ParsedClass {
     }
   }
 
+  // Check for arbitrary values with brackets BEFORE splitting on colons
+  // This handles cases like bg-[url(https://...)] where the URL contains colons
+  const preArbitraryMatch = cleanClassName.match(/^((?:[a-z-]+:)*)([a-z-]+?)-\[(.+)\]$/)
+  if (preArbitraryMatch) {
+    const variantPart = preArbitraryMatch[1]
+    const variants = variantPart ? variantPart.split(':').filter(Boolean) : []
+    return {
+      raw: className,
+      variants,
+      utility: preArbitraryMatch[2],
+      value: preArbitraryMatch[3],
+      important,
+      arbitrary: true,
+    }
+  }
+
   const parts = cleanClassName.split(':')
   const utility = parts[parts.length - 1]
   const variants = parts.slice(0, -1)
@@ -158,6 +174,9 @@ export function parseClass(className: string): ParsedClass {
     'form-multiselect',
     'form-checkbox',
     'form-radio',
+    'mix-blend',
+    'bg-blend',
+    'line-clamp',
   ]
 
   // Special case for divide-x and divide-y (without values, they should be treated as compound)

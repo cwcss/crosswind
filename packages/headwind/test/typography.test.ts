@@ -598,5 +598,35 @@ describe('Typography Utilities', () => {
         expect(gen.toCSS()).toContain('content: none;')
       })
     })
+
+    describe('Edge cases', () => {
+      it('should handle very large font sizes', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('text-[500px]')
+        const css = gen.toCSS()
+        expect(css).toContain('500px')
+      })
+
+      it('should handle very small font sizes', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('text-[1px]')
+        const css = gen.toCSS()
+        expect(css).toContain('1px')
+      })
+
+      it('should handle line-clamp with large numbers', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('line-clamp-999')
+        const css = gen.toCSS()
+        expect(css).toContain('-webkit-line-clamp')
+      })
+
+      it('should handle font family with spaces', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('font-[\'Comic_Sans_MS\']')
+        const css = gen.toCSS()
+        expect(css.length).toBeGreaterThan(0)
+      })
+    })
   })
 })

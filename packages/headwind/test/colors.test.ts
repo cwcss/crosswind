@@ -328,4 +328,81 @@ describe('Color Utilities', () => {
         expect(gen.toCSS()).toContain('color: currentColor;')
       })
     })
+
+    describe('Advanced color formats', () => {
+      it('should handle 3-digit hex colors', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('bg-[#fff]')
+        gen.generate('text-[#000]')
+        const css = gen.toCSS()
+        expect(css).toContain('#fff')
+        expect(css).toContain('#000')
+      })
+
+      it('should handle 8-digit hex colors with alpha', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('bg-[#ff000080]')
+        const css = gen.toCSS()
+        expect(css).toContain('#ff000080')
+      })
+
+      it('should handle rgb() notation', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('bg-[rgb(255,0,0)]')
+        const css = gen.toCSS()
+        expect(css).toContain('rgb(255,0,0)')
+      })
+
+      it('should handle rgba() notation', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('bg-[rgba(255,0,0,0.5)]')
+        const css = gen.toCSS()
+        expect(css).toContain('rgba(255,0,0,0.5)')
+      })
+
+      it('should handle hsl() notation', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('bg-[hsl(0,100%,50%)]')
+        const css = gen.toCSS()
+        expect(css).toContain('hsl(0,100%,50%)')
+      })
+
+      it('should handle hsla() notation', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('bg-[hsla(0,100%,50%,0.5)]')
+        const css = gen.toCSS()
+        expect(css).toContain('hsla(0,100%,50%,0.5)')
+      })
+
+      it('should handle oklch() notation', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('bg-[oklch(0.5_0.2_180)]')
+        const css = gen.toCSS()
+        expect(css).toContain('oklch')
+      })
+
+      it('should handle color() notation', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('bg-[color(display-p3_1_0_0)]')
+        const css = gen.toCSS()
+        expect(css).toContain('color(')
+      })
+
+      it('should handle nonexistent color shades gracefully', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('bg-blue-999')
+        gen.generate('text-red-1')
+        // Should not crash, may not generate CSS
+        expect(() => gen.toCSS()).not.toThrow()
+      })
+
+      it('should handle color with opacity modifier', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('bg-blue-500/50')
+        gen.generate('text-red-500/75')
+        const css = gen.toCSS()
+        // May or may not be implemented, but should not crash
+        expect(() => gen.toCSS()).not.toThrow()
+      })
+    })
   })

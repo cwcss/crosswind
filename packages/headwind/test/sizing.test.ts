@@ -431,4 +431,51 @@ describe('Sizing Utilities', () => {
         expect(gen.toCSS()).toContain('height: 80cqh;')
       })
     })
+
+    describe('Edge cases', () => {
+      it('should handle fractional sizing', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-1/2')
+        gen.generate('w-1/3')
+        gen.generate('w-2/3')
+        gen.generate('w-1/4')
+        gen.generate('w-3/4')
+        gen.generate('w-1/5')
+        const css = gen.toCSS()
+        expect(css).toContain('width')
+      })
+
+      it('should handle full width/height', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-full')
+        gen.generate('h-full')
+        const css = gen.toCSS()
+        expect(css).toContain('100%')
+      })
+
+      it('should handle screen width/height', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-screen')
+        gen.generate('h-screen')
+        const css = gen.toCSS()
+        expect(css).toContain('100v')
+      })
+
+      it('should handle min/max content sizing', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-min')
+        gen.generate('w-max')
+        gen.generate('w-fit')
+        const css = gen.toCSS()
+        expect(css).toContain('content')
+      })
+
+      it('should handle auto sizing', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-auto')
+        gen.generate('h-auto')
+        const css = gen.toCSS()
+        expect(css).toContain('auto')
+      })
+    })
   })
