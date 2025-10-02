@@ -1,4 +1,5 @@
-import type { HeadwindConfig, ParsedClass } from './types'
+import type { HeadwindConfig, ParsedClass, UtilityRuleResult } from './types'
+import { advancedRules } from './rules-advanced'
 import { effectsRules } from './rules-effects'
 import { gridRules } from './rules-grid'
 import { interactivityRules } from './rules-interactivity'
@@ -6,7 +7,7 @@ import { layoutRules } from './rules-layout'
 import { transformsRules } from './rules-transforms'
 import { typographyRules } from './rules-typography'
 
-export type UtilityRule = (parsed: ParsedClass, config: HeadwindConfig) => Record<string, string> | undefined
+export type UtilityRule = (parsed: ParsedClass, config: HeadwindConfig) => Record<string, string> | UtilityRuleResult | undefined
 
 /**
  * Built-in utility rules
@@ -97,7 +98,17 @@ export const spacingRule: UtilityRule = (parsed, config) => {
   if (!properties || !parsed.value)
     return undefined
 
-  const value = config.theme.spacing[parsed.value] || parsed.value
+  // Handle negative values
+  let value: string
+  if (parsed.value.startsWith('-')) {
+    const positiveValue = parsed.value.slice(1)
+    const spacing = config.theme.spacing[positiveValue]
+    value = spacing ? `-${spacing}` : parsed.value
+  }
+  else {
+    value = config.theme.spacing[parsed.value] || parsed.value
+  }
+
   const result: Record<string, string> = {}
   for (const prop of properties) {
     result[prop] = value
@@ -112,6 +123,14 @@ export const sizingRule: UtilityRule = (parsed) => {
       full: '100%',
       screen: '100vw',
       auto: 'auto',
+      min: 'min-content',
+      max: 'max-content',
+      fit: 'fit-content',
+    }
+    // Handle fractions: 1/2 -> 50%
+    if (parsed.value.includes('/')) {
+      const [num, denom] = parsed.value.split('/').map(Number)
+      return { width: `${(num / denom) * 100}%` }
     }
     return { width: sizeMap[parsed.value] || parsed.value }
   }
@@ -121,6 +140,14 @@ export const sizingRule: UtilityRule = (parsed) => {
       full: '100%',
       screen: '100vh',
       auto: 'auto',
+      min: 'min-content',
+      max: 'max-content',
+      fit: 'fit-content',
+    }
+    // Handle fractions: 3/4 -> 75%
+    if (parsed.value.includes('/')) {
+      const [num, denom] = parsed.value.split('/').map(Number)
+      return { height: `${(num / denom) * 100}%` }
     }
     return { height: sizeMap[parsed.value] || parsed.value }
   }
@@ -226,6 +253,9 @@ export const borderRadiusRule: UtilityRule = (parsed, config) => {
 
 // Export all rules (order matters - more specific rules first)
 export const builtInRules: UtilityRule[] = [
+  // Advanced rules (container, ring, space, divide, gradients, etc.)
+  ...advancedRules,
+
   // Layout rules (specific positioning and display)
   ...layoutRules,
 

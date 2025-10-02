@@ -23,9 +23,15 @@ export class CSSGenerator {
 
     // Try built-in rules
     for (const rule of builtInRules) {
-      const properties = rule(parsed, this.config)
-      if (properties) {
-        this.addRule(parsed, properties)
+      const result = rule(parsed, this.config)
+      if (result) {
+        // Handle both old format (just properties) and new format (object with properties and childSelector)
+        if ('properties' in result && typeof result.properties === 'object') {
+          this.addRule(parsed, result.properties, result.childSelector)
+        }
+        else {
+          this.addRule(parsed, result as Record<string, string>)
+        }
         return
       }
     }
@@ -55,8 +61,14 @@ export class CSSGenerator {
   /**
    * Add a CSS rule with variants applied
    */
-  private addRule(parsed: ParsedClass, properties: Record<string, string>): void {
-    const selector = this.buildSelector(parsed)
+  private addRule(parsed: ParsedClass, properties: Record<string, string>, childSelector?: string): void {
+    let selector = this.buildSelector(parsed)
+
+    // Append child selector if provided
+    if (childSelector) {
+      selector += ` ${childSelector}`
+    }
+
     const mediaQuery = this.getMediaQuery(parsed)
 
     // Apply !important modifier
@@ -75,17 +87,20 @@ export class CSSGenerator {
       selector,
       properties,
       mediaQuery,
+      childSelector,
     })
   }
 
   /**
-   * Build CSS selector with pseudo-classes
+   * Build CSS selector with pseudo-classes and variants
    */
   private buildSelector(parsed: ParsedClass): string {
     let selector = `.${this.escapeSelector(parsed.raw)}`
+    let prefix = ''
 
-    // Apply pseudo-class variants (non-responsive)
+    // Apply variants
     for (const variant of parsed.variants) {
+      // Pseudo-class variants
       if (variant === 'hover' && this.config.variants.hover) {
         selector += ':hover'
       }
@@ -98,27 +113,101 @@ export class CSSGenerator {
       else if (variant === 'disabled' && this.config.variants.disabled) {
         selector += ':disabled'
       }
+      else if (variant === 'visited' && this.config.variants.visited) {
+        selector += ':visited'
+      }
+      else if (variant === 'checked' && this.config.variants.checked) {
+        selector += ':checked'
+      }
+      else if (variant === 'focus-within' && this.config.variants['focus-within']) {
+        selector += ':focus-within'
+      }
+      else if (variant === 'focus-visible' && this.config.variants['focus-visible']) {
+        selector += ':focus-visible'
+      }
+      // Positional variants
+      else if (variant === 'first' && this.config.variants.first) {
+        selector += ':first-child'
+      }
+      else if (variant === 'last' && this.config.variants.last) {
+        selector += ':last-child'
+      }
+      else if (variant === 'odd' && this.config.variants.odd) {
+        selector += ':nth-child(odd)'
+      }
+      else if (variant === 'even' && this.config.variants.even) {
+        selector += ':nth-child(even)'
+      }
+      else if (variant === 'first-of-type' && this.config.variants['first-of-type']) {
+        selector += ':first-of-type'
+      }
+      else if (variant === 'last-of-type' && this.config.variants['last-of-type']) {
+        selector += ':last-of-type'
+      }
+      // Pseudo-elements
+      else if (variant === 'before' && this.config.variants.before) {
+        selector += '::before'
+      }
+      else if (variant === 'after' && this.config.variants.after) {
+        selector += '::after'
+      }
+      // Group/Peer variants
+      else if (variant.startsWith('group-') && this.config.variants.group) {
+        const groupVariant = variant.slice(6) // Remove 'group-'
+        prefix = `.group:${groupVariant} `
+      }
+      else if (variant.startsWith('peer-') && this.config.variants.peer) {
+        const peerVariant = variant.slice(5) // Remove 'peer-'
+        prefix = `.peer:${peerVariant} ~ `
+      }
+      // Dark mode
       else if (variant === 'dark' && this.config.variants.dark) {
-        // Dark mode variant prepends a selector
-        selector = `.dark ${selector}`
+        prefix = '.dark '
+      }
+      // Direction variants
+      else if (variant === 'rtl' && this.config.variants.rtl) {
+        prefix = '[dir="rtl"] '
+      }
+      else if (variant === 'ltr' && this.config.variants.ltr) {
+        prefix = '[dir="ltr"] '
       }
     }
 
-    return selector
+    return prefix + selector
   }
 
   /**
-   * Get media query for responsive variants
+   * Get media query for responsive and media variants
    */
   private getMediaQuery(parsed: ParsedClass): string | undefined {
-    if (!this.config.variants.responsive) {
-      return undefined
-    }
-
     for (const variant of parsed.variants) {
-      const breakpoint = this.config.theme.screens[variant]
-      if (breakpoint) {
-        return `@media (min-width: ${breakpoint})`
+      // Responsive breakpoints
+      if (this.config.variants.responsive) {
+        const breakpoint = this.config.theme.screens[variant]
+        if (breakpoint) {
+          return `@media (min-width: ${breakpoint})`
+        }
+      }
+
+      // Print media
+      if (variant === 'print' && this.config.variants.print) {
+        return '@media print'
+      }
+
+      // Motion preferences
+      if (variant === 'motion-safe' && this.config.variants['motion-safe']) {
+        return '@media (prefers-reduced-motion: no-preference)'
+      }
+      if (variant === 'motion-reduce' && this.config.variants['motion-reduce']) {
+        return '@media (prefers-reduced-motion: reduce)'
+      }
+
+      // Contrast preferences
+      if (variant === 'contrast-more' && this.config.variants['contrast-more']) {
+        return '@media (prefers-contrast: more)'
+      }
+      if (variant === 'contrast-less' && this.config.variants['contrast-less']) {
+        return '@media (prefers-contrast: less)'
       }
     }
 
@@ -137,6 +226,12 @@ export class CSSGenerator {
    */
   toCSS(minify = false): string {
     const parts: string[] = []
+
+    // Add preflight CSS first
+    for (const preflight of this.config.preflights) {
+      const preflightCSS = preflight.getCSS()
+      parts.push(minify ? preflightCSS.replace(/\s+/g, ' ').trim() : preflightCSS)
+    }
 
     // Base rules (no media query)
     const baseRules = this.rules.get('base') || []

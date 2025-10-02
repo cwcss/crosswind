@@ -1,5 +1,6 @@
 import type { HeadwindConfig } from './types'
 import { loadConfig } from 'bunfig'
+import { tailwindPreflight } from './preflight'
 
 export const defaultConfig: HeadwindConfig = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
@@ -88,10 +89,31 @@ export const defaultConfig: HeadwindConfig = {
     active: true,
     disabled: true,
     dark: true,
+    group: true,
+    peer: true,
+    before: true,
+    after: true,
+    first: true,
+    last: true,
+    odd: true,
+    even: true,
+    'first-of-type': true,
+    'last-of-type': true,
+    visited: true,
+    checked: true,
+    'focus-within': true,
+    'focus-visible': true,
+    print: true,
+    rtl: true,
+    ltr: true,
+    'motion-safe': true,
+    'motion-reduce': true,
+    'contrast-more': true,
+    'contrast-less': true,
   },
   safelist: [],
   blocklist: [],
-  preflights: [],
+  preflights: [tailwindPreflight],
   presets: [],
 }
 

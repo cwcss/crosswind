@@ -35,10 +35,28 @@ export const rotateRule: UtilityRule = (parsed) => {
 
 export const translateRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'translate-x' && parsed.value) {
-    return { transform: `translateX(${config.theme.spacing[parsed.value] || parsed.value})` }
+    let value: string
+    if (parsed.value.startsWith('-')) {
+      const positiveValue = parsed.value.slice(1)
+      const spacing = config.theme.spacing[positiveValue]
+      value = spacing ? `-${spacing}` : parsed.value
+    }
+    else {
+      value = config.theme.spacing[parsed.value] || parsed.value
+    }
+    return { transform: `translateX(${value})` }
   }
   if (parsed.utility === 'translate-y' && parsed.value) {
-    return { transform: `translateY(${config.theme.spacing[parsed.value] || parsed.value})` }
+    let value: string
+    if (parsed.value.startsWith('-')) {
+      const positiveValue = parsed.value.slice(1)
+      const spacing = config.theme.spacing[positiveValue]
+      value = spacing ? `-${spacing}` : parsed.value
+    }
+    else {
+      value = config.theme.spacing[parsed.value] || parsed.value
+    }
+    return { transform: `translateY(${value})` }
   }
 }
 

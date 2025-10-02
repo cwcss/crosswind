@@ -16,6 +16,19 @@ export function parseClass(className: string): ParsedClass {
     cleanClassName = className.slice(1)
   }
 
+  // Check for arbitrary properties BEFORE splitting on colons: [color:red], [mask-type:luminance]
+  const arbitraryPropMatch = cleanClassName.match(/^\[([a-z-]+):(.+)\]$/)
+  if (arbitraryPropMatch) {
+    return {
+      raw: className,
+      variants: [],
+      utility: arbitraryPropMatch[1],
+      value: arbitraryPropMatch[2],
+      important,
+      arbitrary: true,
+    }
+  }
+
   const parts = cleanClassName.split(':')
   const utility = parts[parts.length - 1]
   const variants = parts.slice(0, -1)
@@ -69,7 +82,50 @@ export function parseClass(className: string): ParsedClass {
     'gap-y',
     'overflow-x',
     'overflow-y',
+    'min-w',
+    'max-w',
+    'min-h',
+    'max-h',
+    'space-x',
+    'space-y',
+    'ring-offset',
+    'backdrop-blur',
+    'backdrop-brightness',
+    'backdrop-contrast',
+    'backdrop-grayscale',
+    'backdrop-invert',
+    'backdrop-saturate',
+    'backdrop-sepia',
+    'hue-rotate',
+    'justify-self',
   ]
+
+  // Special case for divide-x and divide-y (without values, they should be treated as compound)
+  // divide-x -> utility: "divide-x", value: undefined
+  // divide-x-2 -> utility: "divide-x", value: "2"
+  if (utility === 'divide-x' || utility === 'divide-y') {
+    return {
+      raw: className,
+      variants,
+      utility,
+      value: undefined,
+      important,
+      arbitrary: false,
+    }
+  }
+
+  // Check for divide-x-{width} and divide-y-{width}
+  const divideMatch = utility.match(/^(divide-[xy])-(.+)$/)
+  if (divideMatch) {
+    return {
+      raw: className,
+      variants,
+      utility: divideMatch[1],
+      value: divideMatch[2],
+      important,
+      arbitrary: false,
+    }
+  }
 
   for (const prefix of compoundPrefixes) {
     if (utility.startsWith(prefix + '-')) {
@@ -81,6 +137,51 @@ export function parseClass(className: string): ParsedClass {
         important,
         arbitrary: false,
       }
+    }
+  }
+
+  // Check for negative values: -m-4, -top-4, -translate-x-4
+  if (utility.startsWith('-')) {
+    const positiveUtility = utility.slice(1)
+
+    // Try compound prefixes first
+    for (const prefix of compoundPrefixes) {
+      if (positiveUtility.startsWith(prefix + '-')) {
+        return {
+          raw: className,
+          variants,
+          utility: prefix,
+          value: '-' + positiveUtility.slice(prefix.length + 1),
+          important,
+          arbitrary: false,
+        }
+      }
+    }
+
+    // Regular negative value
+    const match = positiveUtility.match(/^([a-z-]+?)(?:-(.+))?$/)
+    if (match) {
+      return {
+        raw: className,
+        variants,
+        utility: match[1],
+        value: match[2] ? '-' + match[2] : undefined,
+        important,
+        arbitrary: false,
+      }
+    }
+  }
+
+  // Check for fractional values: w-1/2, h-3/4
+  const fractionMatch = utility.match(/^([a-z-]+?)-(\d+)\/(\d+)$/)
+  if (fractionMatch) {
+    return {
+      raw: className,
+      variants,
+      utility: fractionMatch[1],
+      value: `${fractionMatch[2]}/${fractionMatch[3]}`,
+      important,
+      arbitrary: false,
     }
   }
 

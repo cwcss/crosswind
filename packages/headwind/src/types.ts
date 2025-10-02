@@ -30,6 +30,34 @@ export interface VariantConfig {
   active: boolean
   disabled: boolean
   dark: boolean
+  // Group/Peer
+  group: boolean
+  peer: boolean
+  // Pseudo-elements
+  before: boolean
+  after: boolean
+  // Pseudo-classes
+  first: boolean
+  last: boolean
+  odd: boolean
+  even: boolean
+  'first-of-type': boolean
+  'last-of-type': boolean
+  visited: boolean
+  checked: boolean
+  'focus-within': boolean
+  'focus-visible': boolean
+  // Media
+  print: boolean
+  // Direction
+  rtl: boolean
+  ltr: boolean
+  // Motion
+  'motion-safe': boolean
+  'motion-reduce': boolean
+  // Contrast
+  'contrast-more': boolean
+  'contrast-less': boolean
 }
 
 export interface ParsedClass {
@@ -45,6 +73,12 @@ export interface CSSRule {
   selector: string
   properties: Record<string, string>
   mediaQuery?: string
+  childSelector?: string // For utilities like space-x that need child selectors
+}
+
+export interface UtilityRuleResult {
+  properties: Record<string, string>
+  childSelector?: string
 }
 
 export type CustomRule = [RegExp, (match: RegExpMatchArray) => Record<string, string> | undefined]

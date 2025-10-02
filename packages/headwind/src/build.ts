@@ -30,13 +30,8 @@ export async function build(config: HeadwindConfig): Promise<BuildResult> {
     generator.generate(className)
   }
 
-  // Add preflights (reset CSS)
-  let preflightCSS = ''
-  for (const preflight of config.preflights) {
-    preflightCSS += preflight.getCSS() + '\n\n'
-  }
-
-  const css = preflightCSS + generator.toCSS(config.minify)
+  // Preflight CSS is now added by generator.toCSS()
+  const css = generator.toCSS(config.minify)
   const duration = performance.now() - startTime
 
   return {
