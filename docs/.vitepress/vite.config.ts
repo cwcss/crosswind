@@ -1,6 +1,4 @@
 import { resolve } from 'node:path'
-// import Inspect from 'vite-plugin-inspect'
-import UnoCSS from 'unocss/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import Icons from 'unplugin-icons/vite'
 import Components from 'unplugin-vue-components/vite'
@@ -45,8 +43,6 @@ export default defineConfig({
       compiler: 'vue3',
       defaultStyle: 'display: inline-block',
     }),
-
-    UnoCSS(resolve(__dirname, 'unocss.config.ts')),
 
     // Inspect(),
   ],
