@@ -1,67 +1,443 @@
 # Configuration
 
-_This is just an example of the ts-starter docs._
+Headwind is configured using a `headwind.config.ts` (or `headwind.config.js`) file in your project root. The configuration file is automatically loaded when running any Headwind command.
 
-The Reverse Proxy can be configured using a `reverse-proxy.config.ts` _(or `reverse-proxy.config.js`)_ file and it will be automatically loaded when running the `reverse-proxy` command.
+## Quick Start
 
-```ts
-// reverse-proxy.config.{ts,js}
-import type { ReverseProxyOptions } from '@stacksjs/rpx'
-import os from 'node:os'
-import path from 'node:path'
+Create a configuration file using the init command:
 
-const config: ReverseProxyOptions = {
-  /**
-   * The from URL to proxy from.
-   * Default: localhost:5173
-   */
-  from: 'localhost:5173',
+```bash
+headwind init
+```
 
-  /**
-   * The to URL to proxy to.
-   * Default: stacks.localhost
-   */
-  to: 'stacks.localhost',
+This creates a basic `headwind.config.ts` file:
 
-  /**
-   * The HTTPS settings.
-   * Default: true
-   * If set to false, the proxy will use HTTP.
-   * If set to true, the proxy will use HTTPS.
-   * If set to an object, the proxy will use HTTPS with the provided settings.
-   */
-  https: {
-    domain: 'stacks.localhost',
-    hostCertCN: 'stacks.localhost',
-    caCertPath: path.join(os.homedir(), '.stacks', 'ssl', `stacks.localhost.ca.crt`),
-    certPath: path.join(os.homedir(), '.stacks', 'ssl', `stacks.localhost.crt`),
-    keyPath: path.join(os.homedir(), '.stacks', 'ssl', `stacks.localhost.crt.key`),
-    altNameIPs: ['127.0.0.1'],
-    altNameURIs: ['localhost'],
-    organizationName: 'stacksjs.org',
-    countryName: 'US',
-    stateName: 'California',
-    localityName: 'Playa Vista',
-    commonName: 'stacks.localhost',
-    validityDays: 180,
-    verbose: false,
-  },
+```typescript
+import type { HeadwindConfig } from 'headwind'
 
-  /**
-   * The verbose setting.
-   * Default: false
-   * If set to true, the proxy will log more information.
-   */
-  verbose: false,
-}
+const config = {
+  content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
+  output: './dist/headwind.css',
+} satisfies Partial<HeadwindConfig>
 
 export default config
 ```
 
-_Then run:_
+## Configuration Options
 
-```bash
-./rpx start
+### content
+
+- **Type:** `string[]`
+- **Required:** Yes
+- **Default:** `[]`
+
+Glob patterns to scan for utility classes. Supports all file types including HTML, JavaScript, TypeScript, JSX, and TSX.
+
+```typescript
+const config = {
+  content: [
+    './src/**/*.{html,js,ts,jsx,tsx}',
+    './components/**/*.vue',
+    './pages/**/*.svelte',
+  ],
+} satisfies Partial<HeadwindConfig>
 ```
 
-To learn more, head over to the [documentation](https://reverse-proxy.sh/).
+**Tips:**
+- Use specific patterns to improve scan performance
+- Exclude `node_modules` and build directories
+- Include all file types where you use utility classes
+
+### output
+
+- **Type:** `string`
+- **Required:** Yes
+- **Default:** `'./headwind.css'`
+
+Path to the output CSS file.
+
+```typescript
+const config = {
+  output: './dist/styles/headwind.css',
+} satisfies Partial<HeadwindConfig>
+```
+
+### theme
+
+- **Type:** `object`
+- **Required:** No
+- **Default:** Default Tailwind-compatible theme
+
+Customize colors, spacing, fonts, and other design tokens.
+
+```typescript
+const config = {
+  theme: {
+    colors: {
+      primary: '#3b82f6',
+      secondary: '#8b5cf6',
+      danger: '#ef4444',
+      // Add custom colors
+      brand: {
+        50: '#f0f9ff',
+        100: '#e0f2fe',
+        500: '#0ea5e9',
+        900: '#0c4a6e',
+      },
+    },
+    spacing: {
+      xs: '0.5rem',
+      sm: '1rem',
+      md: '1.5rem',
+      lg: '2rem',
+      xl: '3rem',
+    },
+    fontFamily: {
+      sans: ['Inter', 'system-ui', 'sans-serif'],
+      mono: ['Fira Code', 'monospace'],
+    },
+    fontSize: {
+      xs: '0.75rem',
+      sm: '0.875rem',
+      base: '1rem',
+      lg: '1.125rem',
+      xl: '1.25rem',
+      '2xl': '1.5rem',
+      '3xl': '1.875rem',
+      '4xl': '2.25rem',
+    },
+    borderRadius: {
+      none: '0',
+      sm: '0.125rem',
+      DEFAULT: '0.25rem',
+      md: '0.375rem',
+      lg: '0.5rem',
+      full: '9999px',
+    },
+  },
+} satisfies Partial<HeadwindConfig>
+```
+
+### preflight
+
+- **Type:** `boolean`
+- **Required:** No
+- **Default:** `true`
+
+Include CSS reset/normalize styles (similar to Tailwind's preflight).
+
+```typescript
+const config = {
+  preflight: true, // Include reset styles
+} satisfies Partial<HeadwindConfig>
+```
+
+Preflight includes:
+- Modern CSS reset
+- Box-sizing border-box
+- Default border styles
+- Form element normalization
+
+### minify
+
+- **Type:** `boolean`
+- **Required:** No
+- **Default:** `false`
+
+Minify the output CSS for production.
+
+```typescript
+const config = {
+  minify: true, // Enable minification
+} satisfies Partial<HeadwindConfig>
+```
+
+When enabled, the output CSS is minified by removing:
+- Whitespace
+- Comments
+- Redundant rules
+
+### compileClass
+
+- **Type:** `object`
+- **Required:** No
+- **Default:** `{ enabled: false }`
+
+Configure the compile class transformer to optimize HTML by compiling groups of utilities into single class names.
+
+```typescript
+const config = {
+  compileClass: {
+    enabled: true,           // Enable the transformer
+    trigger: ':hw:',          // Trigger string (default)
+    classPrefix: 'hw-',       // Prefix for generated names (default)
+    layer: 'shortcuts',       // Layer name (default)
+  },
+} satisfies Partial<HeadwindConfig>
+```
+
+**Options:**
+
+- **enabled** - Enable or disable the transformer
+- **trigger** - String to mark classes for compilation (e.g., `:hw:`)
+- **classPrefix** - Prefix for generated class names (e.g., `hw-`)
+- **layer** - CSS layer name for future CSS layers support
+
+**Usage:**
+
+```html
+<!-- Before compilation -->
+<div class=":hw: flex items-center justify-between px-4 py-2">
+  Content
+</div>
+
+<!-- After compilation -->
+<div class="hw-abc123">
+  Content
+</div>
+```
+
+See [Compile Class Documentation](./compile-class.md) for more details.
+
+### shortcuts
+
+- **Type:** `object`
+- **Required:** No
+- **Default:** `{}`
+
+Define reusable utility combinations as shortcuts.
+
+```typescript
+const config = {
+  shortcuts: {
+    'btn': 'px-4 py-2 rounded font-semibold',
+    'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600',
+    'btn-secondary': 'btn bg-gray-200 text-gray-800 hover:bg-gray-300',
+    'card': 'rounded-lg shadow-md p-6 bg-white',
+    'input': 'border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500',
+  },
+} satisfies Partial<HeadwindConfig>
+```
+
+**Usage:**
+
+```html
+<button class="btn-primary">Click Me</button>
+<div class="card">Card content</div>
+<input class="input" type="text" />
+```
+
+### rules
+
+- **Type:** `object`
+- **Required:** No
+- **Default:** `{}`
+
+Add custom utility rules.
+
+```typescript
+const config = {
+  rules: {
+    // Static rule
+    'custom-utility': {
+      'property-name': 'value',
+    },
+    // Dynamic rule with pattern matching
+    'custom-{value}': (match) => ({
+      'custom-property': match.groups.value,
+    }),
+  },
+} satisfies Partial<HeadwindConfig>
+```
+
+**Example:**
+
+```typescript
+const config = {
+  rules: {
+    // Add custom gradient utility
+    'bg-gradient-primary': {
+      'background-image': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    },
+    // Add custom spacing utility
+    'space-{size}': (match) => ({
+      'margin': `${match.groups.size}px`,
+    }),
+  },
+} satisfies Partial<HeadwindConfig>
+```
+
+### presets
+
+- **Type:** `array`
+- **Required:** No
+- **Default:** `[]`
+
+Extend configuration with shareable presets.
+
+```typescript
+import { myCustomPreset } from './presets/custom'
+
+const config = {
+  presets: [
+    myCustomPreset,
+  ],
+} satisfies Partial<HeadwindConfig>
+```
+
+**Creating a Preset:**
+
+```typescript
+// presets/custom.ts
+import type { HeadwindConfig } from 'headwind'
+
+export const myCustomPreset: Partial<HeadwindConfig> = {
+  theme: {
+    colors: {
+      brand: '#3b82f6',
+    },
+  },
+  shortcuts: {
+    'btn': 'px-4 py-2 rounded',
+  },
+}
+```
+
+## Complete Configuration Example
+
+```typescript
+import type { HeadwindConfig } from 'headwind'
+
+const config = {
+  // Required
+  content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
+  output: './dist/headwind.css',
+
+  // Optional
+  preflight: true,
+  minify: process.env.NODE_ENV === 'production',
+
+  // Theme customization
+  theme: {
+    colors: {
+      primary: '#3b82f6',
+      secondary: '#8b5cf6',
+      success: '#10b981',
+      warning: '#f59e0b',
+      danger: '#ef4444',
+    },
+    fontFamily: {
+      sans: ['Inter', 'system-ui', 'sans-serif'],
+      mono: ['Fira Code', 'monospace'],
+    },
+  },
+
+  // Compile class transformer
+  compileClass: {
+    enabled: true,
+    trigger: ':hw:',
+    classPrefix: 'hw-',
+  },
+
+  // Shortcuts
+  shortcuts: {
+    'btn': 'px-4 py-2 rounded font-semibold transition-colors',
+    'btn-primary': 'btn bg-primary text-white hover:bg-blue-600',
+    'btn-secondary': 'btn bg-secondary text-white hover:bg-purple-600',
+    'card': 'rounded-lg shadow-md p-6 bg-white',
+  },
+
+  // Custom rules
+  rules: {
+    'bg-gradient-primary': {
+      'background-image': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    },
+  },
+} satisfies Partial<HeadwindConfig>
+
+export default config
+```
+
+## Environment-Specific Configuration
+
+You can create different configurations for different environments:
+
+```typescript
+import type { HeadwindConfig } from 'headwind'
+
+const isDev = process.env.NODE_ENV === 'development'
+const isProd = process.env.NODE_ENV === 'production'
+
+const config = {
+  content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
+  output: isProd ? './dist/headwind.min.css' : './dist/headwind.css',
+
+  preflight: true,
+  minify: isProd,
+
+  compileClass: {
+    enabled: isProd, // Only compile in production
+  },
+} satisfies Partial<HeadwindConfig>
+
+export default config
+```
+
+## TypeScript Support
+
+Headwind provides full TypeScript support with type checking and autocomplete:
+
+```typescript
+import type { HeadwindConfig } from 'headwind'
+
+// Use satisfies for type checking while preserving literal types
+const config = {
+  content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
+  output: './dist/headwind.css',
+} satisfies Partial<HeadwindConfig>
+
+export default config
+```
+
+## Configuration Loading
+
+Headwind automatically searches for configuration files in this order:
+
+1. `headwind.config.ts`
+2. `headwind.config.js`
+3. `headwind.config.mjs`
+
+You can also specify a custom config path:
+
+```bash
+headwind build --config ./config/custom.config.ts
+```
+
+## Configuration Override
+
+CLI options override configuration file settings:
+
+```bash
+# Override output path
+headwind build --output ./dist/custom.css
+
+# Override content patterns
+headwind build --content "./src/**/*.tsx"
+```
+
+## Best Practices
+
+1. **Use TypeScript** - Enable type checking with `satisfies Partial<HeadwindConfig>`
+2. **Specific Content Patterns** - Use precise glob patterns for better performance
+3. **Environment Variables** - Use environment variables for environment-specific settings
+4. **Organize Presets** - Extract common configurations into reusable presets
+5. **Version Control** - Commit your configuration file to version control
+6. **Comment Complex Rules** - Add comments to explain custom rules and utilities
+
+## Related
+
+- [CLI Reference](./cli.md)
+- [Compile Class Transformer](./compile-class.md)
+- [Theme Customization](./theme.md)
+- [Custom Rules](./rules.md)
+- [Shortcuts](./shortcuts.md)
