@@ -60,15 +60,35 @@ const sidebar = [
       { text: 'Config', link: '/config' },
     ],
   },
-  { text: 'Showcase', link: '/Showcase' },
+  {
+    text: 'Features',
+    items: [
+      { text: 'Watch Mode', link: '/features/watch-mode' },
+      { text: 'Compile Class', link: '/features/compile-class' },
+      { text: 'Shortcuts', link: '/features/shortcuts' },
+      { text: 'CLI Commands', link: '/features/cli' },
+      { text: 'TypeScript Support', link: '/features/typescript' },
+    ],
+  },
+  {
+    text: 'Advanced',
+    items: [
+      { text: 'Custom Rules', link: '/advanced/custom-rules' },
+      { text: 'Presets', link: '/advanced/presets' },
+      { text: 'Theme Customization', link: '/advanced/theme-customization' },
+      { text: 'Framework Integration', link: '/advanced/frameworks' },
+    ],
+  },
+  { text: 'API Reference', link: '/api-reference' },
+  { text: 'Showcase', link: '/showcase' },
 ]
-const description = 'A TypeScript Starter Kit. For a better Development Experience.'
-const title = 'ts-starter | A TypeScript Starter Kit. For a better Development Experience.'
+const description = 'Blazingly fast utility-first CSS framework built with Bun. Generate only the CSS you need with Tailwind-compatible syntax.'
+const title = 'Headwind | Blazingly Fast Utility-First CSS Built with Bun'
 
 export default withPwa(
   defineConfig({
     lang: 'en-US',
-    title: 'ts-starter',
+    title: 'Headwind',
     description,
     metaChunk: true,
     cleanUrls: true,
@@ -83,7 +103,7 @@ export default withPwa(
       ['meta', { name: 'author', content: 'Stacks.js, Inc.' }],
       ['meta', {
         name: 'tags',
-        content: 'ts-starter, stacksjs, reverse proxy, modern, lightweight, zero-config, local development',
+        content: 'headwind, css framework, utility-first, tailwind, bun, typescript, fast, lightweight',
       }],
 
       ['meta', { property: 'og:type', content: 'website' }],
@@ -91,9 +111,9 @@ export default withPwa(
       ['meta', { property: 'og:title', content: title }],
       ['meta', { property: 'og:description', content: description }],
 
-      ['meta', { property: 'og:site_name', content: 'ts-starter' }],
+      ['meta', { property: 'og:site_name', content: 'Headwind' }],
       ['meta', { property: 'og:image', content: './images/og-image.jpg' }],
-      ['meta', { property: 'og:url', content: 'https://reverse-proxy.sh/' }],
+      ['meta', { property: 'og:url', content: 'https://headwind.stacksjs.org/' }],
       // ['script', { 'src': 'https://cdn.usefathom.com/script.js', 'data-site': '', 'data-spa': 'auto', 'defer': '' }],
       ...analyticsHead,
     ],
@@ -111,7 +131,7 @@ export default withPwa(
       sidebar,
 
       editLink: {
-        pattern: 'https://github.com/stacksjs/stacks/edit/main/docs/docs/:path',
+        pattern: 'https://github.com/stacksjs/headwind/edit/main/docs/:path',
         text: 'Edit this page on GitHub',
       },
 
@@ -123,7 +143,7 @@ export default withPwa(
       socialLinks: [
         { icon: 'twitter', link: 'https://twitter.com/stacksjs' },
         { icon: 'bluesky', link: 'https://bsky.app/profile/chrisbreuer.dev' },
-        { icon: 'github', link: 'https://github.com/stacksjs/ts-starter' },
+        { icon: 'github', link: 'https://github.com/stacksjs/headwind' },
         { icon: 'discord', link: 'https://discord.gg/stacksjs' },
       ],
 
