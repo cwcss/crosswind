@@ -2,11 +2,6 @@
 
 Get started with Headwind by installing it via your package manager or using pre-built binaries.
 
-## Requirements
-
-- **Bun** 1.0 or higher (recommended)
-- **Node.js** 18+ (for npm/pnpm/yarn)
-
 ## Package Managers
 
 Install Headwind as a development dependency in your project:
@@ -371,6 +366,7 @@ headwind watch
 ```
 
 This will:
+
 - Watch all files matching your content patterns
 - Automatically rebuild CSS on changes
 - Show build statistics in the terminal
@@ -428,11 +424,13 @@ bunx headwind build
 If you encounter TypeScript errors in your config file:
 
 1. Ensure you have TypeScript installed:
+
    ```bash
    bun add --dev typescript
    ```
 
 2. Use the `satisfies` keyword for type checking:
+
    ```typescript
    import type { HeadwindConfig } from 'headwind'
 
@@ -449,6 +447,7 @@ If the build fails:
 1. Check that your content patterns are correct
 2. Ensure the output directory exists or can be created
 3. Run with `--verbose` for detailed error information:
+
    ```bash
    headwind build --verbose
    ```
