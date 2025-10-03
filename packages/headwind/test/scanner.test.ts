@@ -56,7 +56,7 @@ describe('Scanner', () => {
   describe('scan', () => {
     it('should scan all files matching pattern', async () => {
       const scanner = new Scanner([join(TEST_DIR, '*.html')])
-      const classes = await scanner.scan()
+      const { classes } = await scanner.scan()
       expect(classes.has('flex')).toBe(true)
       expect(classes.has('p-4')).toBe(true)
       expect(classes.has('bg-blue-500')).toBe(true)
@@ -67,7 +67,7 @@ describe('Scanner', () => {
         join(TEST_DIR, '*.html'),
         join(TEST_DIR, '*.tsx'),
       ])
-      const classes = await scanner.scan()
+      const { classes } = await scanner.scan()
       expect(classes.has('flex')).toBe(true)
       expect(classes.has('px-4')).toBe(true)
       expect(classes.has('py-2')).toBe(true)
@@ -76,14 +76,14 @@ describe('Scanner', () => {
 
     it('should handle JSX files', async () => {
       const scanner = new Scanner([join(TEST_DIR, '*.jsx')])
-      const classes = await scanner.scan()
+      const { classes } = await scanner.scan()
       expect(classes.has('text-center')).toBe(true)
       expect(classes.has('font-bold')).toBe(true)
     })
 
     it('should scan all file types with glob pattern', async () => {
       const scanner = new Scanner([join(TEST_DIR, '*.{html,tsx,jsx}')])
-      const classes = await scanner.scan()
+      const { classes } = await scanner.scan()
       expect(classes.size).toBeGreaterThan(5)
       expect(classes.has('flex')).toBe(true)
       expect(classes.has('px-4')).toBe(true)

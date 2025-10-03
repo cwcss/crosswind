@@ -1,3 +1,26 @@
+export interface CompileClassConfig {
+  /**
+   * Enable compile class transformer
+   * @default false
+   */
+  enabled?: boolean
+  /**
+   * Trigger string to mark classes for compilation
+   * @default ':hw:'
+   */
+  trigger?: string
+  /**
+   * Prefix for generated class names
+   * @default 'hw-'
+   */
+  classPrefix?: string
+  /**
+   * Layer name for compiled classes
+   * @default 'shortcuts'
+   */
+  layer?: string
+}
+
 export interface HeadwindConfig {
   content: string[]
   output: string
@@ -12,6 +35,7 @@ export interface HeadwindConfig {
   blocklist: string[]
   preflights: Preflight[]
   presets: Preset[]
+  compileClass?: CompileClassConfig
 }
 
 export interface Theme {

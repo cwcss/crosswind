@@ -1,17 +1,27 @@
 import { Glob } from 'bun'
 import { extractClasses } from './parser'
+import type { CompileClassTransformer } from './transformer-compile-class'
+
+export interface ScanResult {
+  classes: Set<string>
+  transformedFiles: Map<string, string>
+}
 
 /**
  * Scans files for utility classes using Bun's fast Glob API
  */
 export class Scanner {
-  constructor(private patterns: string[]) {}
+  constructor(
+    private patterns: string[],
+    private transformer: CompileClassTransformer | null | undefined = undefined,
+  ) {}
 
   /**
    * Scan all files matching the patterns and extract utility classes
    */
-  async scan(): Promise<Set<string>> {
+  async scan(): Promise<ScanResult> {
     const allClasses = new Set<string>()
+    const transformedFiles = new Map<string, string>()
 
     // Use Promise.all to scan all patterns concurrently for better performance
     await Promise.all(
@@ -21,7 +31,17 @@ export class Scanner {
         // Bun's glob.scan() returns an async iterable
         for await (const file of glob.scan('.')) {
           try {
-            const content = await Bun.file(file).text()
+            let content = await Bun.file(file).text()
+
+            // Apply transformer if enabled
+            if (this.transformer) {
+              const result = this.transformer.processFile(content)
+              if (result.hasChanges) {
+                transformedFiles.set(file, result.content)
+                content = result.content
+              }
+            }
+
             const classes = extractClasses(content)
 
             for (const cls of classes) {
@@ -37,7 +57,7 @@ export class Scanner {
       }),
     )
 
-    return allClasses
+    return { classes: allClasses, transformedFiles }
   }
 
   /**
