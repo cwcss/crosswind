@@ -43,6 +43,7 @@ Unlike traditional frameworks that ship large CSS files, Headwind scans your sou
 ```
 
 This approach results in:
+
 - **Smaller CSS files** - Only ship what you use
 - **Faster load times** - Less CSS to download and parse
 - **Better performance** - Reduced render-blocking CSS
@@ -85,6 +86,7 @@ Headwind includes a compile class transformer that optimizes your HTML by compil
 ```
 
 Benefits:
+
 - **Smaller HTML** - Reduce HTML file size by up to 60%
 - **Better caching** - Deterministic class names improve cache hits
 - **Automatic deduplication** - Identical class groups share the same compiled name
@@ -229,10 +231,12 @@ Use utility classes directly in your HTML:
 ```
 
 Benefits:
+
 - No context switching between HTML and CSS
 - No naming things (avoid "card-container-wrapper-inner")
 - Easier to maintain and refactor
 - Consistent design system
+- LLM-friendly
 
 ### Responsive Design
 
@@ -249,6 +253,7 @@ Build responsive layouts with responsive variants:
 ```
 
 Breakpoints:
+
 - `sm:` - 640px and up
 - `md:` - 768px and up
 - `lg:` - 1024px and up
