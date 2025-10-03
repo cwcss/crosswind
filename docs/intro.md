@@ -385,8 +385,8 @@ Now that you understand what Headwind is and how it works, explore:
 - [Installation Guide](./install.md) - Set up Headwind in your project
 - [Configuration Guide](./config.md) - Customize Headwind to your needs
 - [Usage Guide](./usage.md) - Learn all available utility classes
-- [CLI Reference](./cli.md) - Explore CLI commands and options
-- [Compile Class Transformer](./compile-class.md) - Optimize your HTML
+- [CLI Reference](./features/cli.md) - Explore CLI commands and options
+- [Compile Class Transformer](./features/compile-class.md) - Optimize your HTML
 
 ## Community & Support
 

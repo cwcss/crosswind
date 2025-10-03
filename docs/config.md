@@ -197,7 +197,7 @@ const config = {
 </div>
 ```
 
-See [Compile Class Documentation](./compile-class.md) for more details.
+See [Compile Class Documentation](./features/compile-class.md) for more details.
 
 ### shortcuts
 
@@ -436,8 +436,8 @@ headwind build --content "./src/**/*.tsx"
 
 ## Related
 
-- [CLI Reference](./cli.md)
-- [Compile Class Transformer](./compile-class.md)
-- [Theme Customization](./theme.md)
-- [Custom Rules](./rules.md)
-- [Shortcuts](./shortcuts.md)
+- [CLI Reference](./features/cli.md)
+- [Compile Class Transformer](./features/compile-class.md)
+- [Theme Customization](./advanced/theme-customization.md)
+- [Custom Rules](./advanced/custom-rules.md)
+- [Shortcuts](./features/shortcuts.md)

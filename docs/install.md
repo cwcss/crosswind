@@ -397,8 +397,8 @@ const config = {
 
 - [Configuration Guide](./config.md) - Learn about all configuration options
 - [Usage Guide](./usage.md) - Start using utility classes
-- [CLI Reference](./cli.md) - Explore all CLI commands
-- [Compile Class Transformer](./compile-class.md) - Optimize your HTML
+- [CLI Reference](./features/cli.md) - Explore all CLI commands
+- [Compile Class Transformer](./features/compile-class.md) - Optimize your HTML
 
 ## Troubleshooting
 

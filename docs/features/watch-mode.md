@@ -335,4 +335,3 @@ module.exports = {
 
 - [CLI Commands](./cli.md) - All available CLI commands
 - [Configuration](../config.md) - Configure watch behavior
-- [Performance](../advanced/performance.md) - Optimize build performance
