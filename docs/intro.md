@@ -334,43 +334,6 @@ Use shortcuts like any other utility:
 <div class="card">Card content</div>
 ```
 
-## Comparison with Other Frameworks
-
-### vs. Tailwind CSS
-
-Headwind is Tailwind-compatible but with key differences:
-
-| Feature | Headwind | Tailwind |
-|---------|----------|----------|
-| Runtime | Bun | Node.js |
-| Build Speed | ~8ms for 1000+ utilities | ~50-100ms |
-| Configuration | TypeScript-first | JavaScript |
-| JIT Mode | Always on-demand | Optional JIT mode |
-| Compile Classes | Built-in transformer | Requires additional setup |
-| Bundle Size | ~15KB (framework) | ~400KB (with PostCSS) |
-
-### vs. UnoCSS
-
-Both are fast, on-demand frameworks:
-
-| Feature | Headwind | UnoCSS |
-|---------|----------|--------|
-| Runtime | Bun | Node.js |
-| Tailwind Compat | High compatibility | Preset-based |
-| TypeScript | Fully typed | Typed presets |
-| Compile Mode | Built-in `:hw:` trigger | Built-in compile mode |
-| Ecosystem | Growing | Large preset ecosystem |
-
-### vs. Traditional CSS Frameworks (Bootstrap, etc.)
-
-| Feature | Headwind | Bootstrap |
-|---------|----------|-----------|
-| Approach | Utility-first | Component-based |
-| CSS Size | Only what you use (~5-20KB) | Full framework (~150KB) |
-| Customization | Highly configurable | Theme variables |
-| Learning Curve | Moderate | Lower |
-| Flexibility | Very high | Lower |
-
 ## Philosophy
 
 Headwind is built on several core principles:
@@ -379,7 +342,7 @@ Headwind is built on several core principles:
 2. **Developer Experience** - TypeScript-first, fully typed APIs
 3. **Utility-First** - Compose complex components from simple utilities
 4. **On-Demand Only** - Never ship unused CSS
-5. **Tailwind-Compatible** - Leverage existing knowledge and tools
+5. **Tailwind & UnoCSS-Compatible** - Leverage existing knowledge and tools
 6. **Extensible** - Customize everything via configuration
 7. **Production-Ready** - Optimizations like class compilation and minification
 
