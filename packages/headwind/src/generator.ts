@@ -3,12 +3,39 @@ import { builtInRules } from './rules'
 import { parseClass } from './parser'
 
 /**
+ * Deep merge objects
+ */
+function deepMerge<T extends Record<string, any>>(target: T, source: Partial<T>): T {
+  const result = { ...target }
+  for (const key in source) {
+    const sourceValue = source[key]
+    const targetValue = result[key]
+    if (sourceValue && typeof sourceValue === 'object' && !Array.isArray(sourceValue) && targetValue && typeof targetValue === 'object' && !Array.isArray(targetValue)) {
+      result[key] = deepMerge(targetValue, sourceValue)
+    }
+    else if (sourceValue !== undefined) {
+      result[key] = sourceValue as any
+    }
+  }
+  return result
+}
+
+/**
  * Generates CSS rules from parsed utility classes
  */
 export class CSSGenerator {
   private rules: Map<string, CSSRule[]> = new Map()
 
-  constructor(private config: HeadwindConfig) {}
+  constructor(private config: HeadwindConfig) {
+    // Merge preset themes into the main config theme
+    if (config.presets && config.presets.length > 0) {
+      for (const preset of config.presets) {
+        if (preset.theme) {
+          this.config.theme = deepMerge(this.config.theme, preset.theme)
+        }
+      }
+    }
+  }
 
   /**
    * Generate CSS for a utility class
@@ -16,9 +43,32 @@ export class CSSGenerator {
   generate(className: string): void {
     const parsed = parseClass(className)
 
-    // Check if class is blocklisted
-    if (this.config.blocklist.includes(className)) {
-      return
+    // Check if class is blocklisted (supports wildcards)
+    for (const pattern of this.config.blocklist) {
+      if (pattern.includes('*')) {
+        // Convert wildcard pattern to regex
+        const regexPattern = pattern.replace(/\*/g, '.*')
+        const regex = new RegExp(`^${regexPattern}$`)
+        if (regex.test(className)) {
+          return
+        }
+      }
+      else if (pattern === className) {
+        // Exact match
+        return
+      }
+    }
+
+    // Try custom rules from config first (allows overriding built-in rules)
+    for (const [pattern, handler] of this.config.rules) {
+      const match = className.match(pattern)
+      if (match) {
+        const properties = handler(match)
+        if (properties) {
+          this.addRule(parsed, properties)
+          return
+        }
+      }
     }
 
     // Try built-in rules
@@ -33,18 +83,6 @@ export class CSSGenerator {
           this.addRule(parsed, result as Record<string, string>)
         }
         return
-      }
-    }
-
-    // Try custom rules from config
-    for (const [pattern, handler] of this.config.rules) {
-      const match = className.match(pattern)
-      if (match) {
-        const properties = handler(match)
-        if (properties) {
-          this.addRule(parsed, properties)
-          return
-        }
       }
     }
 

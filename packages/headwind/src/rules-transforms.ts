@@ -258,14 +258,30 @@ export const transitionBehaviorRule: UtilityRule = (parsed) => {
 }
 
 export const animationRule: UtilityRule = (parsed) => {
-  const animations: Record<string, string> = {
-    'animate-none': 'none',
-    'animate-spin': 'spin 1s linear infinite',
-    'animate-ping': 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
-    'animate-pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-    'animate-bounce': 'bounce 1s infinite',
+  if (parsed.utility !== 'animate') {
+    return undefined
   }
-  return animations[parsed.raw] ? { animation: animations[parsed.raw] } : undefined
+
+  const animations: Record<string, string> = {
+    'none': 'none',
+    'spin': 'spin 1s linear infinite',
+    'ping': 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
+    'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+    'bounce': 'bounce 1s infinite',
+  }
+
+  // Support arbitrary animation values
+  if (parsed.arbitrary && parsed.value) {
+    // Replace underscores with spaces for arbitrary animation values
+    return { animation: parsed.value.replace(/_/g, ' ') }
+  }
+
+  // Support predefined animations
+  if (parsed.value && animations[parsed.value]) {
+    return { animation: animations[parsed.value] }
+  }
+
+  return undefined
 }
 
 export const transformsRules: UtilityRule[] = [

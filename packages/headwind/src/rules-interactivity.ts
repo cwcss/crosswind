@@ -4,6 +4,10 @@ import type { UtilityRule } from './rules'
 
 // Filter utilities
 export const filterRule: UtilityRule = (parsed) => {
+  // Handle filter-none
+  if (parsed.raw === 'filter-none') {
+    return { filter: 'none' }
+  }
   if (parsed.utility === 'blur' && parsed.value) {
     const blurMap: Record<string, string> = {
       none: '0',
@@ -53,6 +57,10 @@ export const filterRule: UtilityRule = (parsed) => {
 }
 
 export const backdropFilterRule: UtilityRule = (parsed) => {
+  // Handle backdrop-filter-none
+  if (parsed.raw === 'backdrop-filter-none') {
+    return { 'backdrop-filter': 'none' }
+  }
   if (parsed.utility === 'backdrop-blur' && parsed.value) {
     return { 'backdrop-filter': `blur(${parsed.value}px)` }
   }
