@@ -17,10 +17,11 @@ A blazingly fast, utility-first CSS framework built with Bun. Headwind generates
 - 🎨 **Tailwind-Compatible** - Familiar utility classes and syntax
 - 💪 **Fully Typed** - Complete TypeScript support with type-safe configuration
 - 🔧 **Highly Configurable** - Customize theme, colors, spacing, variants, and more
-- 📦 **Zero Dependencies** - Minimal footprint, maximum performance
+- 📦 **Zero Runtime Dependencies** - Minimal footprint, maximum performance
 - 🔥 **Hot Reload** - Watch mode for instant rebuilds during development
 - 🎭 **Variant Support** - Responsive, state (hover, focus, etc.), dark mode, and custom variants
 - ✨ **Modern CSS Features** - Grid, Flexbox, animations, transforms, filters, and more
+- 🔨 **Class Compilation** - Optimize HTML by compiling utility groups into single class names
 - 🧪 **Thoroughly Tested** - 860+ tests including comprehensive performance benchmarks
 - 🚀 **Production Ready** - Minification, preflight CSS, and optimized builds
 - ⌨️ **CLI & API** - Use via command line or programmatic API
@@ -37,15 +38,22 @@ npm install headwind
 
 ### Quick Start
 
-1. **Create a configuration file** (`headwind.config.ts`):
+1. **Initialize Headwind**:
+
+```bash
+# Create a config file
+bunx headwind init
+```
+
+This creates a `headwind.config.ts` file:
 
 ```typescript
 import type { HeadwindConfig } from 'headwind'
 
 export default {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/styles.css',
-  minify: true,
+  output: './dist/headwind.css',
+  minify: false,
 } satisfies Partial<HeadwindConfig>
 ```
 
@@ -84,6 +92,21 @@ const result = await build({
 })
 
 console.log(`Generated ${result.classes.size} classes in ${result.duration}ms`)
+```
+
+## CLI Commands
+
+Headwind provides a comprehensive CLI:
+
+```bash
+headwind build            # Build CSS once
+headwind watch            # Build and watch for changes
+headwind init             # Create config file
+headwind analyze          # Analyze utility class usage
+headwind clean            # Remove output CSS file
+headwind preflight        # Generate preflight CSS only
+headwind --version        # Show version
+headwind --help           # Show help
 ```
 
 ## Configuration
@@ -153,6 +176,8 @@ export default {
 } satisfies Partial<HeadwindConfig>
 ```
 
+For more configuration options, see the [Configuration Guide](https://headwind.stacksjs.org/config).
+
 ## Available Utilities
 
 Headwind provides a comprehensive set of utility classes compatible with Tailwind CSS:
@@ -189,6 +214,24 @@ Headwind supports arbitrary values for maximum flexibility:
   Custom values!
 </div>
 ```
+
+### Compile Class (HTML Optimization)
+
+Optimize your HTML by compiling utility groups into single class names:
+
+```html
+<!-- Before -->
+<div class=":hw: flex items-center justify-between px-4 py-2 bg-white rounded-lg shadow-md">
+  Content
+</div>
+
+<!-- After build -->
+<div class="hw-2k9d3a">
+  Content
+</div>
+```
+
+This reduces HTML file size by up to 60%. Learn more in the [Compile Class documentation](https://headwind.stacksjs.org/features/compile-class).
 
 ## Testing
 
@@ -253,9 +296,19 @@ bun run typecheck
 bun run build
 ```
 
+## Documentation
+
+For comprehensive documentation, visit [headwind.stacksjs.org](https://headwind.stacksjs.org)
+
+- [Installation Guide](https://headwind.stacksjs.org/install)
+- [Usage Guide](https://headwind.stacksjs.org/usage)
+- [Configuration](https://headwind.stacksjs.org/config)
+- [CLI Reference](https://headwind.stacksjs.org/features/cli)
+- [API Reference](https://headwind.stacksjs.org/api-reference)
+
 ## Changelog
 
-Please see our [releases](https://github.com/stackjs/headwind/releases) page for more information on what has changed recently.
+Please see our [releases](https://github.com/stacksjs/headwind/releases) page for more information on what has changed recently.
 
 ## Contributing
 

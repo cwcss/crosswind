@@ -12,7 +12,7 @@ const analyticsHead: HeadConfig[] = [
     'script',
     {
       'src': 'https://cdn.usefathom.com/script.js',
-      'data-site': 'DCOEHMGA',
+      'data-site': 'WHNYEUDV',
       'defer': '',
     },
   ],
@@ -103,7 +103,7 @@ export default withPwa(
       ['meta', { name: 'author', content: 'Stacks.js, Inc.' }],
       ['meta', {
         name: 'tags',
-        content: 'headwind, css framework, utility-first, tailwind, bun, typescript, fast, lightweight',
+        content: 'headwind, css framework, utility-first, tailwind, unocss, bun, typescript, fast, lightweight',
       }],
 
       ['meta', { property: 'og:type', content: 'website' }],
