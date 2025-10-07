@@ -1,3 +1,26 @@
+[Compare changes](https://github.com/stacksjs/headwind/compare/v0.1.0...v0.1.1)
+
+### 🧹 Chores
+
+- release v0.1.1 ([0bc1686](https://github.com/stacksjs/headwind/commit/0bc1686))
+- adjust permission ([9a9f5e1](https://github.com/stacksjs/headwind/commit/9a9f5e1))
+- wip ([85f06be](https://github.com/stacksjs/headwind/commit/85f06be))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+
+[Compare changes](https://github.com/stacksjs/headwind/compare/v0.1.0...HEAD)
+
+### 🧹 Chores
+
+- adjust permission ([9a9f5e1](https://github.com/stacksjs/headwind/commit/9a9f5e1))
+- wip ([85f06be](https://github.com/stacksjs/headwind/commit/85f06be))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+
 ### 🧹 Chores
 
 - wip ([3e3542b](https://github.com/stacksjs/headwind/commit/3e3542b))
