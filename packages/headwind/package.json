@@ -1,7 +1,7 @@
 {
   "name": "@stacksjs/headwind",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A blazingly fast, utility-first CSS framework built with Bun. Generates only the CSS you need by scanning your files for utility classes.",
   "author": "Chris Breuer <chris@stacksjs.org>",
   "license": "MIT",
