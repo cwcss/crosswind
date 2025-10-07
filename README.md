@@ -48,13 +48,13 @@ bunx headwind init
 This creates a `headwind.config.ts` file:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 export default {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/headwind.css',
   minify: false,
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 2. **Add utility classes to your HTML**:
@@ -114,7 +114,7 @@ headwind --help           # Show help
 Headwind supports extensive configuration options:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 export default {
   // Content sources to scan for utility classes
@@ -173,7 +173,7 @@ export default {
 
   // Presets
   presets: [],
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 For more configuration options, see the [Configuration Guide](https://headwind.stacksjs.org/config).

@@ -78,12 +78,12 @@ headwind watch
 The `headwind init` command creates a basic `headwind.config.ts` file:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/headwind.css',
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -105,7 +105,7 @@ headwind init
 Update your `headwind.config.ts`:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   content: [
@@ -115,7 +115,7 @@ const config = {
     './components/**/*.{js,ts,jsx,tsx}',
   ],
   output: './styles/headwind.css',
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -151,7 +151,7 @@ headwind init
 Update your `headwind.config.ts`:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   content: [
@@ -161,7 +161,7 @@ const config = {
     './app.vue',
   ],
   output: './assets/css/headwind.css',
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -187,14 +187,14 @@ headwind init
 Update your `headwind.config.ts`:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   content: [
     './src/**/*.{html,js,svelte,ts}',
   ],
   output: './static/headwind.css',
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -221,14 +221,14 @@ headwind init
 Update your `headwind.config.ts`:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   content: [
     './src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
   ],
   output: './public/headwind.css',
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -255,12 +255,12 @@ headwind init
 Update your `headwind.config.ts`:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   content: ['./src/**/*.html'],
   output: './dist/headwind.css',
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -386,7 +386,7 @@ const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/headwind.css',
   minify: process.env.NODE_ENV === 'production',
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ## Next Steps
@@ -432,12 +432,12 @@ If you encounter TypeScript errors in your config file:
 2. Use the `satisfies` keyword for type checking:
 
    ```typescript
-   import type { HeadwindConfig } from 'headwind'
+   import type { HeadwindOptions } from 'headwind'
 
    const config = {
      content: ['./src/**/*.tsx'],
      output: './dist/headwind.css',
-   } satisfies Partial<HeadwindConfig>
+   } satisfies HeadwindOptions
    ```
 
 ### Build Errors

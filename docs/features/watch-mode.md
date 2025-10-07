@@ -34,7 +34,7 @@ Watch mode uses the content patterns from your configuration file:
 
 ```typescript
 // headwind.config.ts
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   content: [
@@ -43,7 +43,7 @@ const config = {
     './pages/**/*.svelte',
   ],
   output: './dist/headwind.css',
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -83,6 +83,7 @@ headwind watch --verbose
 ```
 
 This shows:
+
 - File paths being watched
 - Content patterns being used
 - Detailed class information
@@ -99,7 +100,7 @@ const config = {
     './pages/**/*.tsx', // Watches: ./pages
     './components/**/*.tsx', // Watches: ./components
   ],
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ## CLI Options
@@ -128,11 +129,13 @@ headwind watch --config ./custom.config.ts
 ### Recommended Setup
 
 1. **Terminal 1: Watch Mode**
+
    ```bash
    headwind watch
    ```
 
 2. **Terminal 2: Dev Server**
+
    ```bash
    npm run dev
    # or
@@ -182,6 +185,7 @@ Watch mode is highly performant thanks to Bun:
 ### Optimization Tips
 
 1. **Use Specific Patterns**
+
    ```typescript
    // ❌ Too broad
    content: ['./**/*.tsx']
@@ -191,6 +195,7 @@ Watch mode is highly performant thanks to Bun:
    ```
 
 2. **Exclude Unnecessary Directories**
+
    ```typescript
    // Use negative patterns if needed
    content: [
@@ -201,6 +206,7 @@ Watch mode is highly performant thanks to Bun:
    ```
 
 3. **Avoid Watching Build Directories**
+
    ```typescript
    // ❌ Don't watch output directories
    content: ['./dist/**/*.tsx'] // Bad!
@@ -218,18 +224,22 @@ Watch mode is highly performant thanks to Bun:
 **Solutions:**
 
 1. Check your content patterns:
+
    ```bash
    headwind watch --verbose
    ```
+
    Look for the "👀 Watching:" output to see what's being monitored.
 
 2. Ensure file extensions are supported:
+
    ```typescript
    // Add all file types you're using
    content: ['./src/**/*.{html,js,ts,jsx,tsx,vue,svelte}']
    ```
 
 3. Verify the file is within watched directories:
+
    ```bash
    # The file must match your content patterns
    # ./src/components/Button.tsx ✅ matches ./src/**/*.tsx
@@ -253,11 +263,13 @@ Watch mode is highly performant thanks to Bun:
 **Solutions:**
 
 1. Check directory permissions:
+
    ```bash
    ls -la ./src
    ```
 
 2. Run with appropriate permissions:
+
    ```bash
    # On macOS/Linux
    chmod -R u+rw ./src
@@ -313,6 +325,7 @@ module.exports = {
    - Shows real-time class usage
 
 2. **Use Build Mode in Production**
+
    ```bash
    # Development
    headwind watch

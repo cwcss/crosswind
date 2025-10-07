@@ -92,14 +92,14 @@ export const minimalPreset: Preset = {
 
 ```typescript
 // headwind.config.ts
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 import { minimalPreset } from './presets/minimal'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/headwind.css',
   presets: [minimalPreset],
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -654,11 +654,13 @@ const exampleConfig = {
 **Check:**
 
 1. Preset is imported correctly:
+
    ```typescript
    import { myPreset } from './presets/my-preset'
    ```
 
 2. Preset is added to config:
+
    ```typescript
    const config = {
      presets: [myPreset], // ✅
@@ -666,6 +668,7 @@ const exampleConfig = {
    ```
 
 3. Preset has correct structure:
+
    ```typescript
    const preset: Preset = {
      name: 'my-preset', // Required

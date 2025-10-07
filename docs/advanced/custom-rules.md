@@ -16,7 +16,7 @@ While Headwind includes comprehensive built-in utilities, you can add custom rul
 Define custom rules in your configuration:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   rules: [
@@ -36,7 +36,7 @@ const config = {
       }),
     ],
   ],
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -97,6 +97,7 @@ const config = {
 ```
 
 Usage:
+
 ```html
 <div class="glass">Glassmorphism effect</div>
 ```
@@ -117,6 +118,7 @@ const config = {
 ```
 
 Usage:
+
 ```html
 <div class="aspect-16/9">16:9 aspect ratio</div>
 <div class="aspect-4/3">4:3 aspect ratio</div>
@@ -150,6 +152,7 @@ const config = {
 ```
 
 Usage:
+
 ```html
 <span class="brand-primary">Primary brand color</span>
 <span class="brand-secondary">Secondary brand color</span>
@@ -183,6 +186,7 @@ const config = {
 ```
 
 Usage:
+
 ```html
 <div class="grid grid-areas-header">
   <header class="grid-area-[header]">Header</header>
@@ -213,6 +217,7 @@ const config = {
 ```
 
 Usage:
+
 ```html
 <div class="animate-delay-500 animate-duration-1000">
   Delayed animation
@@ -279,7 +284,7 @@ const config = {
 Access theme values in custom rules:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   theme: {
@@ -307,7 +312,7 @@ const config = {
       },
     ],
   ],
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ### Vendor Prefixes
@@ -420,6 +425,7 @@ const config = {
 ```
 
 Usage:
+
 ```html
 <div class="gradient-blue-to-purple">
   Blue to purple gradient
@@ -459,11 +465,13 @@ const config = {
 ### 1. Use Specific Patterns
 
 ✅ **Good:**
+
 ```typescript
 /^my-utility-(\d+)$/ // Specific pattern
 ```
 
 ❌ **Avoid:**
+
 ```typescript
 /^my-/ // Too broad, might conflict
 ```
@@ -559,6 +567,7 @@ Custom rules have minimal performance impact:
 ### Optimization Tips
 
 1. **Use specific patterns:**
+
    ```typescript
    // ✅ Fast
    /^my-utility-(\d+)$/
@@ -568,6 +577,7 @@ Custom rules have minimal performance impact:
    ```
 
 2. **Avoid complex logic:**
+
    ```typescript
    // ✅ Simple check
    if (value === 'sm')
@@ -579,6 +589,7 @@ Custom rules have minimal performance impact:
    ```
 
 3. **Cache computed values:**
+
    ```typescript
    const computedValues = new Map()
 
@@ -605,18 +616,21 @@ Custom rules have minimal performance impact:
 **Check:**
 
 1. Pattern is correct:
+
    ```typescript
    // Test pattern
    /^my-utility-(\d+)$/.test('my-utility-10') // true
    ```
 
 2. Class name matches exactly:
+
    ```html
    <div class="my-utility-10">✅ Matches</div>
    <div class="my-utility-abc">❌ No match</div>
    ```
 
 3. Handler returns valid object:
+
    ```typescript
    (match) => {
      console.log('Match:', match)

@@ -208,14 +208,14 @@ cli
       process.exit(1)
     }
 
-    const defaultConfig = `import type { HeadwindConfig } from 'headwind'
+    const defaultConfig = `import type { HeadwindOptions } from '@stacksjs/headwind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/headwind.css',
   minify: false,
   watch: false,
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 `

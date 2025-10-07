@@ -25,6 +25,7 @@ headwind build [options]
 ```
 
 **Options:**
+
 - `--output <path>` - Output CSS file path
 - `--minify` - Minify CSS output
 - `--watch` - Watch for file changes
@@ -59,6 +60,7 @@ headwind build --no-preflight
 ```
 
 **Output:**
+
 ```bash
 🚀 Building CSS...
 ✅ Built 1243 classes in 8.45ms
@@ -75,6 +77,7 @@ headwind watch [options]
 ```
 
 **Options:**
+
 - `--output <path>` - Output CSS file path
 - `--minify` - Minify CSS output
 - `--content <pattern>` - Content file pattern
@@ -98,6 +101,7 @@ headwind watch --verbose
 ```
 
 **Output:**
+
 ```bash
 🚀 Building CSS...
 ✅ Built 1243 classes in 8.45ms
@@ -120,6 +124,7 @@ headwind init [options]
 ```
 
 **Options:**
+
 - `--force` - Overwrite existing config file
 
 **Examples:**
@@ -133,6 +138,7 @@ headwind init --force
 ```
 
 **Output:**
+
 ```bash
 ✅ Created headwind.config.ts
 
@@ -142,15 +148,16 @@ Next steps:
 ```
 
 **Generated file:**
+
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/headwind.css',
   minify: false,
   watch: false,
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -164,6 +171,7 @@ headwind analyze [options]
 ```
 
 **Options:**
+
 - `--config <path>` - Path to config file
 - `--verbose` - Show detailed output
 - `--json` - Output as JSON
@@ -186,6 +194,7 @@ headwind analyze --verbose
 ```
 
 **Output:**
+
 ```bash
 🔍 Analyzing utility classes...
 
@@ -207,6 +216,7 @@ headwind analyze --verbose
 ```
 
 **JSON output** (`--json`):
+
 ```json
 {
   "totalClasses": 1243,
@@ -234,6 +244,7 @@ headwind clean [options]
 ```
 
 **Options:**
+
 - `--config <path>` - Path to config file
 
 **Examples:**
@@ -247,6 +258,7 @@ headwind clean --config ./custom.config.ts
 ```
 
 **Output:**
+
 ```bash
 ✅ Removed ./dist/headwind.css
 ```
@@ -260,6 +272,7 @@ headwind preflight [options]
 ```
 
 **Options:**
+
 - `--output <path>` - Output CSS file path (default: `./preflight.css`)
 
 **Examples:**
@@ -273,6 +286,7 @@ headwind preflight --output ./reset.css
 ```
 
 **Output:**
+
 ```bash
 ✅ Generated preflight CSS
 📝 Output: ./preflight.css
@@ -290,6 +304,7 @@ headwind --version
 ```
 
 **Output:**
+
 ```bash
 1.0.0
 ```
@@ -323,6 +338,7 @@ headwind build --output ./public/app.css
 ```
 
 Priority order (highest to lowest):
+
 1. CLI options
 2. Config file
 3. Default values
@@ -527,11 +543,13 @@ const config = {
 **Solutions:**
 
 1. Install globally:
+
    ```bash
    bun add --global headwind
    ```
 
 2. Or use with package runner:
+
    ```bash
    bunx headwind build
    # or
@@ -539,6 +557,7 @@ const config = {
    ```
 
 3. Or use npm scripts:
+
    ```json
    {
      "scripts": {
@@ -554,16 +573,19 @@ const config = {
 **Solutions:**
 
 1. Check output directory permissions:
+
    ```bash
    ls -la ./dist
    ```
 
 2. Create directory if it doesn't exist:
+
    ```bash
    mkdir -p ./dist
    ```
 
 3. Fix permissions:
+
    ```bash
    chmod -R u+w ./dist
    ```
@@ -575,17 +597,20 @@ const config = {
 **Solutions:**
 
 1. Verify config path:
+
    ```bash
    headwind build --config ./headwind.config.ts --verbose
    ```
 
 2. Check config file syntax:
+
    ```typescript
    // Must have default export
    export default config
    ```
 
 3. Ensure TypeScript is installed:
+
    ```bash
    bun add --dev typescript
    ```
@@ -597,30 +622,34 @@ const config = {
 **Solutions:**
 
 1. Run with verbose output:
+
    ```bash
    headwind build --verbose
    ```
 
 2. Check content patterns:
+
    ```bash
    # Test if files exist
    ls -la ./src/**/*.tsx
    ```
 
 3. Validate config:
+
    ```typescript
    // Use type checking
-   import type { HeadwindConfig } from 'headwind'
+   import type { HeadwindOptions } from 'headwind'
 
    const config = {
      content: ['./src/**/*.tsx'],
      output: './dist/headwind.css',
-   } satisfies Partial<HeadwindConfig> // Type error will show if invalid
+   } satisfies HeadwindOptions // Type error will show if invalid
    ```
 
 ## Performance Tips
 
 1. **Use specific content patterns:**
+
    ```bash
    # ❌ Slow
    headwind build --content "./**/*.tsx"
@@ -630,6 +659,7 @@ const config = {
    ```
 
 2. **Exclude unnecessary files:**
+
    ```typescript
    content: [
      './src/**/*.tsx',
@@ -638,12 +668,14 @@ const config = {
    ```
 
 3. **Use watch mode in development:**
+
    ```bash
    # Faster than rebuilding manually
    headwind watch
    ```
 
 4. **Enable minify only in production:**
+
    ```bash
    # Development (fast)
    headwind build

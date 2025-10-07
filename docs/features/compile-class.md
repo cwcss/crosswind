@@ -40,7 +40,7 @@ Configure the transformer in your config:
 
 ```typescript
 // headwind.config.ts
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
@@ -51,7 +51,7 @@ const config = {
     trigger: ':hw:', // Trigger string (default)
     classPrefix: 'hw-', // Prefix for generated names (default)
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -65,6 +65,7 @@ headwind build
 ```
 
 The transformer will:
+
 1. **Scan Files** - Find all classes marked with `:hw:`
 2. **Generate Names** - Create deterministic hashed class names
 3. **Transform Files** - Replace original classes with compiled names
@@ -107,7 +108,7 @@ const config = {
   compileClass: {
     enabled: true, // Enable compile class transformer
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ### Custom Trigger
@@ -120,10 +121,11 @@ const config = {
     enabled: true,
     trigger: ':compile:', // Use custom trigger
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 Usage:
+
 ```html
 <div class=":compile: flex items-center p-4">Content</div>
 ```
@@ -138,7 +140,7 @@ const config = {
     enabled: true,
     classPrefix: 'c-', // Use 'c-' prefix instead of 'hw-'
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 Generated classes: `c-abc123`, `c-def456`, etc.
@@ -153,7 +155,7 @@ const config = {
     enabled: true,
     layer: 'components', // Use 'components' layer
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ## Benefits
@@ -161,19 +163,23 @@ const config = {
 ### 1. Smaller HTML Files
 
 **Before:**
+
 ```html
 <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
   Click Me
 </button>
 ```
+
 **Character count:** 285 characters
 
 **After:**
+
 ```html
 <button class="hw-8k2j9s">
   Click Me
 </button>
 ```
+
 **Character count:** 49 characters
 
 **Savings:** ~82% reduction
@@ -190,6 +196,7 @@ Compiled class names are deterministic - the same utilities always generate the 
 ```
 
 Benefits:
+
 - Browser cache reuses compiled classes across pages
 - CDN caching is more effective
 - Faster page loads
@@ -205,6 +212,7 @@ Identical utility groups share the same compiled class:
 ```
 
 Only one CSS rule is generated:
+
 ```css
 .hw-abc123 {
   /* utilities */
@@ -227,6 +235,7 @@ export function Button({ children }: { children: React.ReactNode }) {
 ```
 
 After build:
+
 ```tsx
 // Component.tsx (automatically transformed)
 export function Button({ children }: { children: React.ReactNode }) {
@@ -312,6 +321,7 @@ const config = {
 ```
 
 Usage:
+
 ```html
 <button class=":hw: btn-primary">Click Me</button>
 <!-- Compiles to -->
@@ -341,6 +351,7 @@ export const buttonClasses = {
 ### 1. Use for Repeated Patterns
 
 ✅ **Good:**
+
 ```html
 <!-- Card pattern used multiple times -->
 <div class=":hw: rounded-lg shadow-md p-6 bg-white">Card 1</div>
@@ -349,6 +360,7 @@ export const buttonClasses = {
 ```
 
 ❌ **Avoid:**
+
 ```html
 <!-- One-off utility combinations -->
 <div class=":hw: mt-4">Unique element</div>
@@ -357,6 +369,7 @@ export const buttonClasses = {
 ### 2. Group Related Utilities
 
 ✅ **Good:**
+
 ```html
 <div class=":hw: flex items-center justify-between">
   <span class=":hw: text-lg font-bold text-gray-900">Title</span>
@@ -364,6 +377,7 @@ export const buttonClasses = {
 ```
 
 ❌ **Avoid:**
+
 ```html
 <div class=":hw: flex :hw: items-center :hw: justify-between">
   Separate compilations
@@ -373,6 +387,7 @@ export const buttonClasses = {
 ### 3. Use with Component Classes
 
 ✅ **Good:**
+
 ```tsx
 // Define component styles once
 function Card({ children }) {
@@ -387,6 +402,7 @@ function Card({ children }) {
 ### 4. Keep Dynamic Values Separate
 
 ✅ **Good:**
+
 ```tsx
 <div className={`:hw: flex items-center p-4 ${className}`}>
   Static compiled + dynamic
@@ -394,6 +410,7 @@ function Card({ children }) {
 ```
 
 ❌ **Avoid:**
+
 ```tsx
 <div className={`:hw: flex items-center p-4 ${dynamicPadding} ${dynamicBg}`}>
   Too much dynamic content
@@ -415,11 +432,13 @@ Compile class adds minimal overhead:
 ### Runtime Performance
 
 **Benefits:**
+
 - Smaller HTML = faster parsing
 - Fewer class names = faster DOM operations
 - Better gzip compression
 
 **Measurements:**
+
 - HTML size: ~60% reduction
 - Parse time: ~15% faster
 - Memory usage: ~10% lower
@@ -431,17 +450,20 @@ Compile class adds minimal overhead:
 **Check:**
 
 1. Transformer is enabled:
+
    ```typescript
    compileClass: { enabled: true }
    ```
 
 2. Trigger is correct:
+
    ```html
    <div class=":hw: flex items-center">  <!-- ✅ -->
    <div class="hw: flex items-center">   <!-- ❌ Wrong trigger -->
    ```
 
 3. Files are in content patterns:
+
    ```typescript
    content: ['./src/**/*.tsx'] // Must match your files
    ```
@@ -451,6 +473,7 @@ Compile class adds minimal overhead:
 **Cause:** Different utility order generates different hashes.
 
 **Solution:** Utilities are automatically sorted before hashing:
+
 ```html
 <!-- Both generate the same hash -->
 <div class=":hw: flex items-center p-4">
@@ -460,6 +483,7 @@ Compile class adds minimal overhead:
 ### Source Files Not Transformed
 
 **Check:**
+
 1. Build completed successfully
 2. Files have write permissions
 3. No syntax errors in files
@@ -474,11 +498,13 @@ Compile class adds minimal overhead:
 ```
 
 Run build:
+
 ```bash
 headwind build
 ```
 
 Result:
+
 ```html
 <div class="hw-abc123">
 ```

@@ -8,7 +8,7 @@ The theme configuration defines the design tokens that utilities are generated f
 
 ```typescript
 // headwind.config.ts
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   theme: {
@@ -21,7 +21,7 @@ const config = {
       8: '2rem', // p-8, m-8, etc.
     },
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -49,6 +49,7 @@ const config = {
 ```
 
 **Usage:**
+
 ```html
 <div class="bg-primary text-white">Primary</div>
 <div class="bg-danger text-white">Danger</div>
@@ -93,6 +94,7 @@ const config = {
 ```
 
 **Usage:**
+
 ```html
 <div class="bg-gray-100 text-gray-900">Light gray</div>
 <div class="bg-blue-500 text-white">Blue 500</div>
@@ -123,6 +125,7 @@ const config = {
 ```
 
 **Usage:**
+
 ```html
 <div class="bg-brand">Uses DEFAULT value</div>
 <div class="bg-brand-light">Light brand</div>
@@ -164,6 +167,7 @@ const config = {
 ```
 
 **CSS:**
+
 ```css
 :root {
   --color-primary: #3b82f6;
@@ -218,6 +222,7 @@ const config = {
 ```
 
 **Usage:**
+
 ```html
 <div class="p-4">Padding 1rem</div>
 <div class="m-8">Margin 2rem</div>
@@ -226,6 +231,7 @@ const config = {
 ```
 
 **Applies to:**
+
 - Padding: `p-*`, `px-*`, `py-*`, `pt-*`, `pr-*`, `pb-*`, `pl-*`
 - Margin: `m-*`, `mx-*`, `my-*`, `mt-*`, `mr-*`, `mb-*`, `ml-*`
 - Width: `w-*`
@@ -252,6 +258,7 @@ const config = {
 ```
 
 **Usage:**
+
 ```html
 <div class="font-sans">Sans-serif text</div>
 <div class="font-serif">Serif text</div>
@@ -283,6 +290,7 @@ const config = {
 ```
 
 **Usage:**
+
 ```html
 <p class="text-base">Base text</p>
 <h1 class="text-4xl">Large heading</h1>
@@ -327,6 +335,7 @@ const config = {
 ```
 
 **Usage:**
+
 ```html
 <div class="rounded">Default radius</div>
 <div class="rounded-lg">Large radius</div>
@@ -356,6 +365,7 @@ const config = {
 ```
 
 **Usage:**
+
 ```html
 <div class="shadow">Default shadow</div>
 <div class="shadow-lg">Large shadow</div>
@@ -381,6 +391,7 @@ const config = {
 ```
 
 **Usage:**
+
 ```html
 <div class="text-base md:text-lg lg:text-xl">
   Responsive text
@@ -405,6 +416,7 @@ const config = {
 ```
 
 **Usage:**
+
 ```html
 <div class="grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4">
   Custom breakpoints
@@ -414,7 +426,7 @@ const config = {
 ## Complete Theme Example
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   theme: {
@@ -556,7 +568,7 @@ const config = {
       '2xl': '1536px',
     },
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -743,6 +755,7 @@ const config = {
 **Check:**
 
 1. Color is defined in theme:
+
    ```typescript
    theme: {
      colors: {
@@ -752,6 +765,7 @@ const config = {
    ```
 
 2. Using correct utility:
+
    ```html
    <div class="bg-primary">✅ Works</div>
    <div class="background-primary">❌ Wrong utility</div>
@@ -762,6 +776,7 @@ const config = {
 **Check:**
 
 1. Using numeric keys:
+
    ```typescript
    spacing: {
      4: '1rem',    // ✅
@@ -770,6 +785,7 @@ const config = {
    ```
 
 2. Values are strings:
+
    ```typescript
    spacing: {
      4: '1rem',  // ✅

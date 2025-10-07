@@ -8,7 +8,7 @@ Use TypeScript for your configuration file to get autocompletion and type checki
 
 ```typescript
 // headwind.config.ts
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
@@ -25,7 +25,7 @@ const config = {
   shortcuts: {
     btn: 'px-4 py-2 rounded font-semibold',
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -35,21 +35,21 @@ export default config
 The `satisfies` keyword provides type checking while preserving literal types:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 // ✅ Type-safe with autocompletion
 const config = {
   content: ['./src/**/*.tsx'],
   output: './dist/headwind.css',
   minify: true,
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 // ❌ Type error - unknown property
 const badConfig = {
   content: ['./src/**/*.tsx'],
   outputPath: './dist/headwind.css', // Error: 'outputPath' does not exist
   // ^^^^^^^^ Property error
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ## Available Types
@@ -127,14 +127,14 @@ Get IntelliSense and autocompletion in your IDE:
 2. Create `headwind.config.ts` with the type import:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   // Press Ctrl+Space here for autocompletion
   theme: {
     // Autocomplete shows all theme options
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ### Theme Autocompletion
@@ -150,7 +150,7 @@ const config = {
       // See all font size options
     },
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ### Shortcuts Autocompletion
@@ -162,7 +162,7 @@ const config = {
     'btn': 'px-4 py-2 rounded',
     'btn-primary': 'btn bg-blue-500', // Autocomplete shows existing shortcuts
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ## Type Inference
@@ -181,7 +181,7 @@ const config = {
       },
     },
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 // TypeScript knows:
 // config.theme.colors.primary is string
@@ -266,7 +266,7 @@ const customRules: CustomRule[] = [
 
 const config = {
   rules: customRules,
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ## Preset Types
@@ -313,7 +313,7 @@ const config = {
 Extend the theme with custom properties:
 
 ```typescript
-import type { HeadwindConfig, Theme } from 'headwind'
+import type { HeadwindOptions, Theme } from 'headwind'
 
 interface CustomTheme extends Theme {
   customSpacing: Record<string, string>
@@ -330,7 +330,7 @@ const config = {
       brand: '#ff6b6b',
     },
   } as CustomTheme,
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ### Custom Config
@@ -338,7 +338,7 @@ const config = {
 Create a custom config interface:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 interface MyConfig extends Partial<HeadwindConfig> {
   // Add custom properties
@@ -366,7 +366,7 @@ const config: MyConfig = {
 Use type guards for runtime type checking:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 function isValidConfig(config: unknown): config is HeadwindConfig {
   return (
@@ -392,7 +392,7 @@ if (isValidConfig(config)) {
 Use generics for flexible, type-safe functions:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 function createConfig<T extends Partial<HeadwindConfig>>(config: T): T {
   return {
@@ -419,7 +419,7 @@ Extend Headwind types globally:
 
 ```typescript
 // Now use in config
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 // types/headwind.d.ts
 import 'headwind'
@@ -449,7 +449,7 @@ const config = {
       xs: '0.5rem',
     },
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ## Integration with Build Tools
@@ -457,7 +457,7 @@ const config = {
 ### Vite
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 import { build } from 'headwind'
 // vite.config.ts
 import { defineConfig } from 'vite'
@@ -483,7 +483,7 @@ export default defineConfig({
 ### Next.js
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 // next.config.ts
 import type { NextConfig } from 'next'
 import { buildAndWrite } from 'headwind'
@@ -534,7 +534,7 @@ type PartialTheme = Partial<Theme>
 
 ```typescript
 // ✅ Type-only import
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 // ❌ Value import (unnecessary)
 import { HeadwindConfig } from 'headwind'
@@ -546,7 +546,7 @@ import { HeadwindConfig } from 'headwind'
 // ✅ Validates types while preserving literals
 const config = {
   content: ['./src/**/*.tsx'],
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 // ❌ Loses literal types
 const config: Partial<HeadwindConfig> = {
@@ -558,7 +558,7 @@ const config: Partial<HeadwindConfig> = {
 
 ```typescript
 // types/headwind.ts
-import type { HeadwindConfig, Preset } from 'headwind'
+import type { HeadwindOptions, Preset } from 'headwind'
 
 // headwind.config.ts
 import type { MyConfig } from './types/headwind'
@@ -604,14 +604,15 @@ interface CustomTheme extends Theme {
 // Error: Type 'string' is not assignable to type 'string[]'
 const config = {
   content: './src/**/*.tsx', // Should be array
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 **Solution:**
+
 ```typescript
 const config = {
   content: ['./src/**/*.tsx'], // Correct: array
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ### Missing Types
@@ -619,12 +620,13 @@ const config = {
 **Problem:** Cannot find type definitions
 
 **Solution:**
+
 ```bash
 # Ensure TypeScript is installed
 bun add --dev typescript
 
 # Ensure types are imported
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 ```
 
 ### Autocomplete Not Working
@@ -632,11 +634,13 @@ import type { HeadwindConfig } from 'headwind'
 **Problem:** No autocompletion in IDE
 
 **Solutions:**
+
 1. Restart TypeScript server
 2. Check tsconfig.json includes the config file
 3. Ensure proper imports:
+
    ```typescript
-   import type { HeadwindConfig } from 'headwind'
+   import type { HeadwindOptions } from 'headwind'
    ```
 
 ## Related

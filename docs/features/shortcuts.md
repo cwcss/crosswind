@@ -38,7 +38,7 @@ const config = {
 Define shortcuts in your `headwind.config.ts`:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   shortcuts: {
@@ -57,7 +57,7 @@ const config = {
     'input': 'border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500',
     'input-error': 'input border-red-500 focus:ring-red-500',
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -283,6 +283,7 @@ function Button({ variant = 'primary', size = 'md', ...props }) {
 ### 1. Use Descriptive Names
 
 ✅ **Good:**
+
 ```typescript
 shortcuts: {
   'btn-primary': '...',
@@ -292,6 +293,7 @@ shortcuts: {
 ```
 
 ❌ **Avoid:**
+
 ```typescript
 shortcuts: {
   'bp': '...',  // What does 'bp' mean?
@@ -315,6 +317,7 @@ shortcuts: {
 ### 3. Keep Shortcuts Focused
 
 ✅ **Good:**
+
 ```typescript
 shortcuts: {
   'btn': 'px-4 py-2 rounded font-semibold transition',
@@ -323,6 +326,7 @@ shortcuts: {
 ```
 
 ❌ **Avoid:**
+
 ```typescript
 shortcuts: {
   // Too many utilities in one shortcut
@@ -373,6 +377,7 @@ Shortcuts have zero runtime overhead:
 ### Example
 
 Input:
+
 ```typescript
 shortcuts: {
   'btn': 'px-4 py-2 rounded bg-blue-500',
@@ -380,11 +385,13 @@ shortcuts: {
 ```
 
 HTML:
+
 ```html
 <button class="btn">Click</button>
 ```
 
 Generated CSS:
+
 ```css
 .btn {
   padding-left: 1rem;
@@ -517,6 +524,7 @@ const config = {
 **Check:**
 
 1. Shortcut is defined in config:
+
    ```typescript
    shortcuts: {
      'btn': 'px-4 py-2 rounded', // ✅
@@ -524,12 +532,14 @@ const config = {
    ```
 
 2. Name matches exactly:
+
    ```html
    <button class="btn">✅ Works</button>
    <button class="BTN">❌ Wrong case</button>
    ```
 
 3. Config is loaded:
+
    ```bash
    headwind build --verbose
    ```
@@ -537,6 +547,7 @@ const config = {
 ### Circular References
 
 **Problem:**
+
 ```typescript
 shortcuts: {
   'a': 'b',
@@ -549,6 +560,7 @@ shortcuts: {
 ### Naming Conflicts
 
 **Problem:**
+
 ```typescript
 shortcuts: {
   'flex': 'display-flex', // ❌ Conflicts with built-in 'flex' utility
@@ -556,6 +568,7 @@ shortcuts: {
 ```
 
 **Solution:** Use unique names:
+
 ```typescript
 shortcuts: {
   'flex-custom': 'display-flex', // ✅ Unique name

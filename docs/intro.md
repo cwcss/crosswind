@@ -164,12 +164,12 @@ headwind init
 This creates a `headwind.config.ts` file:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/headwind.css',
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -310,7 +310,7 @@ const config = {
       mono: ['Fira Code', 'monospace'],
     },
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ### Shortcuts
@@ -324,7 +324,7 @@ const config = {
     'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600',
     'card': 'rounded-lg shadow-md p-6 bg-white',
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 Use shortcuts like any other utility:

@@ -20,7 +20,7 @@ The compile class transformer is built into Headwind - no additional installatio
 Add the `compileClass` configuration to your `headwind.config.ts`:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
@@ -31,7 +31,7 @@ const config = {
     classPrefix: 'hw-', // Prefix for generated names (default)
     layer: 'shortcuts', // Layer name (default)
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -41,6 +41,7 @@ export default config
 ### Basic Example
 
 **Before:**
+
 ```html
 <div class=":hw: text-center sm:text-left">
   <div class=":hw: text-sm font-bold hover:text-red-500" />
@@ -48,6 +49,7 @@ export default config
 ```
 
 **After:**
+
 ```html
 <div class="hw-qlmcrp">
   <div class="hw-0qw2gr" />
@@ -55,6 +57,7 @@ export default config
 ```
 
 **Generated CSS:**
+
 ```css
 .hw-qlmcrp {
   text-align: center;
@@ -124,11 +127,13 @@ The transformer handles all Headwind features including:
 ### 1. Reduced HTML Size
 
 **Before:**
+
 ```html
 <div class="flex items-center justify-between px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
 ```
 
 **After:**
+
 ```html
 <div class="hw-abc123">
 ```
@@ -144,6 +149,7 @@ Identical class groups across your application are automatically deduplicated:
 ```
 
 Both compile to:
+
 ```html
 <button class="hw-xyz">Button 1</button>
 <button class="hw-xyz">Button 2</button>
@@ -177,6 +183,7 @@ compileClass: {
 ```
 
 Then use:
+
 ```html
 <div class=":compile: p-4 m-2">Content</div>
 ```
@@ -335,6 +342,7 @@ The transformer processes files sequentially during scanning. For large projects
 To start using compiled classes in an existing project:
 
 1. **Enable gradually:**
+
    ```typescript
    compileClass: {
      enabled: true,
@@ -344,11 +352,13 @@ To start using compiled classes in an existing project:
 
 2. **Mark components:**
    Start with frequently-used components:
+
    ```html
    <button class=":hw: btn-classes">
    ```
 
 3. **Build and test:**
+
    ```bash
    headwind build --verbose
    ```

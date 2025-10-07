@@ -22,13 +22,13 @@ bunx headwind init
 
 ```typescript
 // headwind.config.ts
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   output: './src/headwind.css',
   minify: process.env.NODE_ENV === 'production',
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -871,6 +871,7 @@ Use class directives:
 ### CSS Not Updating
 
 **Solution:** Ensure watch mode is running:
+
 ```bash
 headwind watch
 ```
@@ -878,6 +879,7 @@ headwind watch
 ### Classes Not Found
 
 **Solution:** Check content paths include all files:
+
 ```typescript
 content: ['./src/**/*.{js,jsx,ts,tsx}']
 ```
@@ -885,6 +887,7 @@ content: ['./src/**/*.{js,jsx,ts,tsx}']
 ### Build Failing in CI
 
 **Solution:** Run Headwind build before framework build:
+
 ```yaml
 - run: bun run headwind build --minify
 - run: bun run build

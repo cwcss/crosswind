@@ -13,12 +13,12 @@ headwind init
 This creates a basic `headwind.config.ts` file:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/headwind.css',
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -40,10 +40,11 @@ const config = {
     './components/**/*.vue',
     './pages/**/*.svelte',
   ],
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 **Tips:**
+
 - Use specific patterns to improve scan performance
 - Exclude `node_modules` and build directories
 - Include all file types where you use utility classes
@@ -59,7 +60,7 @@ Path to the output CSS file.
 ```typescript
 const config = {
   output: './dist/styles/headwind.css',
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ### theme
@@ -115,7 +116,7 @@ const config = {
       full: '9999px',
     },
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ### preflight
@@ -129,10 +130,11 @@ Include CSS reset/normalize styles (similar to Tailwind's preflight).
 ```typescript
 const config = {
   preflight: true, // Include reset styles
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 Preflight includes:
+
 - Modern CSS reset
 - Box-sizing border-box
 - Default border styles
@@ -149,10 +151,11 @@ Minify the output CSS for production.
 ```typescript
 const config = {
   minify: true, // Enable minification
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 When enabled, the output CSS is minified by removing:
+
 - Whitespace
 - Comments
 - Redundant rules
@@ -173,7 +176,7 @@ const config = {
     classPrefix: 'hw-', // Prefix for generated names (default)
     layer: 'shortcuts', // Layer name (default)
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 **Options:**
@@ -216,7 +219,7 @@ const config = {
     'card': 'rounded-lg shadow-md p-6 bg-white',
     'input': 'border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500',
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 **Usage:**
@@ -247,7 +250,7 @@ const config = {
       'custom-property': match.groups.value,
     }),
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 **Example:**
@@ -264,7 +267,7 @@ const config = {
       margin: `${match.groups.size}px`,
     }),
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 ### presets
@@ -282,14 +285,14 @@ const config = {
   presets: [
     myCustomPreset,
   ],
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 ```
 
 **Creating a Preset:**
 
 ```typescript
 // presets/custom.ts
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 export const myCustomPreset: Partial<HeadwindConfig> = {
   theme: {
@@ -306,7 +309,7 @@ export const myCustomPreset: Partial<HeadwindConfig> = {
 ## Complete Configuration Example
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const config = {
   // Required
@@ -353,7 +356,7 @@ const config = {
       'background-image': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     },
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -363,7 +366,7 @@ export default config
 You can create different configurations for different environments:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 const isDev = process.env.NODE_ENV === 'development'
 const isProd = process.env.NODE_ENV === 'production'
@@ -378,7 +381,7 @@ const config = {
   compileClass: {
     enabled: isProd, // Only compile in production
   },
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -388,13 +391,13 @@ export default config
 Headwind provides full TypeScript support with type checking and autocomplete:
 
 ```typescript
-import type { HeadwindConfig } from 'headwind'
+import type { HeadwindOptions } from 'headwind'
 
 // Use satisfies for type checking while preserving literal types
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/headwind.css',
-} satisfies Partial<HeadwindConfig>
+} satisfies HeadwindOptions
 
 export default config
 ```
@@ -427,7 +430,7 @@ headwind build --content "./src/**/*.tsx"
 
 ## Best Practices
 
-1. **Use TypeScript** - Enable type checking with `satisfies Partial<HeadwindConfig>`
+1. **Use TypeScript** - Enable type checking with `satisfies HeadwindOptions`
 2. **Specific Content Patterns** - Use precise glob patterns for better performance
 3. **Environment Variables** - Use environment variables for environment-specific settings
 4. **Organize Presets** - Extract common configurations into reusable presets
