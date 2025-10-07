@@ -2,7 +2,7 @@
   "name": "headwind",
   "type": "module",
   "version": "0.1.1",
-  "description": "Like our `ts-starter`, but optimized for monorepos.",
+  "description": "A performant Utility-First CSS framework. Similar to Tailwind or UnoCSS.",
   "author": "Chris Breuer <chris@stacksjs.org>",
   "license": "MIT",
   "homepage": "https://github.com/stacksjs/headwind#readme",
@@ -15,7 +15,6 @@
   },
   "keywords": [
     "monorepo",
-    "ts-starter",
     "headwind",
     "template"
   ],
