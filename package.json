@@ -20,6 +20,7 @@
     "template"
   ],
   "scripts": {
+    "build": "cd packages/headwind && bun run build",
     "fresh": "bunx rimraf node_modules/ bun.lock && bun i",
     "test": "bun test",
     "lint": "bunx --bun eslint .",
@@ -31,9 +32,6 @@
     "build:docs": "bun --bun vitepress build docs",
     "preview:docs": "bun --bun vitepress preview docs",
     "typecheck": "bun --bun tsc --noEmit"
-  },
-  "dependencies": {
-    "jiti": "^2.6.1"
   },
   "devDependencies": {
     "@stacksjs/bumpx": "^0.1.84",
