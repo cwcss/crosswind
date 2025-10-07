@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test'
-import { CSSGenerator } from '../src/generator'
 import { defaultConfig } from '../src/config'
+import { CSSGenerator } from '../src/generator'
 
 describe('Grid Utilities', () => {
   describe('Display', () => {

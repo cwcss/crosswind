@@ -13,7 +13,7 @@ export const fontFamilyRule: UtilityRule = (parsed, config) => {
 
 export const fontSmoothingRule: UtilityRule = (parsed) => {
   const values: Record<string, Record<string, string>> = {
-    antialiased: {
+    'antialiased': {
       '-webkit-font-smoothing': 'antialiased',
       '-moz-osx-font-smoothing': 'grayscale',
     },
@@ -27,7 +27,7 @@ export const fontSmoothingRule: UtilityRule = (parsed) => {
 
 export const fontStyleRule: UtilityRule = (parsed) => {
   const styles: Record<string, string> = {
-    italic: 'italic',
+    'italic': 'italic',
     'not-italic': 'normal',
   }
   return styles[parsed.raw] ? { 'font-style': styles[parsed.raw] } : undefined
@@ -43,7 +43,7 @@ export const fontStretchRule: UtilityRule = (parsed) => {
 export const fontVariantNumericRule: UtilityRule = (parsed) => {
   const variants: Record<string, string> = {
     'normal-nums': 'normal',
-    ordinal: 'ordinal',
+    'ordinal': 'ordinal',
     'slashed-zero': 'slashed-zero',
     'lining-nums': 'lining-nums',
     'oldstyle-nums': 'oldstyle-nums',
@@ -80,8 +80,8 @@ export const letterSpacingRule: UtilityRule = (parsed) => {
 export const lineClampRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'line-clamp' && parsed.value) {
     return {
-      overflow: 'hidden',
-      display: '-webkit-box',
+      'overflow': 'hidden',
+      'display': '-webkit-box',
       '-webkit-box-orient': 'vertical',
       '-webkit-line-clamp': parsed.value,
     }
@@ -115,8 +115,8 @@ export const listStyleTypeRule: UtilityRule = (parsed) => {
 
 export const textDecorationRule: UtilityRule = (parsed, config) => {
   const decorations: Record<string, string> = {
-    underline: 'underline',
-    overline: 'overline',
+    'underline': 'underline',
+    'overline': 'overline',
     'line-through': 'line-through',
     'no-underline': 'none',
   }
@@ -140,13 +140,13 @@ export const textDecorationRule: UtilityRule = (parsed, config) => {
 
     // Check if it's a thickness
     const thicknesses: Record<string, string> = {
-      auto: 'auto',
+      'auto': 'auto',
       'from-font': 'from-font',
-      0: '0px',
-      1: '1px',
-      2: '2px',
-      4: '4px',
-      8: '8px',
+      '0': '0px',
+      '1': '1px',
+      '2': '2px',
+      '4': '4px',
+      '8': '8px',
     }
     if (thicknesses[parsed.value]) {
       return { 'text-decoration-thickness': thicknesses[parsed.value] } as Record<string, string>
@@ -196,9 +196,9 @@ export const underlineOffsetRule: UtilityRule = (parsed) => {
 
 export const textTransformRule: UtilityRule = (parsed) => {
   const transforms: Record<string, string> = {
-    uppercase: 'uppercase',
-    lowercase: 'lowercase',
-    capitalize: 'capitalize',
+    'uppercase': 'uppercase',
+    'lowercase': 'lowercase',
+    'capitalize': 'capitalize',
     'normal-case': 'none',
   }
   return transforms[parsed.raw] ? { 'text-transform': transforms[parsed.raw] } : undefined
@@ -206,8 +206,8 @@ export const textTransformRule: UtilityRule = (parsed) => {
 
 export const textOverflowRule: UtilityRule = (parsed) => {
   const overflows: Record<string, Record<string, string>> = {
-    truncate: {
-      overflow: 'hidden',
+    'truncate': {
+      'overflow': 'hidden',
       'text-overflow': 'ellipsis',
       'white-space': 'nowrap',
     },
@@ -306,7 +306,7 @@ export const contentRule: UtilityRule = (parsed) => {
       none: 'none',
     }
     // If value is already quoted or is a special value, use as-is
-    if (values[parsed.value] || parsed.value.startsWith('"') || parsed.value.startsWith("'")) {
+    if (values[parsed.value] || parsed.value.startsWith('"') || parsed.value.startsWith('\'')) {
       return { content: values[parsed.value] || parsed.value }
     }
     // Otherwise wrap in quotes
@@ -314,7 +314,7 @@ export const contentRule: UtilityRule = (parsed) => {
   }
 }
 
-export const lineHeightRule: UtilityRule = (parsed, config) => {
+export const lineHeightRule: UtilityRule = (parsed, _config) => {
   if (parsed.utility === 'leading') {
     if (!parsed.value) {
       return undefined

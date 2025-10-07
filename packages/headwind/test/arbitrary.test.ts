@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test'
+import { defaultConfig } from '../src/config'
 import { CSSGenerator } from '../src/generator'
 import { parseClass } from '../src/parser'
-import { defaultConfig } from '../src/config'
 
 describe('Arbitrary Values and Properties', () => {
   describe('Arbitrary values', () => {

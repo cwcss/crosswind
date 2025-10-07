@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'bun:test'
-import { CSSGenerator } from '../src/generator'
-import { defaultConfig } from '../src/config'
 import type { CustomRule } from '../src/types'
+import { describe, expect, it } from 'bun:test'
+import { defaultConfig } from '../src/config'
+import { CSSGenerator } from '../src/generator'
 
 describe('Advanced Features', () => {
   describe('Filter utilities', () => {
@@ -526,7 +526,7 @@ describe('Advanced Features', () => {
         theme: {
           colors: {
             preset: {
-              '500': '#custom',
+              500: '#custom',
             },
           },
         },
@@ -547,7 +547,7 @@ describe('Advanced Features', () => {
         theme: {
           colors: {
             preset1: {
-              '500': '#preset1',
+              500: '#preset1',
             },
           },
         },
@@ -557,7 +557,7 @@ describe('Advanced Features', () => {
         theme: {
           colors: {
             preset2: {
-              '500': '#preset2',
+              500: '#preset2',
             },
           },
         },

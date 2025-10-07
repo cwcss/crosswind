@@ -1,14 +1,13 @@
 #!/usr/bin/env bun
-import process from 'node:process'
-import { existsSync } from 'node:fs'
-import { watch } from 'node:fs'
+import type { HeadwindConfig } from '../src/types'
+import { existsSync, watch } from 'node:fs'
 import { unlink } from 'node:fs/promises'
+import process from 'node:process'
 import { CAC } from 'cac'
+import { version } from '../package.json'
 import { build, buildAndWrite } from '../src/build'
 import { config } from '../src/config'
 import { tailwindPreflight } from '../src/preflight'
-import { version } from '../package.json'
-import type { HeadwindConfig } from '../src/types'
 
 const cli = new CAC('headwind')
 
@@ -140,7 +139,7 @@ function setupWatch(buildConfig: HeadwindConfig, options: BuildOptions): void {
 
   for (const dir of watchDirs) {
     watch(dir, { recursive: true }, async (eventType, filename) => {
-      if (filename && /\.(html|js|ts|jsx|tsx|stx)$/.test(filename)) {
+      if (filename && /\.(?:html|js|ts|jsx|tsx|stx)$/.test(filename)) {
         console.log(`\n📝 ${filename} changed, rebuilding...`)
         await runBuild(buildConfig, options)
       }

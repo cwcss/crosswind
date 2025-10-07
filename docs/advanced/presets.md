@@ -9,19 +9,19 @@ A preset is a configuration object that can include theme customization, shortcu
 ```typescript
 // Before: Duplicate configuration in each project
 // project-a/headwind.config.ts
+// After: Share configuration via preset
+import { companyPreset } from '@company/headwind-preset'
+
 const config = {
   theme: { colors: { primary: '#3b82f6' } },
-  shortcuts: { 'btn': 'px-4 py-2 rounded' },
+  shortcuts: { btn: 'px-4 py-2 rounded' },
 }
 
 // project-b/headwind.config.ts
 const config = {
   theme: { colors: { primary: '#3b82f6' } },
-  shortcuts: { 'btn': 'px-4 py-2 rounded' },
+  shortcuts: { btn: 'px-4 py-2 rounded' },
 }
-
-// After: Share configuration via preset
-import { companyPreset } from '@company/headwind-preset'
 
 const config = {
   presets: [companyPreset],
@@ -115,9 +115,9 @@ import { utilitiesPreset } from './presets/utilities'
 
 const config = {
   presets: [
-    basePreset,       // Applied first
+    basePreset, // Applied first
     componentsPreset, // Applied second, overrides base
-    utilitiesPreset,  // Applied last, overrides both
+    utilitiesPreset, // Applied last, overrides both
   ],
 }
 ```
@@ -313,14 +313,14 @@ export const utilitiesPreset: Preset = {
       (match) => {
         const direction = match[1]
         const directions: Record<string, string> = {
-          't': 'to top',
-          'r': 'to right',
-          'b': 'to bottom',
-          'l': 'to left',
-          'tr': 'to top right',
-          'br': 'to bottom right',
-          'bl': 'to bottom left',
-          'tl': 'to top left',
+          t: 'to top',
+          r: 'to right',
+          b: 'to bottom',
+          l: 'to left',
+          tr: 'to top right',
+          br: 'to bottom right',
+          bl: 'to bottom left',
+          tl: 'to top left',
         }
         return {
           'background-image': `linear-gradient(${directions[direction] || 'to right'}, var(--tw-gradient-stops))`,
@@ -356,10 +356,10 @@ export const reactPreset: Preset = {
 
   variants: {
     // Enable all variants for React components
-    hover: true,
-    focus: true,
-    active: true,
-    disabled: true,
+    'hover': true,
+    'focus': true,
+    'active': true,
+    'disabled': true,
     'focus-visible': true,
     'focus-within': true,
   },
@@ -497,7 +497,7 @@ const config = {
 ### Preset with Custom Preflight
 
 ```typescript
-import type { Preset, Preflight } from 'headwind'
+import type { Preflight, Preset } from 'headwind'
 
 const customPreflight: Preflight = {
   getCSS: () => `
@@ -617,13 +617,13 @@ Use semantic versioning for published presets:
 Create multiple focused presets rather than one monolithic preset:
 
 ```typescript
-// ✅ Good - focused presets
-import { themePreset } from './presets/theme'
 import { componentPreset } from './presets/components'
-import { utilityPreset } from './presets/utilities'
-
 // ❌ Avoid - everything in one preset
 import { everythingPreset } from './presets/everything'
+// ✅ Good - focused presets
+import { themePreset } from './presets/theme'
+
+import { utilityPreset } from './presets/utilities'
 ```
 
 ### 5. Provide Examples
@@ -635,7 +635,7 @@ Include usage examples with your preset:
 export const examplePreset: Preset = {
   name: 'example',
   shortcuts: {
-    'btn': 'px-4 py-2 rounded',
+    btn: 'px-4 py-2 rounded',
   },
 }
 
@@ -682,8 +682,8 @@ const exampleConfig = {
 ```typescript
 const config = {
   presets: [
-    generalPreset,    // Base configuration
-    specificPreset,   // More specific overrides
+    generalPreset, // Base configuration
+    specificPreset, // More specific overrides
   ],
 }
 ```

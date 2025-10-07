@@ -6,9 +6,9 @@ import type { UtilityRule } from './rules'
 export const backgroundAttachmentRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'bg' && parsed.value) {
     const values: Record<string, string> = {
-      'fixed': 'fixed',
-      'local': 'local',
-      'scroll': 'scroll',
+      fixed: 'fixed',
+      local: 'local',
+      scroll: 'scroll',
     }
     return values[parsed.value] ? { 'background-attachment': values[parsed.value] } : undefined
   }
@@ -19,10 +19,10 @@ export const backgroundClipRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'bg' && parsed.value && parsed.value.startsWith('clip-')) {
     const val = parsed.value.replace('clip-', '')
     const values: Record<string, string> = {
-      'border': 'border-box',
-      'padding': 'padding-box',
-      'content': 'content-box',
-      'text': 'text',
+      border: 'border-box',
+      padding: 'padding-box',
+      content: 'content-box',
+      text: 'text',
     }
     return values[val] ? { 'background-clip': values[val] } : undefined
   }
@@ -96,12 +96,12 @@ export const backgroundSizeRule: UtilityRule = (parsed) => {
 export const borderStyleRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'border' && parsed.value) {
     const styles: Record<string, string> = {
-      'solid': 'solid',
-      'dashed': 'dashed',
-      'dotted': 'dotted',
-      'double': 'double',
-      'hidden': 'hidden',
-      'none': 'none',
+      solid: 'solid',
+      dashed: 'dashed',
+      dotted: 'dotted',
+      double: 'double',
+      hidden: 'hidden',
+      none: 'none',
     }
     return styles[parsed.value] ? { 'border-style': styles[parsed.value] } : undefined
   }
@@ -124,11 +124,11 @@ export const outlineRule: UtilityRule = (parsed, config) => {
   // Outline styles
   if (parsed.utility === 'outline' && parsed.value) {
     const outlineStyles: Record<string, string> = {
-      'none': 'none',
-      'solid': 'solid',
-      'dashed': 'dashed',
-      'dotted': 'dotted',
-      'double': 'double',
+      none: 'none',
+      solid: 'solid',
+      dashed: 'dashed',
+      dotted: 'dotted',
+      double: 'double',
     }
     if (outlineStyles[parsed.value]) {
       return { 'outline-style': outlineStyles[parsed.value] } as Record<string, string>
@@ -275,12 +275,12 @@ export const maskRule: UtilityRule = (parsed) => {
   // mask-origin
   if (parsed.utility === 'mask-origin' && parsed.value) {
     const origins: Record<string, string> = {
-      'border': 'border-box',
-      'padding': 'padding-box',
-      'content': 'content-box',
-      'fill': 'fill-box',
-      'stroke': 'stroke-box',
-      'view': 'view-box',
+      border: 'border-box',
+      padding: 'padding-box',
+      content: 'content-box',
+      fill: 'fill-box',
+      stroke: 'stroke-box',
+      view: 'view-box',
     }
     return { 'mask-origin': origins[parsed.value] || parsed.value } as Record<string, string>
   }
@@ -317,9 +317,9 @@ export const maskRule: UtilityRule = (parsed) => {
   // mask-size
   if (parsed.utility === 'mask-size' && parsed.value) {
     const sizes: Record<string, string> = {
-      'auto': 'auto',
-      'cover': 'cover',
-      'contain': 'contain',
+      auto: 'auto',
+      cover: 'cover',
+      contain: 'contain',
     }
     return { 'mask-size': sizes[parsed.value] || parsed.value } as Record<string, string>
   }

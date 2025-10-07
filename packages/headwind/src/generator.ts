@@ -1,6 +1,6 @@
 import type { CSSRule, HeadwindConfig, ParsedClass } from './types'
-import { builtInRules } from './rules'
 import { parseClass } from './parser'
+import { builtInRules } from './rules'
 
 /**
  * Deep merge objects
@@ -312,7 +312,7 @@ export class CSSGenerator {
    * Escape special characters in class names for CSS selectors
    */
   private escapeSelector(className: string): string {
-    return className.replace(/[:.\/]/g, '\\$&')
+    return className.replace(/[:./]/g, '\\$&')
   }
 
   /**

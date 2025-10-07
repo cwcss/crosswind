@@ -273,10 +273,9 @@ const sizeClasses = {
 
 <template>
   <button
-    :class="[
-      'rounded font-semibold transition-colors',
+    class="rounded font-semibold transition-colors" :class="[
       variantClasses[variant],
-      sizeClasses[size]
+      sizeClasses[size],
     ]"
   >
     <slot />
@@ -663,7 +662,7 @@ const config = {
 
 ```javascript
 // webpack.config.js
-const { spawn } = require('child_process')
+const { spawn } = require('node:child_process')
 
 module.exports = {
   // ... webpack config
@@ -684,7 +683,7 @@ module.exports = {
 
 ```javascript
 // rollup.config.js
-import { spawn } from 'child_process'
+import { spawn } from 'node:child_process'
 
 function headwind() {
   return {
@@ -706,9 +705,9 @@ export default {
 ### esbuild
 
 ```javascript
+import { spawn } from 'node:child_process'
 // build.js
 import * as esbuild from 'esbuild'
-import { spawn } from 'child_process'
 
 // Build CSS first
 await new Promise((resolve) => {

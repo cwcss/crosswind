@@ -7,7 +7,7 @@ export interface BuildResult {
   css: string
   classes: Set<string>
   duration: number
-  compiledClasses?: Map<string, { className: string; utilities: string[] }>
+  compiledClasses?: Map<string, { className: string, utilities: string[] }>
   transformedFiles?: Map<string, string>
 }
 

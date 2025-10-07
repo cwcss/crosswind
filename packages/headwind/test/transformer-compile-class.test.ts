@@ -276,7 +276,7 @@ describe('Compile Class Transformer', () => {
     })
 
     it('should handle single quotes', () => {
-      const content = "<div class=':hw: p-4 m-2'>Content</div>"
+      const content = '<div class=\':hw: p-4 m-2\'>Content</div>'
       const result = extractCompileClasses(content)
 
       expect(result.size).toBe(1)

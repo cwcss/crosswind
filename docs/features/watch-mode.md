@@ -38,7 +38,7 @@ import type { HeadwindConfig } from 'headwind'
 
 const config = {
   content: [
-    './src/**/*.{html,js,ts,jsx,tsx}',  // Watch all these files
+    './src/**/*.{html,js,ts,jsx,tsx}', // Watch all these files
     './components/**/*.vue',
     './pages/**/*.svelte',
   ],
@@ -95,8 +95,8 @@ Watch mode automatically monitors all directories specified in your content patt
 ```typescript
 const config = {
   content: [
-    './src/**/*.tsx',      // Watches: ./src
-    './pages/**/*.tsx',    // Watches: ./pages
+    './src/**/*.tsx', // Watches: ./src
+    './pages/**/*.tsx', // Watches: ./pages
     './components/**/*.tsx', // Watches: ./components
   ],
 } satisfies Partial<HeadwindConfig>

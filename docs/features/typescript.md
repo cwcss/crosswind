@@ -47,8 +47,8 @@ const config = {
 // ❌ Type error - unknown property
 const badConfig = {
   content: ['./src/**/*.tsx'],
-  outputPath: './dist/headwind.css',  // Error: 'outputPath' does not exist
-  //^^^^^^^^ Property error
+  outputPath: './dist/headwind.css', // Error: 'outputPath' does not exist
+  // ^^^^^^^^ Property error
 } satisfies Partial<HeadwindConfig>
 ```
 
@@ -160,7 +160,7 @@ const config = {
   shortcuts: {
     // Autocomplete for shortcut names
     'btn': 'px-4 py-2 rounded',
-    'btn-primary': 'btn bg-blue-500',  // Autocomplete shows existing shortcuts
+    'btn-primary': 'btn bg-blue-500', // Autocomplete shows existing shortcuts
   },
 } satisfies Partial<HeadwindConfig>
 ```
@@ -193,8 +193,8 @@ const config = {
 ### Build Function
 
 ```typescript
-import { build } from 'headwind'
 import type { BuildResult, HeadwindConfig } from 'headwind'
+import { build } from 'headwind'
 
 const result: BuildResult = await build({
   content: ['./src/**/*.tsx'],
@@ -215,7 +215,7 @@ interface BuildResult {
   css: string
   classes: Set<string>
   duration: number
-  compiledClasses?: Map<string, { className: string; utilities: string[] }>
+  compiledClasses?: Map<string, { className: string, utilities: string[] }>
   transformedFiles?: Map<string, string>
 }
 ```
@@ -323,7 +323,7 @@ interface CustomTheme extends Theme {
 const config = {
   theme: {
     customSpacing: {
-      xs: '0.25rem',
+      'xs': '0.25rem',
       '2xs': '0.125rem',
     },
     customColors: {
@@ -370,11 +370,11 @@ import type { HeadwindConfig } from 'headwind'
 
 function isValidConfig(config: unknown): config is HeadwindConfig {
   return (
-    typeof config === 'object' &&
-    config !== null &&
-    'content' in config &&
-    'output' in config &&
-    Array.isArray((config as HeadwindConfig).content)
+    typeof config === 'object'
+    && config !== null
+    && 'content' in config
+    && 'output' in config
+    && Array.isArray((config as HeadwindConfig).content)
   )
 }
 
@@ -418,6 +418,9 @@ const config = createConfig({
 Extend Headwind types globally:
 
 ```typescript
+// Now use in config
+import type { HeadwindConfig } from 'headwind'
+
 // types/headwind.d.ts
 import 'headwind'
 
@@ -435,9 +438,6 @@ declare module 'headwind' {
     customScale?: Record<string, string>
   }
 }
-
-// Now use in config
-import type { HeadwindConfig } from 'headwind'
 
 const config = {
   customFeature: {
@@ -457,10 +457,10 @@ const config = {
 ### Vite
 
 ```typescript
+import type { HeadwindConfig } from 'headwind'
+import { build } from 'headwind'
 // vite.config.ts
 import { defineConfig } from 'vite'
-import { build } from 'headwind'
-import type { HeadwindConfig } from 'headwind'
 
 const headwindConfig: HeadwindConfig = {
   content: ['./src/**/*.tsx'],
@@ -483,10 +483,10 @@ export default defineConfig({
 ### Next.js
 
 ```typescript
+import type { HeadwindConfig } from 'headwind'
 // next.config.ts
 import type { NextConfig } from 'next'
 import { buildAndWrite } from 'headwind'
-import type { HeadwindConfig } from 'headwind'
 
 const headwindConfig: HeadwindConfig = {
   content: ['./src/**/*.tsx', './app/**/*.tsx'],
@@ -512,11 +512,11 @@ Headwind provides useful type utilities:
 
 ```typescript
 import type {
+  CustomRule,
   HeadwindConfig,
+  ParsedClass,
   Preset,
   Theme,
-  CustomRule,
-  ParsedClass,
 } from 'headwind'
 
 // Extract specific types
@@ -560,6 +560,9 @@ const config: Partial<HeadwindConfig> = {
 // types/headwind.ts
 import type { HeadwindConfig, Preset } from 'headwind'
 
+// headwind.config.ts
+import type { MyConfig } from './types/headwind'
+
 export interface MyCustomPreset extends Preset {
   customOption: boolean
 }
@@ -567,9 +570,6 @@ export interface MyCustomPreset extends Preset {
 export interface MyConfig extends Partial<HeadwindConfig> {
   presets: MyCustomPreset[]
 }
-
-// headwind.config.ts
-import type { MyConfig } from './types/headwind'
 
 const config: MyConfig = {
   // ...
@@ -603,14 +603,14 @@ interface CustomTheme extends Theme {
 ```typescript
 // Error: Type 'string' is not assignable to type 'string[]'
 const config = {
-  content: './src/**/*.tsx',  // Should be array
+  content: './src/**/*.tsx', // Should be array
 } satisfies Partial<HeadwindConfig>
 ```
 
 **Solution:**
 ```typescript
 const config = {
-  content: ['./src/**/*.tsx'],  // Correct: array
+  content: ['./src/**/*.tsx'], // Correct: array
 } satisfies Partial<HeadwindConfig>
 ```
 

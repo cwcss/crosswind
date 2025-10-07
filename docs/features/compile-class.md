@@ -47,8 +47,8 @@ const config = {
   output: './dist/headwind.css',
 
   compileClass: {
-    enabled: true,      // Enable the transformer
-    trigger: ':hw:',    // Trigger string (default)
+    enabled: true, // Enable the transformer
+    trigger: ':hw:', // Trigger string (default)
     classPrefix: 'hw-', // Prefix for generated names (default)
   },
 } satisfies Partial<HeadwindConfig>
@@ -375,11 +375,13 @@ export const buttonClasses = {
 ✅ **Good:**
 ```tsx
 // Define component styles once
-const Card = ({ children }) => (
-  <div class=":hw: rounded-lg shadow-md p-6 bg-white hover:shadow-lg transition-shadow">
-    {children}
-  </div>
-)
+function Card({ children }) {
+  return (
+    <div class=":hw: rounded-lg shadow-md p-6 bg-white hover:shadow-lg transition-shadow">
+      {children}
+    </div>
+  )
+}
 ```
 
 ### 4. Keep Dynamic Values Separate

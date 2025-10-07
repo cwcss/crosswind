@@ -47,7 +47,7 @@ export function extractCompileClasses(
 
   // Match class attributes with the trigger
   // Supports: class=":uno: ..." and className=":uno: ..."
-  const classRegex = /(?:class|className)=["']([^"']*?)["']/g
+  const classRegex = /(?:class|className)=["']([^"']*)["']/g
   let match: RegExpExecArray | null
 
   while ((match = classRegex.exec(content)) !== null) {
@@ -86,11 +86,11 @@ export function transformContent(
   const trigger = options.trigger || ':hw:'
   let transformed = content
 
-  const classRegex = /(?:class|className)=["']([^"']*?)["']/g
+  const classRegex = /(?:class|className)=["']([^"']*)["']/g
   let match: RegExpExecArray | null
 
   // We need to replace in reverse order to maintain string positions
-  const replacements: Array<{ start: number; end: number; replacement: string }> = []
+  const replacements: Array<{ start: number, end: number, replacement: string }> = []
 
   while ((match = classRegex.exec(content)) !== null) {
     const fullClass = match[1]
@@ -107,7 +107,7 @@ export function transformContent(
 
       if (generatedClass) {
         const attrName = match[0].startsWith('class=') ? 'class' : 'className'
-        const quote = match[0].includes('"') ? '"' : "'"
+        const quote = match[0].includes('"') ? '"' : '\''
         const replacement = `${attrName}=${quote}${generatedClass}${quote}`
 
         replacements.push({
@@ -169,7 +169,7 @@ export class CompileClassTransformer {
   /**
    * Process a file and extract compile classes
    */
-  processFile(content: string): { content: string; hasChanges: boolean } {
+  processFile(content: string): { content: string, hasChanges: boolean } {
     const extracted = extractCompileClasses(content, this.options)
 
     if (extracted.size === 0) {
@@ -202,8 +202,8 @@ export class CompileClassTransformer {
   /**
    * Get all compiled classes and their generated names
    */
-  getCompiledClasses(): Map<string, { className: string; utilities: string[] }> {
-    const result = new Map<string, { className: string; utilities: string[] }>()
+  getCompiledClasses(): Map<string, { className: string, utilities: string[] }> {
+    const result = new Map<string, { className: string, utilities: string[] }>()
 
     for (const [key, utilities] of this.compiledClasses) {
       const className = this.classNameMap.get(key)
@@ -229,7 +229,7 @@ export class CompileClassTransformer {
       }
 
       // Get the generated CSS and wrap it with the compiled class name
-      const generatedCSS = generator.toCSS(false)
+      const _generatedCSS = generator.toCSS(false)
 
       // We need to extract just the CSS for these utilities
       // This is a simplified approach - in production you'd want to track

@@ -207,7 +207,7 @@ export function parseClass(className: string): ParsedClass {
   }
 
   for (const prefix of compoundPrefixes) {
-    if (utility.startsWith(prefix + '-')) {
+    if (utility.startsWith(`${prefix}-`)) {
       return {
         raw: className,
         variants,
@@ -225,12 +225,12 @@ export function parseClass(className: string): ParsedClass {
 
     // Try compound prefixes first
     for (const prefix of compoundPrefixes) {
-      if (positiveUtility.startsWith(prefix + '-')) {
+      if (positiveUtility.startsWith(`${prefix}-`)) {
         return {
           raw: className,
           variants,
           utility: prefix,
-          value: '-' + positiveUtility.slice(prefix.length + 1),
+          value: `-${positiveUtility.slice(prefix.length + 1)}`,
           important,
           arbitrary: false,
         }
@@ -244,7 +244,7 @@ export function parseClass(className: string): ParsedClass {
         raw: className,
         variants,
         utility: match[1],
-        value: match[2] ? '-' + match[2] : undefined,
+        value: match[2] ? `-${match[2]}` : undefined,
         important,
         arbitrary: false,
       }

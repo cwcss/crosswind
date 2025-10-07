@@ -440,8 +440,8 @@ build:
 
 ```toml
 [build]
-  command = "headwind build --minify && npm run build"
-  publish = "dist"
+command = "headwind build --minify && npm run build"
+publish = "dist"
 ```
 
 ## Advanced Usage
@@ -615,7 +615,7 @@ const config = {
    const config = {
      content: ['./src/**/*.tsx'],
      output: './dist/headwind.css',
-   } satisfies Partial<HeadwindConfig>  // Type error will show if invalid
+   } satisfies Partial<HeadwindConfig> // Type error will show if invalid
    ```
 
 ## Performance Tips
@@ -633,7 +633,7 @@ const config = {
    ```typescript
    content: [
      './src/**/*.tsx',
-     '!./src/**/*.test.tsx',  // Exclude tests
+     '!./src/**/*.test.tsx', // Exclude tests
    ]
    ```
 

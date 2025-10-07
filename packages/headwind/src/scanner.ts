@@ -1,6 +1,6 @@
+import type { CompileClassTransformer } from './transformer-compile-class'
 import { Glob } from 'bun'
 import { extractClasses } from './parser'
-import type { CompileClassTransformer } from './transformer-compile-class'
 
 export interface ScanResult {
   classes: Set<string>
@@ -48,7 +48,7 @@ export class Scanner {
               allClasses.add(cls)
             }
           }
-          catch (error) {
+          catch {
             // Silently skip files that can't be read
             // (e.g., binary files, permission issues)
             continue
@@ -68,7 +68,7 @@ export class Scanner {
       const content = await Bun.file(filePath).text()
       return extractClasses(content)
     }
-    catch (error) {
+    catch {
       return new Set<string>()
     }
   }

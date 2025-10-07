@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test'
-import { CSSGenerator } from '../src/generator'
 import { defaultConfig } from '../src/config'
+import { CSSGenerator } from '../src/generator'
 
 describe('Pseudo-Class and Pseudo-Element Variants', () => {
   describe('Form pseudo-classes', () => {

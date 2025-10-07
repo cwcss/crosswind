@@ -97,11 +97,11 @@ const config = {
       mono: ['Fira Code', 'monospace'],
     },
     fontSize: {
-      xs: '0.75rem',
-      sm: '0.875rem',
-      base: '1rem',
-      lg: '1.125rem',
-      xl: '1.25rem',
+      'xs': '0.75rem',
+      'sm': '0.875rem',
+      'base': '1rem',
+      'lg': '1.125rem',
+      'xl': '1.25rem',
       '2xl': '1.5rem',
       '3xl': '1.875rem',
       '4xl': '2.25rem',
@@ -168,10 +168,10 @@ Configure the compile class transformer to optimize HTML by compiling groups of 
 ```typescript
 const config = {
   compileClass: {
-    enabled: true,           // Enable the transformer
-    trigger: ':hw:',          // Trigger string (default)
-    classPrefix: 'hw-',       // Prefix for generated names (default)
-    layer: 'shortcuts',       // Layer name (default)
+    enabled: true, // Enable the transformer
+    trigger: ':hw:', // Trigger string (default)
+    classPrefix: 'hw-', // Prefix for generated names (default)
+    layer: 'shortcuts', // Layer name (default)
   },
 } satisfies Partial<HeadwindConfig>
 ```
@@ -243,7 +243,7 @@ const config = {
       'property-name': 'value',
     },
     // Dynamic rule with pattern matching
-    'custom-{value}': (match) => ({
+    'custom-{value}': match => ({
       'custom-property': match.groups.value,
     }),
   },
@@ -260,8 +260,8 @@ const config = {
       'background-image': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     },
     // Add custom spacing utility
-    'space-{size}': (match) => ({
-      'margin': `${match.groups.size}px`,
+    'space-{size}': match => ({
+      margin: `${match.groups.size}px`,
     }),
   },
 } satisfies Partial<HeadwindConfig>
@@ -298,7 +298,7 @@ export const myCustomPreset: Partial<HeadwindConfig> = {
     },
   },
   shortcuts: {
-    'btn': 'px-4 py-2 rounded',
+    btn: 'px-4 py-2 rounded',
   },
 }
 ```

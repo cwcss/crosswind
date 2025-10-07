@@ -6,7 +6,7 @@ import type { UtilityRule } from './rules'
  */
 
 const baseInputStyles = {
-  appearance: 'none',
+  'appearance': 'none',
   'background-color': '#fff',
   'border-color': '#6b7280',
   'border-width': '1px',
@@ -20,17 +20,17 @@ const baseInputStyles = {
 }
 
 const baseCheckboxRadioStyles = {
-  appearance: 'none',
-  padding: '0',
+  'appearance': 'none',
+  'padding': '0',
   'print-color-adjust': 'exact',
-  display: 'inline-block',
+  'display': 'inline-block',
   'vertical-align': 'middle',
   'background-origin': 'border-box',
   'user-select': 'none',
   'flex-shrink': '0',
-  height: '1rem',
-  width: '1rem',
-  color: '#2563eb',
+  'height': '1rem',
+  'width': '1rem',
+  'color': '#2563eb',
   'background-color': '#fff',
   'border-color': '#6b7280',
   'border-width': '1px',

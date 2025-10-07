@@ -391,14 +391,14 @@ describe('extractClasses - Edge Cases', () => {
   })
 
   it('should handle template literal with expressions', () => {
-    const jsx = '<div className={`flex ${isActive ? "active" : ""} p-4`}></div>'
+    const jsx = '<div className={`flex $\{isActive ? "active" : ""} p-4`}></div>'
     const result = extractClasses(jsx)
     expect(result.has('flex')).toBe(true)
     expect(result.has('p-4')).toBe(true)
   })
 
   it('should handle very long class string', () => {
-    const classes = Array(1000).fill('p-4').join(' ')
+    const classes = Array.from({ length: 1000 }).fill('p-4').join(' ')
     const html = `<div class="${classes}"></div>`
     const result = extractClasses(html)
     expect(result.has('p-4')).toBe(true)

@@ -80,7 +80,7 @@ export const clearRule: UtilityRule = (parsed) => {
 
 export const isolationRule: UtilityRule = (parsed) => {
   const values: Record<string, string> = {
-    isolate: 'isolate',
+    'isolate': 'isolate',
     'isolation-auto': 'auto',
   }
   return values[parsed.raw] ? { isolation: values[parsed.raw] } : undefined
@@ -156,13 +156,13 @@ export const positionRule: UtilityRule = (parsed) => {
 
 export const insetRule: UtilityRule = (parsed, config) => {
   const directions: Record<string, string[]> = {
-    inset: ['top', 'right', 'bottom', 'left'],
+    'inset': ['top', 'right', 'bottom', 'left'],
     'inset-x': ['left', 'right'],
     'inset-y': ['top', 'bottom'],
-    top: ['top'],
-    right: ['right'],
-    bottom: ['bottom'],
-    left: ['left'],
+    'top': ['top'],
+    'right': ['right'],
+    'bottom': ['bottom'],
+    'left': ['left'],
   }
 
   const props = directions[parsed.utility]

@@ -10,12 +10,12 @@ export const filterRule: UtilityRule = (parsed) => {
   }
   if (parsed.utility === 'blur' && parsed.value) {
     const blurMap: Record<string, string> = {
-      none: '0',
-      sm: '4px',
-      DEFAULT: '8px',
-      md: '12px',
-      lg: '16px',
-      xl: '24px',
+      'none': '0',
+      'sm': '4px',
+      'DEFAULT': '8px',
+      'md': '12px',
+      'lg': '16px',
+      'xl': '24px',
       '2xl': '40px',
       '3xl': '64px',
     }
@@ -44,13 +44,13 @@ export const filterRule: UtilityRule = (parsed) => {
   }
   if (parsed.utility === 'drop-shadow') {
     const shadows: Record<string, string> = {
-      sm: 'drop-shadow(0 1px 1px rgb(0 0 0 / 0.05))',
-      DEFAULT: 'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06))',
-      md: 'drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06))',
-      lg: 'drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))',
-      xl: 'drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08))',
+      'sm': 'drop-shadow(0 1px 1px rgb(0 0 0 / 0.05))',
+      'DEFAULT': 'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06))',
+      'md': 'drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06))',
+      'lg': 'drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))',
+      'xl': 'drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08))',
       '2xl': 'drop-shadow(0 25px 25px rgb(0 0 0 / 0.15))',
-      none: 'drop-shadow(0 0 #0000)',
+      'none': 'drop-shadow(0 0 #0000)',
     }
     return { filter: parsed.value ? (shadows[parsed.value] || `drop-shadow(${parsed.value})`) : shadows.DEFAULT }
   }
@@ -102,8 +102,8 @@ export const borderSpacingRule: UtilityRule = (parsed, config) => {
 export const tableLayoutRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'table' && parsed.value) {
     const values: Record<string, string> = {
-      'auto': 'auto',
-      'fixed': 'fixed',
+      auto: 'auto',
+      fixed: 'fixed',
     }
     return values[parsed.value] ? { 'table-layout': values[parsed.value] } : undefined
   }
@@ -229,7 +229,7 @@ export const pointerEventsRule: UtilityRule = (parsed) => {
 export const resizeRule: UtilityRule = (parsed) => {
   const values: Record<string, string> = {
     'resize-none': 'none',
-    resize: 'both',
+    'resize': 'both',
     'resize-y': 'vertical',
     'resize-x': 'horizontal',
   }

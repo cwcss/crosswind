@@ -13,12 +13,12 @@ import type { HeadwindConfig } from 'headwind'
 const config = {
   theme: {
     colors: {
-      primary: '#3b82f6',    // bg-primary
-      secondary: '#8b5cf6',  // bg-secondary
+      primary: '#3b82f6', // bg-primary
+      secondary: '#8b5cf6', // bg-secondary
     },
     spacing: {
-      4: '1rem',             // p-4, m-4, etc.
-      8: '2rem',             // p-8, m-8, etc.
+      4: '1rem', // p-4, m-4, etc.
+      8: '2rem', // p-8, m-8, etc.
     },
   },
 } satisfies Partial<HeadwindConfig>
@@ -188,30 +188,30 @@ const config = {
     spacing: {
       0: '0',
       px: '1px',
-      0.5: '0.125rem',    // 2px
-      1: '0.25rem',       // 4px
-      1.5: '0.375rem',    // 6px
-      2: '0.5rem',        // 8px
-      2.5: '0.625rem',    // 10px
-      3: '0.75rem',       // 12px
-      3.5: '0.875rem',    // 14px
-      4: '1rem',          // 16px
-      5: '1.25rem',       // 20px
-      6: '1.5rem',        // 24px
-      7: '1.75rem',       // 28px
-      8: '2rem',          // 32px
-      9: '2.25rem',       // 36px
-      10: '2.5rem',       // 40px
-      12: '3rem',         // 48px
-      14: '3.5rem',       // 56px
-      16: '4rem',         // 64px
-      20: '5rem',         // 80px
-      24: '6rem',         // 96px
-      32: '8rem',         // 128px
-      40: '10rem',        // 160px
-      48: '12rem',        // 192px
-      56: '14rem',        // 224px
-      64: '16rem',        // 256px
+      0.5: '0.125rem', // 2px
+      1: '0.25rem', // 4px
+      1.5: '0.375rem', // 6px
+      2: '0.5rem', // 8px
+      2.5: '0.625rem', // 10px
+      3: '0.75rem', // 12px
+      3.5: '0.875rem', // 14px
+      4: '1rem', // 16px
+      5: '1.25rem', // 20px
+      6: '1.5rem', // 24px
+      7: '1.75rem', // 28px
+      8: '2rem', // 32px
+      9: '2.25rem', // 36px
+      10: '2.5rem', // 40px
+      12: '3rem', // 48px
+      14: '3.5rem', // 56px
+      16: '4rem', // 64px
+      20: '5rem', // 80px
+      24: '6rem', // 96px
+      32: '8rem', // 128px
+      40: '10rem', // 160px
+      48: '12rem', // 192px
+      56: '14rem', // 224px
+      64: '16rem', // 256px
     },
   },
 }
@@ -267,16 +267,16 @@ Font sizes include both size and line height:
 const config = {
   theme: {
     fontSize: {
-      xs: ['0.75rem', { lineHeight: '1rem' }],       // 12px, 16px line height
-      sm: ['0.875rem', { lineHeight: '1.25rem' }],   // 14px, 20px line height
-      base: ['1rem', { lineHeight: '1.5rem' }],      // 16px, 24px line height
-      lg: ['1.125rem', { lineHeight: '1.75rem' }],   // 18px, 28px line height
-      xl: ['1.25rem', { lineHeight: '1.75rem' }],    // 20px, 28px line height
-      '2xl': ['1.5rem', { lineHeight: '2rem' }],     // 24px, 32px line height
-      '3xl': ['1.875rem', { lineHeight: '2.25rem' }],// 30px, 36px line height
-      '4xl': ['2.25rem', { lineHeight: '2.5rem' }],  // 36px, 40px line height
-      '5xl': ['3rem', { lineHeight: '1' }],          // 48px
-      '6xl': ['3.75rem', { lineHeight: '1' }],       // 60px
+      'xs': ['0.75rem', { lineHeight: '1rem' }], // 12px, 16px line height
+      'sm': ['0.875rem', { lineHeight: '1.25rem' }], // 14px, 20px line height
+      'base': ['1rem', { lineHeight: '1.5rem' }], // 16px, 24px line height
+      'lg': ['1.125rem', { lineHeight: '1.75rem' }], // 18px, 28px line height
+      'xl': ['1.25rem', { lineHeight: '1.75rem' }], // 20px, 28px line height
+      '2xl': ['1.5rem', { lineHeight: '2rem' }], // 24px, 32px line height
+      '3xl': ['1.875rem', { lineHeight: '2.25rem' }], // 30px, 36px line height
+      '4xl': ['2.25rem', { lineHeight: '2.5rem' }], // 36px, 40px line height
+      '5xl': ['3rem', { lineHeight: '1' }], // 48px
+      '6xl': ['3.75rem', { lineHeight: '1' }], // 60px
     },
   },
 }
@@ -312,15 +312,15 @@ Font weights are built-in but can be customized via custom rules:
 const config = {
   theme: {
     borderRadius: {
-      none: '0',
-      sm: '0.125rem',      // 2px
-      DEFAULT: '0.25rem',  // 4px
-      md: '0.375rem',      // 6px
-      lg: '0.5rem',        // 8px
-      xl: '0.75rem',       // 12px
-      '2xl': '1rem',       // 16px
-      '3xl': '1.5rem',     // 24px
-      full: '9999px',      // Fully rounded
+      'none': '0',
+      'sm': '0.125rem', // 2px
+      'DEFAULT': '0.25rem', // 4px
+      'md': '0.375rem', // 6px
+      'lg': '0.5rem', // 8px
+      'xl': '0.75rem', // 12px
+      '2xl': '1rem', // 16px
+      '3xl': '1.5rem', // 24px
+      'full': '9999px', // Fully rounded
     },
   },
 }
@@ -342,14 +342,14 @@ const config = {
 const config = {
   theme: {
     boxShadow: {
-      sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-      DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-      md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-      lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-      xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+      'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+      'DEFAULT': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+      'md': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+      'lg': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+      'xl': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
       '2xl': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
-      inner: 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
-      none: 'none',
+      'inner': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
+      'none': 'none',
     },
   },
 }
@@ -370,10 +370,10 @@ const config = {
 const config = {
   theme: {
     screens: {
-      sm: '640px',
-      md: '768px',
-      lg: '1024px',
-      xl: '1280px',
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
       '2xl': '1536px',
     },
   },
@@ -507,11 +507,11 @@ const config = {
     },
 
     fontSize: {
-      xs: ['0.75rem', { lineHeight: '1rem' }],
-      sm: ['0.875rem', { lineHeight: '1.25rem' }],
-      base: ['1rem', { lineHeight: '1.5rem' }],
-      lg: ['1.125rem', { lineHeight: '1.75rem' }],
-      xl: ['1.25rem', { lineHeight: '1.75rem' }],
+      'xs': ['0.75rem', { lineHeight: '1rem' }],
+      'sm': ['0.875rem', { lineHeight: '1.25rem' }],
+      'base': ['1rem', { lineHeight: '1.5rem' }],
+      'lg': ['1.125rem', { lineHeight: '1.75rem' }],
+      'xl': ['1.25rem', { lineHeight: '1.75rem' }],
       '2xl': ['1.5rem', { lineHeight: '2rem' }],
       '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
       '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
@@ -524,35 +524,35 @@ const config = {
 
     // Borders
     borderRadius: {
-      none: '0',
-      sm: '0.125rem',
-      DEFAULT: '0.25rem',
-      md: '0.375rem',
-      lg: '0.5rem',
-      xl: '0.75rem',
+      'none': '0',
+      'sm': '0.125rem',
+      'DEFAULT': '0.25rem',
+      'md': '0.375rem',
+      'lg': '0.5rem',
+      'xl': '0.75rem',
       '2xl': '1rem',
       '3xl': '1.5rem',
-      full: '9999px',
+      'full': '9999px',
     },
 
     // Shadows
     boxShadow: {
-      sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-      DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-      md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-      lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-      xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+      'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+      'DEFAULT': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+      'md': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+      'lg': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+      'xl': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
       '2xl': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
-      inner: 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
-      none: 'none',
+      'inner': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
+      'none': 'none',
     },
 
     // Breakpoints
     screens: {
-      sm: '640px',
-      md: '768px',
-      lg: '1024px',
-      xl: '1280px',
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
       '2xl': '1536px',
     },
   },
@@ -569,6 +569,9 @@ Create different themes for different projects:
 
 ```typescript
 // themes/light.ts
+// headwind.config.ts
+import { lightTheme } from './themes/light'
+
 export const lightTheme = {
   colors: {
     background: '#ffffff',
@@ -585,9 +588,6 @@ export const darkTheme = {
     primary: '#60a5fa',
   },
 }
-
-// headwind.config.ts
-import { lightTheme } from './themes/light'
 
 const config = {
   theme: lightTheme,
@@ -678,9 +678,9 @@ const config = {
   theme: {
     // Brand colors from design system v2.0
     colors: {
-      brand: '#3b82f6',      // Primary brand color
-      accent: '#f59e0b',     // Accent for CTAs
-      muted: '#6b7280',      // Text muted state
+      brand: '#3b82f6', // Primary brand color
+      accent: '#f59e0b', // Accent for CTAs
+      muted: '#6b7280', // Text muted state
     },
 
     // Spacing follows 4px grid
@@ -695,6 +695,11 @@ const config = {
 
 ```typescript
 // theme/colors.ts
+// headwind.config.ts
+import { colors } from './theme/colors'
+import { spacing } from './theme/spacing'
+import { typography } from './theme/typography'
+
 export const colors = { /* colors */ }
 
 // theme/spacing.ts
@@ -702,11 +707,6 @@ export const spacing = { /* spacing */ }
 
 // theme/typography.ts
 export const typography = { /* typography */ }
-
-// headwind.config.ts
-import { colors } from './theme/colors'
-import { spacing } from './theme/spacing'
-import { typography } from './theme/typography'
 
 const config = {
   theme: {

@@ -49,54 +49,54 @@ export interface Theme {
 }
 
 export interface VariantConfig {
-  responsive: boolean
-  hover: boolean
-  focus: boolean
-  active: boolean
-  disabled: boolean
-  dark: boolean
+  'responsive': boolean
+  'hover': boolean
+  'focus': boolean
+  'active': boolean
+  'disabled': boolean
+  'dark': boolean
   // Group/Peer
-  group: boolean
-  peer: boolean
+  'group': boolean
+  'peer': boolean
   // Pseudo-elements
-  before: boolean
-  after: boolean
-  marker: boolean
+  'before': boolean
+  'after': boolean
+  'marker': boolean
   // Pseudo-classes - Basic
-  first: boolean
-  last: boolean
-  odd: boolean
-  even: boolean
+  'first': boolean
+  'last': boolean
+  'odd': boolean
+  'even': boolean
   'first-of-type': boolean
   'last-of-type': boolean
-  visited: boolean
-  checked: boolean
+  'visited': boolean
+  'checked': boolean
   'focus-within': boolean
   'focus-visible': boolean
   // Pseudo-classes - Form states
-  placeholder: boolean
-  selection: boolean
-  file: boolean
-  required: boolean
-  valid: boolean
-  invalid: boolean
+  'placeholder': boolean
+  'selection': boolean
+  'file': boolean
+  'required': boolean
+  'valid': boolean
+  'invalid': boolean
   'read-only': boolean
-  autofill: boolean
+  'autofill': boolean
   // Pseudo-classes - Additional states
-  open: boolean
-  closed: boolean
-  empty: boolean
-  enabled: boolean
-  only: boolean
-  target: boolean
-  indeterminate: boolean
-  default: boolean
-  optional: boolean
+  'open': boolean
+  'closed': boolean
+  'empty': boolean
+  'enabled': boolean
+  'only': boolean
+  'target': boolean
+  'indeterminate': boolean
+  'default': boolean
+  'optional': boolean
   // Media
-  print: boolean
+  'print': boolean
   // Direction
-  rtl: boolean
-  ltr: boolean
+  'rtl': boolean
+  'ltr': boolean
   // Motion
   'motion-safe': boolean
   'motion-reduce': boolean

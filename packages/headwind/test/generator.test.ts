@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test'
-import { CSSGenerator } from '../src/generator'
 import { defaultConfig } from '../src/config'
+import { CSSGenerator } from '../src/generator'
 
 describe('CSSGenerator', () => {
   describe('Display utilities', () => {
@@ -310,7 +310,7 @@ describe('CSSGenerator - Edge Cases', () => {
 
   it('should handle very long selector', () => {
     const gen = new CSSGenerator(defaultConfig)
-    const longClass = 'a'.repeat(500) + '-4'
+    const longClass = `${'a'.repeat(500)}-4`
     gen.generate(longClass)
     const css = gen.toCSS()
     expect(css).toBeDefined()

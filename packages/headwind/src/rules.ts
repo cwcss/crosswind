@@ -1,12 +1,12 @@
 import type { HeadwindConfig, ParsedClass, UtilityRuleResult } from './types'
 import { advancedRules } from './rules-advanced'
 import { effectsRules } from './rules-effects'
+import { formsRules } from './rules-forms'
 import { gridRules } from './rules-grid'
 import { interactivityRules } from './rules-interactivity'
 import { layoutRules } from './rules-layout'
 import { transformsRules } from './rules-transforms'
 import { typographyRules } from './rules-typography'
-import { formsRules } from './rules-forms'
 
 export type UtilityRule = (parsed: ParsedClass, config: HeadwindConfig) => Record<string, string> | UtilityRuleResult | undefined
 
@@ -84,12 +84,12 @@ export const flexShrinkRule: UtilityRule = (parsed) => {
 export const justifyContentRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'justify' && parsed.value) {
     const values: Record<string, string> = {
-      'start': 'flex-start',
-      'end': 'flex-end',
-      'center': 'center',
-      'between': 'space-between',
-      'around': 'space-around',
-      'evenly': 'space-evenly',
+      start: 'flex-start',
+      end: 'flex-end',
+      center: 'center',
+      between: 'space-between',
+      around: 'space-around',
+      evenly: 'space-evenly',
     }
     // Handle named values
     if (values[parsed.value]) {
@@ -106,11 +106,11 @@ export const justifyContentRule: UtilityRule = (parsed) => {
 export const alignItemsRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'items' && parsed.value) {
     const values: Record<string, string> = {
-      'start': 'flex-start',
-      'end': 'flex-end',
-      'center': 'center',
-      'baseline': 'baseline',
-      'stretch': 'stretch',
+      start: 'flex-start',
+      end: 'flex-end',
+      center: 'center',
+      baseline: 'baseline',
+      stretch: 'stretch',
     }
     // Handle named values
     if (values[parsed.value]) {
@@ -142,15 +142,15 @@ export const justifyItemsRule: UtilityRule = (parsed) => {
 export const alignContentRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'content' && parsed.value) {
     const values: Record<string, string> = {
-      'normal': 'normal',
-      'center': 'center',
-      'start': 'flex-start',
-      'end': 'flex-end',
-      'between': 'space-between',
-      'around': 'space-around',
-      'evenly': 'space-evenly',
-      'baseline': 'baseline',
-      'stretch': 'stretch',
+      normal: 'normal',
+      center: 'center',
+      start: 'flex-start',
+      end: 'flex-end',
+      between: 'space-between',
+      around: 'space-around',
+      evenly: 'space-evenly',
+      baseline: 'baseline',
+      stretch: 'stretch',
     }
     return values[parsed.value] ? { 'align-content': values[parsed.value] } : undefined
   }
@@ -348,15 +348,15 @@ export const fontWeightRule: UtilityRule = (parsed) => {
       return { 'font-weight': parsed.value }
     }
     const weights: Record<string, string> = {
-      'thin': '100',
-      'extralight': '200',
-      'light': '300',
-      'normal': '400',
-      'medium': '500',
-      'semibold': '600',
-      'bold': '700',
-      'extrabold': '800',
-      'black': '900',
+      thin: '100',
+      extralight: '200',
+      light: '300',
+      normal: '400',
+      medium: '500',
+      semibold: '600',
+      bold: '700',
+      extrabold: '800',
+      black: '900',
     }
     return weights[parsed.value] ? { 'font-weight': weights[parsed.value] } : undefined
   }

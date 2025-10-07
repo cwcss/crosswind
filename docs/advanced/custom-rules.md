@@ -31,7 +31,7 @@ const config = {
     // Dynamic rule with pattern matching
     [
       /^custom-(\w+)$/,
-      (match) => ({
+      match => ({
         'custom-property': match[1],
       }),
     ],
@@ -47,7 +47,7 @@ Each custom rule is a tuple:
 
 ```typescript
 type CustomRule = [
-  RegExp,  // Pattern to match
+  RegExp, // Pattern to match
   (match: RegExpMatchArray) => Record<string, string> | undefined
 ]
 ```
@@ -108,7 +108,7 @@ const config = {
   rules: [
     [
       /^aspect-(\d+)\/(\d+)$/,
-      (match) => ({
+      match => ({
         'aspect-ratio': `${match[1]} / ${match[2]}`,
       }),
     ],
@@ -137,10 +137,11 @@ const config = {
         }
 
         const color = colors[match[1]]
-        if (!color) return undefined
+        if (!color)
+          return undefined
 
         return {
-          'color': color,
+          color,
         }
       },
     ],
@@ -169,7 +170,8 @@ const config = {
         }
 
         const template = templates[match[1]]
-        if (!template) return undefined
+        if (!template)
+          return undefined
 
         return {
           'grid-template-areas': template,
@@ -196,13 +198,13 @@ const config = {
   rules: [
     [
       /^animate-delay-(\d+)$/,
-      (match) => ({
+      match => ({
         'animation-delay': `${match[1]}ms`,
       }),
     ],
     [
       /^animate-duration-(\d+)$/,
-      (match) => ({
+      match => ({
         'animation-duration': `${match[1]}ms`,
       }),
     ],
@@ -228,7 +230,7 @@ const config = {
   rules: [
     [
       /^truncate-(\d+)$/,
-      (match) => ({
+      match => ({
         'overflow': 'hidden',
         'text-overflow': 'ellipsis',
         'white-space': 'nowrap',
@@ -296,10 +298,11 @@ const config = {
         const spacingKey = match[1]
         const spacing = config.theme.spacing[spacingKey]
 
-        if (!spacing) return undefined
+        if (!spacing)
+          return undefined
 
         return {
-          'gap': spacing,
+          gap: spacing,
         }
       },
     ],
@@ -337,7 +340,7 @@ const config = {
   rules: [
     [
       /^stack-(\d+)$/,
-      (match) => ({
+      match => ({
         '> * + *': {
           'margin-top': `${match[1] * 0.25}rem`,
         },
@@ -404,7 +407,8 @@ const config = {
         const fromColor = colors[from]
         const toColor = colors[to]
 
-        if (!fromColor || !toColor) return undefined
+        if (!fromColor || !toColor)
+          return undefined
 
         return {
           'background-image': `linear-gradient(to right, ${fromColor}, ${toColor})`,
@@ -438,7 +442,8 @@ const config = {
         }
 
         const size = sizes[match[1]]
-        if (!size) return undefined
+        if (!size)
+          return undefined
 
         return {
           'font-size': size,
@@ -455,12 +460,12 @@ const config = {
 
 ✅ **Good:**
 ```typescript
-/^my-utility-(\d+)$/  // Specific pattern
+/^my-utility-(\d+)$/ // Specific pattern
 ```
 
 ❌ **Avoid:**
 ```typescript
-/^my-/  // Too broad, might conflict
+/^my-/ // Too broad, might conflict
 ```
 
 ### 2. Validate Input
@@ -498,7 +503,7 @@ const config = {
         const validSizes = ['sm', 'md', 'lg']
 
         if (!validSizes.includes(match[1])) {
-          return undefined  // Don't generate CSS
+          return undefined // Don't generate CSS
         }
 
         return { /* ... */ }
@@ -517,7 +522,7 @@ const config = {
     // Usage: aspect-16/9, aspect-4/3
     [
       /^aspect-(\d+)\/(\d+)$/,
-      (match) => ({
+      match => ({
         'aspect-ratio': `${match[1]} / ${match[2]}`,
       }),
     ],
@@ -565,10 +570,12 @@ Custom rules have minimal performance impact:
 2. **Avoid complex logic:**
    ```typescript
    // ✅ Simple check
-   if (value === 'sm') return { /* ... */ }
+   if (value === 'sm')
+     return { /* ... */ }
 
    // ❌ Complex computation
-   if (expensiveFunction(value)) return { /* ... */ }
+   if (expensiveFunction(value))
+     return { /* ... */ }
    ```
 
 3. **Cache computed values:**
@@ -600,7 +607,7 @@ Custom rules have minimal performance impact:
 1. Pattern is correct:
    ```typescript
    // Test pattern
-   /^my-utility-(\d+)$/.test('my-utility-10')  // true
+   /^my-utility-(\d+)$/.test('my-utility-10') // true
    ```
 
 2. Class name matches exactly:

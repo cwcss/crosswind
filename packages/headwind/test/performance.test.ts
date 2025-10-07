@@ -1,6 +1,7 @@
+/* eslint-disable no-console */
 import { describe, expect, it } from 'bun:test'
-import { CSSGenerator } from '../src/generator'
 import { defaultConfig } from '../src/config'
+import { CSSGenerator } from '../src/generator'
 
 describe('Performance Tests', () => {
   describe('CSS Generation Performance', () => {
@@ -29,9 +30,16 @@ describe('Performance Tests', () => {
       // Generate variety of utilities
       for (let i = 0; i < 500; i++) {
         utilities.push(
-          `w-${i}`, `h-${i}`, `p-${i}`, `m-${i}`,
-          `text-${i}`, `bg-blue-${i % 900}`, `border-${i}`,
-          `gap-${i}`, `grid-cols-${i % 12}`, `flex-${i % 10}`,
+          `w-${i}`,
+          `h-${i}`,
+          `p-${i}`,
+          `m-${i}`,
+          `text-${i}`,
+          `bg-blue-${i % 900}`,
+          `border-${i}`,
+          `gap-${i}`,
+          `grid-cols-${i % 12}`,
+          `flex-${i % 10}`,
         )
       }
 
@@ -109,9 +117,9 @@ describe('Performance Tests', () => {
       const css = gen.toCSS()
       // Count only utility rules (not preflight)
       const utilityRules = css.split('\n').filter(line =>
-        line.startsWith('.w-4') || line.startsWith('.h-4') ||
-        line.startsWith('.p-4') || line.startsWith('.m-4') ||
-        line.startsWith('.text-lg') || line.startsWith('.bg-blue-500')
+        line.startsWith('.w-4') || line.startsWith('.h-4')
+        || line.startsWith('.p-4') || line.startsWith('.m-4')
+        || line.startsWith('.text-lg') || line.startsWith('.bg-blue-500'),
       ).length
 
       expect(elapsed).toBeLessThan(100)
@@ -340,8 +348,8 @@ describe('Performance Tests', () => {
         gen.toCSS()
 
         // Force garbage collection if available
-        if (global.gc) {
-          global.gc()
+        if (globalThis.gc) {
+          globalThis.gc()
         }
 
         if (typeof process !== 'undefined' && process.memoryUsage) {
@@ -365,8 +373,7 @@ describe('Performance Tests', () => {
 
       // Create a very large class string
       const classes = Array.from({ length: 500 }, (_, i) =>
-        `w-${i} h-${i} p-${i} m-${i} bg-blue-${i % 900} text-${i}`
-      ).join(' ')
+        `w-${i} h-${i} p-${i} m-${i} bg-blue-${i % 900} text-${i}`).join(' ')
 
       const start = performance.now()
       gen.generate(classes)

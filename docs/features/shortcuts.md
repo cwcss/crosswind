@@ -71,7 +71,7 @@ Shortcuts can be defined as strings or arrays:
 ```typescript
 const config = {
   shortcuts: {
-    'btn': 'px-4 py-2 rounded font-semibold transition-colors',
+    btn: 'px-4 py-2 rounded font-semibold transition-colors',
   },
 }
 ```
@@ -81,7 +81,7 @@ const config = {
 ```typescript
 const config = {
   shortcuts: {
-    'btn': ['px-4', 'py-2', 'rounded', 'font-semibold', 'transition-colors'],
+    btn: ['px-4', 'py-2', 'rounded', 'font-semibold', 'transition-colors'],
   },
 }
 ```
@@ -458,6 +458,10 @@ const config = {
 
 ```typescript
 // shortcuts/buttons.ts
+// headwind.config.ts
+import { buttonShortcuts } from './shortcuts/buttons'
+import { cardShortcuts } from './shortcuts/cards'
+
 export const buttonShortcuts = {
   'btn': 'px-4 py-2 rounded font-semibold transition',
   'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600',
@@ -466,13 +470,9 @@ export const buttonShortcuts = {
 
 // shortcuts/cards.ts
 export const cardShortcuts = {
-  'card': 'rounded-lg shadow-md p-6 bg-white',
+  card: 'rounded-lg shadow-md p-6 bg-white',
   // ...
 }
-
-// headwind.config.ts
-import { buttonShortcuts } from './shortcuts/buttons'
-import { cardShortcuts } from './shortcuts/cards'
 
 const config = {
   shortcuts: {
@@ -488,10 +488,13 @@ Share shortcuts across projects using presets:
 
 ```typescript
 // presets/design-system.ts
+// headwind.config.ts
+import { designSystemPreset } from './presets/design-system'
+
 export const designSystemPreset = {
   shortcuts: {
-    'btn': 'px-4 py-2 rounded transition',
-    'card': 'rounded-lg shadow-md p-6',
+    btn: 'px-4 py-2 rounded transition',
+    card: 'rounded-lg shadow-md p-6',
     // ... more shortcuts
   },
   theme: {
@@ -501,9 +504,6 @@ export const designSystemPreset = {
     },
   },
 }
-
-// headwind.config.ts
-import { designSystemPreset } from './presets/design-system'
 
 const config = {
   presets: [designSystemPreset],

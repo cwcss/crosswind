@@ -4,7 +4,7 @@ import type { UtilityRule } from './rules'
 
 export const transformRule: UtilityRule = (parsed) => {
   const values: Record<string, string> = {
-    transform: 'translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))',
+    'transform': 'translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))',
     'transform-cpu': 'translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))',
     'transform-gpu': 'translate3d(var(--tw-translate-x), var(--tw-translate-y), 0) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))',
     'transform-none': 'none',
@@ -14,7 +14,8 @@ export const transformRule: UtilityRule = (parsed) => {
 
 export const scaleRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'scale') {
-    if (!parsed.value) return { transform: 'scale(1)' }
+    if (!parsed.value)
+      return { transform: 'scale(1)' }
     // If arbitrary, use value as-is
     if (parsed.arbitrary) {
       return { transform: `scale(${parsed.value})` }
@@ -23,7 +24,8 @@ export const scaleRule: UtilityRule = (parsed) => {
     return { transform: `scale(${scale})` }
   }
   if (parsed.utility === 'scale-x') {
-    if (!parsed.value) return { transform: 'scaleX(1)' }
+    if (!parsed.value)
+      return { transform: 'scaleX(1)' }
     if (parsed.arbitrary) {
       return { transform: `scaleX(${parsed.value})` }
     }
@@ -31,7 +33,8 @@ export const scaleRule: UtilityRule = (parsed) => {
     return { transform: `scaleX(${scale})` }
   }
   if (parsed.utility === 'scale-y') {
-    if (!parsed.value) return { transform: 'scaleY(1)' }
+    if (!parsed.value)
+      return { transform: 'scaleY(1)' }
     if (parsed.arbitrary) {
       return { transform: `scaleY(${parsed.value})` }
     }
@@ -39,7 +42,8 @@ export const scaleRule: UtilityRule = (parsed) => {
     return { transform: `scaleY(${scale})` }
   }
   if (parsed.utility === 'scale-z') {
-    if (!parsed.value) return { transform: 'scaleZ(1)' }
+    if (!parsed.value)
+      return { transform: 'scaleZ(1)' }
     if (parsed.arbitrary) {
       return { transform: `scaleZ(${parsed.value})` }
     }
@@ -85,8 +89,10 @@ export const translateRule: UtilityRule = (parsed, config) => {
       return `${percentage}%`
     }
     // Handle special keywords
-    if (val === 'full') return '100%'
-    if (val === 'half') return '50%'
+    if (val === 'full')
+      return '100%'
+    if (val === 'half')
+      return '50%'
     // Check spacing config
     return config.theme.spacing[val] || val
   }
@@ -218,7 +224,7 @@ export const transitionPropertyRule: UtilityRule = (parsed) => {
   const properties: Record<string, string> = {
     'transition-none': 'none',
     'transition-all': 'all',
-    transition: 'color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter',
+    'transition': 'color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter',
     'transition-colors': 'color, background-color, border-color, text-decoration-color, fill, stroke',
     'transition-opacity': 'opacity',
     'transition-shadow': 'box-shadow',
@@ -263,11 +269,11 @@ export const animationRule: UtilityRule = (parsed) => {
   }
 
   const animations: Record<string, string> = {
-    'none': 'none',
-    'spin': 'spin 1s linear infinite',
-    'ping': 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
-    'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-    'bounce': 'bounce 1s infinite',
+    none: 'none',
+    spin: 'spin 1s linear infinite',
+    ping: 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
+    pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+    bounce: 'bounce 1s infinite',
   }
 
   // Support arbitrary animation values

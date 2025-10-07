@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'bun:test'
-import { Scanner } from '../src/scanner'
 import { mkdir, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { Scanner } from '../src/scanner'
 
 const TEST_DIR = join(import.meta.dir, '.scanner-test')
 
@@ -22,7 +22,7 @@ describe('Scanner', () => {
 
     await writeFile(
       join(TEST_DIR, 'test3.jsx'),
-      '<div className={`text-center ${active ? "font-bold" : ""}`}>Text</div>',
+      '<div className={`text-center $\{active ? "font-bold" : ""}`}>Text</div>',
     )
   })
 

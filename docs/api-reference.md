@@ -312,7 +312,7 @@ Load configuration from file (used internally by CLI).
 **Example:**
 
 ```typescript
-import { loadConfig, defaultConfig } from 'headwind'
+import { defaultConfig, loadConfig } from 'headwind'
 
 const config = await loadConfig({
   name: 'headwind',
@@ -420,7 +420,7 @@ interface BuildResult {
   css: string
   classes: Set<string>
   duration: number
-  compiledClasses?: Map<string, { className: string; utilities: string[] }>
+  compiledClasses?: Map<string, { className: string, utilities: string[] }>
   transformedFiles?: Map<string, string>
 }
 ```
@@ -514,7 +514,7 @@ interface VariantConfig {
 ### Custom Build Pipeline
 
 ```typescript
-import { Scanner, CSSGenerator, writeCSS } from 'headwind'
+import { CSSGenerator, Scanner, writeCSS } from 'headwind'
 
 async function customBuild() {
   // 1. Configure
@@ -554,7 +554,7 @@ await customBuild()
 ### Analyze Utility Usage
 
 ```typescript
-import { Scanner, parseClass } from 'headwind'
+import { parseClass, Scanner } from 'headwind'
 
 async function analyzeUtilities() {
   const scanner = new Scanner(['./src/**/*.tsx'])
@@ -584,7 +584,7 @@ await analyzeUtilities()
 ### Watch Mode Implementation
 
 ```typescript
-import { watch } from 'fs'
+import { watch } from 'node:fs'
 import { buildAndWrite } from 'headwind'
 
 async function watchMode(config: HeadwindConfig) {
@@ -604,7 +604,8 @@ async function watchMode(config: HeadwindConfig) {
       try {
         await buildAndWrite(config)
         console.log('Rebuilt successfully')
-      } catch (error) {
+      }
+      catch (error) {
         console.error('Build failed:', error)
       }
     })
@@ -618,6 +619,10 @@ await watchMode(config)
 
 ```typescript
 import { buildAndWrite } from 'headwind'
+
+// Usage in vite.config.ts
+import { defineConfig } from 'vite'
+import { headwindPlugin } from './plugins/headwind'
 
 // Example Vite plugin
 export function headwindPlugin(config: HeadwindOptions) {
@@ -640,10 +645,6 @@ export function headwindPlugin(config: HeadwindOptions) {
     },
   }
 }
-
-// Usage in vite.config.ts
-import { defineConfig } from 'vite'
-import { headwindPlugin } from './plugins/headwind'
 
 export default defineConfig({
   plugins: [
@@ -697,8 +698,8 @@ for (const [name, theme] of Object.entries(themes)) {
 ### Testing Utilities
 
 ```typescript
-import { test, expect } from 'bun:test'
-import { parseClass, CSSGenerator, defaultConfig } from 'headwind'
+import { expect, test } from 'bun:test'
+import { CSSGenerator, defaultConfig, parseClass } from 'headwind'
 
 test('parses utility class', () => {
   const parsed = parseClass('md:hover:bg-blue-500')
@@ -731,14 +732,16 @@ import { buildAndWrite } from 'headwind'
 try {
   const result = await buildAndWrite(config)
   console.log('Success:', result)
-} catch (error) {
+}
+catch (error) {
   if (error instanceof Error) {
     console.error('Build failed:', error.message)
 
     // Check for specific errors
     if (error.message.includes('ENOENT')) {
       console.error('Output directory does not exist')
-    } else if (error.message.includes('EACCES')) {
+    }
+    else if (error.message.includes('EACCES')) {
       console.error('Permission denied')
     }
   }

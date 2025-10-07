@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from 'bun:test'
-import { build, buildAndWrite } from '../src/build'
-import { defaultConfig } from '../src/config'
 import { mkdir, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { build, buildAndWrite } from '../src/build'
+import { defaultConfig } from '../src/config'
 
 const TEST_DIR = join(import.meta.dir, '.build-test')
 

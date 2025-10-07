@@ -26,7 +26,7 @@ export const gridTemplateColumnsRule: UtilityRule = (parsed) => {
 export const gridColumnRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'col') {
     const spans: Record<string, string> = {
-      auto: 'auto',
+      'auto': 'auto',
       'span-1': 'span 1 / span 1',
       'span-2': 'span 2 / span 2',
       'span-3': 'span 3 / span 3',
@@ -92,7 +92,7 @@ export const gridTemplateRowsRule: UtilityRule = (parsed) => {
 export const gridRowRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'row') {
     const spans: Record<string, string> = {
-      auto: 'auto',
+      'auto': 'auto',
       'span-1': 'span 1 / span 1',
       'span-2': 'span 2 / span 2',
       'span-3': 'span 3 / span 3',
@@ -182,13 +182,13 @@ export const placeContentRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'place' && parsed.value && parsed.value.startsWith('content-')) {
     const val = parsed.value.replace('content-', '')
     const values: Record<string, string> = {
-      'center': 'center',
-      'start': 'start',
-      'end': 'end',
-      'between': 'space-between',
-      'around': 'space-around',
-      'evenly': 'space-evenly',
-      'stretch': 'stretch',
+      center: 'center',
+      start: 'start',
+      end: 'end',
+      between: 'space-between',
+      around: 'space-around',
+      evenly: 'space-evenly',
+      stretch: 'stretch',
     }
     return values[val] ? { 'place-content': values[val] } : undefined
   }
@@ -199,10 +199,10 @@ export const placeItemsRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'place' && parsed.value && parsed.value.startsWith('items-')) {
     const val = parsed.value.replace('items-', '')
     const values: Record<string, string> = {
-      'start': 'start',
-      'end': 'end',
-      'center': 'center',
-      'stretch': 'stretch',
+      start: 'start',
+      end: 'end',
+      center: 'center',
+      stretch: 'stretch',
     }
     return values[val] ? { 'place-items': values[val] } : undefined
   }
@@ -213,11 +213,11 @@ export const placeSelfRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'place' && parsed.value && parsed.value.startsWith('self-')) {
     const val = parsed.value.replace('self-', '')
     const values: Record<string, string> = {
-      'auto': 'auto',
-      'start': 'start',
-      'end': 'end',
-      'center': 'center',
-      'stretch': 'stretch',
+      auto: 'auto',
+      start: 'start',
+      end: 'end',
+      center: 'center',
+      stretch: 'stretch',
     }
     return values[val] ? { 'place-self': values[val] } : undefined
   }

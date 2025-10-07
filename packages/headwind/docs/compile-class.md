@@ -26,10 +26,10 @@ const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/headwind.css',
   compileClass: {
-    enabled: true,           // Enable the transformer
-    trigger: ':hw:',          // Trigger string (default)
-    classPrefix: 'hw-',       // Prefix for generated names (default)
-    layer: 'shortcuts',       // Layer name (default)
+    enabled: true, // Enable the transformer
+    trigger: ':hw:', // Trigger string (default)
+    classPrefix: 'hw-', // Prefix for generated names (default)
+    layer: 'shortcuts', // Layer name (default)
   },
 } satisfies Partial<HeadwindConfig>
 
@@ -82,21 +82,25 @@ export default config
 The transformer works with both `class` and `className` attributes:
 
 ```jsx
-export const Button = () => (
-  <button className=":hw: px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded">
-    Click Me
-  </button>
-)
+export function Button() {
+  return (
+    <button className=":hw: px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded">
+      Click Me
+    </button>
+  )
+}
 ```
 
 Compiles to:
 
 ```jsx
-export const Button = () => (
-  <button className="hw-abc123">
-    Click Me
-  </button>
-)
+export function Button() {
+  return (
+    <button className="hw-abc123">
+      Click Me
+    </button>
+  )
+}
 ```
 
 ### Complex Variants

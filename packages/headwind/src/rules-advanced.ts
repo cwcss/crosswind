@@ -5,24 +5,24 @@ import type { UtilityRule } from './rules'
 // Min/Max sizing
 export const minMaxSizingRule: UtilityRule = (parsed, config) => {
   const minMaxMap: Record<string, string> = {
-    0: '0',
-    full: '100%',
-    min: 'min-content',
-    max: 'max-content',
-    fit: 'fit-content',
-    none: 'none',
-    xs: '20rem',
-    sm: '24rem',
-    md: '28rem',
-    lg: '32rem',
-    xl: '36rem',
+    '0': '0',
+    'full': '100%',
+    'min': 'min-content',
+    'max': 'max-content',
+    'fit': 'fit-content',
+    'none': 'none',
+    'xs': '20rem',
+    'sm': '24rem',
+    'md': '28rem',
+    'lg': '32rem',
+    'xl': '36rem',
     '2xl': '42rem',
     '3xl': '48rem',
     '4xl': '56rem',
     '5xl': '64rem',
     '6xl': '72rem',
     '7xl': '80rem',
-    screen: '100vw',
+    'screen': '100vw',
   }
 
   if (parsed.utility === 'min-w' && parsed.value) {
@@ -351,11 +351,11 @@ export const alignSelfRule: UtilityRule = (parsed) => {
 
 // Container utility
 // TODO: Requires nested media query support in generator
-export const containerRule: UtilityRule = (parsed, config) => {
+export const containerRule: UtilityRule = (parsed, _config) => {
   if (parsed.utility === 'container' && !parsed.value) {
     // Simplified version without responsive max-widths
     return {
-      width: '100%',
+      'width': '100%',
       'margin-left': 'auto',
       'margin-right': 'auto',
       'padding-left': '1rem',
