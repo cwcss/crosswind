@@ -141,4 +141,8 @@ export interface Preset {
   preflights?: Preflight[]
 }
 
-export type HeadwindOptions = Partial<HeadwindConfig>
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
+}
+
+export type HeadwindOptions = DeepPartial<HeadwindConfig>

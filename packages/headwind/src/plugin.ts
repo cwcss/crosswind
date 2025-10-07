@@ -1,5 +1,5 @@
 import type { BunPlugin } from 'bun'
-import type { HeadwindConfig } from './types'
+import type { HeadwindConfig, HeadwindOptions } from './types'
 import { loadConfig } from 'bunfig'
 import { defaultConfig } from './config'
 import { CSSGenerator } from './generator'
@@ -9,7 +9,7 @@ export interface HeadwindPluginOptions {
   /**
    * Custom config to override default config
    */
-  config?: Partial<HeadwindConfig>
+  config?: HeadwindOptions
   /**
    * Include preflight CSS
    * @default true
@@ -42,7 +42,7 @@ export function plugin(options: HeadwindPluginOptions = {}): BunPlugin {
       })
 
       // Merge with provided options
-      const config: HeadwindConfig = {
+      const config = {
         ...loadedConfig,
         ...options.config,
         theme: {
@@ -77,7 +77,7 @@ export function plugin(options: HeadwindPluginOptions = {}): BunPlugin {
           ...(loadedConfig.presets || []),
           ...(options.config?.presets || []),
         ],
-      }
+      } as HeadwindConfig
 
       const includePreflight = options.includePreflight ?? true
 

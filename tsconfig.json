@@ -23,5 +23,8 @@
     "verbatimModuleSyntax": true,
     "skipDefaultLibCheck": true,
     "skipLibCheck": true
-  }
+  },
+  "exclude": [
+    "packages/headwind/examples/**/*"
+  ]
 }
