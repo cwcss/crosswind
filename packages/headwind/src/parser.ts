@@ -238,7 +238,7 @@ export function parseClass(className: string): ParsedClass {
     }
 
     // Regular negative value
-    const match = positiveUtility.match(/^([a-z-]+?)(?:-(.+))?$/)
+    const match = positiveUtility.match(/^([a-z]+(?:-[a-z]+)*)(?:-(.+))?$/)
     if (match) {
       return {
         raw: className,
@@ -253,7 +253,7 @@ export function parseClass(className: string): ParsedClass {
 
   // Check for color opacity modifiers: bg-blue-500/50, text-red-500/75
   // Must come before fractional values to avoid conflict
-  const opacityMatch = utility.match(/^([a-z-]+?)-(.+?)\/(\d+)$/)
+  const opacityMatch = utility.match(/^([a-z]+(?:-[a-z]+)*)-(.+?)\/(\d+)$/)
   if (opacityMatch && ['bg', 'text', 'border', 'ring', 'placeholder', 'divide'].includes(opacityMatch[1])) {
     return {
       raw: className,
@@ -266,7 +266,7 @@ export function parseClass(className: string): ParsedClass {
   }
 
   // Check for fractional values: w-1/2, h-3/4
-  const fractionMatch = utility.match(/^([a-z-]+?)-(\d+)\/(\d+)$/)
+  const fractionMatch = utility.match(/^([a-z-]+)-(\d+)\/(\d+)$/)
   if (fractionMatch) {
     return {
       raw: className,
@@ -279,7 +279,7 @@ export function parseClass(className: string): ParsedClass {
   }
 
   // Regular parsing - split on last dash
-  const match = utility.match(/^([a-z-]+?)(?:-(.+))?$/)
+  const match = utility.match(/^([a-z]+(?:-[a-z]+)*)(?:-(.+))?$/)
   if (!match) {
     return {
       raw: className,
@@ -316,6 +316,7 @@ export function extractClasses(content: string): Set<string> {
 
   for (const pattern of patterns) {
     let match
+    // eslint-disable-next-line no-cond-assign
     while ((match = pattern.exec(content)) !== null) {
       const classStr = match[1]
       // Extract all quoted strings from the class string (handles template literals with expressions)

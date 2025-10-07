@@ -50,6 +50,7 @@ export function extractCompileClasses(
   const classRegex = /(?:class|className)=["']([^"']*)["']/g
   let match: RegExpExecArray | null
 
+  // eslint-disable-next-line no-cond-assign
   while ((match = classRegex.exec(content)) !== null) {
     const fullClass = match[1]
 
@@ -92,6 +93,7 @@ export function transformContent(
   // We need to replace in reverse order to maintain string positions
   const replacements: Array<{ start: number, end: number, replacement: string }> = []
 
+  // eslint-disable-next-line no-cond-assign
   while ((match = classRegex.exec(content)) !== null) {
     const fullClass = match[1]
 

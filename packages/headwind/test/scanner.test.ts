@@ -22,7 +22,8 @@ describe('Scanner', () => {
 
     await writeFile(
       join(TEST_DIR, 'test3.jsx'),
-      '<div className={`text-center $\{active ? "font-bold" : ""}`}>Text</div>',
+      // eslint-disable-next-line no-template-curly-in-string
+      '<div className={`text-center ${active ? "font-bold" : ""}`}>Text</div>',
     )
   })
 
