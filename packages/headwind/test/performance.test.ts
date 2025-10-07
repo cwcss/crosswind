@@ -114,7 +114,7 @@ describe('Performance Tests', () => {
       }
       const elapsed = performance.now() - start
 
-      const css = gen.toCSS()
+      const css = gen.toCSS(false)
       // Count only utility rules (not preflight)
       const utilityRules = css.split('\n').filter(line =>
         line.startsWith('.w-4') || line.startsWith('.h-4')
@@ -159,7 +159,7 @@ describe('Performance Tests', () => {
       }
 
       const start = performance.now()
-      const css = gen.toCSS()
+      const css = gen.toCSS(false)
       const elapsed = performance.now() - start
 
       expect(elapsed).toBeLessThan(50)
@@ -177,7 +177,7 @@ describe('Performance Tests', () => {
       }
 
       const start = performance.now()
-      const css = gen.toCSS()
+      const css = gen.toCSS(false)
       const elapsed = performance.now() - start
 
       // Performance should be similar whether minified or not
@@ -345,7 +345,7 @@ describe('Performance Tests', () => {
           gen.generate(`p-${j}`)
         }
 
-        gen.toCSS()
+        gen.toCSS(false)
 
         // Force garbage collection if available
         if (globalThis.gc) {
@@ -482,7 +482,7 @@ describe('Performance Tests', () => {
       for (const util of utilities) {
         gen.generate(util)
       }
-      const css = gen.toCSS()
+      const css = gen.toCSS(false)
       const elapsed = performance.now() - start
 
       expect(elapsed).toBeLessThan(300)
@@ -548,7 +548,7 @@ describe('Performance Tests', () => {
         gen4.generate(`w-${i}`)
       }
       const start4 = performance.now()
-      gen4.toCSS()
+      gen4.toCSS(false)
       results.cssOutput = performance.now() - start4
 
       // Log results for reference

@@ -318,13 +318,15 @@ export class CSSGenerator {
   /**
    * Generate final CSS output
    */
-  toCSS(minify = false): string {
+  toCSS(includePreflight = true, minify = false): string {
     const parts: string[] = []
 
-    // Add preflight CSS first
-    for (const preflight of this.config.preflights) {
-      const preflightCSS = preflight.getCSS()
-      parts.push(minify ? preflightCSS.replace(/\s+/g, ' ').trim() : preflightCSS)
+    // Add preflight CSS first (if requested)
+    if (includePreflight) {
+      for (const preflight of this.config.preflights) {
+        const preflightCSS = preflight.getCSS()
+        parts.push(minify ? preflightCSS.replace(/\s+/g, ' ').trim() : preflightCSS)
+      }
     }
 
     // Base rules (no media query)

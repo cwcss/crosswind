@@ -53,7 +53,7 @@ export async function build(config: HeadwindConfig): Promise<BuildResult> {
   }
 
   // Preflight CSS is now added by generator.toCSS()
-  const css = generator.toCSS(config.minify)
+  const css = generator.toCSS(true, config.minify)
   const duration = performance.now() - startTime
 
   return {

@@ -7,21 +7,21 @@ describe('Pseudo-element Variants', () => {
     it('should generate before variant', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('before:content-[""]')
-      const css = gen.toCSS()
+      const css = gen.toCSS(false)
       expect(css).toContain('::before')
     })
 
     it('should generate after variant', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('after:content-[""]')
-      const css = gen.toCSS()
+      const css = gen.toCSS(false)
       expect(css).toContain('::after')
     })
 
     it('should generate before with block display', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('before:block')
-      const css = gen.toCSS()
+      const css = gen.toCSS(false)
       expect(css).toContain('::before')
       expect(css).toContain('display: block;')
     })
@@ -29,7 +29,7 @@ describe('Pseudo-element Variants', () => {
     it('should handle responsive + hover + pseudo-element', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('md:hover:before:block')
-      const css = gen.toCSS()
+      const css = gen.toCSS(false)
       expect(css).toContain('@media (min-width: 768px)')
       expect(css).toContain(':hover')
       expect(css).toContain('::before')
@@ -39,7 +39,7 @@ describe('Pseudo-element Variants', () => {
     it('should handle before with important', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('!before:block')
-      const css = gen.toCSS()
+      const css = gen.toCSS(false)
       expect(css).toContain('::before')
       expect(css).toContain('!important')
     })

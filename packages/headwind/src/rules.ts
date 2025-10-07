@@ -185,7 +185,13 @@ export const spacingRule: UtilityRule = (parsed, config) => {
   if (parsed.value.startsWith('-')) {
     const positiveValue = parsed.value.slice(1)
     const spacing = config.theme.spacing[positiveValue]
-    value = spacing ? `-${spacing}` : parsed.value
+    // Special case: -0 should just be 0
+    if (positiveValue === '0') {
+      value = spacing || '0'
+    }
+    else {
+      value = spacing ? `-${spacing}` : parsed.value
+    }
   }
   else {
     value = config.theme.spacing[parsed.value] || parsed.value

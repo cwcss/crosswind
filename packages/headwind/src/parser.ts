@@ -238,22 +238,32 @@ export function parseClass(className: string): ParsedClass {
     }
 
     // Regular negative value
-    const match = positiveUtility.match(/^([a-z]+(?:-[a-z]+)*)(?:-(.+))?$/)
+    const match = positiveUtility.match(/^([a-z]+(?:-[a-z]+)*?)-(.+)$/)
     if (match) {
       return {
         raw: className,
         variants,
         utility: match[1],
-        value: match[2] ? `-${match[2]}` : undefined,
+        value: `-${match[2]}`,
         important,
         arbitrary: false,
       }
+    }
+    // If no match, it's a standalone utility with just a negative sign (e.g., -flex doesn't make sense)
+    // Return as-is
+    return {
+      raw: className,
+      variants,
+      utility: positiveUtility,
+      value: undefined,
+      important,
+      arbitrary: false,
     }
   }
 
   // Check for color opacity modifiers: bg-blue-500/50, text-red-500/75
   // Must come before fractional values to avoid conflict
-  const opacityMatch = utility.match(/^([a-z]+(?:-[a-z]+)*)-(.+?)\/(\d+)$/)
+  const opacityMatch = utility.match(/^([a-z]+(?:-[a-z]+)*?)-(.+?)\/(\d+)$/)
   if (opacityMatch && ['bg', 'text', 'border', 'ring', 'placeholder', 'divide'].includes(opacityMatch[1])) {
     return {
       raw: className,
@@ -266,7 +276,7 @@ export function parseClass(className: string): ParsedClass {
   }
 
   // Check for fractional values: w-1/2, h-3/4
-  const fractionMatch = utility.match(/^([a-z-]+)-(\d+)\/(\d+)$/)
+  const fractionMatch = utility.match(/^([a-z]+(?:-[a-z]+)*?)-(\d+)\/(\d+)$/)
   if (fractionMatch) {
     return {
       raw: className,
@@ -279,22 +289,25 @@ export function parseClass(className: string): ParsedClass {
   }
 
   // Regular parsing - split on last dash
-  const match = utility.match(/^([a-z]+(?:-[a-z]+)*)(?:-(.+))?$/)
-  if (!match) {
+  // First try: utility-value pattern (e.g., text-current, p-4)
+  const matchWithValue = utility.match(/^([a-z]+(?:-[a-z]+)*?)-(.+)$/)
+  if (matchWithValue) {
     return {
       raw: className,
       variants,
-      utility,
+      utility: matchWithValue[1],
+      value: matchWithValue[2],
       important,
       arbitrary: false,
     }
   }
 
+  // If no dash, treat entire string as utility with no value (e.g., flex, block)
   return {
     raw: className,
     variants,
-    utility: match[1],
-    value: match[2],
+    utility,
+    value: undefined,
     important,
     arbitrary: false,
   }
