@@ -411,6 +411,35 @@ export const strokeWidthRule: UtilityRule = (parsed) => {
 }
 
 // Accessibility
+export const screenReaderRule: UtilityRule = (parsed) => {
+  if (parsed.raw === 'sr-only') {
+    return {
+      position: 'absolute',
+      width: '1px',
+      height: '1px',
+      padding: '0',
+      margin: '-1px',
+      overflow: 'hidden',
+      clip: 'rect(0, 0, 0, 0)',
+      'white-space': 'nowrap',
+      'border-width': '0',
+    } as Record<string, string>
+  }
+  if (parsed.raw === 'not-sr-only') {
+    return {
+      position: 'static',
+      width: 'auto',
+      height: 'auto',
+      padding: '0',
+      margin: '0',
+      overflow: 'visible',
+      clip: 'auto',
+      'white-space': 'normal',
+    } as Record<string, string>
+  }
+  return undefined
+}
+
 export const forcedColorAdjustRule: UtilityRule = (parsed) => {
   const values: Record<string, string> = {
     'forced-color-adjust-auto': 'auto',
@@ -444,5 +473,6 @@ export const interactivityRules: UtilityRule[] = [
   fillRule,
   strokeRule,
   strokeWidthRule,
+  screenReaderRule,
   forcedColorAdjustRule,
 ]

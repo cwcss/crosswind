@@ -402,7 +402,7 @@ describe('Advanced Features', () => {
       gen.generate('space-x-8')
       gen.generate('space-x-reverse')
       const css = gen.toCSS(false)
-      expect(css).toContain('--tw-space-x-reverse')
+      expect(css).toContain('--hw-space-x-reverse')
       expect(css).toContain('margin-right')
       expect(css).toContain('margin-left')
     })
@@ -414,7 +414,7 @@ describe('Advanced Features', () => {
       gen.generate('space-y-8')
       gen.generate('space-y-reverse')
       const css = gen.toCSS(false)
-      expect(css).toContain('--tw-space-y-reverse')
+      expect(css).toContain('--hw-space-y-reverse')
       expect(css).toContain('margin-top')
       expect(css).toContain('margin-bottom')
     })
@@ -685,6 +685,218 @@ describe('Advanced Features', () => {
       gen.generate('hover:animate-pulse')
       const css = gen.toCSS(false)
       expect(css).toContain('animation')
+    })
+  })
+
+  describe('Multi-segment color names', () => {
+    it('should handle blue-gray color', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('text-blue-gray-200')
+      gen.generate('bg-blue-gray-500')
+      gen.generate('border-blue-gray-700')
+      const css = gen.toCSS(false)
+      expect(css).toContain('#e2e8f0') // blue-gray-200
+      expect(css).toContain('#64748b') // blue-gray-500
+      expect(css).toContain('#334155') // blue-gray-700
+    })
+
+    it('should handle sky color', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('text-sky-400')
+      gen.generate('bg-sky-500')
+      gen.generate('border-sky-600')
+      const css = gen.toCSS(false)
+      expect(css).toContain('#38bdf8') // sky-400
+      expect(css).toContain('#0ea5e9') // sky-500
+      expect(css).toContain('#0284c7') // sky-600
+    })
+
+    it('should handle cyan color', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('text-cyan-400')
+      gen.generate('bg-cyan-500')
+      gen.generate('border-cyan-600')
+      const css = gen.toCSS(false)
+      expect(css).toContain('#22d3ee') // cyan-400
+      expect(css).toContain('#06b6d4') // cyan-500
+      expect(css).toContain('#0891b2') // cyan-600
+    })
+  })
+
+  describe('Ring offset colors', () => {
+    it('should handle ring-offset width', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('ring-offset-0')
+      gen.generate('ring-offset-1')
+      gen.generate('ring-offset-2')
+      gen.generate('ring-offset-4')
+      const css = gen.toCSS(false)
+      expect(css).toContain('--hw-ring-offset-width')
+      expect(css).toContain('0px')
+      expect(css).toContain('1px')
+      expect(css).toContain('2px')
+      expect(css).toContain('4px')
+    })
+
+    it('should handle ring-offset with single color', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('ring-offset-black')
+      gen.generate('ring-offset-white')
+      const css = gen.toCSS(false)
+      expect(css).toContain('--hw-ring-offset-color')
+      expect(css).toContain('#000')
+      expect(css).toContain('#fff')
+    })
+
+    it('should handle ring-offset with two-segment color', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('ring-offset-blue-500')
+      gen.generate('ring-offset-red-500')
+      gen.generate('ring-offset-gray-300')
+      const css = gen.toCSS(false)
+      expect(css).toContain('--hw-ring-offset-color')
+      expect(css).toContain('#3b82f6') // blue-500
+      expect(css).toContain('#ef4444') // red-500
+      expect(css).toContain('#d1d5db') // gray-300
+    })
+
+    it('should handle ring-offset with multi-segment color names', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('ring-offset-blue-gray-500')
+      gen.generate('ring-offset-sky-400')
+      gen.generate('ring-offset-cyan-600')
+      const css = gen.toCSS(false)
+      expect(css).toContain('--hw-ring-offset-color')
+      expect(css).toContain('#64748b') // blue-gray-500
+      expect(css).toContain('#38bdf8') // sky-400
+      expect(css).toContain('#0891b2') // cyan-600
+    })
+  })
+
+  describe('Gradient utilities', () => {
+    it('should handle gradient direction utilities', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('bg-gradient-to-r')
+      gen.generate('bg-gradient-to-l')
+      gen.generate('bg-gradient-to-t')
+      gen.generate('bg-gradient-to-b')
+      gen.generate('bg-gradient-to-tr')
+      gen.generate('bg-gradient-to-br')
+      gen.generate('bg-gradient-to-bl')
+      gen.generate('bg-gradient-to-tl')
+      const css = gen.toCSS(false)
+      expect(css).toContain('linear-gradient')
+      expect(css).toContain('to right')
+      expect(css).toContain('to left')
+      expect(css).toContain('to top')
+      expect(css).toContain('to bottom')
+    })
+
+    it('should handle gradient color stops', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('from-blue-500')
+      gen.generate('via-gray-300')
+      gen.generate('to-red-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('--hw-gradient-from')
+      expect(css).toContain('--hw-gradient-to')
+      expect(css).toContain('--hw-gradient-stops')
+      expect(css).toContain('#3b82f6') // blue-500
+      expect(css).toContain('#ef4444') // red-500
+    })
+
+    it('should handle gradient with multi-segment colors', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('from-blue-gray-500')
+      gen.generate('via-sky-400')
+      gen.generate('to-cyan-600')
+      const css = gen.toCSS(false)
+      expect(css).toContain('--hw-gradient-from')
+      expect(css).toContain('--hw-gradient-to')
+      expect(css).toContain('--hw-gradient-stops')
+      expect(css).toContain('#64748b') // blue-gray-500
+      expect(css).toContain('#38bdf8') // sky-400
+      expect(css).toContain('#0891b2') // cyan-600
+    })
+
+    it('should handle gradient with hover variants', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('hover:from-sky-500')
+      gen.generate('hover:to-cyan-500')
+      gen.generate('hover:via-blue-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':hover')
+      expect(css).toContain('--hw-gradient-from')
+      expect(css).toContain('--hw-gradient-to')
+      expect(css).toContain('#0ea5e9') // sky-500
+      expect(css).toContain('#06b6d4') // cyan-500
+    })
+
+    it('should handle complete gradient combination', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('bg-gradient-to-r')
+      gen.generate('from-sky-500')
+      gen.generate('to-cyan-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('linear-gradient(to right, var(--hw-gradient-stops))')
+      expect(css).toContain('--hw-gradient-from: #0ea5e9') // sky-500
+      expect(css).toContain('--hw-gradient-to: #06b6d4') // cyan-500
+    })
+
+    it('should properly update gradient stops when using to-{color}', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('from-blue-500')
+      gen.generate('to-red-500')
+      const css = gen.toCSS(false)
+      // Both from and to should set --hw-gradient-stops
+      const fromMatch = css.match(/\.from-blue-500\s*\{[^}]*\}/)
+      const toMatch = css.match(/\.to-red-500\s*\{[^}]*\}/)
+      expect(fromMatch).toBeTruthy()
+      expect(toMatch).toBeTruthy()
+      expect(fromMatch![0]).toContain('--hw-gradient-stops')
+      expect(toMatch![0]).toContain('--hw-gradient-stops')
+    })
+  })
+
+  describe('Accessibility utilities', () => {
+    it('should handle sr-only utility', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('sr-only')
+      const css = gen.toCSS(false)
+      expect(css).toContain('position: absolute')
+      expect(css).toContain('width: 1px')
+      expect(css).toContain('height: 1px')
+      expect(css).toContain('padding: 0')
+      expect(css).toContain('margin: -1px')
+      expect(css).toContain('overflow: hidden')
+      expect(css).toContain('clip: rect(0, 0, 0, 0)')
+      expect(css).toContain('white-space: nowrap')
+      expect(css).toContain('border-width: 0')
+    })
+
+    it('should handle not-sr-only utility', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('not-sr-only')
+      const css = gen.toCSS(false)
+      expect(css).toContain('position: static')
+      expect(css).toContain('width: auto')
+      expect(css).toContain('height: auto')
+      expect(css).toContain('padding: 0')
+      expect(css).toContain('margin: 0')
+      expect(css).toContain('overflow: visible')
+      expect(css).toContain('clip: auto')
+      expect(css).toContain('white-space: normal')
+    })
+
+    it('should handle accessibility in forms', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      // sr-only is typically used for labels and screen reader text
+      gen.generate('sr-only')
+      const css = gen.toCSS(false)
+      // Verify all required properties for accessibility
+      expect(css).toContain('position')
+      expect(css).toContain('width')
+      expect(css).toContain('height')
     })
   })
 })

@@ -88,6 +88,7 @@ export const ringRule: UtilityRule = (parsed, config) => {
   }
 
   if (parsed.utility === 'ring-offset' && parsed.value) {
+    // First check if it's a width value
     const widths: Record<string, string> = {
       0: '0px',
       1: '1px',
@@ -95,22 +96,24 @@ export const ringRule: UtilityRule = (parsed, config) => {
       4: '4px',
       8: '8px',
     }
-    return { '--hw-ring-offset-width': widths[parsed.value] || parsed.value } as Record<string, string>
-  }
+    if (widths[parsed.value]) {
+      return { '--hw-ring-offset-width': widths[parsed.value] } as Record<string, string>
+    }
 
-  if (parsed.utility === 'ring-offset-color' || (parsed.utility === 'ring-offset' && parsed.value)) {
-    // Handle ring-offset-{color}
-    const value = parsed.value
-    if (value) {
-      const parts = value.split('-')
-      if (parts.length >= 2) {
-        const colorName = parts.slice(0, -1).join('-')
-        const shade = parts[parts.length - 1]
-        const colorValue = config.theme.colors[colorName]
-        if (typeof colorValue === 'object' && colorValue[shade]) {
-          return { '--hw-ring-offset-color': colorValue[shade] } as Record<string, string>
-        }
+    // Otherwise, treat as a color (e.g., ring-offset-ocean-blue)
+    const parts = parsed.value.split('-')
+    if (parts.length >= 2) {
+      const colorName = parts.slice(0, -1).join('-')
+      const shade = parts[parts.length - 1]
+      const colorValue = config.theme.colors[colorName]
+      if (typeof colorValue === 'object' && colorValue[shade]) {
+        return { '--hw-ring-offset-color': colorValue[shade] } as Record<string, string>
       }
+    }
+    // Check for direct color (e.g., ring-offset-black)
+    const directColor = config.theme.colors[parsed.value]
+    if (typeof directColor === 'string') {
+      return { '--hw-ring-offset-color': directColor } as Record<string, string>
     }
   }
 }
@@ -260,6 +263,13 @@ export const divideRule: UtilityRule = (parsed, config) => {
 // Gradient color stops
 export const gradientStopsRule: UtilityRule = (parsed, config) => {
   const getColor = (value: string) => {
+    // First check if it's a direct color value (e.g., ocean-blue, black, white)
+    const directColor = config.theme.colors[value]
+    if (typeof directColor === 'string') {
+      return directColor
+    }
+
+    // Then check if it's a color-shade combination (e.g., sky-500, blue-gray-200)
     const parts = value.split('-')
     if (parts.length >= 2) {
       const colorName = parts.slice(0, -1).join('-')
@@ -293,6 +303,7 @@ export const gradientStopsRule: UtilityRule = (parsed, config) => {
     const color = getColor(parsed.value)
     return {
       '--hw-gradient-to': color,
+      '--hw-gradient-stops': 'var(--hw-gradient-from), var(--hw-gradient-to)',
     } as Record<string, string>
   }
 }
