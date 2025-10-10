@@ -301,10 +301,12 @@ export const colorRule: UtilityRule = (parsed, config) => {
     return { [prop]: specialColors[colorValue] }
   }
 
-  // Parse color value: "blue-500" -> colors.blue[500]
+  // Parse color value: "blue-500" or "blue-gray-50" -> colors.blue[500] or colors['blue-gray'][50]
   const parts = colorValue.split('-')
-  if (parts.length === 2) {
-    const [colorName, shade] = parts
+  if (parts.length >= 2) {
+    // Last part should be the shade, everything before is the color name
+    const shade = parts[parts.length - 1]
+    const colorName = parts.slice(0, -1).join('-')
     const themeColorValue = config.theme.colors[colorName]
     if (typeof themeColorValue === 'object' && themeColorValue[shade]) {
       const finalColor = opacity !== undefined
