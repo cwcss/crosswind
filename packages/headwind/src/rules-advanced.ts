@@ -50,9 +50,27 @@ export const ringRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'ring') {
     // Handle ring-inset
     if (parsed.value === 'inset') {
-      return { '--tw-ring-inset': 'inset' } as Record<string, string>
+      return { '--hw-ring-inset': 'inset' } as Record<string, string>
     }
 
+    // Check if this is a ring color (e.g., ring-sky-500)
+    if (parsed.value) {
+      const parts = parsed.value.split('-')
+      if (parts.length >= 2) {
+        const colorName = parts.slice(0, -1).join('-')
+        const shade = parts[parts.length - 1]
+        const colorValue = config.theme.colors[colorName]
+        if (typeof colorValue === 'object' && colorValue[shade]) {
+          return { '--hw-ring-color': colorValue[shade] } as Record<string, string>
+        }
+        // Also check if it's a direct color value (like custom colors)
+        if (config.theme.colors[parsed.value]) {
+          return { '--hw-ring-color': config.theme.colors[parsed.value] } as Record<string, string>
+        }
+      }
+    }
+
+    // Handle ring width
     const widths: Record<string, string> = {
       0: '0',
       1: '1px',
@@ -63,9 +81,9 @@ export const ringRule: UtilityRule = (parsed, config) => {
     }
     const width = parsed.value ? widths[parsed.value] || parsed.value : widths.DEFAULT
     return {
-      '--tw-ring-offset-shadow': 'var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color)',
-      '--tw-ring-shadow': `var(--tw-ring-inset) 0 0 0 calc(${width} + var(--tw-ring-offset-width)) var(--tw-ring-color)`,
-      'box-shadow': 'var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)',
+      '--hw-ring-offset-shadow': 'var(--hw-ring-inset) 0 0 0 var(--hw-ring-offset-width) var(--hw-ring-offset-color)',
+      '--hw-ring-shadow': `var(--hw-ring-inset) 0 0 0 calc(${width} + var(--hw-ring-offset-width)) var(--hw-ring-color)`,
+      'box-shadow': 'var(--hw-ring-offset-shadow), var(--hw-ring-shadow), var(--hw-shadow, 0 0 #0000)',
     } as Record<string, string>
   }
 
@@ -77,7 +95,7 @@ export const ringRule: UtilityRule = (parsed, config) => {
       4: '4px',
       8: '8px',
     }
-    return { '--tw-ring-offset-width': widths[parsed.value] || parsed.value } as Record<string, string>
+    return { '--hw-ring-offset-width': widths[parsed.value] || parsed.value } as Record<string, string>
   }
 
   if (parsed.utility === 'ring-offset-color' || (parsed.utility === 'ring-offset' && parsed.value)) {
@@ -90,7 +108,7 @@ export const ringRule: UtilityRule = (parsed, config) => {
         const shade = parts[parts.length - 1]
         const colorValue = config.theme.colors[colorName]
         if (typeof colorValue === 'object' && colorValue[shade]) {
-          return { '--tw-ring-offset-color': colorValue[shade] } as Record<string, string>
+          return { '--hw-ring-offset-color': colorValue[shade] } as Record<string, string>
         }
       }
     }
@@ -112,9 +130,9 @@ export const spaceRule: UtilityRule = (parsed, config) => {
 
     return {
       properties: {
-        '--tw-space-x-reverse': '0',
-        'margin-right': `calc(${spacing} * var(--tw-space-x-reverse))`,
-        'margin-left': `calc(${spacing} * calc(1 - var(--tw-space-x-reverse)))`,
+        '--hw-space-x-reverse': '0',
+        'margin-right': `calc(${spacing} * var(--hw-space-x-reverse))`,
+        'margin-left': `calc(${spacing} * calc(1 - var(--hw-space-x-reverse)))`,
       } as Record<string, string>,
       childSelector: '> :not([hidden]) ~ :not([hidden])',
     }
@@ -133,9 +151,9 @@ export const spaceRule: UtilityRule = (parsed, config) => {
 
     return {
       properties: {
-        '--tw-space-y-reverse': '0',
-        'margin-top': `calc(${spacing} * calc(1 - var(--tw-space-y-reverse)))`,
-        'margin-bottom': `calc(${spacing} * var(--tw-space-y-reverse))`,
+        '--hw-space-y-reverse': '0',
+        'margin-top': `calc(${spacing} * calc(1 - var(--hw-space-y-reverse)))`,
+        'margin-bottom': `calc(${spacing} * var(--hw-space-y-reverse))`,
       } as Record<string, string>,
       childSelector: '> :not([hidden]) ~ :not([hidden])',
     }
@@ -192,9 +210,9 @@ export const divideRule: UtilityRule = (parsed, config) => {
 
     return {
       properties: {
-        '--tw-divide-x-reverse': '0',
-        'border-right-width': `calc(${width} * var(--tw-divide-x-reverse))`,
-        'border-left-width': `calc(${width} * calc(1 - var(--tw-divide-x-reverse)))`,
+        '--hw-divide-x-reverse': '0',
+        'border-right-width': `calc(${width} * var(--hw-divide-x-reverse))`,
+        'border-left-width': `calc(${width} * calc(1 - var(--hw-divide-x-reverse)))`,
       } as Record<string, string>,
       childSelector: '> :not([hidden]) ~ :not([hidden])',
     }
@@ -212,9 +230,9 @@ export const divideRule: UtilityRule = (parsed, config) => {
 
     return {
       properties: {
-        '--tw-divide-y-reverse': '0',
-        'border-top-width': `calc(${width} * calc(1 - var(--tw-divide-y-reverse)))`,
-        'border-bottom-width': `calc(${width} * var(--tw-divide-y-reverse))`,
+        '--hw-divide-y-reverse': '0',
+        'border-top-width': `calc(${width} * calc(1 - var(--hw-divide-y-reverse)))`,
+        'border-bottom-width': `calc(${width} * var(--hw-divide-y-reverse))`,
       } as Record<string, string>,
       childSelector: '> :not([hidden]) ~ :not([hidden])',
     }
@@ -257,24 +275,24 @@ export const gradientStopsRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'from' && parsed.value) {
     const color = getColor(parsed.value)
     return {
-      '--tw-gradient-from': color,
-      '--tw-gradient-to': 'rgb(255 255 255 / 0)',
-      '--tw-gradient-stops': 'var(--tw-gradient-from), var(--tw-gradient-to)',
+      '--hw-gradient-from': color,
+      '--hw-gradient-to': 'rgb(255 255 255 / 0)',
+      '--hw-gradient-stops': 'var(--hw-gradient-from), var(--hw-gradient-to)',
     } as Record<string, string>
   }
 
   if (parsed.utility === 'via' && parsed.value) {
     const color = getColor(parsed.value)
     return {
-      '--tw-gradient-to': 'rgb(255 255 255 / 0)',
-      '--tw-gradient-stops': `var(--tw-gradient-from), ${color}, var(--tw-gradient-to)`,
+      '--hw-gradient-to': 'rgb(255 255 255 / 0)',
+      '--hw-gradient-stops': `var(--hw-gradient-from), ${color}, var(--hw-gradient-to)`,
     } as Record<string, string>
   }
 
   if (parsed.utility === 'to' && parsed.value) {
     const color = getColor(parsed.value)
     return {
-      '--tw-gradient-to': color,
+      '--hw-gradient-to': color,
     } as Record<string, string>
   }
 }

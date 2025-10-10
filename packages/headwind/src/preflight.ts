@@ -155,7 +155,7 @@ export const tailwindPreflight: Preflight = {
 
 ::before,
 ::after {
-  --tw-content: '';
+  --hw-content: '';
 }
 
 html,

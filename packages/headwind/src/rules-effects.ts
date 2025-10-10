@@ -32,14 +32,14 @@ export const backgroundClipRule: UtilityRule = (parsed) => {
 export const backgroundImageRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'bg' && parsed.value) {
     const gradients: Record<string, string> = {
-      'gradient-to-t': 'linear-gradient(to top, var(--tw-gradient-stops))',
-      'gradient-to-tr': 'linear-gradient(to top right, var(--tw-gradient-stops))',
-      'gradient-to-r': 'linear-gradient(to right, var(--tw-gradient-stops))',
-      'gradient-to-br': 'linear-gradient(to bottom right, var(--tw-gradient-stops))',
-      'gradient-to-b': 'linear-gradient(to bottom, var(--tw-gradient-stops))',
-      'gradient-to-bl': 'linear-gradient(to bottom left, var(--tw-gradient-stops))',
-      'gradient-to-l': 'linear-gradient(to left, var(--tw-gradient-stops))',
-      'gradient-to-tl': 'linear-gradient(to top left, var(--tw-gradient-stops))',
+      'gradient-to-t': 'linear-gradient(to top, var(--hw-gradient-stops))',
+      'gradient-to-tr': 'linear-gradient(to top right, var(--hw-gradient-stops))',
+      'gradient-to-r': 'linear-gradient(to right, var(--hw-gradient-stops))',
+      'gradient-to-br': 'linear-gradient(to bottom right, var(--hw-gradient-stops))',
+      'gradient-to-b': 'linear-gradient(to bottom, var(--hw-gradient-stops))',
+      'gradient-to-bl': 'linear-gradient(to bottom left, var(--hw-gradient-stops))',
+      'gradient-to-l': 'linear-gradient(to left, var(--hw-gradient-stops))',
+      'gradient-to-tl': 'linear-gradient(to top left, var(--hw-gradient-stops))',
     }
     if (gradients[parsed.value]) {
       return { 'background-image': gradients[parsed.value] } as Record<string, string>

@@ -4,9 +4,9 @@ import type { UtilityRule } from './rules'
 
 export const transformRule: UtilityRule = (parsed) => {
   const values: Record<string, string> = {
-    'transform': 'translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))',
-    'transform-cpu': 'translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))',
-    'transform-gpu': 'translate3d(var(--tw-translate-x), var(--tw-translate-y), 0) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))',
+    'transform': 'translate(var(--hw-translate-x), var(--hw-translate-y)) rotate(var(--hw-rotate)) skewX(var(--hw-skew-x)) skewY(var(--hw-skew-y)) scaleX(var(--hw-scale-x)) scaleY(var(--hw-scale-y))',
+    'transform-cpu': 'translate(var(--hw-translate-x), var(--hw-translate-y)) rotate(var(--hw-rotate)) skewX(var(--hw-skew-x)) skewY(var(--hw-skew-y)) scaleX(var(--hw-scale-x)) scaleY(var(--hw-scale-y))',
+    'transform-gpu': 'translate3d(var(--hw-translate-x), var(--hw-translate-y), 0) rotate(var(--hw-rotate)) skewX(var(--hw-skew-x)) skewY(var(--hw-skew-y)) scaleX(var(--hw-scale-x)) scaleY(var(--hw-scale-y))',
     'transform-none': 'none',
   }
   return values[parsed.raw] ? { transform: values[parsed.raw] } : undefined
