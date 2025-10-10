@@ -9,9 +9,9 @@ export const defaultConfig: HeadwindConfig = {
   watch: false,
   theme: {
     colors: {
-      black: '#000',
-      white: '#fff',
-      gray: {
+      'black': '#000',
+      'white': '#fff',
+      'gray': {
         50: '#f9fafb',
         100: '#f3f4f6',
         200: '#e5e7eb',
@@ -35,7 +35,7 @@ export const defaultConfig: HeadwindConfig = {
         800: '#1e293b',
         900: '#0f172a',
       },
-      sky: {
+      'sky': {
         50: '#f0f9ff',
         100: '#e0f2fe',
         200: '#bae6fd',
@@ -47,7 +47,7 @@ export const defaultConfig: HeadwindConfig = {
         800: '#075985',
         900: '#0c4a6e',
       },
-      cyan: {
+      'cyan': {
         50: '#ecfeff',
         100: '#cffafe',
         200: '#a5f3fc',
@@ -59,17 +59,17 @@ export const defaultConfig: HeadwindConfig = {
         800: '#155e75',
         900: '#164e63',
       },
-      red: {
+      'red': {
         500: '#ef4444',
         700: '#b91c1c',
       },
-      blue: {
+      'blue': {
         500: '#3b82f6',
       },
-      green: {
+      'green': {
         500: '#22c55e',
       },
-      yellow: {
+      'yellow': {
         100: '#fef9c3',
       },
     },

@@ -748,7 +748,7 @@ describe('Edge Cases', () => {
             ...defaultConfig.theme,
             colors: {
               ...defaultConfig.theme.colors,
-              blue: {
+              'blue': {
                 500: '#3b82f6',
               },
               'blue-gray': {
