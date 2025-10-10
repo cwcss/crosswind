@@ -1,3 +1,44 @@
+[Compare changes](https://github.com/stacksjs/headwind/compare/v0.1.1...v0.1.2)
+
+### 🚀 Features
+
+- add bun plugin ([63d0176](https://github.com/stacksjs/headwind/commit/63d0176))
+
+### 🧹 Chores
+
+- release v0.1.2 ([26255be](https://github.com/stacksjs/headwind/commit/26255be))
+- lint ([1bf7619](https://github.com/stacksjs/headwind/commit/1bf7619))
+- minor updates ([c4367f9](https://github.com/stacksjs/headwind/commit/c4367f9))
+- rename to `hw` prefix ([92a4264](https://github.com/stacksjs/headwind/commit/92a4264))
+- add headwind ([7f4b4e9](https://github.com/stacksjs/headwind/commit/7f4b4e9))
+- allow for multi-segment color names ([a07301a](https://github.com/stacksjs/headwind/commit/a07301a))
+- resolve typecheck ([78be83a](https://github.com/stacksjs/headwind/commit/78be83a))
+- add headwind path ([afca37b](https://github.com/stacksjs/headwind/commit/afca37b))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+
+[Compare changes](https://github.com/stacksjs/headwind/compare/v0.1.1...HEAD)
+
+### 🚀 Features
+
+- add bun plugin ([63d0176](https://github.com/stacksjs/headwind/commit/63d0176))
+
+### 🧹 Chores
+
+- lint ([1bf7619](https://github.com/stacksjs/headwind/commit/1bf7619))
+- minor updates ([c4367f9](https://github.com/stacksjs/headwind/commit/c4367f9))
+- rename to `hw` prefix ([92a4264](https://github.com/stacksjs/headwind/commit/92a4264))
+- add headwind ([7f4b4e9](https://github.com/stacksjs/headwind/commit/7f4b4e9))
+- allow for multi-segment color names ([a07301a](https://github.com/stacksjs/headwind/commit/a07301a))
+- resolve typecheck ([78be83a](https://github.com/stacksjs/headwind/commit/78be83a))
+- add headwind path ([afca37b](https://github.com/stacksjs/headwind/commit/afca37b))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+
 [Compare changes](https://github.com/stacksjs/headwind/compare/v0.1.0...v0.1.1)
 
 ### 🧹 Chores
