@@ -3,13 +3,13 @@ import type { HeadwindConfig } from '../src/types'
 import { existsSync, watch } from 'node:fs'
 import { unlink } from 'node:fs/promises'
 import process from 'node:process'
-import { CAC } from 'cac'
+import { CLI } from '@stacksjs/clapp'
 import { version } from '../package.json'
 import { build, buildAndWrite } from '../src/build'
 import { config } from '../src/config'
 import { tailwindPreflight } from '../src/preflight'
 
-const cli = new CAC('headwind')
+const cli = new CLI('headwind')
 
 interface GlobalOptions {
   verbose?: boolean
