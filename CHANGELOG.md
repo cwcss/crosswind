@@ -1,3 +1,28 @@
+[Compare changes](https://github.com/stacksjs/headwind/compare/v0.1.2...v0.1.3)
+
+### 🧹 Chores
+
+- release v0.1.3 ([bf49808](https://github.com/stacksjs/headwind/commit/bf49808))
+- update `bun-git-hooks` ([9e24c59](https://github.com/stacksjs/headwind/commit/9e24c59))
+- adjust expectation ([6d9ca20](https://github.com/stacksjs/headwind/commit/6d9ca20))
+- use `clapp` ([355811b](https://github.com/stacksjs/headwind/commit/355811b))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+
+[Compare changes](https://github.com/stacksjs/headwind/compare/v0.1.2...HEAD)
+
+### 🧹 Chores
+
+- update `bun-git-hooks` ([9e24c59](https://github.com/stacksjs/headwind/commit/9e24c59))
+- adjust expectation ([6d9ca20](https://github.com/stacksjs/headwind/commit/6d9ca20))
+- use `clapp` ([355811b](https://github.com/stacksjs/headwind/commit/355811b))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+
 [Compare changes](https://github.com/stacksjs/headwind/compare/v0.1.1...v0.1.2)
 
 ### 🚀 Features
