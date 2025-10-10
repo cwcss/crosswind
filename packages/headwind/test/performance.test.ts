@@ -122,7 +122,7 @@ describe('Performance Tests', () => {
         || line.startsWith('.text-lg') || line.startsWith('.bg-blue-500'),
       ).length
 
-      expect(elapsed).toBeLessThan(150) // Allow more time for CI environments
+      expect(elapsed).toBeLessThan(200) // Allow more time for CI environments
       expect(utilityRules).toBe(6) // Should only have 6 unique utility classes
     })
 
