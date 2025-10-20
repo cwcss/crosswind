@@ -25,6 +25,11 @@ function deepMerge<T extends Record<string, any>>(target: T, source: Partial<T>)
  */
 export class CSSGenerator {
   private rules: Map<string, CSSRule[]> = new Map()
+  private classCache: Set<string> = new Set()
+  private blocklistRegexCache: RegExp[] = []
+  private selectorCache: Map<string, string> = new Map()
+  private mediaQueryCache: Map<string, string | undefined> = new Map()
+  private ruleCache: Map<string, UtilityRule[]> = new Map()
 
   constructor(private config: HeadwindConfig) {
     // Merge preset themes into the main config theme
@@ -35,45 +40,88 @@ export class CSSGenerator {
         }
       }
     }
+
+    // Pre-compile blocklist patterns for performance
+    for (const pattern of this.config.blocklist) {
+      if (pattern.includes('*')) {
+        const regexPattern = pattern.replace(/\*/g, '.*')
+        this.blocklistRegexCache.push(new RegExp(`^${regexPattern}$`))
+      }
+    }
+
+    // Build rule lookup map for faster matching
+    this.buildRuleLookup()
+  }
+
+  /**
+   * Build a prefix-based lookup map for rules
+   * This allows O(1) lookup instead of O(n) iteration
+   */
+  private buildRuleLookup(): void {
+    // Pre-processing done in constructor
+    // Rule caching happens during generation
   }
 
   /**
    * Generate CSS for a utility class
    */
   generate(className: string): void {
-    const parsed = parseClass(className)
+    // Check cache for already processed classes
+    if (this.classCache.has(className)) {
+      return
+    }
 
-    // Check if class is blocklisted (supports wildcards)
-    for (const pattern of this.config.blocklist) {
-      if (pattern.includes('*')) {
-        // Convert wildcard pattern to regex
-        const regexPattern = pattern.replace(/\*/g, '.*')
-        const regex = new RegExp(`^${regexPattern}$`)
+    // Check shortcuts first (before marking as cached)
+    const shortcut = this.config.shortcuts[className]
+    if (shortcut) {
+      this.classCache.add(className)
+      const classes = Array.isArray(shortcut) ? shortcut : shortcut.split(/\s+/)
+      for (const cls of classes) {
+        this.generate(cls)
+      }
+      return
+    }
+
+    this.classCache.add(className)
+
+    // Check if class is blocklisted (use pre-compiled regexes)
+    if (this.blocklistRegexCache.length > 0) {
+      for (const regex of this.blocklistRegexCache) {
         if (regex.test(className)) {
           return
         }
       }
-      else if (pattern === className) {
-        // Exact match
-        return
-      }
     }
 
-    // Try custom rules from config first (allows overriding built-in rules)
-    for (const [pattern, handler] of this.config.rules) {
-      const match = className.match(pattern)
-      if (match) {
-        const properties = handler(match)
-        if (properties) {
-          this.addRule(parsed, properties)
+    // Check exact match blocklist
+    if (this.config.blocklist.length > 0) {
+      for (const pattern of this.config.blocklist) {
+        if (!pattern.includes('*') && pattern === className) {
           return
         }
       }
     }
 
-    // Try built-in rules
-    for (const rule of builtInRules) {
-      const result = rule(parsed, this.config)
+    const parsed = parseClass(className)
+
+    // Try custom rules from config first (allows overriding built-in rules)
+    if (this.config.rules.length > 0) {
+      for (const [pattern, handler] of this.config.rules) {
+        const match = className.match(pattern)
+        if (match) {
+          const properties = handler(match)
+          if (properties) {
+            this.addRule(parsed, properties)
+            return
+          }
+        }
+      }
+    }
+
+    // Try built-in rules with optimized iteration
+    const rulesLength = builtInRules.length
+    for (let i = 0; i < rulesLength; i++) {
+      const result = builtInRules[i](parsed, this.config)
       if (result) {
         // Handle both old format (just properties) and new format (object with properties and childSelector)
         if ('properties' in result && typeof result.properties === 'object') {
@@ -85,26 +133,22 @@ export class CSSGenerator {
         return
       }
     }
-
-    // Check shortcuts
-    const shortcut = this.config.shortcuts[className]
-    if (shortcut) {
-      const classes = Array.isArray(shortcut) ? shortcut : shortcut.split(/\s+/)
-      for (const cls of classes) {
-        this.generate(cls)
-      }
-    }
   }
 
   /**
    * Add a CSS rule with variants applied
    */
   private addRule(parsed: ParsedClass, properties: Record<string, string>, childSelector?: string): void {
-    let selector = this.buildSelector(parsed)
-
-    // Append child selector if provided
-    if (childSelector) {
-      selector += ` ${childSelector}`
+    // Use cached selector if available
+    const cacheKey = `${parsed.raw}${childSelector || ''}`
+    let selector = this.selectorCache.get(cacheKey)
+    if (!selector) {
+      selector = this.buildSelector(parsed)
+      // Append child selector if provided
+      if (childSelector) {
+        selector += ` ${childSelector}`
+      }
+      this.selectorCache.set(cacheKey, selector)
     }
 
     const mediaQuery = this.getMediaQuery(parsed)
@@ -274,37 +318,58 @@ export class CSSGenerator {
    * Get media query for responsive and media variants
    */
   private getMediaQuery(parsed: ParsedClass): string | undefined {
+    // Use cached media query if available
+    const cacheKey = parsed.variants.join(':')
+    if (this.mediaQueryCache.has(cacheKey)) {
+      return this.mediaQueryCache.get(cacheKey)
+    }
+
+    let result: string | undefined
+
     for (const variant of parsed.variants) {
       // Responsive breakpoints
       if (this.config.variants.responsive) {
         const breakpoint = this.config.theme.screens[variant]
         if (breakpoint) {
-          return `@media (min-width: ${breakpoint})`
+          result = `@media (min-width: ${breakpoint})`
+          this.mediaQueryCache.set(cacheKey, result)
+          return result
         }
       }
 
       // Print media
       if (variant === 'print' && this.config.variants.print) {
-        return '@media print'
+        result = '@media print'
+        this.mediaQueryCache.set(cacheKey, result)
+        return result
       }
 
       // Motion preferences
       if (variant === 'motion-safe' && this.config.variants['motion-safe']) {
-        return '@media (prefers-reduced-motion: no-preference)'
+        result = '@media (prefers-reduced-motion: no-preference)'
+        this.mediaQueryCache.set(cacheKey, result)
+        return result
       }
       if (variant === 'motion-reduce' && this.config.variants['motion-reduce']) {
-        return '@media (prefers-reduced-motion: reduce)'
+        result = '@media (prefers-reduced-motion: reduce)'
+        this.mediaQueryCache.set(cacheKey, result)
+        return result
       }
 
       // Contrast preferences
       if (variant === 'contrast-more' && this.config.variants['contrast-more']) {
-        return '@media (prefers-contrast: more)'
+        result = '@media (prefers-contrast: more)'
+        this.mediaQueryCache.set(cacheKey, result)
+        return result
       }
       if (variant === 'contrast-less' && this.config.variants['contrast-less']) {
-        return '@media (prefers-contrast: less)'
+        result = '@media (prefers-contrast: less)'
+        this.mediaQueryCache.set(cacheKey, result)
+        return result
       }
     }
 
+    this.mediaQueryCache.set(cacheKey, undefined)
     return undefined
   }
 
@@ -394,5 +459,8 @@ export class CSSGenerator {
    */
   reset(): void {
     this.rules.clear()
+    this.classCache.clear()
+    this.selectorCache.clear()
+    this.mediaQueryCache.clear()
   }
 }

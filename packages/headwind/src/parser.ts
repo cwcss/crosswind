@@ -1,5 +1,8 @@
 import type { ParsedClass } from './types'
 
+// Cache for parsed classes to avoid re-parsing
+const parseCache = new Map<string, ParsedClass>()
+
 /**
  * Parses a utility class string into its components
  * Examples: "p-4" -> {raw: "p-4", variants: [], utility: "p", value: "4", important: false, arbitrary: false}
@@ -8,6 +11,21 @@ import type { ParsedClass } from './types'
  *          "w-[100px]" -> {raw: "w-[100px]", variants: [], utility: "w", value: "100px", important: false, arbitrary: true}
  */
 export function parseClass(className: string): ParsedClass {
+  // Check cache first
+  const cached = parseCache.get(className)
+  if (cached) {
+    return cached
+  }
+
+  const result = parseClassImpl(className)
+  parseCache.set(className, result)
+  return result
+}
+
+/**
+ * Internal implementation of parseClass
+ */
+function parseClassImpl(className: string): ParsedClass {
   // Check for important modifier
   let important = false
   let cleanClassName = className

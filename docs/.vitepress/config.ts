@@ -79,6 +79,7 @@ const sidebar = [
       { text: 'Framework Integration', link: '/advanced/frameworks' },
     ],
   },
+  { text: 'Performance Benchmarks', link: '/benchmarks' },
   { text: 'API Reference', link: '/api-reference' },
   { text: 'Showcase', link: '/showcase' },
 ]

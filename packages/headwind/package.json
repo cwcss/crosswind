@@ -59,6 +59,7 @@
     "zip:windows-x64": "zip -j bin/headwind-windows-x64.zip bin/headwind-windows-x64.exe",
     "zip:darwin-x64": "zip -j bin/headwind-darwin-x64.zip bin/headwind-darwin-x64",
     "zip:darwin-arm64": "zip -j bin/headwind-darwin-arm64.zip bin/headwind-darwin-arm64",
+    "benchmark": "bun run benchmark/framework-comparison.bench.ts",
     "lint": "bunx --bun eslint .",
     "lint:fix": "bunx --bun eslint . --fix",
     "fresh": "bunx rimraf node_modules/ bun.lock && bun i",
@@ -76,5 +77,16 @@
   },
   "lint-staged": {
     "*.{js,ts}": "bunx --bun eslint . --fix"
+  },
+  "devDependencies": {
+    "@tailwindcss/node": "^4.1.14",
+    "@tailwindcss/postcss": "^4.1",
+    "@tailwindcss/vite": "^4.1",
+    "@unocss/core": "^66.5.4",
+    "@unocss/preset-wind": "^66.5.4",
+    "mitata": "^1.0.34",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3",
+    "tailwindcss-v4": "npm:tailwindcss@^4"
   }
 }

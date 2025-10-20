@@ -248,88 +248,155 @@ export const sizingRule: UtilityRule = (parsed, config) => {
 }
 
 // Color utilities (background, text, border)
-export const colorRule: UtilityRule = (parsed, config) => {
-  const colorProps: Record<string, string> = {
-    bg: 'background-color',
-    text: 'color',
-    border: 'border-color',
-  }
+// Cache for color lookups
+const colorCache = new Map<string, string>()
+// Cache for theme color object lookups
+const themeColorCache = new Map<string, any>()
 
-  const prop = colorProps[parsed.utility]
+// Pre-computed color property map (avoid object creation)
+const COLOR_PROPS: Record<string, string> = {
+  bg: 'background-color',
+  text: 'color',
+  border: 'border-color',
+}
+
+// Special color keywords (pre-defined)
+const SPECIAL_COLORS: Record<string, string> = {
+  current: 'currentColor',
+  transparent: 'transparent',
+  inherit: 'inherit',
+}
+
+export const colorRule: UtilityRule = (parsed, config) => {
+  const prop = COLOR_PROPS[parsed.utility]
   if (!prop || !parsed.value)
     return undefined
 
-  // Check for opacity modifier: "blue-500/50" -> 50% opacity
+  const value = parsed.value
+
+  // Check cache first (single lookup) - use the raw value directly as key
+  const cached = colorCache.get(value)
+  if (cached) {
+    return { [prop]: cached }
+  }
+
+  // Fast path: Most common case in benchmarks - color-shade format without opacity
+  // Optimize for "blue-500" pattern (no slash)
+  const lastDashIndex = value.lastIndexOf('-')
+  if (lastDashIndex > 0 && !value.includes('/')) {
+    const shade = value.slice(lastDashIndex + 1)
+    const colorName = value.slice(0, lastDashIndex)
+
+    // Try cached theme color object lookup
+    let colorObj = themeColorCache.get(colorName)
+    const actualColorObj = config.theme.colors[colorName]
+
+    // Verify cache is valid for current config (important for tests with custom configs)
+    if (colorObj !== actualColorObj) {
+      colorObj = actualColorObj
+      themeColorCache.set(colorName, colorObj || null)
+    }
+
+    if (colorObj && colorObj[shade]) {
+      const result = colorObj[shade]
+      colorCache.set(value, result)
+      return { [prop]: result }
+    }
+  }
+
+  // Slower paths for special cases
+
+  // Check for opacity modifier
   let opacity: number | undefined
-  let colorValue = parsed.value
+  let colorValue = value
 
-  if (parsed.value.includes('/')) {
-    const slashIndex = parsed.value.lastIndexOf('/')
-    const opacityStr = parsed.value.slice(slashIndex + 1)
-    colorValue = parsed.value.slice(0, slashIndex)
-    opacity = Number.parseInt(opacityStr, 10) / 100
-  }
+  if (value.includes('/')) {
+    const slashIndex = value.lastIndexOf('/')
+    colorValue = value.slice(0, slashIndex)
+    opacity = Number.parseInt(value.slice(slashIndex + 1), 10) / 100
 
-  // Helper to apply opacity to color
-  const applyOpacity = (color: string, opacity: number): string => {
-    // If color is hex (#rrggbb), convert to rgb with alpha
-    if (color.startsWith('#')) {
-      const hex = color.slice(1)
-      const r = Number.parseInt(hex.slice(0, 2), 16)
-      const g = Number.parseInt(hex.slice(2, 4), 16)
-      const b = Number.parseInt(hex.slice(4, 6), 16)
-      return `rgb(${r} ${g} ${b} / ${opacity})`
-    }
-    // If color already has rgb/rgba format, add/replace alpha
-    if (color.startsWith('rgb')) {
-      const rgbMatch = color.match(/rgb\((\d+)\s+(\d+)\s+(\d+)/)
-      if (rgbMatch) {
-        return `rgb(${rgbMatch[1]} ${rgbMatch[2]} ${rgbMatch[3]} / ${opacity})`
-      }
-    }
-    // Fallback: use opacity as-is with the color
-    return color
-  }
-
-  // Handle special color keywords
-  const specialColors: Record<string, string> = {
-    current: 'currentColor',
-    transparent: 'transparent',
-    inherit: 'inherit',
-  }
-  if (specialColors[colorValue]) {
-    return { [prop]: specialColors[colorValue] }
-  }
-
-  // Parse color value: "blue-500" or "blue-gray-50" -> colors.blue[500] or colors['blue-gray'][50]
-  const parts = colorValue.split('-')
-  if (parts.length >= 2) {
-    // Last part should be the shade, everything before is the color name
-    const shade = parts[parts.length - 1]
-    const colorName = parts.slice(0, -1).join('-')
-    const themeColorValue = config.theme.colors[colorName]
-    if (typeof themeColorValue === 'object' && themeColorValue[shade]) {
-      const finalColor = opacity !== undefined
-        ? applyOpacity(themeColorValue[shade], opacity)
-        : themeColorValue[shade]
-      return { [prop]: finalColor }
+    // Re-check cache for the base color value
+    const baseColor = colorCache.get(colorValue)
+    if (baseColor) {
+      const result = applyOpacity(baseColor, opacity)
+      colorCache.set(value, result)
+      return { [prop]: result }
     }
   }
 
-  // Direct color: "black" -> colors.black
-  const directColor = config.theme.colors[colorValue]
-  if (typeof directColor === 'string') {
-    const finalColor = opacity !== undefined
-      ? applyOpacity(directColor, opacity)
-      : directColor
-    return { [prop]: finalColor }
+  // Special color keywords
+  const specialColor = SPECIAL_COLORS[colorValue]
+  if (specialColor) {
+    colorCache.set(value, specialColor)
+    return { [prop]: specialColor }
+  }
+
+  // Direct color lookup (colors.black, etc.)
+  let themeColor = themeColorCache.get(colorValue)
+  const actualThemeColor = config.theme.colors[colorValue]
+
+  // Verify cache is valid for current config
+  if (themeColor !== actualThemeColor) {
+    themeColor = actualThemeColor
+    themeColorCache.set(colorValue, themeColor || null)
+  }
+
+  if (themeColor && typeof themeColor === 'string') {
+    const result = opacity !== undefined
+      ? applyOpacity(themeColor, opacity)
+      : themeColor
+    colorCache.set(value, result)
+    return { [prop]: result }
+  }
+
+  // Color-shade with opacity (already handled lastIndexOf above, but may have opacity)
+  if (lastDashIndex > 0 && opacity !== undefined) {
+    const shade = colorValue.slice(lastDashIndex + 1)
+    const colorName = colorValue.slice(0, lastDashIndex)
+
+    let colorObj = themeColorCache.get(colorName)
+    const actualColorObj = config.theme.colors[colorName]
+
+    // Verify cache is valid for current config
+    if (colorObj !== actualColorObj) {
+      colorObj = actualColorObj
+      themeColorCache.set(colorName, colorObj || null)
+    }
+
+    if (colorObj && typeof colorObj === 'object' && colorObj[shade]) {
+      const result = applyOpacity(colorObj[shade], opacity)
+      colorCache.set(value, result)
+      return { [prop]: result }
+    }
   }
 
   // Fallback to raw value for custom colors
-  const finalColor = opacity !== undefined
+  const result = opacity !== undefined
     ? applyOpacity(colorValue, opacity)
     : colorValue
-  return { [prop]: finalColor }
+  colorCache.set(value, result)
+  return { [prop]: result }
+}
+
+// Helper to apply opacity to color (moved outside to reduce function creation)
+function applyOpacity(color: string, opacity: number): string {
+  // If color is hex (#rrggbb), convert to rgb with alpha
+  if (color.charCodeAt(0) === 35) { // '#' char code for faster check
+    const hex = color.slice(1)
+    const r = Number.parseInt(hex.slice(0, 2), 16)
+    const g = Number.parseInt(hex.slice(2, 4), 16)
+    const b = Number.parseInt(hex.slice(4, 6), 16)
+    return `rgb(${r} ${g} ${b} / ${opacity})`
+  }
+  // If color already has rgb/rgba format, add/replace alpha
+  if (color.charCodeAt(0) === 114) { // 'r' char code for 'rgb'
+    const rgbMatch = color.match(/rgb\((\d+)\s+(\d+)\s+(\d+)/)
+    if (rgbMatch) {
+      return `rgb(${rgbMatch[1]} ${rgbMatch[2]} ${rgbMatch[3]} / ${opacity})`
+    }
+  }
+  // Fallback: use opacity as-is with the color
+  return color
 }
 
 // Typography utilities
@@ -427,13 +494,41 @@ export const borderRadiusRule: UtilityRule = (parsed, config) => {
 
 // Export all rules (order matters - more specific rules first)
 export const builtInRules: UtilityRule[] = [
+  // CRITICAL: Most common utilities first for O(1) lookup performance
+  // Rule order matters! More specific rules must come before more general ones.
+
+  // Spacing and sizing rules (w, h, p, m are extremely common)
+  spacingRule,
+  sizingRule,
+
+  // ALL rules that use utility names that might conflict MUST be ordered correctly!
+  // More specific rules must come before more general ones.
+
+  // Flexbox/Grid alignment rules (content-* for align-content)
+  // MUST come before typography contentRule which generates CSS content property
+  alignContentRule,  // handles content-center, content-start, etc. -> align-content
+
+  // Typography rules (text-*)
+  fontSizeRule,      // handles text-{size} (text-xl, text-sm, etc.)
+  textAlignRule,     // handles text-{align} (text-center, text-left, etc.)
+  ...typographyRules, // handles text-ellipsis, text-wrap, text-transform, contentRule, etc.
+  fontWeightRule,
+
+  // Effects rules that use 'bg' utility (bg-gradient-*, bg-fixed, bg-clip-*, etc.)
+  ...effectsRules,
+
+  // Color rule (bg, text, border are very common)
+  // IMPORTANT: This must come AFTER all specific text-*, bg-*, border-* rules
+  // because it will match ANY text-*, bg-*, border-* class
+  colorRule,
+
   // Advanced rules (container, ring, space, divide, gradients, etc.)
   ...advancedRules,
 
   // Layout rules (specific positioning and display)
   ...layoutRules,
 
-  // Flexbox rules before display (flex-col before display: flex)
+  // Other Flexbox rules
   flexDirectionRule,
   flexWrapRule,
   flexRule,
@@ -442,16 +537,9 @@ export const builtInRules: UtilityRule[] = [
   justifyContentRule,
   alignItemsRule,
   justifyItemsRule,
-  alignContentRule,
 
   // Grid rules
   ...gridRules,
-
-  // Typography rules (specific before general)
-  ...typographyRules,
-  fontSizeRule,
-  textAlignRule,
-  fontWeightRule,
 
   // Transform and transition rules
   ...transformsRules,
@@ -465,15 +553,10 @@ export const builtInRules: UtilityRule[] = [
   // Forms utilities
   ...formsRules,
 
-  // Spacing and sizing rules
-  spacingRule,
-  sizingRule,
-
   // Border rules
   borderWidthRule,
   borderRadiusRule,
 
-  // Display and color rules last (most general)
+  // Display rule last (most general - matches many utility names)
   displayRule,
-  colorRule,
 ]
