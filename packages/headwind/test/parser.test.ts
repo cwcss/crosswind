@@ -506,3 +506,59 @@ describe('parseClass - Extreme Edge Cases', () => {
     expect(result.value).toBe('1e10px')
   })
 })
+
+describe('extractClasses - Arbitrary Values', () => {
+  it('should extract arbitrary z-index values', () => {
+    const html = '<div class="z-[1] z-[999] z-[-1]"></div>'
+    const result = extractClasses(html)
+    expect(result).toEqual(new Set(['z-[1]', 'z-[999]', 'z-[-1]']))
+  })
+
+  it('should extract arbitrary width/height values', () => {
+    const html = '<div class="w-[100px] h-[50vh] min-w-[200px]"></div>'
+    const result = extractClasses(html)
+    expect(result).toEqual(new Set(['w-[100px]', 'h-[50vh]', 'min-w-[200px]']))
+  })
+
+  it('should extract arbitrary color values', () => {
+    const html = '<div class="bg-[#ff0000] text-[rgb(0,0,0)] border-[hsl(0,100%,50%)]"></div>'
+    const result = extractClasses(html)
+    expect(result).toEqual(new Set(['bg-[#ff0000]', 'text-[rgb(0,0,0)]', 'border-[hsl(0,100%,50%)]']))
+  })
+
+  it('should extract arbitrary values with variants', () => {
+    const html = '<div class="hover:z-[10] sm:w-[50%] focus:bg-[#000]"></div>'
+    const result = extractClasses(html)
+    expect(result).toEqual(new Set(['hover:z-[10]', 'sm:w-[50%]', 'focus:bg-[#000]']))
+  })
+
+  it('should extract arbitrary properties', () => {
+    const html = '<div class="[color:red] [mask-type:luminance] [display:grid]"></div>'
+    const result = extractClasses(html)
+    expect(result).toEqual(new Set(['[color:red]', '[mask-type:luminance]', '[display:grid]']))
+  })
+
+  it('should extract important arbitrary values', () => {
+    const html = '<div class="!z-[9999] !w-[100%]"></div>'
+    const result = extractClasses(html)
+    expect(result).toEqual(new Set(['!z-[9999]', '!w-[100%]']))
+  })
+
+  it('should extract negative arbitrary values', () => {
+    const html = '<div class="-mt-[20px] -translate-x-[50%]"></div>'
+    const result = extractClasses(html)
+    expect(result).toEqual(new Set(['-mt-[20px]', '-translate-x-[50%]']))
+  })
+
+  it('should extract arbitrary values with calc()', () => {
+    const html = '<div class="w-[calc(100%-2rem)] h-[calc(100vh-64px)]"></div>'
+    const result = extractClasses(html)
+    expect(result).toEqual(new Set(['w-[calc(100%-2rem)]', 'h-[calc(100vh-64px)]']))
+  })
+
+  it('should extract mixed regular and arbitrary classes', () => {
+    const html = '<div class="flex p-4 z-[1] w-[100px] bg-blue-500 hover:z-[999]"></div>'
+    const result = extractClasses(html)
+    expect(result).toEqual(new Set(['flex', 'p-4', 'z-[1]', 'w-[100px]', 'bg-blue-500', 'hover:z-[999]']))
+  })
+})

@@ -438,6 +438,35 @@ export const fontWeightRule: UtilityRule = (parsed) => {
   return undefined
 }
 
+export const leadingRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'leading' && parsed.value) {
+    // Handle arbitrary values first
+    if (parsed.arbitrary) {
+      return { 'line-height': parsed.value }
+    }
+    // Named line-height values
+    const lineHeights: Record<string, string> = {
+      none: '1',
+      tight: '1.25',
+      snug: '1.375',
+      normal: '1.5',
+      relaxed: '1.625',
+      loose: '2',
+      // Numeric values (rem-based)
+      '3': '0.75rem',
+      '4': '1rem',
+      '5': '1.25rem',
+      '6': '1.5rem',
+      '7': '1.75rem',
+      '8': '2rem',
+      '9': '2.25rem',
+      '10': '2.5rem',
+    }
+    return lineHeights[parsed.value] ? { 'line-height': lineHeights[parsed.value] } : undefined
+  }
+  return undefined
+}
+
 export const textAlignRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'text' && parsed.value) {
     const aligns: Record<string, string> = {
@@ -513,6 +542,7 @@ export const builtInRules: UtilityRule[] = [
   textAlignRule,     // handles text-{align} (text-center, text-left, etc.)
   ...typographyRules, // handles text-ellipsis, text-wrap, text-transform, contentRule, etc.
   fontWeightRule,
+  leadingRule,       // handles leading-{size} (leading-tight, leading-none, etc.)
 
   // Effects rules that use 'bg' utility (bg-gradient-*, bg-fixed, bg-clip-*, etc.)
   ...effectsRules,

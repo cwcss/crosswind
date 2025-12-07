@@ -331,6 +331,29 @@ function parseClassImpl(className: string): ParsedClass {
   }
 }
 
+
+/**
+ * Validates if a string is a valid Tailwind utility class name
+ * Supports arbitrary values like z-[1], w-[100px], bg-[#ff0000]
+ * Supports variants like hover:, focus:, sm:, md:
+ * Supports important modifier !
+ * Supports negative values like -m-4
+ */
+function isValidClassName(name: string): boolean {
+  // Quick check for obviously invalid names
+  if (!name || name.length === 0) return false
+  
+  // Arbitrary properties like [color:red], [mask-type:luminance]
+  if (/^\[[a-z-]+:[^\]]+\]$/i.test(name)) return true
+  
+  // Standard utility classes with optional:
+  // - ! prefix (important)
+  // - - prefix (negative values)  
+  // - Arbitrary values in brackets like -[100px] or -[#ff0000]
+  // - Variant prefixes with colons like hover:, sm:, focus:
+  return /^!?-?[a-z][a-z0-9-]*(?:-\[[^\]]+\])?(?::!?-?[a-z][a-z0-9-]*(?:-\[[^\]]+\])?)*$/i.test(name)
+}
+
 /**
  * Extracts all utility classes from content
  * Matches class patterns in HTML/JSX attributes and template strings
@@ -368,7 +391,7 @@ export function extractClasses(content: string): Set<string> {
         .replace(/\$\{[^}]+\}/g, ' ')
         .split(/\s+/)
         .filter(Boolean)
-        .filter(name => /^[a-z][a-z0-9-]*(?::[a-z][a-z0-9-]*)*$/i.test(name))
+        .filter(name => isValidClassName(name))
 
       for (const className of classNames) {
         classes.add(className)
