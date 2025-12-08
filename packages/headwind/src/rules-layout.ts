@@ -169,15 +169,40 @@ export const insetRule: UtilityRule = (parsed, config) => {
   if (!props || !parsed.value)
     return undefined
 
+  // Helper to resolve inset value (handles fractions, spacing, keywords)
+  const resolveInsetValue = (val: string): string => {
+    // Handle fractions: 1/2 -> 50%, 1/3 -> 33.333333%, etc.
+    if (val.includes('/')) {
+      const [num, denom] = val.split('/').map(Number)
+      if (!Number.isNaN(num) && !Number.isNaN(denom) && denom !== 0) {
+        return `${(num / denom) * 100}%`
+      }
+    }
+    // Handle special keywords
+    if (val === 'full')
+      return '100%'
+    if (val === 'auto')
+      return 'auto'
+    // Check spacing config, then fall back to raw value
+    return config.theme.spacing[val] || val
+  }
+
   // Handle negative values
   let value: string
   if (parsed.value.startsWith('-')) {
     const positiveValue = parsed.value.slice(1)
-    const spacing = config.theme.spacing[positiveValue]
-    value = spacing ? `-${spacing}` : parsed.value
+    const resolved = resolveInsetValue(positiveValue)
+    // For percentage values, negate properly
+    if (resolved.endsWith('%')) {
+      const numericPart = Number.parseFloat(resolved)
+      value = `${-numericPart}%`
+    }
+    else {
+      value = resolved.startsWith('-') ? resolved : `-${resolved}`
+    }
   }
   else {
-    value = config.theme.spacing[parsed.value] || parsed.value
+    value = resolveInsetValue(parsed.value)
   }
 
   const result: Record<string, string> = {}

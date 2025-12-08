@@ -389,7 +389,17 @@ export class CSSGenerator {
     // Add preflight CSS first (if requested)
     if (includePreflight) {
       for (const preflight of this.config.preflights) {
-        const preflightCSS = preflight.getCSS()
+        let preflightCSS = preflight.getCSS()
+        // Replace hardcoded font-family in preflight with theme's sans font
+        const sansFonts = this.config.theme?.fontFamily?.sans
+        if (sansFonts && Array.isArray(sansFonts)) {
+          const fontFamilyValue = sansFonts.join(', ')
+          // Replace the default ui-sans-serif stack in html/:host selector
+          preflightCSS = preflightCSS.replace(
+            /font-family:\s*ui-sans-serif[^;]+;/g,
+            `font-family: ${fontFamilyValue};`,
+          )
+        }
         parts.push(minify ? preflightCSS.replace(/\s+/g, ' ').trim() : preflightCSS)
       }
     }

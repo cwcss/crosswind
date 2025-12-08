@@ -89,6 +89,42 @@ describe('Layout Utilities', () => {
       gen.generate('-top-4')
       expect(gen.toCSS(false)).toContain('top: -1rem;')
     })
+
+    it('should generate left-1/2 as 50%', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('left-1/2')
+      expect(gen.toCSS(false)).toContain('left: 50%;')
+    })
+
+    it('should generate top-1/3 as 33.333333%', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('top-1/3')
+      expect(gen.toCSS(false)).toContain('top: 33.33333333333333%;')
+    })
+
+    it('should generate right-3/4 as 75%', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('right-3/4')
+      expect(gen.toCSS(false)).toContain('right: 75%;')
+    })
+
+    it('should generate negative -left-1/2 as -50%', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('-left-1/2')
+      expect(gen.toCSS(false)).toContain('left: -50%;')
+    })
+
+    it('should generate left-full as 100%', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('left-full')
+      expect(gen.toCSS(false)).toContain('left: 100%;')
+    })
+
+    it('should generate top-auto', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('top-auto')
+      expect(gen.toCSS(false)).toContain('top: auto;')
+    })
   })
 
   describe('Z-index', () => {
