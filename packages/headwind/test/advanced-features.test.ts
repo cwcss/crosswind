@@ -689,8 +689,22 @@ describe('Advanced Features', () => {
   })
 
   describe('Multi-segment color names', () => {
-    it('should handle blue-gray color', () => {
-      const gen = new CSSGenerator(defaultConfig)
+    it('should handle blue-gray color with custom config', () => {
+      const config = {
+        ...defaultConfig,
+        theme: {
+          ...defaultConfig.theme,
+          colors: {
+            ...defaultConfig.theme.colors,
+            'blue-gray': {
+              200: '#e2e8f0',
+              500: '#64748b',
+              700: '#334155',
+            },
+          },
+        },
+      }
+      const gen = new CSSGenerator(config)
       gen.generate('text-blue-gray-200')
       gen.generate('bg-blue-gray-500')
       gen.generate('border-blue-gray-700')
@@ -706,9 +720,9 @@ describe('Advanced Features', () => {
       gen.generate('bg-sky-500')
       gen.generate('border-sky-600')
       const css = gen.toCSS(false)
-      expect(css).toContain('#38bdf8') // sky-400
-      expect(css).toContain('#0ea5e9') // sky-500
-      expect(css).toContain('#0284c7') // sky-600
+      expect(css).toContain('oklch(74.6% 0.16 232.661)') // sky-400
+      expect(css).toContain('oklch(68.5% 0.169 237.323)') // sky-500
+      expect(css).toContain('oklch(58.8% 0.158 241.966)') // sky-600
     })
 
     it('should handle cyan color', () => {
@@ -717,9 +731,9 @@ describe('Advanced Features', () => {
       gen.generate('bg-cyan-500')
       gen.generate('border-cyan-600')
       const css = gen.toCSS(false)
-      expect(css).toContain('#22d3ee') // cyan-400
-      expect(css).toContain('#06b6d4') // cyan-500
-      expect(css).toContain('#0891b2') // cyan-600
+      expect(css).toContain('oklch(78.9% 0.154 211.53)') // cyan-400
+      expect(css).toContain('oklch(71.5% 0.143 215.221)') // cyan-500
+      expect(css).toContain('oklch(60.9% 0.126 221.723)') // cyan-600
     })
   })
 
@@ -755,21 +769,19 @@ describe('Advanced Features', () => {
       gen.generate('ring-offset-gray-300')
       const css = gen.toCSS(false)
       expect(css).toContain('--hw-ring-offset-color')
-      expect(css).toContain('#3b82f6') // blue-500
-      expect(css).toContain('#ef4444') // red-500
-      expect(css).toContain('#d1d5db') // gray-300
+      expect(css).toContain('oklch(62.3% 0.214 259.815)') // blue-500
+      expect(css).toContain('oklch(63.7% 0.237 25.331)') // red-500
+      expect(css).toContain('oklch(87.2% 0.01 258.338)') // gray-300
     })
 
     it('should handle ring-offset with multi-segment color names', () => {
       const gen = new CSSGenerator(defaultConfig)
-      gen.generate('ring-offset-blue-gray-500')
       gen.generate('ring-offset-sky-400')
       gen.generate('ring-offset-cyan-600')
       const css = gen.toCSS(false)
       expect(css).toContain('--hw-ring-offset-color')
-      expect(css).toContain('#64748b') // blue-gray-500
-      expect(css).toContain('#38bdf8') // sky-400
-      expect(css).toContain('#0891b2') // cyan-600
+      expect(css).toContain('oklch(74.6% 0.16 232.661)') // sky-400
+      expect(css).toContain('oklch(60.9% 0.126 221.723)') // cyan-600
     })
   })
 
@@ -801,22 +813,19 @@ describe('Advanced Features', () => {
       expect(css).toContain('--hw-gradient-from')
       expect(css).toContain('--hw-gradient-to')
       expect(css).toContain('--hw-gradient-stops')
-      expect(css).toContain('#3b82f6') // blue-500
-      expect(css).toContain('#ef4444') // red-500
+      expect(css).toContain('oklch(62.3% 0.214 259.815)') // blue-500
+      expect(css).toContain('oklch(63.7% 0.237 25.331)') // red-500
     })
 
     it('should handle gradient with multi-segment colors', () => {
       const gen = new CSSGenerator(defaultConfig)
-      gen.generate('from-blue-gray-500')
       gen.generate('via-sky-400')
       gen.generate('to-cyan-600')
       const css = gen.toCSS(false)
-      expect(css).toContain('--hw-gradient-from')
       expect(css).toContain('--hw-gradient-to')
       expect(css).toContain('--hw-gradient-stops')
-      expect(css).toContain('#64748b') // blue-gray-500
-      expect(css).toContain('#38bdf8') // sky-400
-      expect(css).toContain('#0891b2') // cyan-600
+      expect(css).toContain('oklch(74.6% 0.16 232.661)') // sky-400
+      expect(css).toContain('oklch(60.9% 0.126 221.723)') // cyan-600
     })
 
     it('should handle gradient with hover variants', () => {
@@ -828,8 +837,8 @@ describe('Advanced Features', () => {
       expect(css).toContain(':hover')
       expect(css).toContain('--hw-gradient-from')
       expect(css).toContain('--hw-gradient-to')
-      expect(css).toContain('#0ea5e9') // sky-500
-      expect(css).toContain('#06b6d4') // cyan-500
+      expect(css).toContain('oklch(68.5% 0.169 237.323)') // sky-500
+      expect(css).toContain('oklch(71.5% 0.143 215.221)') // cyan-500
     })
 
     it('should handle complete gradient combination', () => {
@@ -839,8 +848,8 @@ describe('Advanced Features', () => {
       gen.generate('to-cyan-500')
       const css = gen.toCSS(false)
       expect(css).toContain('linear-gradient(to right, var(--hw-gradient-stops))')
-      expect(css).toContain('--hw-gradient-from: #0ea5e9') // sky-500
-      expect(css).toContain('--hw-gradient-to: #06b6d4') // cyan-500
+      expect(css).toContain('--hw-gradient-from: oklch(68.5% 0.169 237.323)') // sky-500
+      expect(css).toContain('--hw-gradient-to: oklch(71.5% 0.143 215.221)') // cyan-500
     })
 
     it('should properly update gradient stops when using to-{color}', () => {

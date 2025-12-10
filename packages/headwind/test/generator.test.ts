@@ -111,21 +111,21 @@ describe('CSSGenerator', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('bg-gray-500')
       const css = gen.toCSS(false)
-      expect(css).toContain('background-color: #6b7280;')
+      expect(css).toContain('background-color: oklch(55.1% 0.027 264.364);')
     })
 
     it('should generate text color', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('text-gray-800')
       const css = gen.toCSS(false)
-      expect(css).toContain('color: #1f2937;')
+      expect(css).toContain('color: oklch(27.8% 0.033 256.848);')
     })
 
     it('should generate border color', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('border-gray-300')
       const css = gen.toCSS(false)
-      expect(css).toContain('border-color: #d1d5db;')
+      expect(css).toContain('border-color: oklch(87.2% 0.01 258.338);')
     })
 
     it('should handle direct color names', () => {
@@ -182,7 +182,7 @@ describe('CSSGenerator', () => {
       gen.generate('hover:bg-gray-500')
       const css = gen.toCSS(false)
       expect(css).toContain('.hover\\:bg-gray-500:hover {')
-      expect(css).toContain('background-color: #6b7280;')
+      expect(css).toContain('background-color: oklch(55.1% 0.027 264.364);')
     })
 
     it('should generate focus variant', () => {

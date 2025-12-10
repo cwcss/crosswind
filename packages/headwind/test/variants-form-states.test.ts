@@ -9,7 +9,7 @@ describe('Pseudo-Class and Pseudo-Element Variants', () => {
       gen.generate('placeholder:text-gray-500')
       const css = gen.toCSS(false)
       expect(css).toContain('::placeholder')
-      expect(css).toContain('color: #6b7280')
+      expect(css).toContain('color: oklch(55.1% 0.027 264.364)')
     })
 
     it('should handle selection variant', () => {
@@ -17,7 +17,7 @@ describe('Pseudo-Class and Pseudo-Element Variants', () => {
       gen.generate('selection:bg-blue-500')
       const css = gen.toCSS(false)
       expect(css).toContain('::selection')
-      expect(css).toContain('background-color: #3b82f6')
+      expect(css).toContain('background-color: oklch(62.3% 0.214 259.815)')
     })
 
     it('should handle file variant', () => {
@@ -32,7 +32,7 @@ describe('Pseudo-Class and Pseudo-Element Variants', () => {
       gen.generate('required:border-red-500')
       const css = gen.toCSS(false)
       expect(css).toContain(':required')
-      expect(css).toContain('border-color: #ef4444')
+      expect(css).toContain('border-color: oklch(63.7% 0.237 25.331)')
     })
 
     it('should handle valid variant', () => {
@@ -40,7 +40,7 @@ describe('Pseudo-Class and Pseudo-Element Variants', () => {
       gen.generate('valid:border-green-500')
       const css = gen.toCSS(false)
       expect(css).toContain(':valid')
-      expect(css).toContain('border-color: #22c55e')
+      expect(css).toContain('border-color: oklch(72.3% 0.219 149.579)')
     })
 
     it('should handle invalid variant', () => {
@@ -136,7 +136,7 @@ describe('Pseudo-Class and Pseudo-Element Variants', () => {
       gen.generate('marker:text-blue-500')
       const css = gen.toCSS(false)
       expect(css).toContain('::marker')
-      expect(css).toContain('color: #3b82f6')
+      expect(css).toContain('color: oklch(62.3% 0.214 259.815)')
     })
 
     it('should handle marker with multiple properties', () => {
@@ -144,7 +144,7 @@ describe('Pseudo-Class and Pseudo-Element Variants', () => {
       gen.generate('marker:text-red-500')
       const css = gen.toCSS(false)
       expect(css).toContain('::marker')
-      expect(css).toContain('color: #ef4444')
+      expect(css).toContain('color: oklch(63.7% 0.237 25.331)')
     })
   })
 

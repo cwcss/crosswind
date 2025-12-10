@@ -8,7 +8,7 @@ describe('Positional Variants', () => {
     gen.generate('first:bg-gray-500')
     const css = gen.toCSS(false)
     expect(css).toContain(':first-child')
-    expect(css).toContain('background-color: #6b7280;')
+    expect(css).toContain('background-color: oklch(55.1% 0.027 264.364);')
   })
 
   it('should generate last variant', () => {
@@ -23,7 +23,7 @@ describe('Positional Variants', () => {
     gen.generate('odd:bg-gray-50')
     const css = gen.toCSS(false)
     expect(css).toContain(':nth-child(odd)')
-    expect(css).toContain('background-color: #f9fafb;')
+    expect(css).toContain('background-color: oklch(98.5% 0.002 247.839);')
   })
 
   it('should generate even variant', () => {
@@ -31,7 +31,7 @@ describe('Positional Variants', () => {
     gen.generate('even:bg-gray-100')
     const css = gen.toCSS(false)
     expect(css).toContain(':nth-child(even)')
-    expect(css).toContain('background-color: #f3f4f6;')
+    expect(css).toContain('background-color: oklch(96.7% 0.003 264.542);')
   })
 
   it('should generate first-of-type variant', () => {

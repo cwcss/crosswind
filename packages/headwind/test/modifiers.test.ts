@@ -19,7 +19,7 @@ describe('Modifiers', () => {
     it('should work with colors', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('!bg-gray-500')
-      expect(gen.toCSS(false)).toContain('background-color: #6b7280 !important;')
+      expect(gen.toCSS(false)).toContain('background-color: oklch(55.1% 0.027 264.364) !important;')
     })
 
     it('should work with variants', () => {
@@ -403,7 +403,7 @@ describe('Modifiers', () => {
         // Complex stacking of group and peer variants
         // Generator handles these by applying the variants in order
         expect(css).toContain('background-color')
-        expect(css).toContain('#3b82f6')
+        expect(css).toContain('oklch(62.3% 0.214 259.815)')
       })
 
       it('should handle important with all variant types', () => {

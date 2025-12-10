@@ -7,19 +7,19 @@ describe('Color Utilities', () => {
     it('should generate text-blue-500', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('text-blue-500')
-      expect(gen.toCSS(false)).toContain('color: #3b82f6;')
+      expect(gen.toCSS(false)).toContain('color: oklch(62.3% 0.214 259.815);')
     })
 
     it('should generate text-gray-800', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('text-gray-800')
-      expect(gen.toCSS(false)).toContain('color: #1f2937;')
+      expect(gen.toCSS(false)).toContain('color: oklch(27.8% 0.033 256.848);')
     })
 
     it('should generate text-red-500', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('text-red-500')
-      expect(gen.toCSS(false)).toContain('color: #ef4444;')
+      expect(gen.toCSS(false)).toContain('color: oklch(63.7% 0.237 25.331);')
     })
 
     it('should generate text-white', () => {
@@ -39,13 +39,13 @@ describe('Color Utilities', () => {
     it('should generate bg-blue-500', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('bg-blue-500')
-      expect(gen.toCSS(false)).toContain('background-color: #3b82f6;')
+      expect(gen.toCSS(false)).toContain('background-color: oklch(62.3% 0.214 259.815);')
     })
 
     it('should generate bg-gray-100', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('bg-gray-100')
-      expect(gen.toCSS(false)).toContain('background-color: #f3f4f6;')
+      expect(gen.toCSS(false)).toContain('background-color: oklch(96.7% 0.003 264.542);')
     })
 
     it('should support arbitrary color', () => {
@@ -59,13 +59,13 @@ describe('Color Utilities', () => {
     it('should generate border-gray-300', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('border-gray-300')
-      expect(gen.toCSS(false)).toContain('border-color: #d1d5db;')
+      expect(gen.toCSS(false)).toContain('border-color: oklch(87.2% 0.01 258.338);')
     })
 
     it('should generate border-blue-500', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('border-blue-500')
-      expect(gen.toCSS(false)).toContain('border-color: #3b82f6;')
+      expect(gen.toCSS(false)).toContain('border-color: oklch(62.3% 0.214 259.815);')
     })
   })
 
@@ -74,24 +74,21 @@ describe('Color Utilities', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('bg-blue-500/50')
       const css = gen.toCSS(false)
-      expect(css).toContain('background-color')
-      expect(css).toMatch(/rgb.*0\.5/)
+      expect(css).toContain('background-color: oklch(62.3% 0.214 259.815 / 0.5);')
     })
 
     it('should generate text with opacity', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('text-red-500/75')
       const css = gen.toCSS(false)
-      expect(css).toContain('color')
-      expect(css).toMatch(/0\.75/)
+      expect(css).toContain('color: oklch(63.7% 0.237 25.331 / 0.75);')
     })
 
     it('should generate border with opacity', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('border-gray-500/25')
       const css = gen.toCSS(false)
-      expect(css).toContain('border-color')
-      expect(css).toMatch(/0\.25/)
+      expect(css).toContain('border-color: oklch(55.1% 0.027 264.364 / 0.25);')
     })
   })
 })
@@ -164,32 +161,52 @@ describe('Edge Cases', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('bg-blue-500/0')
       const css = gen.toCSS(false)
-      expect(css).toContain('background-color')
-      expect(css).toMatch(/0/)
+      expect(css).toContain('background-color: oklch(62.3% 0.214 259.815 / 0);')
     })
 
     it('should handle 100% opacity', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('bg-blue-500/100')
       const css = gen.toCSS(false)
-      expect(css).toContain('background-color')
-      expect(css).toMatch(/1/)
+      expect(css).toContain('background-color: oklch(62.3% 0.214 259.815 / 1);')
     })
 
     it('should handle text color with opacity', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('text-blue-500/50')
       const css = gen.toCSS(false)
-      expect(css).toContain('color')
-      expect(css).toMatch(/0\.5/)
+      expect(css).toContain('color: oklch(62.3% 0.214 259.815 / 0.5);')
     })
 
     it('should handle border color with opacity', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('border-blue-500/50')
       const css = gen.toCSS(false)
-      expect(css).toContain('border-color')
-      expect(css).toMatch(/0\.5/)
+      expect(css).toContain('border-color: oklch(62.3% 0.214 259.815 / 0.5);')
+    })
+
+    it('should reject invalid opacity values above 100', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('bg-blue-500/150')
+      const css = gen.toCSS(false)
+      // Invalid opacity should not generate any CSS
+      expect(css).not.toContain('background-color')
+    })
+
+    it('should reject negative opacity values', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('bg-red-500/-50')
+      const css = gen.toCSS(false)
+      // Negative opacity should not generate any CSS
+      expect(css).not.toContain('background-color')
+    })
+
+    it('should reject non-numeric opacity values', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('bg-green-500/abc')
+      const css = gen.toCSS(false)
+      // Non-numeric opacity should not generate any CSS
+      expect(css).not.toContain('background-color')
     })
 
     it('should handle ring color with opacity', () => {
@@ -205,6 +222,20 @@ describe('Edge Cases', () => {
       const css = gen.toCSS(false)
       expect(css).toBeDefined()
     })
+
+    it('should handle arbitrary hex color with opacity', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('text-[#ff0000]/50')
+      const css = gen.toCSS(false)
+      expect(css).toContain('color: rgb(255 0 0 / 0.5);')
+    })
+
+    it('should handle arbitrary hex color with opacity for background', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('bg-[#00ff00]/75')
+      const css = gen.toCSS(false)
+      expect(css).toContain('background-color: rgb(0 255 0 / 0.75);')
+    })
   })
 
   describe('Color with variants', () => {
@@ -213,7 +244,7 @@ describe('Edge Cases', () => {
       gen.generate('hover:bg-red-500')
       const css = gen.toCSS(false)
       expect(css).toContain(':hover')
-      expect(css).toContain('background-color: #ef4444;')
+      expect(css).toContain('background-color: oklch(63.7% 0.237 25.331);')
     })
 
     it('should handle color with focus', () => {
@@ -221,7 +252,7 @@ describe('Edge Cases', () => {
       gen.generate('focus:text-blue-500')
       const css = gen.toCSS(false)
       expect(css).toContain(':focus')
-      expect(css).toContain('color: #3b82f6;')
+      expect(css).toContain('color: oklch(62.3% 0.214 259.815);')
     })
 
     it('should handle color with responsive', () => {
@@ -229,13 +260,13 @@ describe('Edge Cases', () => {
       gen.generate('md:bg-green-500')
       const css = gen.toCSS(false)
       expect(css).toContain('@media (min-width: 768px)')
-      expect(css).toContain('background-color: #22c55e;')
+      expect(css).toContain('background-color: oklch(72.3% 0.219 149.579);')
     })
 
     it('should handle color with important', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('!bg-blue-500')
-      expect(gen.toCSS(false)).toContain('background-color: #3b82f6 !important;')
+      expect(gen.toCSS(false)).toContain('background-color: oklch(62.3% 0.214 259.815) !important;')
     })
 
     it('should handle color with dark mode', () => {
@@ -243,7 +274,7 @@ describe('Edge Cases', () => {
       gen.generate('dark:bg-gray-900')
       const css = gen.toCSS(false)
       expect(css).toContain('.dark')
-      expect(css).toContain('background-color: #111827;')
+      expect(css).toContain('background-color: oklch(21% 0.034 264.665);')
     })
 
     it('should handle color opacity with hover', () => {
@@ -251,8 +282,7 @@ describe('Edge Cases', () => {
       gen.generate('hover:bg-blue-500/75')
       const css = gen.toCSS(false)
       expect(css).toContain(':hover')
-      expect(css).toContain('background-color')
-      expect(css).toMatch(/0\.75/)
+      expect(css).toContain('background-color: oklch(62.3% 0.214 259.815 / 0.75);')
     })
 
     it('should handle multiple variant combinations', () => {
@@ -270,7 +300,7 @@ describe('Edge Cases', () => {
     it('should handle 50 shade', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('bg-gray-50')
-      expect(gen.toCSS(false)).toContain('background-color: #f9fafb;')
+      expect(gen.toCSS(false)).toContain('background-color: oklch(98.5% 0.002 247.839);')
     })
 
     it('should handle 950 shade', () => {
@@ -586,8 +616,8 @@ describe('Edge Cases', () => {
         gen.generate('bg-blue-gray-500/50')
 
         const css = gen.toCSS(false)
-        expect(css).toContain('background-color')
-        expect(css).toMatch(/rgb.*0\.5/)
+        // Hex #64748b converts to rgb(100 116 139 / 0.5)
+        expect(css).toContain('background-color: rgb(100 116 139 / 0.5);')
       })
 
       it('should handle ocean-blue-green with opacity', () => {
@@ -605,8 +635,8 @@ describe('Edge Cases', () => {
         gen.generate('text-ocean-blue-green/75')
 
         const css = gen.toCSS(false)
-        expect(css).toContain('color')
-        expect(css).toMatch(/0\.75/)
+        // Hex #084E77 converts to rgb(8 78 119 / 0.75)
+        expect(css).toContain('color: rgb(8 78 119 / 0.75);')
       })
 
       it('should handle three-segment color with shade and opacity', () => {
@@ -626,8 +656,8 @@ describe('Edge Cases', () => {
         gen.generate('bg-deep-ocean-blue-500/25')
 
         const css = gen.toCSS(false)
-        expect(css).toContain('background-color')
-        expect(css).toMatch(/0\.25/)
+        // Hex #0284c7 converts to rgb(2 132 199 / 0.25)
+        expect(css).toContain('background-color: rgb(2 132 199 / 0.25);')
       })
     })
 
@@ -735,8 +765,8 @@ describe('Edge Cases', () => {
         expect(css).toContain('.dark')
         expect(css).toContain('@media (min-width: 768px)')
         expect(css).toContain(':hover')
-        expect(css).toContain('background-color')
-        expect(css).toMatch(/0\.5/)
+        // Hex #475569 converts to rgb(71 85 105 / 0.5)
+        expect(css).toContain('background-color: rgb(71 85 105 / 0.5);')
       })
     })
 
@@ -748,9 +778,6 @@ describe('Edge Cases', () => {
             ...defaultConfig.theme,
             colors: {
               ...defaultConfig.theme.colors,
-              'blue': {
-                500: '#3b82f6',
-              },
               'blue-gray': {
                 500: '#64748b',
               },
@@ -762,7 +789,9 @@ describe('Edge Cases', () => {
         gen.generate('bg-blue-gray-500')
 
         const css = gen.toCSS(false)
-        expect(css).toContain('background-color: #3b82f6;')
+        // blue-500 uses oklch from default config
+        expect(css).toContain('oklch(62.3% 0.214 259.815)')
+        // blue-gray-500 uses custom hex
         expect(css).toContain('background-color: #64748b;')
       })
 

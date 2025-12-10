@@ -8,7 +8,7 @@ describe('State Variants', () => {
     gen.generate('visited:text-gray-500')
     const css = gen.toCSS(false)
     expect(css).toContain(':visited')
-    expect(css).toContain('color: #6b7280;')
+    expect(css).toContain('color: oklch(55.1% 0.027 264.364);')
   })
 
   it('should generate checked variant', () => {

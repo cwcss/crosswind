@@ -9,7 +9,7 @@ describe('Group and Peer Variants', () => {
       gen.generate('group-hover:bg-gray-500')
       const css = gen.toCSS(false)
       expect(css).toContain('.group:hover')
-      expect(css).toContain('background-color: #6b7280;')
+      expect(css).toContain('background-color: oklch(55.1% 0.027 264.364);')
     })
 
     it('should generate group-focus', () => {
@@ -17,7 +17,7 @@ describe('Group and Peer Variants', () => {
       gen.generate('group-focus:text-gray-800')
       const css = gen.toCSS(false)
       expect(css).toContain('.group:focus')
-      expect(css).toContain('color: #1f2937;')
+      expect(css).toContain('color: oklch(27.8% 0.033 256.848);')
     })
 
     it('should handle group with responsive and state', () => {
@@ -44,7 +44,7 @@ describe('Group and Peer Variants', () => {
       gen.generate('peer-checked:bg-gray-500')
       const css = gen.toCSS(false)
       expect(css).toContain('.peer:checked')
-      expect(css).toContain('background-color: #6b7280;')
+      expect(css).toContain('background-color: oklch(55.1% 0.027 264.364);')
     })
 
     it('should generate peer-focus', () => {
@@ -52,7 +52,7 @@ describe('Group and Peer Variants', () => {
       gen.generate('peer-focus:border-gray-300')
       const css = gen.toCSS(false)
       expect(css).toContain('.peer:focus')
-      expect(css).toContain('border-color: #d1d5db;')
+      expect(css).toContain('border-color: oklch(87.2% 0.01 258.338);')
     })
 
     it('should handle peer-checked with responsive', () => {

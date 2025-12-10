@@ -327,6 +327,18 @@ export class CSSGenerator {
     let result: string | undefined
 
     for (const variant of parsed.variants) {
+      // Container queries (@sm, @md, @lg, etc.)
+      // These use the same breakpoints as responsive but wrap in @container instead of @media
+      if (variant.startsWith('@')) {
+        const breakpointKey = variant.slice(1) // Remove '@' prefix
+        const breakpoint = this.config.theme.screens[breakpointKey]
+        if (breakpoint) {
+          result = `@container (min-width: ${breakpoint})`
+          this.mediaQueryCache.set(cacheKey, result)
+          return result
+        }
+      }
+
       // Responsive breakpoints
       if (this.config.variants.responsive) {
         const breakpoint = this.config.theme.screens[variant]
@@ -377,7 +389,7 @@ export class CSSGenerator {
    * Escape special characters in class names for CSS selectors
    */
   private escapeSelector(className: string): string {
-    return className.replace(/[:./]/g, '\\$&')
+    return className.replace(/[:./@ ]/g, '\\$&')
   }
 
   /**

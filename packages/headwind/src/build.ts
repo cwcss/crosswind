@@ -27,7 +27,10 @@ export async function build(config: HeadwindConfig): Promise<BuildResult> {
     : null
 
   // Scan files for utility classes
-  const scanner = new Scanner(config.content, transformer)
+  const scanner = new Scanner(config.content, transformer, {
+    attributify: config.attributify,
+    bracketSyntax: config.bracketSyntax,
+  })
   const { classes, transformedFiles } = await scanner.scan()
 
   // Add safelist classes

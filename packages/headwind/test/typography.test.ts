@@ -108,7 +108,7 @@ describe('Typography Utilities', () => {
     it('should generate decoration-color', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('decoration-blue-500')
-      expect(gen.toCSS(false)).toContain('text-decoration-color: #3b82f6;')
+      expect(gen.toCSS(false)).toContain('text-decoration-color: oklch(62.3% 0.214 259.815);')
     })
   })
 

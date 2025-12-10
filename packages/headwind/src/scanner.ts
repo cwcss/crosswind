@@ -1,4 +1,5 @@
 import type { CompileClassTransformer } from './transformer-compile-class'
+import type { ExtractClassesOptions } from './parser'
 import { Glob } from 'bun'
 import { extractClasses } from './parser'
 
@@ -14,6 +15,7 @@ export class Scanner {
   constructor(
     private patterns: string[],
     private transformer: CompileClassTransformer | null | undefined = undefined,
+    private extractOptions?: ExtractClassesOptions,
   ) {}
 
   /**
@@ -42,7 +44,7 @@ export class Scanner {
               }
             }
 
-            const classes = extractClasses(content)
+            const classes = extractClasses(content, this.extractOptions)
 
             for (const cls of classes) {
               allClasses.add(cls)
@@ -66,7 +68,7 @@ export class Scanner {
   async scanFile(filePath: string): Promise<Set<string>> {
     try {
       const content = await Bun.file(filePath).text()
-      return extractClasses(content)
+      return extractClasses(content, this.extractOptions)
     }
     catch {
       return new Set<string>()
@@ -77,6 +79,6 @@ export class Scanner {
    * Scan content string for utility classes
    */
   scanContent(content: string): Set<string> {
-    return extractClasses(content)
+    return extractClasses(content, this.extractOptions)
   }
 }

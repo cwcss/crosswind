@@ -36,7 +36,7 @@ describe('build', () => {
     expect(result.css).toContain('.m-2')
     expect(result.css).toContain('margin: 0.5rem;')
     expect(result.css).toContain('.bg-gray-500')
-    expect(result.css).toContain('background-color: #6b7280;')
+    expect(result.css).toContain('background-color: oklch(55.1% 0.027 264.364);')
     expect(result.css).toContain('.text-white')
     expect(result.css).toContain('color: #fff;')
     expect(result.classes.size).toBeGreaterThan(0)

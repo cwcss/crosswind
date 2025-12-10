@@ -23,6 +23,26 @@ export const displayRule: UtilityRule = (parsed) => {
   }
 }
 
+// Container utilities (for container queries)
+export const containerRule: UtilityRule = (parsed) => {
+  // @container -> container-type: inline-size (most common use case)
+  if (parsed.utility === '@container') {
+    return { 'container-type': 'inline-size' }
+  }
+  // @container-normal -> container-type: normal (for size containment without inline-size)
+  if (parsed.utility === '@container-normal') {
+    return { 'container-type': 'normal' }
+  }
+  // @container/name -> container-type: inline-size; container-name: name
+  if (parsed.utility.startsWith('@container/')) {
+    const name = parsed.utility.slice(11) // Remove '@container/'
+    return {
+      'container-type': 'inline-size',
+      'container-name': name,
+    }
+  }
+}
+
 // Flexbox utilities
 export const flexDirectionRule: UtilityRule = (parsed) => {
   const directions: Record<string, string> = {
@@ -218,6 +238,10 @@ export const sizingRule: UtilityRule = (parsed, config) => {
     // Handle fractions: 1/2 -> 50%
     if (parsed.value.includes('/')) {
       const [num, denom] = parsed.value.split('/').map(Number)
+      // Validate: skip invalid fractions (NaN or division by zero)
+      if (Number.isNaN(num) || Number.isNaN(denom) || denom === 0) {
+        return undefined
+      }
       return { width: `${(num / denom) * 100}%` } as Record<string, string>
     }
     // Check spacing config first, then sizeMap, then raw value
@@ -237,6 +261,10 @@ export const sizingRule: UtilityRule = (parsed, config) => {
     // Handle fractions: 3/4 -> 75%
     if (parsed.value.includes('/')) {
       const [num, denom] = parsed.value.split('/').map(Number)
+      // Validate: skip invalid fractions (NaN or division by zero)
+      if (Number.isNaN(num) || Number.isNaN(denom) || denom === 0) {
+        return undefined
+      }
       return { height: `${(num / denom) * 100}%` } as Record<string, string>
     }
     // Check spacing config first, then sizeMap, then raw value
@@ -313,7 +341,13 @@ export const colorRule: UtilityRule = (parsed, config) => {
   if (value.includes('/')) {
     const slashIndex = value.lastIndexOf('/')
     colorValue = value.slice(0, slashIndex)
-    opacity = Number.parseInt(value.slice(slashIndex + 1), 10) / 100
+    const opacityValue = Number.parseInt(value.slice(slashIndex + 1), 10)
+
+    // Validate opacity is in 0-100 range
+    if (Number.isNaN(opacityValue) || opacityValue < 0 || opacityValue > 100) {
+      return undefined // Invalid opacity, skip this utility
+    }
+    opacity = opacityValue / 100
 
     // Re-check cache for the base color value
     const baseColor = colorCache.get(colorValue)
@@ -380,23 +414,45 @@ export const colorRule: UtilityRule = (parsed, config) => {
 
 // Helper to apply opacity to color (moved outside to reduce function creation)
 function applyOpacity(color: string, opacity: number): string {
+  // Strip brackets from arbitrary values: [#ff0000] -> #ff0000
+  let cleanColor = color
+  if (color.charCodeAt(0) === 91 && color.charCodeAt(color.length - 1) === 93) { // '[' and ']'
+    cleanColor = color.slice(1, -1)
+  }
+
   // If color is hex (#rrggbb), convert to rgb with alpha
-  if (color.charCodeAt(0) === 35) { // '#' char code for faster check
-    const hex = color.slice(1)
+  if (cleanColor.charCodeAt(0) === 35) { // '#' char code for faster check
+    const hex = cleanColor.slice(1)
     const r = Number.parseInt(hex.slice(0, 2), 16)
     const g = Number.parseInt(hex.slice(2, 4), 16)
     const b = Number.parseInt(hex.slice(4, 6), 16)
     return `rgb(${r} ${g} ${b} / ${opacity})`
   }
   // If color already has rgb/rgba format, add/replace alpha
-  if (color.charCodeAt(0) === 114) { // 'r' char code for 'rgb'
-    const rgbMatch = color.match(/rgb\((\d+)\s+(\d+)\s+(\d+)/)
+  if (cleanColor.charCodeAt(0) === 114) { // 'r' char code for 'rgb'
+    const rgbMatch = cleanColor.match(/rgb\((\d+)\s+(\d+)\s+(\d+)/)
     if (rgbMatch) {
       return `rgb(${rgbMatch[1]} ${rgbMatch[2]} ${rgbMatch[3]} / ${opacity})`
     }
   }
+  // If color is oklch format, add alpha channel
+  if (cleanColor.charCodeAt(0) === 111) { // 'o' char code for 'oklch'
+    const oklchMatch = cleanColor.match(/oklch\(([^)]+)\)/)
+    if (oklchMatch) {
+      // oklch values are: lightness chroma hue
+      // Add alpha: oklch(L C H / alpha)
+      return `oklch(${oklchMatch[1]} / ${opacity})`
+    }
+  }
+  // If color is hsl/hsla format, add/replace alpha
+  if (cleanColor.charCodeAt(0) === 104) { // 'h' char code for 'hsl'
+    const hslMatch = cleanColor.match(/hsl\(([^)]+)\)/)
+    if (hslMatch) {
+      return `hsl(${hslMatch[1]} / ${opacity})`
+    }
+  }
   // Fallback: use opacity as-is with the color
-  return color
+  return cleanColor
 }
 
 // Typography utilities
@@ -586,6 +642,9 @@ export const builtInRules: UtilityRule[] = [
   // Border rules
   borderWidthRule,
   borderRadiusRule,
+
+  // Container query utilities (@container, @container-normal, @container/name)
+  containerRule,
 
   // Display rule last (most general - matches many utility names)
   displayRule,

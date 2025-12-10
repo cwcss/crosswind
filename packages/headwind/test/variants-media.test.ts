@@ -50,7 +50,7 @@ describe('Media Query and Feature Variants', () => {
       gen.generate('dark:bg-gray-900')
       const css = gen.toCSS(false)
       expect(css).toContain('.dark')
-      expect(css).toContain('background-color: #111827;')
+      expect(css).toContain('background-color: oklch(21% 0.034 264.665);')
     })
 
     it('should handle dark + responsive + hover', () => {
@@ -129,6 +129,85 @@ describe('Media Query and Feature Variants', () => {
       gen.generate('contrast-less:border-gray-400')
       const css = gen.toCSS(false)
       expect(css).toContain('@media (prefers-contrast: less)')
+    })
+  })
+
+  describe('Container query variants', () => {
+    it('should generate @container utility', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('@container')
+      const css = gen.toCSS(false)
+      expect(css).toContain('container-type: inline-size;')
+    })
+
+    it('should generate @container-normal utility', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('@container-normal')
+      const css = gen.toCSS(false)
+      expect(css).toContain('container-type: normal;')
+    })
+
+    it('should generate named container with @container/name', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('@container/sidebar')
+      const css = gen.toCSS(false)
+      expect(css).toContain('container-type: inline-size;')
+      expect(css).toContain('container-name: sidebar;')
+    })
+
+    it('should generate @sm container query variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('@sm:p-4')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@container (min-width: 640px)')
+      expect(css).toContain('padding: 1rem;')
+    })
+
+    it('should generate @md container query variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('@md:flex')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@container (min-width: 768px)')
+      expect(css).toContain('display: flex;')
+    })
+
+    it('should generate @lg container query variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('@lg:hidden')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@container (min-width: 1024px)')
+      expect(css).toContain('display: none;')
+    })
+
+    it('should generate @xl container query variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('@xl:grid')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@container (min-width: 1280px)')
+      expect(css).toContain('display: grid;')
+    })
+
+    it('should generate @2xl container query variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('@2xl:inline-flex')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@container (min-width: 1536px)')
+      expect(css).toContain('display: inline-flex;')
+    })
+
+    it('should escape @ in selector for container queries', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('@sm:p-4')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.\\@sm\\:p-4')
+    })
+
+    it('should handle container query with hover variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('@md:hover:bg-blue-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@container (min-width: 768px)')
+      expect(css).toContain(':hover')
     })
   })
 })
