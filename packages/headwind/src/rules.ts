@@ -404,12 +404,20 @@ export const colorRule: UtilityRule = (parsed, config) => {
     }
   }
 
-  // Fallback to raw value for custom colors
-  const result = opacity !== undefined
-    ? applyOpacity(colorValue, opacity)
-    : colorValue
-  colorCache.set(value, result)
-  return { [prop]: result }
+  // Only use fallback for arbitrary values (e.g., border-[#ff0000], text-[#ff0000]/50)
+  // Don't return invalid values like 'b' as colors
+  // Check parsed.arbitrary OR if colorValue looks like an arbitrary value (starts with '[')
+  const isArbitrary = parsed.arbitrary || (colorValue && colorValue.charCodeAt(0) === 91) // '[' char
+  if (isArbitrary && colorValue) {
+    const result = opacity !== undefined
+      ? applyOpacity(colorValue, opacity)
+      : colorValue
+    colorCache.set(value, result)
+    return { [prop]: result }
+  }
+
+  // No valid color found - let other rules handle this
+  return undefined
 }
 
 // Helper to apply opacity to color (moved outside to reduce function creation)
@@ -541,6 +549,20 @@ export const borderWidthRule: UtilityRule = (parsed) => {
     if (!parsed.value) {
       return { 'border-width': '1px' }
     }
+
+    // Border width values: 0, 2, 4, 8
+    const widthMap: Record<string, string> = {
+      0: '0px',
+      2: '2px',
+      4: '4px',
+      8: '8px',
+    }
+
+    // Handle border-0, border-2, border-4, border-8
+    if (widthMap[parsed.value]) {
+      return { 'border-width': widthMap[parsed.value] }
+    }
+
     const sideMap: Record<string, string | string[]> = {
       t: 'border-top-width',
       r: 'border-right-width',
