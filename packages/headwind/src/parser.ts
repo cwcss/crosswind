@@ -1055,6 +1055,13 @@ function parseClassImpl(className: string): ParsedClass {
   // Handle compound utilities with specific prefixes
   // grid-cols-3, grid-rows-2, translate-x-4, etc.
   const compoundPrefixes = [
+    // Border side utilities (border-t-0, border-r-2, etc.)
+    'border-t',
+    'border-r',
+    'border-b',
+    'border-l',
+    'border-x',
+    'border-y',
     'grid-cols',
     'grid-rows',
     'grid-flow',

@@ -592,6 +592,40 @@ export const borderWidthRule: UtilityRule = (parsed) => {
   }
 }
 
+// Border side width utilities (border-t-0, border-r-2, border-x-4, etc.)
+export const borderSideWidthRule: UtilityRule = (parsed) => {
+  const sideUtilities: Record<string, string | string[]> = {
+    'border-t': 'border-top-width',
+    'border-r': 'border-right-width',
+    'border-b': 'border-bottom-width',
+    'border-l': 'border-left-width',
+    'border-x': ['border-left-width', 'border-right-width'],
+    'border-y': ['border-top-width', 'border-bottom-width'],
+  }
+
+  const prop = sideUtilities[parsed.utility]
+  if (!prop)
+    return undefined
+
+  // Width values: 0, 2, 4, 8 (or default to 1px if no value)
+  const widthMap: Record<string, string> = {
+    0: '0px',
+    2: '2px',
+    4: '4px',
+    8: '8px',
+  }
+
+  const width = parsed.value ? widthMap[parsed.value] : '1px'
+  if (!width)
+    return undefined
+
+  if (Array.isArray(prop)) {
+    return prop.reduce((acc, p) => ({ ...acc, [p]: width }), {} as Record<string, string>)
+  }
+
+  return { [prop]: width }
+}
+
 export const borderRadiusRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'rounded') {
     const value = parsed.value ? config.theme.borderRadius[parsed.value] : config.theme.borderRadius.DEFAULT
@@ -661,7 +695,8 @@ export const builtInRules: UtilityRule[] = [
   // Forms utilities
   ...formsRules,
 
-  // Border rules
+  // Border rules (specific side rules first)
+  borderSideWidthRule,
   borderWidthRule,
   borderRadiusRule,
 
