@@ -314,6 +314,77 @@ export const animationRule: UtilityRule = (parsed) => {
   return undefined
 }
 
+// Animation play state
+export const animationPlayStateRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'animate-running': 'running',
+    'animate-paused': 'paused',
+  }
+  return values[parsed.raw] ? { 'animation-play-state': values[parsed.raw] } : undefined
+}
+
+// Animation direction
+export const animationDirectionRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'animate-normal': 'normal',
+    'animate-reverse': 'reverse',
+    'animate-alternate': 'alternate',
+    'animate-alternate-reverse': 'alternate-reverse',
+  }
+  return values[parsed.raw] ? { 'animation-direction': values[parsed.raw] } : undefined
+}
+
+// Animation fill mode
+export const animationFillModeRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'animate-fill-none': 'none',
+    'animate-fill-forwards': 'forwards',
+    'animate-fill-backwards': 'backwards',
+    'animate-fill-both': 'both',
+  }
+  return values[parsed.raw] ? { 'animation-fill-mode': values[parsed.raw] } : undefined
+}
+
+// Animation iteration count
+export const animationIterationRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'animate-iteration' && parsed.value) {
+    return { 'animation-iteration-count': parsed.value === 'infinite' ? 'infinite' : parsed.value }
+  }
+}
+
+// Animation duration
+export const animationDurationRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'animate-duration' && parsed.value) {
+    const durations: Record<string, string> = {
+      '75': '75ms', '100': '100ms', '150': '150ms', '200': '200ms',
+      '300': '300ms', '500': '500ms', '700': '700ms', '1000': '1000ms',
+    }
+    return { 'animation-duration': durations[parsed.value] || `${parsed.value}ms` }
+  }
+}
+
+// Animation delay
+export const animationDelayRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'animate-delay' && parsed.value) {
+    const delays: Record<string, string> = {
+      '75': '75ms', '100': '100ms', '150': '150ms', '200': '200ms',
+      '300': '300ms', '500': '500ms', '700': '700ms', '1000': '1000ms',
+    }
+    return { 'animation-delay': delays[parsed.value] || `${parsed.value}ms` }
+  }
+}
+
+// Animation timing function
+export const animationTimingRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'animate-ease-linear': 'linear',
+    'animate-ease-in': 'cubic-bezier(0.4, 0, 1, 1)',
+    'animate-ease-out': 'cubic-bezier(0, 0, 0.2, 1)',
+    'animate-ease-in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
+  }
+  return values[parsed.raw] ? { 'animation-timing-function': values[parsed.raw] } : undefined
+}
+
 export const transformsRules: UtilityRule[] = [
   transformRule,
   scaleRule,
@@ -331,4 +402,11 @@ export const transformsRules: UtilityRule[] = [
   transitionTimingRule,
   transitionDelayRule,
   animationRule,
+  animationPlayStateRule,
+  animationDirectionRule,
+  animationFillModeRule,
+  animationIterationRule,
+  animationDurationRule,
+  animationDelayRule,
+  animationTimingRule,
 ]

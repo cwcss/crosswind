@@ -18,6 +18,7 @@ export const gridTemplateColumnsRule: UtilityRule = (parsed) => {
       11: 'repeat(11, minmax(0, 1fr))',
       12: 'repeat(12, minmax(0, 1fr))',
       none: 'none',
+      subgrid: 'subgrid',
     }
     return parsed.value ? { 'grid-template-columns': cols[parsed.value] || parsed.value } : undefined
   }
@@ -84,6 +85,7 @@ export const gridTemplateRowsRule: UtilityRule = (parsed) => {
       5: 'repeat(5, minmax(0, 1fr))',
       6: 'repeat(6, minmax(0, 1fr))',
       none: 'none',
+      subgrid: 'subgrid',
     }
     return parsed.value ? { 'grid-template-rows': rows[parsed.value] || parsed.value } : undefined
   }

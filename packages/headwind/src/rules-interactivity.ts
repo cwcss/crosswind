@@ -419,6 +419,40 @@ export const strokeWidthRule: UtilityRule = (parsed) => {
   }
 }
 
+// SVG stroke-dasharray
+export const strokeDasharrayRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'stroke-dasharray' && parsed.value) {
+    return { 'stroke-dasharray': parsed.value === 'none' ? 'none' : parsed.value }
+  }
+}
+
+// SVG stroke-dashoffset
+export const strokeDashoffsetRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'stroke-dashoffset' && parsed.value) {
+    return { 'stroke-dashoffset': parsed.value }
+  }
+}
+
+// SVG stroke-linecap
+export const strokeLinecapRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'stroke-linecap-butt': 'butt',
+    'stroke-linecap-round': 'round',
+    'stroke-linecap-square': 'square',
+  }
+  return values[parsed.raw] ? { 'stroke-linecap': values[parsed.raw] } : undefined
+}
+
+// SVG stroke-linejoin
+export const strokeLinejoinRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'stroke-linejoin-miter': 'miter',
+    'stroke-linejoin-round': 'round',
+    'stroke-linejoin-bevel': 'bevel',
+  }
+  return values[parsed.raw] ? { 'stroke-linejoin': values[parsed.raw] } : undefined
+}
+
 // Accessibility
 export const screenReaderRule: UtilityRule = (parsed) => {
   if (parsed.raw === 'sr-only') {
@@ -482,6 +516,10 @@ export const interactivityRules: UtilityRule[] = [
   fillRule,
   strokeRule,
   strokeWidthRule,
+  strokeDasharrayRule,
+  strokeDashoffsetRule,
+  strokeLinecapRule,
+  strokeLinejoinRule,
   screenReaderRule,
   forcedColorAdjustRule,
 ]

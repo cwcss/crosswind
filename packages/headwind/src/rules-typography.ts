@@ -341,12 +341,124 @@ export const lineHeightRule: UtilityRule = (parsed, _config) => {
   }
 }
 
+// Writing mode
+export const writingModeRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'writing-horizontal-tb': 'horizontal-tb',
+    'writing-vertical-rl': 'vertical-rl',
+    'writing-vertical-lr': 'vertical-lr',
+  }
+  return values[parsed.raw] ? { 'writing-mode': values[parsed.raw] } : undefined
+}
+
+// Text orientation
+export const textOrientationRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'text-orientation-mixed': 'mixed',
+    'text-orientation-upright': 'upright',
+    'text-orientation-sideways': 'sideways',
+  }
+  return values[parsed.raw] ? { 'text-orientation': values[parsed.raw] } : undefined
+}
+
+// Direction (ltr/rtl)
+export const directionRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'direction-ltr': 'ltr',
+    'direction-rtl': 'rtl',
+  }
+  return values[parsed.raw] ? { direction: values[parsed.raw] } : undefined
+}
+
+// Text emphasis
+export const textEmphasisRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'text-emphasis' && parsed.value) {
+    const styles: Record<string, string> = {
+      'none': 'none',
+      'filled': 'filled',
+      'open': 'open',
+      'dot': 'dot',
+      'circle': 'circle',
+      'double-circle': 'double-circle',
+      'triangle': 'triangle',
+      'sesame': 'sesame',
+    }
+    return { 'text-emphasis': styles[parsed.value] || parsed.value }
+  }
+}
+
+// Text emphasis color
+export const textEmphasisColorRule: UtilityRule = (parsed, config) => {
+  if (parsed.utility === 'text-emphasis-color' && parsed.value) {
+    const parts = parsed.value.split('-')
+    if (parts.length === 2) {
+      const [colorName, shade] = parts
+      const colorValue = config.theme.colors[colorName]
+      if (typeof colorValue === 'object' && colorValue[shade]) {
+        return { 'text-emphasis-color': colorValue[shade] }
+      }
+    }
+    const directColor = config.theme.colors[parsed.value]
+    if (typeof directColor === 'string') {
+      return { 'text-emphasis-color': directColor }
+    }
+  }
+}
+
+// Word spacing
+export const wordSpacingRule: UtilityRule = (parsed, config) => {
+  if (parsed.utility === 'word-spacing' && parsed.value) {
+    const values: Record<string, string> = {
+      'tighter': '-0.05em',
+      'tight': '-0.025em',
+      'normal': 'normal',
+      'wide': '0.025em',
+      'wider': '0.05em',
+      'widest': '0.1em',
+    }
+    return { 'word-spacing': values[parsed.value] || config.theme.spacing[parsed.value] || parsed.value }
+  }
+}
+
+// Font variant caps
+export const fontVariantCapsRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'small-caps': 'small-caps',
+    'all-small-caps': 'all-small-caps',
+    'petite-caps': 'petite-caps',
+    'all-petite-caps': 'all-petite-caps',
+    'unicase': 'unicase',
+    'titling-caps': 'titling-caps',
+    'normal-caps': 'normal',
+  }
+  return values[parsed.raw] ? { 'font-variant-caps': values[parsed.raw] } : undefined
+}
+
+// Font variant ligatures
+export const fontVariantLigaturesRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'ligatures-normal': 'normal',
+    'ligatures-none': 'none',
+    'common-ligatures': 'common-ligatures',
+    'no-common-ligatures': 'no-common-ligatures',
+    'discretionary-ligatures': 'discretionary-ligatures',
+    'no-discretionary-ligatures': 'no-discretionary-ligatures',
+    'historical-ligatures': 'historical-ligatures',
+    'no-historical-ligatures': 'no-historical-ligatures',
+    'contextual': 'contextual',
+    'no-contextual': 'no-contextual',
+  }
+  return values[parsed.raw] ? { 'font-variant-ligatures': values[parsed.raw] } : undefined
+}
+
 export const typographyRules: UtilityRule[] = [
   fontFamilyRule,
   fontSmoothingRule,
   fontStyleRule,
   fontStretchRule,
   fontVariantNumericRule,
+  fontVariantCapsRule,
+  fontVariantLigaturesRule,
   letterSpacingRule,
   lineHeightRule,
   lineClampRule,
@@ -365,4 +477,10 @@ export const typographyRules: UtilityRule[] = [
   overflowWrapRule,
   hyphensRule,
   contentRule,
+  writingModeRule,
+  textOrientationRule,
+  directionRule,
+  textEmphasisRule,
+  textEmphasisColorRule,
+  wordSpacingRule,
 ]

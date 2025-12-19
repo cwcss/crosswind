@@ -69,6 +69,78 @@ export const columnsRule: UtilityRule = (parsed, config) => {
   }
 }
 
+// Column fill
+export const columnFillRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'column-fill-auto': 'auto',
+    'column-fill-balance': 'balance',
+    'column-fill-balance-all': 'balance-all',
+  }
+  return values[parsed.raw] ? { 'column-fill': values[parsed.raw] } : undefined
+}
+
+// Column gap (different from grid gap)
+export const columnGapRule: UtilityRule = (parsed, config) => {
+  if (parsed.utility === 'column-gap' && parsed.value) {
+    return { 'column-gap': config.theme.spacing[parsed.value] || parsed.value }
+  }
+}
+
+// Column rule (border between columns)
+export const columnRuleRule: UtilityRule = (parsed, config) => {
+  // column-rule-width
+  if (parsed.utility === 'column-rule' && parsed.value) {
+    const widths: Record<string, string> = {
+      '0': '0px',
+      '1': '1px',
+      '2': '2px',
+      '4': '4px',
+      '8': '8px',
+    }
+    if (widths[parsed.value]) {
+      return { 'column-rule-width': widths[parsed.value] }
+    }
+
+    // Check for colors
+    const parts = parsed.value.split('-')
+    if (parts.length === 2) {
+      const [colorName, shade] = parts
+      const colorValue = config.theme.colors[colorName]
+      if (typeof colorValue === 'object' && colorValue[shade]) {
+        return { 'column-rule-color': colorValue[shade] }
+      }
+    }
+
+    // Direct color
+    const directColor = config.theme.colors[parsed.value]
+    if (typeof directColor === 'string') {
+      return { 'column-rule-color': directColor }
+    }
+
+    // Style
+    const styles: Record<string, string> = {
+      solid: 'solid',
+      dashed: 'dashed',
+      dotted: 'dotted',
+      double: 'double',
+      hidden: 'hidden',
+      none: 'none',
+    }
+    if (styles[parsed.value]) {
+      return { 'column-rule-style': styles[parsed.value] }
+    }
+  }
+}
+
+// Column span
+export const columnSpanRule: UtilityRule = (parsed) => {
+  const values: Record<string, string> = {
+    'column-span-all': 'all',
+    'column-span-none': 'none',
+  }
+  return values[parsed.raw] ? { 'column-span': values[parsed.raw] } : undefined
+}
+
 export const breakRule: UtilityRule = (parsed) => {
   const breaks: Record<string, Record<string, string>> = {
     'break-before-auto': { 'break-before': 'auto' },
@@ -289,6 +361,10 @@ export const zIndexRule: UtilityRule = (parsed) => {
 export const layoutRules: UtilityRule[] = [
   aspectRatioRule,
   columnsRule,
+  columnFillRule,
+  columnGapRule,
+  columnRuleRule,
+  columnSpanRule,
   breakRule,
   boxDecorationRule,
   boxSizingRule,

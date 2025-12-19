@@ -1153,6 +1153,16 @@ function parseClassImpl(className: string): ParsedClass {
     'rounded-ee',
     'border-opacity',
     'ring-opacity',
+    'stroke-dasharray',
+    'stroke-dashoffset',
+    'animate-iteration',
+    'animate-duration',
+    'animate-delay',
+    'text-emphasis',
+    'text-emphasis-color',
+    'word-spacing',
+    'column-gap',
+    'column-rule',
   ]
 
   // Special case for divide-x and divide-y (without values, they should be treated as compound)
