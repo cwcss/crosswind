@@ -1,6 +1,4 @@
-import type { PickierConfig } from 'pickier'
-
-const config: PickierConfig = {
+const config = {
   verbose: false,
 
   ignores: [
@@ -10,10 +8,10 @@ const config: PickierConfig = {
     'docs/**',
     'packages/*/docs/**',
     '*.min.js',
-  ],
+  ] as const,
 
   lint: {
-    ext: ['.ts', '.js', '.json', '.yaml', '.yml'],
+    ext: ['.ts', '.js', '.json', '.yaml', '.yml'] as const,
   },
 
   format: {

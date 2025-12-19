@@ -15,7 +15,7 @@ export class Scanner {
   constructor(
     private patterns: string[],
     private transformer: CompileClassTransformer | null | undefined = undefined,
-    private extractOptions?: ExtractClassesOptions,
+    private extractOptions: ExtractClassesOptions | undefined = undefined,
   ) {}
 
   /**

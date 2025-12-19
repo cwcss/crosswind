@@ -27,11 +27,11 @@ export const displayRule: UtilityRule = (parsed) => {
 export const containerRule: UtilityRule = (parsed) => {
   // @container -> container-type: inline-size (most common use case)
   if (parsed.utility === '@container') {
-    return { 'container-type': 'inline-size' }
+    return { 'container-type': 'inline-size' } as Record<string, string>
   }
   // @container-normal -> container-type: normal (for size containment without inline-size)
   if (parsed.utility === '@container-normal') {
-    return { 'container-type': 'normal' }
+    return { 'container-type': 'normal' } as Record<string, string>
   }
   // @container/name -> container-type: inline-size; container-name: name
   if (parsed.utility.startsWith('@container/')) {
@@ -39,7 +39,7 @@ export const containerRule: UtilityRule = (parsed) => {
     return {
       'container-type': 'inline-size',
       'container-name': name,
-    }
+    } as Record<string, string>
   }
 }
 

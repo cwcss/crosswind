@@ -1,4 +1,5 @@
 import type { CSSRule, HeadwindConfig, ParsedClass } from './types'
+import type { UtilityRule } from './rules'
 import { parseClass } from './parser'
 import { builtInRules } from './rules'
 
@@ -44,7 +45,9 @@ export class CSSGenerator {
     // Merge theme.extend into theme (allows users to add custom values without replacing defaults)
     if (config.theme.extend) {
       const { extend, ...baseTheme } = this.config.theme
-      this.config.theme = deepMerge(baseTheme, extend) as typeof this.config.theme
+      if (extend) {
+        this.config.theme = deepMerge(baseTheme, extend) as typeof this.config.theme
+      }
     }
 
     // Pre-compile blocklist patterns for performance

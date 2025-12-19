@@ -98,7 +98,7 @@ export const columnRuleRule: UtilityRule = (parsed, config) => {
       '8': '8px',
     }
     if (widths[parsed.value]) {
-      return { 'column-rule-width': widths[parsed.value] }
+      return { 'column-rule-width': widths[parsed.value] } as Record<string, string>
     }
 
     // Check for colors
@@ -107,14 +107,14 @@ export const columnRuleRule: UtilityRule = (parsed, config) => {
       const [colorName, shade] = parts
       const colorValue = config.theme.colors[colorName]
       if (typeof colorValue === 'object' && colorValue[shade]) {
-        return { 'column-rule-color': colorValue[shade] }
+        return { 'column-rule-color': colorValue[shade] } as Record<string, string>
       }
     }
 
     // Direct color
     const directColor = config.theme.colors[parsed.value]
     if (typeof directColor === 'string') {
-      return { 'column-rule-color': directColor }
+      return { 'column-rule-color': directColor } as Record<string, string>
     }
 
     // Style
@@ -127,7 +127,7 @@ export const columnRuleRule: UtilityRule = (parsed, config) => {
       none: 'none',
     }
     if (styles[parsed.value]) {
-      return { 'column-rule-style': styles[parsed.value] }
+      return { 'column-rule-style': styles[parsed.value] } as Record<string, string>
     }
   }
 }
