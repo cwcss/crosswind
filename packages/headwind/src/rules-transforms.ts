@@ -235,7 +235,19 @@ export const transitionPropertyRule: UtilityRule = (parsed) => {
 
 export const transitionDurationRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'duration' && parsed.value) {
-    return { 'transition-duration': `${parsed.value}ms` }
+    // Named duration presets (like Tailwind)
+    const durations: Record<string, string> = {
+      '0': '0s',
+      '75': '75ms',
+      '100': '100ms',
+      '150': '150ms',
+      '200': '200ms',
+      '300': '300ms',
+      '500': '500ms',
+      '700': '700ms',
+      '1000': '1000ms',
+    }
+    return { 'transition-duration': durations[parsed.value] || `${parsed.value}ms` }
   }
 }
 
@@ -251,7 +263,19 @@ export const transitionTimingRule: UtilityRule = (parsed) => {
 
 export const transitionDelayRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'delay' && parsed.value) {
-    return { 'transition-delay': `${parsed.value}ms` }
+    // Named delay presets (like Tailwind)
+    const delays: Record<string, string> = {
+      '0': '0s',
+      '75': '75ms',
+      '100': '100ms',
+      '150': '150ms',
+      '200': '200ms',
+      '300': '300ms',
+      '500': '500ms',
+      '700': '700ms',
+      '1000': '1000ms',
+    }
+    return { 'transition-delay': delays[parsed.value] || `${parsed.value}ms` }
   }
 }
 

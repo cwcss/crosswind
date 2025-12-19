@@ -272,6 +272,28 @@ export const sizingRule: UtilityRule = (parsed, config) => {
     return { height: value } as Record<string, string>
   }
 
+  // Size utility (width + height shorthand)
+  if (parsed.utility === 'size' && parsed.value) {
+    const sizeMap: Record<string, string> = {
+      full: '100%',
+      auto: 'auto',
+      min: 'min-content',
+      max: 'max-content',
+      fit: 'fit-content',
+    }
+    // Handle fractions: 1/2 -> 50%
+    if (parsed.value.includes('/')) {
+      const [num, denom] = parsed.value.split('/').map(Number)
+      if (Number.isNaN(num) || Number.isNaN(denom) || denom === 0) {
+        return undefined
+      }
+      const percent = `${(num / denom) * 100}%`
+      return { width: percent, height: percent } as Record<string, string>
+    }
+    const value = config.theme.spacing[parsed.value] || sizeMap[parsed.value] || parsed.value
+    return { width: value, height: value } as Record<string, string>
+  }
+
   return undefined
 }
 
@@ -630,6 +652,44 @@ export const borderRadiusRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'rounded') {
     const value = parsed.value ? config.theme.borderRadius[parsed.value] : config.theme.borderRadius.DEFAULT
     return value ? { 'border-radius': value } : undefined
+  }
+
+  // Logical border-radius utilities (for RTL/LTR support)
+  // rounded-s-* (start) - applies to start corners
+  if (parsed.utility === 'rounded-s' && parsed.value) {
+    const value = config.theme.borderRadius[parsed.value] || parsed.value
+    return {
+      'border-start-start-radius': value,
+      'border-end-start-radius': value,
+    } as Record<string, string>
+  }
+  // rounded-e-* (end) - applies to end corners
+  if (parsed.utility === 'rounded-e' && parsed.value) {
+    const value = config.theme.borderRadius[parsed.value] || parsed.value
+    return {
+      'border-start-end-radius': value,
+      'border-end-end-radius': value,
+    } as Record<string, string>
+  }
+  // rounded-ss-* (start-start corner)
+  if (parsed.utility === 'rounded-ss' && parsed.value) {
+    const value = config.theme.borderRadius[parsed.value] || parsed.value
+    return { 'border-start-start-radius': value } as Record<string, string>
+  }
+  // rounded-se-* (start-end corner)
+  if (parsed.utility === 'rounded-se' && parsed.value) {
+    const value = config.theme.borderRadius[parsed.value] || parsed.value
+    return { 'border-start-end-radius': value } as Record<string, string>
+  }
+  // rounded-es-* (end-start corner)
+  if (parsed.utility === 'rounded-es' && parsed.value) {
+    const value = config.theme.borderRadius[parsed.value] || parsed.value
+    return { 'border-end-start-radius': value } as Record<string, string>
+  }
+  // rounded-ee-* (end-end corner)
+  if (parsed.utility === 'rounded-ee' && parsed.value) {
+    const value = config.theme.borderRadius[parsed.value] || parsed.value
+    return { 'border-end-end-radius': value } as Record<string, string>
   }
 }
 
