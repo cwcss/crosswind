@@ -187,6 +187,9 @@ export const spacingRule: UtilityRule = (parsed, config) => {
     pr: ['padding-right'],
     pb: ['padding-bottom'],
     pl: ['padding-left'],
+    // Logical padding (for RTL support)
+    ps: ['padding-inline-start'],
+    pe: ['padding-inline-end'],
     m: ['margin'],
     mx: ['margin-left', 'margin-right'],
     my: ['margin-top', 'margin-bottom'],
@@ -194,6 +197,9 @@ export const spacingRule: UtilityRule = (parsed, config) => {
     mr: ['margin-right'],
     mb: ['margin-bottom'],
     ml: ['margin-left'],
+    // Logical margin (for RTL support)
+    ms: ['margin-inline-start'],
+    me: ['margin-inline-end'],
   }
 
   const properties = prefixes[parsed.utility]
@@ -623,6 +629,9 @@ export const borderSideWidthRule: UtilityRule = (parsed) => {
     'border-l': 'border-left-width',
     'border-x': ['border-left-width', 'border-right-width'],
     'border-y': ['border-top-width', 'border-bottom-width'],
+    // Logical borders (for RTL support)
+    'border-s': 'border-inline-start-width',
+    'border-e': 'border-inline-end-width',
   }
 
   const prop = sideUtilities[parsed.utility]

@@ -1062,6 +1062,9 @@ function parseClassImpl(className: string): ParsedClass {
     'border-l',
     'border-x',
     'border-y',
+    // Logical border utilities (for RTL support)
+    'border-s',
+    'border-e',
     'grid-cols',
     'grid-rows',
     'grid-flow',

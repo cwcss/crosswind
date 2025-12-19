@@ -285,6 +285,9 @@ export const insetRule: UtilityRule = (parsed, config) => {
     'right': ['right'],
     'bottom': ['bottom'],
     'left': ['left'],
+    // Logical inset (for RTL support)
+    'start': ['inset-inline-start'],
+    'end': ['inset-inline-end'],
   }
 
   const props = directions[parsed.utility]
