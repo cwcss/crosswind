@@ -95,7 +95,16 @@ export const borderCollapseRule: UtilityRule = (parsed) => {
 
 export const borderSpacingRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'border-spacing' && parsed.value) {
-    return { 'border-spacing': config.theme.spacing[parsed.value] || parsed.value }
+    const value = config.theme.spacing[parsed.value] || parsed.value
+    return { 'border-spacing': `${value} ${value}` }
+  }
+  if (parsed.utility === 'border-spacing-x' && parsed.value) {
+    const value = config.theme.spacing[parsed.value] || parsed.value
+    return { 'border-spacing': `${value} 0` }
+  }
+  if (parsed.utility === 'border-spacing-y' && parsed.value) {
+    const value = config.theme.spacing[parsed.value] || parsed.value
+    return { 'border-spacing': `0 ${value}` }
   }
 }
 

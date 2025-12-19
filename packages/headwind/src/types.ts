@@ -89,6 +89,8 @@ export interface Theme {
   screens: Record<string, string>
   borderRadius: Record<string, string>
   boxShadow: Record<string, string>
+  /** Extend theme values without replacing defaults */
+  extend?: Partial<Omit<Theme, 'extend'>>
 }
 
 export interface VariantConfig {

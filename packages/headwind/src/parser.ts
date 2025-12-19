@@ -1142,6 +1142,9 @@ function parseClassImpl(className: string): ParsedClass {
     'mix-blend',
     'bg-blend',
     'line-clamp',
+    'border-spacing',
+    'border-spacing-x',
+    'border-spacing-y',
   ]
 
   // Special case for divide-x and divide-y (without values, they should be treated as compound)

@@ -378,17 +378,51 @@ export const alignSelfRule: UtilityRule = (parsed) => {
   }
 }
 
-// Container utility
-// TODO: Requires nested media query support in generator
-export const containerRule: UtilityRule = (parsed, _config) => {
-  if (parsed.utility === 'container' && !parsed.value) {
-    // Simplified version without responsive max-widths
-    return {
-      'width': '100%',
-      'margin-left': 'auto',
-      'margin-right': 'auto',
-      'padding-left': '1rem',
-      'padding-right': '1rem',
+// Container utility with responsive max-widths
+export const containerRule: UtilityRule = (parsed, config) => {
+  if (parsed.utility === 'container') {
+    // container without value - centered container with responsive max-width
+    if (!parsed.value) {
+      // Use clamp for modern responsive max-width behavior
+      // Max-width scales with breakpoints: sm=640, md=768, lg=1024, xl=1280, 2xl=1536
+      const xl = config.theme.screens['xl'] || '1280px'
+      return {
+        'width': '100%',
+        'margin-left': 'auto',
+        'margin-right': 'auto',
+        'max-width': xl,
+      }
+    }
+
+    // container-{breakpoint} for specific max-widths
+    const breakpointMap: Record<string, string> = {
+      'sm': config.theme.screens['sm'] || '640px',
+      'md': config.theme.screens['md'] || '768px',
+      'lg': config.theme.screens['lg'] || '1024px',
+      'xl': config.theme.screens['xl'] || '1280px',
+      '2xl': config.theme.screens['2xl'] || '1536px',
+      'full': '100%',
+      'prose': '65ch',
+      '3xl': '1920px',
+    }
+
+    if (breakpointMap[parsed.value]) {
+      return {
+        'width': '100%',
+        'margin-left': 'auto',
+        'margin-right': 'auto',
+        'max-width': breakpointMap[parsed.value],
+      }
+    }
+
+    // Arbitrary value support: container-[800px]
+    if (parsed.arbitrary) {
+      return {
+        'width': '100%',
+        'margin-left': 'auto',
+        'margin-right': 'auto',
+        'max-width': parsed.value,
+      }
     }
   }
 }
