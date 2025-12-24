@@ -14,9 +14,15 @@
     "url": "https://github.com/stacksjs/headwind/issues"
   },
   "keywords": [
-    "monorepo",
+    "css",
+    "utility-first",
+    "tailwind",
+    "css-framework",
+    "bun",
+    "performance",
     "headwind",
-    "template"
+    "atomic-css",
+    "typescript"
   ],
   "scripts": {
     "build": "cd packages/headwind && bun run build",
@@ -37,13 +43,14 @@
   "devDependencies": {
     "@stacksjs/bumpx": "^0.1.84",
     "@stacksjs/docs": "^0.70.23",
-    "pickier": "^0.1.0",
     "@stacksjs/gitlint": "^0.1.5",
     "@stacksjs/logsmith": "^0.1.18",
     "@types/bun": "^1.2.23",
+    "better-dx": "^0.2.5",
     "buddy-bot": "^0.9.8",
     "bun-git-hooks": "^0.3.1",
     "bun-plugin-dtsx": "0.9.5",
+    "pickier": "^0.1.0",
     "typescript": "^5.9.3"
   },
   "overrides": {

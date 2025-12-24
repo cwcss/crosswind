@@ -60,8 +60,8 @@
     "zip:darwin-x64": "zip -j bin/headwind-darwin-x64.zip bin/headwind-darwin-x64",
     "zip:darwin-arm64": "zip -j bin/headwind-darwin-arm64.zip bin/headwind-darwin-arm64",
     "benchmark": "bun run benchmark/framework-comparison.bench.ts",
-    "lint": "bunx --bun eslint .",
-    "lint:fix": "bunx --bun eslint . --fix",
+    "lint": "bunx --bun pickier run --mode lint",
+    "lint:fix": "bunx --bun pickier run --mode lint --fix",
     "fresh": "bunx rimraf node_modules/ bun.lock && bun i",
     "changelog": "bunx changelogen --output CHANGELOG.md",
     "prepublishOnly": "bun --bun run build && bun run compile:all && bun run zip",
@@ -76,7 +76,7 @@
     "unconfig": "0.3.10"
   },
   "lint-staged": {
-    "*.{js,ts}": "bunx --bun eslint . --fix"
+    "*.{js,ts}": "bunx --bun pickier run --mode lint --fix"
   },
   "devDependencies": {
     "@tailwindcss/node": "^4.1.14",
