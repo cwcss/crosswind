@@ -1330,7 +1330,8 @@ function isValidClassName(name: string, bracketConfig?: BracketSyntaxConfig): bo
   // - - prefix (negative values)
   // - Arbitrary values in brackets like -[100px] or -[#ff0000]
   // - Variant prefixes with colons like hover:, sm:, focus:
-  return /^!?-?[a-z][a-z0-9-]*(?:-\[[^\]]+\])?(?::!?-?[a-z][a-z0-9-]*(?:-\[[^\]]+\])?)*$/i.test(name)
+  // - Decimal values like py-2.5, gap-0.5
+  return /^!?-?[a-z][a-z0-9.-]*(?:-\[[^\]]+\])?(?::!?-?[a-z][a-z0-9.-]*(?:-\[[^\]]+\])?)*$/i.test(name)
 }
 
 /**
