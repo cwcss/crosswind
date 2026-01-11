@@ -21,6 +21,56 @@ function deepMerge<T extends Record<string, any>>(target: T, source: Partial<T>)
   return result
 }
 
+// Pre-computed variant selector map for O(1) lookup (shared across all instances)
+const VARIANT_SELECTORS: Record<string, string> = {
+  // Pseudo-class variants
+  'hover': ':hover',
+  'focus': ':focus',
+  'active': ':active',
+  'disabled': ':disabled',
+  'visited': ':visited',
+  'checked': ':checked',
+  'focus-within': ':focus-within',
+  'focus-visible': ':focus-visible',
+  // Positional variants
+  'first': ':first-child',
+  'last': ':last-child',
+  'odd': ':nth-child(odd)',
+  'even': ':nth-child(even)',
+  'first-of-type': ':first-of-type',
+  'last-of-type': ':last-of-type',
+  // Pseudo-elements
+  'before': '::before',
+  'after': '::after',
+  'marker': '::marker',
+  'placeholder': '::placeholder',
+  'selection': '::selection',
+  'file': '::file-selector-button',
+  // Form state pseudo-classes
+  'required': ':required',
+  'valid': ':valid',
+  'invalid': ':invalid',
+  'read-only': ':read-only',
+  'autofill': ':autofill',
+  // Additional state pseudo-classes
+  'open': '[open]',
+  'closed': ':not([open])',
+  'empty': ':empty',
+  'enabled': ':enabled',
+  'only': ':only-child',
+  'target': ':target',
+  'indeterminate': ':indeterminate',
+  'default': ':default',
+  'optional': ':optional',
+}
+
+// Pre-computed prefix variants (these modify the selector prefix, not suffix)
+const PREFIX_VARIANTS: Record<string, string> = {
+  'dark': '.dark ',
+  'rtl': '[dir="rtl"] ',
+  'ltr': '[dir="ltr"] ',
+}
+
 /**
  * Generates CSS rules from parsed utility classes
  */
@@ -28,9 +78,14 @@ export class CSSGenerator {
   private rules: Map<string, CSSRule[]> = new Map()
   private classCache: Set<string> = new Set()
   private blocklistRegexCache: RegExp[] = []
+  private blocklistExact: Set<string> = new Set()
   private selectorCache: Map<string, string> = new Map()
   private mediaQueryCache: Map<string, string | undefined> = new Map()
   private ruleCache: Map<string, UtilityRule[]> = new Map()
+  private variantEnabled: Record<string, boolean>
+  private screenBreakpoints: Map<string, string>
+  // Cache for utility+value combinations that don't match any rule (negative cache)
+  private noMatchCache: Set<string> = new Set()
 
   constructor(private config: HeadwindConfig) {
     // Merge preset themes into the main config theme
@@ -56,7 +111,16 @@ export class CSSGenerator {
         const regexPattern = pattern.replace(/\*/g, '.*')
         this.blocklistRegexCache.push(new RegExp(`^${regexPattern}$`))
       }
+      else {
+        this.blocklistExact.add(pattern)
+      }
     }
+
+    // Pre-cache variant enabled state for faster lookup
+    this.variantEnabled = this.config.variants as Record<string, boolean>
+
+    // Pre-cache screen breakpoints as Map for faster lookup
+    this.screenBreakpoints = new Map(Object.entries(this.config.theme.screens))
 
     // Build rule lookup map for faster matching
     this.buildRuleLookup()
@@ -93,25 +157,28 @@ export class CSSGenerator {
 
     this.classCache.add(className)
 
-    // Check if class is blocklisted (use pre-compiled regexes)
-    if (this.blocklistRegexCache.length > 0) {
-      for (const regex of this.blocklistRegexCache) {
-        if (regex.test(className)) {
-          return
-        }
-      }
+    // Check exact match blocklist first (O(1) Set lookup)
+    if (this.blocklistExact.size > 0 && this.blocklistExact.has(className)) {
+      return
     }
 
-    // Check exact match blocklist
-    if (this.config.blocklist.length > 0) {
-      for (const pattern of this.config.blocklist) {
-        if (!pattern.includes('*') && pattern === className) {
+    // Check if class is blocklisted (use pre-compiled regexes)
+    if (this.blocklistRegexCache.length > 0) {
+      for (let i = 0; i < this.blocklistRegexCache.length; i++) {
+        if (this.blocklistRegexCache[i].test(className)) {
           return
         }
       }
     }
 
     const parsed = parseClass(className)
+
+    // Check no-match cache - if this utility+value combo was already determined to not match
+    // any rule, skip the expensive rule iteration (especially helpful for variant classes)
+    const utilityKey = `${parsed.utility}:${parsed.value || ''}`
+    if (this.noMatchCache.has(utilityKey)) {
+      return
+    }
 
     // Try custom rules from config first (allows overriding built-in rules)
     if (this.config.rules.length > 0) {
@@ -142,6 +209,9 @@ export class CSSGenerator {
         return
       }
     }
+
+    // No rule matched - cache this utility+value combo to skip future iterations
+    this.noMatchCache.add(utilityKey)
   }
 
   /**
@@ -184,139 +254,58 @@ export class CSSGenerator {
 
   /**
    * Build CSS selector with pseudo-classes and variants
+   * Optimized with pre-computed lookup maps for O(1) variant resolution
    */
   private buildSelector(parsed: ParsedClass): string {
     let selector = `.${this.escapeSelector(parsed.raw)}`
     let prefix = ''
 
-    // Apply variants
-    for (const variant of parsed.variants) {
-      // Pseudo-class variants
-      if (variant === 'hover' && this.config.variants.hover) {
-        selector += ':hover'
+    const variants = parsed.variants
+    const variantsLen = variants.length
+
+    // Fast path: no variants
+    if (variantsLen === 0) {
+      return selector
+    }
+
+    // Apply variants using pre-computed maps
+    for (let i = 0; i < variantsLen; i++) {
+      const variant = variants[i]
+
+      // Try suffix selector lookup first (most common case)
+      const suffixSelector = VARIANT_SELECTORS[variant]
+      if (suffixSelector !== undefined) {
+        // Check if variant is enabled
+        if (this.variantEnabled[variant]) {
+          selector += suffixSelector
+        }
+        continue
       }
-      else if (variant === 'focus' && this.config.variants.focus) {
-        selector += ':focus'
+
+      // Try prefix selector lookup (dark, rtl, ltr)
+      const prefixSelector = PREFIX_VARIANTS[variant]
+      if (prefixSelector !== undefined) {
+        if (this.variantEnabled[variant]) {
+          prefix = prefixSelector
+        }
+        continue
       }
-      else if (variant === 'active' && this.config.variants.active) {
-        selector += ':active'
+
+      // Handle group-* variants
+      if (variant.charCodeAt(0) === 103 && variant.startsWith('group-')) { // 'g' = 103
+        if (this.variantEnabled.group) {
+          const groupVariant = variant.slice(6)
+          prefix = `.group:${groupVariant} `
+        }
+        continue
       }
-      else if (variant === 'disabled' && this.config.variants.disabled) {
-        selector += ':disabled'
-      }
-      else if (variant === 'visited' && this.config.variants.visited) {
-        selector += ':visited'
-      }
-      else if (variant === 'checked' && this.config.variants.checked) {
-        selector += ':checked'
-      }
-      else if (variant === 'focus-within' && this.config.variants['focus-within']) {
-        selector += ':focus-within'
-      }
-      else if (variant === 'focus-visible' && this.config.variants['focus-visible']) {
-        selector += ':focus-visible'
-      }
-      // Positional variants
-      else if (variant === 'first' && this.config.variants.first) {
-        selector += ':first-child'
-      }
-      else if (variant === 'last' && this.config.variants.last) {
-        selector += ':last-child'
-      }
-      else if (variant === 'odd' && this.config.variants.odd) {
-        selector += ':nth-child(odd)'
-      }
-      else if (variant === 'even' && this.config.variants.even) {
-        selector += ':nth-child(even)'
-      }
-      else if (variant === 'first-of-type' && this.config.variants['first-of-type']) {
-        selector += ':first-of-type'
-      }
-      else if (variant === 'last-of-type' && this.config.variants['last-of-type']) {
-        selector += ':last-of-type'
-      }
-      // Pseudo-elements
-      else if (variant === 'before' && this.config.variants.before) {
-        selector += '::before'
-      }
-      else if (variant === 'after' && this.config.variants.after) {
-        selector += '::after'
-      }
-      else if (variant === 'marker' && this.config.variants.marker) {
-        selector += '::marker'
-      }
-      else if (variant === 'placeholder' && this.config.variants.placeholder) {
-        selector += '::placeholder'
-      }
-      else if (variant === 'selection' && this.config.variants.selection) {
-        selector += '::selection'
-      }
-      else if (variant === 'file' && this.config.variants.file) {
-        selector += '::file-selector-button'
-      }
-      // Form state pseudo-classes
-      else if (variant === 'required' && this.config.variants.required) {
-        selector += ':required'
-      }
-      else if (variant === 'valid' && this.config.variants.valid) {
-        selector += ':valid'
-      }
-      else if (variant === 'invalid' && this.config.variants.invalid) {
-        selector += ':invalid'
-      }
-      else if (variant === 'read-only' && this.config.variants['read-only']) {
-        selector += ':read-only'
-      }
-      else if (variant === 'autofill' && this.config.variants.autofill) {
-        selector += ':autofill'
-      }
-      // Additional state pseudo-classes
-      else if (variant === 'open' && this.config.variants.open) {
-        selector += '[open]'
-      }
-      else if (variant === 'closed' && this.config.variants.closed) {
-        selector += ':not([open])'
-      }
-      else if (variant === 'empty' && this.config.variants.empty) {
-        selector += ':empty'
-      }
-      else if (variant === 'enabled' && this.config.variants.enabled) {
-        selector += ':enabled'
-      }
-      else if (variant === 'only' && this.config.variants.only) {
-        selector += ':only-child'
-      }
-      else if (variant === 'target' && this.config.variants.target) {
-        selector += ':target'
-      }
-      else if (variant === 'indeterminate' && this.config.variants.indeterminate) {
-        selector += ':indeterminate'
-      }
-      else if (variant === 'default' && this.config.variants.default) {
-        selector += ':default'
-      }
-      else if (variant === 'optional' && this.config.variants.optional) {
-        selector += ':optional'
-      }
-      // Group/Peer variants
-      else if (variant.startsWith('group-') && this.config.variants.group) {
-        const groupVariant = variant.slice(6) // Remove 'group-'
-        prefix = `.group:${groupVariant} `
-      }
-      else if (variant.startsWith('peer-') && this.config.variants.peer) {
-        const peerVariant = variant.slice(5) // Remove 'peer-'
-        prefix = `.peer:${peerVariant} ~ `
-      }
-      // Dark mode
-      else if (variant === 'dark' && this.config.variants.dark) {
-        prefix = '.dark '
-      }
-      // Direction variants
-      else if (variant === 'rtl' && this.config.variants.rtl) {
-        prefix = '[dir="rtl"] '
-      }
-      else if (variant === 'ltr' && this.config.variants.ltr) {
-        prefix = '[dir="ltr"] '
+
+      // Handle peer-* variants
+      if (variant.charCodeAt(0) === 112 && variant.startsWith('peer-')) { // 'p' = 112
+        if (this.variantEnabled.peer) {
+          const peerVariant = variant.slice(5)
+          prefix = `.peer:${peerVariant} ~ `
+        }
       }
     }
 
@@ -325,32 +314,45 @@ export class CSSGenerator {
 
   /**
    * Get media query for responsive and media variants
+   * Optimized with pre-cached lookups and early returns
    */
   private getMediaQuery(parsed: ParsedClass): string | undefined {
+    const variants = parsed.variants
+    const variantsLen = variants.length
+
+    // Fast path: no variants
+    if (variantsLen === 0) {
+      return undefined
+    }
+
     // Use cached media query if available
-    const cacheKey = parsed.variants.join(':')
-    if (this.mediaQueryCache.has(cacheKey)) {
-      return this.mediaQueryCache.get(cacheKey)
+    const cacheKey = variants.join(':')
+    const cached = this.mediaQueryCache.get(cacheKey)
+    if (cached !== undefined) {
+      return cached || undefined // Convert empty string to undefined
     }
 
     let result: string | undefined
 
-    for (const variant of parsed.variants) {
-      // Container queries (@sm, @md, @lg, etc.)
-      // These use the same breakpoints as responsive but wrap in @container instead of @media
-      if (variant.startsWith('@')) {
-        const breakpointKey = variant.slice(1) // Remove '@' prefix
-        const breakpoint = this.config.theme.screens[breakpointKey]
+    for (let i = 0; i < variantsLen; i++) {
+      const variant = variants[i]
+      const firstChar = variant.charCodeAt(0)
+
+      // Container queries (@sm, @md, @lg, etc.) - '@' = 64
+      if (firstChar === 64) {
+        const breakpointKey = variant.slice(1)
+        const breakpoint = this.screenBreakpoints.get(breakpointKey)
         if (breakpoint) {
           result = `@container (min-width: ${breakpoint})`
           this.mediaQueryCache.set(cacheKey, result)
           return result
         }
+        continue
       }
 
-      // Responsive breakpoints
-      if (this.config.variants.responsive) {
-        const breakpoint = this.config.theme.screens[variant]
+      // Responsive breakpoints - check if variant is a screen breakpoint
+      if (this.variantEnabled.responsive) {
+        const breakpoint = this.screenBreakpoints.get(variant)
         if (breakpoint) {
           result = `@media (min-width: ${breakpoint})`
           this.mediaQueryCache.set(cacheKey, result)
@@ -358,47 +360,69 @@ export class CSSGenerator {
         }
       }
 
-      // Print media
-      if (variant === 'print' && this.config.variants.print) {
-        result = '@media print'
-        this.mediaQueryCache.set(cacheKey, result)
-        return result
-      }
-
-      // Motion preferences
-      if (variant === 'motion-safe' && this.config.variants['motion-safe']) {
-        result = '@media (prefers-reduced-motion: no-preference)'
-        this.mediaQueryCache.set(cacheKey, result)
-        return result
-      }
-      if (variant === 'motion-reduce' && this.config.variants['motion-reduce']) {
-        result = '@media (prefers-reduced-motion: reduce)'
-        this.mediaQueryCache.set(cacheKey, result)
-        return result
-      }
-
-      // Contrast preferences
-      if (variant === 'contrast-more' && this.config.variants['contrast-more']) {
-        result = '@media (prefers-contrast: more)'
-        this.mediaQueryCache.set(cacheKey, result)
-        return result
-      }
-      if (variant === 'contrast-less' && this.config.variants['contrast-less']) {
-        result = '@media (prefers-contrast: less)'
-        this.mediaQueryCache.set(cacheKey, result)
-        return result
+      // Media preference variants - use switch for common cases
+      switch (variant) {
+        case 'print':
+          if (this.variantEnabled.print) {
+            result = '@media print'
+            this.mediaQueryCache.set(cacheKey, result)
+            return result
+          }
+          break
+        case 'motion-safe':
+          if (this.variantEnabled['motion-safe']) {
+            result = '@media (prefers-reduced-motion: no-preference)'
+            this.mediaQueryCache.set(cacheKey, result)
+            return result
+          }
+          break
+        case 'motion-reduce':
+          if (this.variantEnabled['motion-reduce']) {
+            result = '@media (prefers-reduced-motion: reduce)'
+            this.mediaQueryCache.set(cacheKey, result)
+            return result
+          }
+          break
+        case 'contrast-more':
+          if (this.variantEnabled['contrast-more']) {
+            result = '@media (prefers-contrast: more)'
+            this.mediaQueryCache.set(cacheKey, result)
+            return result
+          }
+          break
+        case 'contrast-less':
+          if (this.variantEnabled['contrast-less']) {
+            result = '@media (prefers-contrast: less)'
+            this.mediaQueryCache.set(cacheKey, result)
+            return result
+          }
+          break
       }
     }
 
-    this.mediaQueryCache.set(cacheKey, undefined)
+    this.mediaQueryCache.set(cacheKey, '')  // Use empty string as "no result" marker
     return undefined
   }
 
   /**
    * Escape special characters in class names for CSS selectors
+   * Optimized with charCode checks for common fast path
    */
   private escapeSelector(className: string): string {
-    return className.replace(/[:./@ ]/g, '\\$&')
+    // Fast path: check if string needs escaping at all
+    let needsEscape = false
+    for (let i = 0; i < className.length; i++) {
+      const c = className.charCodeAt(i)
+      // Check for : (58), . (46), / (47), @ (64), space (32), [ (91), ] (93)
+      if (c === 58 || c === 46 || c === 47 || c === 64 || c === 32 || c === 91 || c === 93) {
+        needsEscape = true
+        break
+      }
+    }
+    if (!needsEscape) {
+      return className
+    }
+    return className.replace(/[:./@ \[\]]/g, '\\$&')
   }
 
   /**
@@ -493,5 +517,6 @@ export class CSSGenerator {
     this.classCache.clear()
     this.selectorCache.clear()
     this.mediaQueryCache.clear()
+    this.noMatchCache.clear()
   }
 }

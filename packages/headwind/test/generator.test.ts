@@ -475,12 +475,12 @@ describe('CSSGenerator - Edge Cases', () => {
     expect(css).toContain('.w-1\\/2')
   })
 
-  it('should escape dots in arbitrary values', () => {
+  it('should escape dots and brackets in arbitrary values', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('text-[1.5rem]')
     const css = gen.toCSS(false)
-    // Check selector escaping for the class
-    expect(css).toContain('.text-[1\\.5rem]')
+    // Check selector escaping for the class (both brackets and dots should be escaped)
+    expect(css).toContain('.text-\\[1\\.5rem\\]')
   })
 
   it('should handle all variants disabled', () => {

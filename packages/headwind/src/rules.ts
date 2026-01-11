@@ -304,10 +304,12 @@ export const sizingRule: UtilityRule = (parsed, config) => {
 }
 
 // Color utilities (background, text, border)
-// Cache for color lookups
-const colorCache = new Map<string, string>()
-// Cache for theme color object lookups
-const themeColorCache = new Map<string, any>()
+// Cache for invalid color lookups (negative cache for performance)
+const invalidColorCache = new Set<string>()
+
+// Flat color cache: "blue-500" -> "#3b82f6" (populated on first access per config)
+let flatColorCache: Map<string, string> | null = null
+let flatColorCacheConfig: any = null
 
 // Pre-computed color property map (avoid object creation)
 const COLOR_PROPS: Record<string, string> = {
@@ -323,6 +325,24 @@ const SPECIAL_COLORS: Record<string, string> = {
   inherit: 'inherit',
 }
 
+// Build flat color cache from theme colors
+function buildFlatColorCache(colors: Record<string, any>): Map<string, string> {
+  const cache = new Map<string, string>()
+  for (const [colorName, colorValue] of Object.entries(colors)) {
+    if (typeof colorValue === 'string') {
+      cache.set(colorName, colorValue)
+    }
+    else if (typeof colorValue === 'object' && colorValue !== null) {
+      for (const [shade, shadeValue] of Object.entries(colorValue)) {
+        if (typeof shadeValue === 'string') {
+          cache.set(`${colorName}-${shade}`, shadeValue)
+        }
+      }
+    }
+  }
+  return cache
+}
+
 export const colorRule: UtilityRule = (parsed, config) => {
   const prop = COLOR_PROPS[parsed.utility]
   if (!prop || !parsed.value)
@@ -330,121 +350,69 @@ export const colorRule: UtilityRule = (parsed, config) => {
 
   const value = parsed.value
 
-  // Check cache first (single lookup) - use the raw value directly as key
-  const cached = colorCache.get(value)
-  if (cached) {
-    return { [prop]: cached }
+  // Check negative cache - skip processing for known invalid colors
+  if (invalidColorCache.has(value)) {
+    return undefined
   }
 
-  // Fast path: Most common case in benchmarks - color-shade format without opacity
-  // Optimize for "blue-500" pattern (no slash)
-  const lastDashIndex = value.lastIndexOf('-')
-  if (lastDashIndex > 0 && !value.includes('/')) {
-    const shade = value.slice(lastDashIndex + 1)
-    const colorName = value.slice(0, lastDashIndex)
+  // Build/update flat color cache if needed
+  if (flatColorCache === null || flatColorCacheConfig !== config.theme.colors) {
+    flatColorCache = buildFlatColorCache(config.theme.colors)
+    flatColorCacheConfig = config.theme.colors
+  }
 
-    // Try cached theme color object lookup
-    let colorObj = themeColorCache.get(colorName)
-    const actualColorObj = config.theme.colors[colorName]
-
-    // Verify cache is valid for current config (important for tests with custom configs)
-    if (colorObj !== actualColorObj) {
-      colorObj = actualColorObj
-      themeColorCache.set(colorName, colorObj || null)
-    }
-
-    if (colorObj && colorObj[shade]) {
-      const result = colorObj[shade]
-      colorCache.set(value, result)
-      return { [prop]: result }
+  // Fast path: Most common case - direct lookup in flat cache (no string parsing)
+  // Check for slash (opacity modifier) first
+  const slashIdx = value.indexOf('/')
+  if (slashIdx === -1) {
+    // No opacity - direct lookup
+    const colorVal = flatColorCache.get(value)
+    if (colorVal) {
+      return { [prop]: colorVal }
     }
   }
 
   // Slower paths for special cases
 
-  // Check for opacity modifier
+  // Handle opacity modifier (slashIdx already computed above)
   let opacity: number | undefined
   let colorValue = value
 
-  if (value.includes('/')) {
-    const slashIndex = value.lastIndexOf('/')
-    colorValue = value.slice(0, slashIndex)
-    const opacityValue = Number.parseInt(value.slice(slashIndex + 1), 10)
+  if (slashIdx !== -1) {
+    colorValue = value.slice(0, slashIdx)
+    const opacityValue = Number.parseInt(value.slice(slashIdx + 1), 10)
 
     // Validate opacity is in 0-100 range
     if (Number.isNaN(opacityValue) || opacityValue < 0 || opacityValue > 100) {
-      return undefined // Invalid opacity, skip this utility
+      invalidColorCache.add(value)
+      return undefined
     }
     opacity = opacityValue / 100
 
-    // Re-check cache for the base color value
-    const baseColor = colorCache.get(colorValue)
+    // Try flat cache with base color value
+    const baseColor = flatColorCache!.get(colorValue)
     if (baseColor) {
-      const result = applyOpacity(baseColor, opacity)
-      colorCache.set(value, result)
-      return { [prop]: result }
+      return { [prop]: applyOpacity(baseColor, opacity) }
     }
   }
 
   // Special color keywords
   const specialColor = SPECIAL_COLORS[colorValue]
   if (specialColor) {
-    colorCache.set(value, specialColor)
     return { [prop]: specialColor }
   }
 
-  // Direct color lookup (colors.black, etc.)
-  let themeColor = themeColorCache.get(colorValue)
-  const actualThemeColor = config.theme.colors[colorValue]
-
-  // Verify cache is valid for current config
-  if (themeColor !== actualThemeColor) {
-    themeColor = actualThemeColor
-    themeColorCache.set(colorValue, themeColor || null)
-  }
-
-  if (themeColor && typeof themeColor === 'string') {
-    const result = opacity !== undefined
-      ? applyOpacity(themeColor, opacity)
-      : themeColor
-    colorCache.set(value, result)
-    return { [prop]: result }
-  }
-
-  // Color-shade with opacity (already handled lastIndexOf above, but may have opacity)
-  if (lastDashIndex > 0 && opacity !== undefined) {
-    const shade = colorValue.slice(lastDashIndex + 1)
-    const colorName = colorValue.slice(0, lastDashIndex)
-
-    let colorObj = themeColorCache.get(colorName)
-    const actualColorObj = config.theme.colors[colorName]
-
-    // Verify cache is valid for current config
-    if (colorObj !== actualColorObj) {
-      colorObj = actualColorObj
-      themeColorCache.set(colorName, colorObj || null)
-    }
-
-    if (colorObj && typeof colorObj === 'object' && colorObj[shade]) {
-      const result = applyOpacity(colorObj[shade], opacity)
-      colorCache.set(value, result)
-      return { [prop]: result }
-    }
-  }
-
   // Only use fallback for arbitrary values (e.g., border-[#ff0000], text-[#ff0000]/50)
-  // Don't return invalid values like 'b' as colors
-  // Check parsed.arbitrary OR if colorValue looks like an arbitrary value (starts with '[')
   const isArbitrary = parsed.arbitrary || (colorValue && colorValue.charCodeAt(0) === 91) // '[' char
   if (isArbitrary && colorValue) {
-    const result = opacity !== undefined
+    const colorVal = opacity !== undefined
       ? applyOpacity(colorValue, opacity)
       : colorValue
-    colorCache.set(value, result)
-    return { [prop]: result }
+    return { [prop]: colorVal }
   }
 
-  // No valid color found - let other rules handle this
+  // No valid color found - cache as invalid for next time
+  invalidColorCache.add(value)
   return undefined
 }
 
