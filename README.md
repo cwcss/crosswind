@@ -22,7 +22,7 @@ A blazingly fast, utility-first CSS framework built with Bun. Headwind generates
 - 🎭 **Variant Support** - Responsive, state (hover, focus, etc.), dark mode, and custom variants
 - ✨ **Modern CSS Features** - Grid, Flexbox, animations, transforms, filters, and more
 - 🔨 **Class Compilation** - Optimize HTML by compiling utility groups into single class names
-- 🧪 **Thoroughly Tested** - 860+ tests including comprehensive performance benchmarks
+- 🧪 **Thoroughly Tested** - 1300+ tests including comprehensive performance benchmarks
 - 🚀 **Production Ready** - Minification, preflight CSS, and optimized builds
 - ⌨️ **CLI & API** - Use via command line or programmatic API
 
@@ -235,7 +235,7 @@ This reduces HTML file size by up to 60%. Learn more in the [Compile Class docum
 
 ## Testing
 
-Headwind includes a comprehensive test suite with 860+ tests:
+Headwind includes a comprehensive test suite with 1300+ tests:
 
 ```bash
 # Run all tests
@@ -263,30 +263,44 @@ Headwind is designed for speed. We've benchmarked against other popular utility-
 
 ### Benchmark Results
 
-Our comprehensive benchmark suite compares Headwind with other popular utility-first CSS frameworks.
+Our comprehensive benchmark suite (20 tests) compares Headwind with UnoCSS, Tailwind CSS v3, and Tailwind CSS v4.
 
-| Scenario | Headwind | UnoCSS | Tailwind v3 | Tailwind v4 | Performance |
-|----------|----------|---------|-------------|-------------|-------------|
-| **Simple Utilities** (10 classes) | **9.35µs** | 20.52µs | 9.51ms | 26.89ms | **Headwind: 2.2x faster than UnoCSS, 1,017x faster than v3, 2,876x faster than v4** ⚡ |
-| **Complex Utilities** (11 classes) | **13.17µs** | 26.86µs | 8.79ms | 28.46ms | **Headwind: 2.0x faster than UnoCSS, 668x faster than v3, 2,161x faster than v4** ⚡ |
-| **Arbitrary Values** (7 classes) | **5.66µs** | 28.05µs | 9.16ms | 27.86ms | **Headwind: 5.0x faster than UnoCSS, 1,619x faster than v3, 4,923x faster than v4** ⚡ |
-| **Real-world Components** (6 strings) | **11.39µs** | 108.71µs | 168.74ms | 154.19ms | **Headwind: 9.5x faster than UnoCSS, 14,813x faster than v3, 13,538x faster than v4** ⚡ |
-| **Large Scale** (1000 utilities) | **290.64µs** | 404.72µs | 9.02ms | 25.18ms | **Headwind: 1.4x faster than UnoCSS, 31x faster than v3, 87x faster than v4** ⚡ |
-| **CSS Output** (1000 rules) | **825.36µs** | 82.36ms | 10.04ms | 27.22ms | **Headwind: 100x faster than UnoCSS, 12x faster than v3, 33x faster than v4** ⚡ |
-| **Color Utilities** (240 classes) | **287.58µs** | 307.74µs | 9.47ms | 26.07ms | **Headwind: 1.1x faster than UnoCSS, 33x faster than v3, 91x faster than v4** ⚡ |
-| **Responsive** (1000 classes) | **489.90µs** | 572.71µs | 9.24ms | 25.72ms | **Headwind: 1.2x faster than UnoCSS, 19x faster than v3, 52x faster than v4** ⚡ |
-| **Interactive States** (550 classes) | **227.04µs** | 785.77µs | 9.30ms | 24.89ms | **Headwind: 3.5x faster than UnoCSS, 41x faster than v3, 110x faster than v4** ⚡ |
-| **Duplicate Handling** (6000 items) | **36.33µs** | 1.56ms | 12.49ms | 29.61ms | **Headwind: 43x faster than UnoCSS, 344x faster than v3, 815x faster than v4** ⚡ |
+| Scenario | Headwind | UnoCSS | Tailwind v3 | Tailwind v4 | Winner |
+|----------|----------|--------|-------------|-------------|--------|
+| **Simple Utilities** (10 classes) | **2.75µs** | 31.58µs | 14.32ms | 46.47ms | Headwind ⚡ |
+| **Complex Utilities** (11 classes) | **8.61µs** | 43.77µs | 14.25ms | 39.26ms | Headwind ⚡ |
+| **Arbitrary Values** (10 classes) | **41.71µs** | 64.44µs | 15.52ms | - | Headwind ⚡ |
+| **Real-world Components** (~60 classes) | **25.26µs** | 97.71µs | 16.12ms | 45.07ms | Headwind ⚡ |
+| **Large Scale** (500 classes) | **94.89µs** | 201.30µs | 14.51ms | 40.06ms | Headwind ⚡ |
+| **CSS Output** (1000 values) | **1.50ms** | 115.59ms | 16.03ms | - | Headwind ⚡ |
+| **Color Utilities** (330 classes) | **100.85µs** | 526.82µs | 12.89ms | 37.27ms | Headwind ⚡ |
+| **Responsive** (500 classes) | **100.16µs** | 211.39µs | 12.86ms | 41.07ms | Headwind ⚡ |
+| **Interactive States** (440 classes) | **260.75µs** | 1.16ms | 13.84ms | 38.06ms | Headwind ⚡ |
+| **Duplicate Handling** (6000 items) | **43.19µs** | 1.81ms | 18.47ms | 48.11ms | Headwind ⚡ |
+| **Typography** (50 classes) | **16.06µs** | 94.37µs | 14.37ms | 39.33ms | Headwind ⚡ |
+| **Flexbox** (50 classes) | **13.77µs** | 88.62µs | 13.04ms | 42.38ms | Headwind ⚡ |
+| **Grid** (55 classes) | **59.89µs** | 118.31µs | 15.10ms | 39.00ms | Headwind ⚡ |
+| **Stacked Variants** (40 classes) | **73.43µs** | 148.79µs | 15.65ms | 41.11ms | Headwind ⚡ |
+| **Transforms** (55 classes) | **78.39µs** | 100.85µs | 13.76ms | 44.34ms | Headwind ⚡ |
+| **Transitions** (30 classes) | **12.96µs** | 66.47µs | 14.38ms | 36.46ms | Headwind ⚡ |
+| **Border & Ring** (45 classes) | **12.55µs** | 90.45µs | 10.52ms | 40.58ms | Headwind ⚡ |
+| **Shadow & Effects** (35 classes) | **6.92µs** | 62.12µs | 10.89ms | 36.62ms | Headwind ⚡ |
+| **Incremental Generation** (200 classes) | **73.91µs** | 196.35µs | 14.07ms | 35.58ms | Headwind ⚡ |
+| **Full Project** (~800 classes) | **649.87µs** | 1.38ms | 14.41ms | - | Headwind ⚡ |
 
-**Key Takeaways:**
+### Highlights
 
-- **Headwind wins 10/10 categories vs UnoCSS, Tailwind v3, AND Tailwind v4**
-- **Real-world components**: Up to 14,813x faster than Tailwind v3 - Dominant performance for actual usage
-- **Duplicate handling**: 815x faster than Tailwind v4, 344x faster than v3, 43x faster than UnoCSS
-- **Arbitrary values**: 4,923x faster than Tailwind v4, 1,619x faster than v3, 5x faster than UnoCSS
-- **CSS output generation**: 100x faster than UnoCSS, 33x faster than Tailwind v4, 12x faster than v3
-- **Consistently faster**: Beats all frameworks across all 10 benchmark categories
-- **Production-ready performance**: Optimized for real-world applications with complex component patterns
+- **Headwind wins 20/20 benchmarks** vs all competitors
+- **Simple utilities**: 11x faster than UnoCSS, 5,200x faster than Tailwind v3
+- **Typography**: 6x faster than UnoCSS
+- **Flexbox**: 6.4x faster than UnoCSS
+- **Shadow & Effects**: 9x faster than UnoCSS
+- **Border & Ring**: 7x faster than UnoCSS
+- **Color utilities**: 5x faster than UnoCSS
+- **Interactive states**: 4.5x faster than UnoCSS
+- **Duplicate handling**: 42x faster than UnoCSS
+- **CSS output generation**: 77x faster than UnoCSS
+- **Full project simulation**: 2.1x faster than UnoCSS, 22x faster than Tailwind v3
 
 ### Running Benchmarks
 

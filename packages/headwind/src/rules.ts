@@ -304,8 +304,6 @@ export const sizingRule: UtilityRule = (parsed, config) => {
 }
 
 // Color utilities (background, text, border)
-// Cache for invalid color lookups (negative cache for performance)
-const invalidColorCache = new Set<string>()
 
 // Flat color cache: "blue-500" -> "#3b82f6" (populated on first access per config)
 let flatColorCache: Map<string, string> | null = null
@@ -350,11 +348,6 @@ export const colorRule: UtilityRule = (parsed, config) => {
 
   const value = parsed.value
 
-  // Check negative cache - skip processing for known invalid colors
-  if (invalidColorCache.has(value)) {
-    return undefined
-  }
-
   // Build/update flat color cache if needed
   if (flatColorCache === null || flatColorCacheConfig !== config.theme.colors) {
     flatColorCache = buildFlatColorCache(config.theme.colors)
@@ -384,7 +377,6 @@ export const colorRule: UtilityRule = (parsed, config) => {
 
     // Validate opacity is in 0-100 range
     if (Number.isNaN(opacityValue) || opacityValue < 0 || opacityValue > 100) {
-      invalidColorCache.add(value)
       return undefined
     }
     opacity = opacityValue / 100
@@ -411,8 +403,6 @@ export const colorRule: UtilityRule = (parsed, config) => {
     return { [prop]: colorVal }
   }
 
-  // No valid color found - cache as invalid for next time
-  invalidColorCache.add(value)
   return undefined
 }
 
