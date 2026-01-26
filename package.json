@@ -49,9 +49,7 @@
     "better-dx": "^0.2.5",
     "buddy-bot": "^0.9.8",
     "bun-git-hooks": "^0.3.1",
-    "bun-plugin-dtsx": "0.9.5",
-    "pickier": "^0.1.0",
-    "typescript": "^5.9.3"
+    "bun-plugin-dtsx": "0.9.5"
   },
   "overrides": {
     "unconfig": "0.3.10"
