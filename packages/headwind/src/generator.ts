@@ -1316,7 +1316,7 @@ export class CSSGenerator {
     }
 
     // Pre-cache variant enabled state for faster lookup
-    this.variantEnabled = this.config.variants as Record<string, boolean>
+    this.variantEnabled = this.config.variants as unknown as Record<string, boolean>
 
     // Pre-cache screen breakpoints as Map for faster lookup
     this.screenBreakpoints = new Map(Object.entries(this.config.theme.screens))
