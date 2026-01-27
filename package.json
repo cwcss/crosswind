@@ -1,5 +1,5 @@
 {
-  "name": "@cwcss/crosswind",
+  "name": "@stacksjs/crosswind",
   "type": "module",
   "version": "0.1.4",
   "description": "A performant Utility-First CSS framework. Similar to Tailwind or UnoCSS.",
