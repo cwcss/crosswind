@@ -49,7 +49,7 @@ jobs:
           zig build
           echo "$PWD/zig-out/bin" >> $GITHUB_PATH
 
-      - name: Publish
-        run: pantry publish --access public
+      - name: Publish to npm
+        run: pantry npm:publish --access public
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
