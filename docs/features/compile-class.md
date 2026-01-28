@@ -39,19 +39,19 @@ Add the `:hw:` trigger to mark utility groups for compilation:
 Configure the transformer in your config:
 
 ```typescript
-// headwind.config.ts
-import type { HeadwindOptions } from 'headwind'
+// crosswind.config.ts
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/headwind.css',
+  output: './dist/crosswind.css',
 
   compileClass: {
     enabled: true, // Enable the transformer
     trigger: ':hw:', // Trigger string (default)
     classPrefix: 'hw-', // Prefix for generated names (default)
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -61,7 +61,7 @@ export default config
 Run the build command:
 
 ```bash
-headwind build
+crosswind build
 ```
 
 The transformer will:
@@ -108,7 +108,7 @@ const config = {
   compileClass: {
     enabled: true, // Enable compile class transformer
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ### Custom Trigger
@@ -121,7 +121,7 @@ const config = {
     enabled: true,
     trigger: ':compile:', // Use custom trigger
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 Usage:
@@ -140,7 +140,7 @@ const config = {
     enabled: true,
     classPrefix: 'c-', // Use 'c-' prefix instead of 'hw-'
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 Generated classes: `c-abc123`, `c-def456`, etc.
@@ -155,7 +155,7 @@ const config = {
     enabled: true,
     layer: 'components', // Use 'components' layer
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ## Benefits
@@ -272,11 +272,11 @@ export function Button({ children }: { children: React.ReactNode }) {
 When compile class is enabled, you'll see statistics:
 
 ```bash
-$ headwind build
+$ crosswind build
 
 🚀 Building CSS...
 ✅ Built 1243 classes in 8.45ms
-📝 Output: ./dist/headwind.css
+📝 Output: ./dist/crosswind.css
 🔨 Compiled 15 class groups
 📝 Transformed 8 files
 📦 File size: 24.35 KB
@@ -500,7 +500,7 @@ Compile class adds minimal overhead:
 Run build:
 
 ```bash
-headwind build
+crosswind build
 ```
 
 Result:

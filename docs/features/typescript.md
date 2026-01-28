@@ -1,18 +1,18 @@
 # TypeScript Support
 
-Headwind is built with TypeScript and provides full type safety for configuration, APIs, and custom extensions.
+Crosswind is built with TypeScript and provides full type safety for configuration, APIs, and custom extensions.
 
 ## Type-Safe Configuration
 
 Use TypeScript for your configuration file to get autocompletion and type checking:
 
 ```typescript
-// headwind.config.ts
-import type { HeadwindOptions } from 'headwind'
+// crosswind.config.ts
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/headwind.css',
+  output: './dist/crosswind.css',
   minify: false,
 
   theme: {
@@ -25,7 +25,7 @@ const config = {
   shortcuts: {
     btn: 'px-4 py-2 rounded font-semibold',
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -35,31 +35,31 @@ export default config
 The `satisfies` keyword provides type checking while preserving literal types:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 // ✅ Type-safe with autocompletion
 const config = {
   content: ['./src/**/*.tsx'],
-  output: './dist/headwind.css',
+  output: './dist/crosswind.css',
   minify: true,
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 
 // ❌ Type error - unknown property
 const badConfig = {
   content: ['./src/**/*.tsx'],
-  outputPath: './dist/headwind.css', // Error: 'outputPath' does not exist
+  outputPath: './dist/crosswind.css', // Error: 'outputPath' does not exist
   // ^^^^^^^^ Property error
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ## Available Types
 
-### HeadwindConfig
+### CrosswindConfig
 
 Main configuration interface:
 
 ```typescript
-interface HeadwindConfig {
+interface CrosswindConfig {
   content: string[]
   output: string
   minify: boolean
@@ -124,17 +124,17 @@ Get IntelliSense and autocompletion in your IDE:
 ### VSCode
 
 1. Install the TypeScript extension (comes pre-installed)
-2. Create `headwind.config.ts` with the type import:
+2. Create `crosswind.config.ts` with the type import:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   // Press Ctrl+Space here for autocompletion
   theme: {
     // Autocomplete shows all theme options
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ### Theme Autocompletion
@@ -150,7 +150,7 @@ const config = {
       // See all font size options
     },
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ### Shortcuts Autocompletion
@@ -162,7 +162,7 @@ const config = {
     'btn': 'px-4 py-2 rounded',
     'btn-primary': 'btn bg-blue-500', // Autocomplete shows existing shortcuts
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ## Type Inference
@@ -181,7 +181,7 @@ const config = {
       },
     },
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 
 // TypeScript knows:
 // config.theme.colors.primary is string
@@ -193,13 +193,13 @@ const config = {
 ### Build Function
 
 ```typescript
-import type { BuildResult, HeadwindConfig } from 'headwind'
-import { build } from 'headwind'
+import type { BuildResult, CrosswindConfig } from 'crosswind'
+import { build } from 'crosswind'
 
 const result: BuildResult = await build({
   content: ['./src/**/*.tsx'],
-  output: './dist/headwind.css',
-} as HeadwindConfig)
+  output: './dist/crosswind.css',
+} as CrosswindConfig)
 
 // result.css: string
 // result.classes: Set<string>
@@ -223,13 +223,13 @@ interface BuildResult {
 ### Using with async/await
 
 ```typescript
-import { build, buildAndWrite } from 'headwind'
+import { build, buildAndWrite } from 'crosswind'
 
 async function buildStyles() {
   // With build
   const result = await build({
     content: ['./src/**/*.tsx'],
-    output: './dist/headwind.css',
+    output: './dist/crosswind.css',
     minify: true,
   })
 
@@ -238,7 +238,7 @@ async function buildStyles() {
   // With buildAndWrite
   await buildAndWrite({
     content: ['./src/**/*.tsx'],
-    output: './dist/headwind.css',
+    output: './dist/crosswind.css',
     minify: true,
   })
 }
@@ -249,7 +249,7 @@ async function buildStyles() {
 Define type-safe custom rules:
 
 ```typescript
-import type { CustomRule, HeadwindConfig } from 'headwind'
+import type { CustomRule, CrosswindConfig } from 'crosswind'
 
 const customRules: CustomRule[] = [
   // Pattern and handler with types
@@ -266,7 +266,7 @@ const customRules: CustomRule[] = [
 
 const config = {
   rules: customRules,
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ## Preset Types
@@ -274,7 +274,7 @@ const config = {
 Create type-safe presets:
 
 ```typescript
-import type { Preset, Theme } from 'headwind'
+import type { Preset, Theme } from 'crosswind'
 
 const myPreset: Preset = {
   name: 'my-design-system',
@@ -313,7 +313,7 @@ const config = {
 Extend the theme with custom properties:
 
 ```typescript
-import type { HeadwindOptions, Theme } from 'headwind'
+import type { CrosswindOptions, Theme } from 'crosswind'
 
 interface CustomTheme extends Theme {
   customSpacing: Record<string, string>
@@ -330,7 +330,7 @@ const config = {
       brand: '#ff6b6b',
     },
   } as CustomTheme,
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ### Custom Config
@@ -338,9 +338,9 @@ const config = {
 Create a custom config interface:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
-interface MyConfig extends Partial<HeadwindConfig> {
+interface MyConfig extends Partial<CrosswindConfig> {
   // Add custom properties
   customOption?: boolean
   metadata?: {
@@ -351,7 +351,7 @@ interface MyConfig extends Partial<HeadwindConfig> {
 
 const config: MyConfig = {
   content: ['./src/**/*.tsx'],
-  output: './dist/headwind.css',
+  output: './dist/crosswind.css',
 
   customOption: true,
   metadata: {
@@ -366,15 +366,15 @@ const config: MyConfig = {
 Use type guards for runtime type checking:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
-function isValidConfig(config: unknown): config is HeadwindConfig {
+function isValidConfig(config: unknown): config is CrosswindConfig {
   return (
     typeof config === 'object'
     && config !== null
     && 'content' in config
     && 'output' in config
-    && Array.isArray((config as HeadwindConfig).content)
+    && Array.isArray((config as CrosswindConfig).content)
   )
 }
 
@@ -382,7 +382,7 @@ function isValidConfig(config: unknown): config is HeadwindConfig {
 const config: unknown = loadConfigFromSomewhere()
 
 if (isValidConfig(config)) {
-  // TypeScript knows config is HeadwindConfig
+  // TypeScript knows config is CrosswindConfig
   console.log(config.content)
 }
 ```
@@ -392,9 +392,9 @@ if (isValidConfig(config)) {
 Use generics for flexible, type-safe functions:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
-function createConfig<T extends Partial<HeadwindConfig>>(config: T): T {
+function createConfig<T extends Partial<CrosswindConfig>>(config: T): T {
   return {
     ...config,
     // Add defaults while preserving original types
@@ -415,17 +415,17 @@ const config = createConfig({
 
 ## Module Augmentation
 
-Extend Headwind types globally:
+Extend Crosswind types globally:
 
 ```typescript
 // Now use in config
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
-// types/headwind.d.ts
-import 'headwind'
+// types/crosswind.d.ts
+import 'crosswind'
 
-declare module 'headwind' {
-  interface HeadwindConfig {
+declare module 'crosswind' {
+  interface CrosswindConfig {
     // Add your custom properties
     customFeature?: {
       enabled: boolean
@@ -449,7 +449,7 @@ const config = {
       xs: '0.5rem',
     },
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ## Integration with Build Tools
@@ -457,23 +457,23 @@ const config = {
 ### Vite
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
-import { build } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
+import { build } from 'crosswind'
 // vite.config.ts
 import { defineConfig } from 'vite'
 
-const headwindConfig: HeadwindConfig = {
+const crosswindConfig: CrosswindConfig = {
   content: ['./src/**/*.tsx'],
-  output: './dist/headwind.css',
+  output: './dist/crosswind.css',
   minify: true,
 }
 
 export default defineConfig({
   plugins: [
     {
-      name: 'headwind',
+      name: 'crosswind',
       async buildStart() {
-        await build(headwindConfig)
+        await build(crosswindConfig)
       },
     },
   ],
@@ -483,21 +483,21 @@ export default defineConfig({
 ### Next.js
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 // next.config.ts
 import type { NextConfig } from 'next'
-import { buildAndWrite } from 'headwind'
+import { buildAndWrite } from 'crosswind'
 
-const headwindConfig: HeadwindConfig = {
+const crosswindConfig: CrosswindConfig = {
   content: ['./src/**/*.tsx', './app/**/*.tsx'],
-  output: './public/headwind.css',
+  output: './public/crosswind.css',
   minify: process.env.NODE_ENV === 'production',
 }
 
 const nextConfig: NextConfig = {
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      buildAndWrite(headwindConfig)
+      buildAndWrite(crosswindConfig)
     }
     return config
   },
@@ -508,23 +508,23 @@ export default nextConfig
 
 ## Type Utilities
 
-Headwind provides useful type utilities:
+Crosswind provides useful type utilities:
 
 ```typescript
 import type {
   CustomRule,
-  HeadwindConfig,
+  CrosswindConfig,
   ParsedClass,
   Preset,
   Theme,
-} from 'headwind'
+} from 'crosswind'
 
 // Extract specific types
 type ConfigColors = Theme['colors']
 type ConfigSpacing = Theme['spacing']
 
 // Use utility types
-type RequiredConfig = Required<HeadwindConfig>
+type RequiredConfig = Required<CrosswindConfig>
 type PartialTheme = Partial<Theme>
 ```
 
@@ -534,10 +534,10 @@ type PartialTheme = Partial<Theme>
 
 ```typescript
 // ✅ Type-only import
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 // ❌ Value import (unnecessary)
-import { HeadwindConfig } from 'headwind'
+import { CrosswindConfig } from 'crosswind'
 ```
 
 ### 2. Use `satisfies` for Validation
@@ -546,10 +546,10 @@ import { HeadwindConfig } from 'headwind'
 // ✅ Validates types while preserving literals
 const config = {
   content: ['./src/**/*.tsx'],
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 
 // ❌ Loses literal types
-const config: Partial<HeadwindConfig> = {
+const config: Partial<CrosswindConfig> = {
   content: ['./src/**/*.tsx'],
 }
 ```
@@ -557,17 +557,17 @@ const config: Partial<HeadwindConfig> = {
 ### 3. Separate Type Definitions
 
 ```typescript
-// types/headwind.ts
-import type { HeadwindOptions, Preset } from 'headwind'
+// types/crosswind.ts
+import type { CrosswindOptions, Preset } from 'crosswind'
 
-// headwind.config.ts
-import type { MyConfig } from './types/headwind'
+// crosswind.config.ts
+import type { MyConfig } from './types/crosswind'
 
 export interface MyCustomPreset extends Preset {
   customOption: boolean
 }
 
-export interface MyConfig extends Partial<HeadwindConfig> {
+export interface MyConfig extends Partial<CrosswindConfig> {
   presets: MyCustomPreset[]
 }
 
@@ -604,7 +604,7 @@ interface CustomTheme extends Theme {
 // Error: Type 'string' is not assignable to type 'string[]'
 const config = {
   content: './src/**/*.tsx', // Should be array
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 **Solution:**
@@ -612,7 +612,7 @@ const config = {
 ```typescript
 const config = {
   content: ['./src/**/*.tsx'], // Correct: array
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ### Missing Types
@@ -626,7 +626,7 @@ const config = {
 bun add --dev typescript
 
 # Ensure types are imported
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 ```
 
 ### Autocomplete Not Working
@@ -640,7 +640,7 @@ import type { HeadwindOptions } from 'headwind'
 3. Ensure proper imports:
 
    ```typescript
-   import type { HeadwindOptions } from 'headwind'
+   import type { CrosswindOptions } from 'crosswind'
    ```
 
 ## Related

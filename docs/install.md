@@ -1,33 +1,33 @@
 # Installation
 
-Get started with Headwind by installing it via your package manager or using pre-built binaries.
+Get started with Crosswind by installing it via your package manager or using pre-built binaries.
 
 ## Package Managers
 
-Install Headwind as a development dependency in your project:
+Install Crosswind as a development dependency in your project:
 
 ::: code-group
 
 ```sh [bun]
-bun add --dev headwind
+bun add --dev crosswind
 # or
-bun install --dev headwind
+bun install --dev crosswind
 ```
 
 ```sh [npm]
-npm install --save-dev headwind
+npm install --save-dev crosswind
 # or
-npm i -D headwind
+npm i -D crosswind
 ```
 
 ```sh [pnpm]
-pnpm add --save-dev headwind
+pnpm add --save-dev crosswind
 # or
-pnpm add -D headwind
+pnpm add -D crosswind
 ```
 
 ```sh [yarn]
-yarn add --dev headwind
+yarn add --dev crosswind
 ```
 
 :::
@@ -39,51 +39,51 @@ For global installation (to use the CLI anywhere):
 ::: code-group
 
 ```sh [bun]
-bun add --global headwind
+bun add --global crosswind
 ```
 
 ```sh [npm]
-npm install --global headwind
+npm install --global crosswind
 # or
-npm i -g headwind
+npm i -g crosswind
 ```
 
 ```sh [pnpm]
-pnpm add --global headwind
+pnpm add --global crosswind
 ```
 
 ```sh [yarn]
-yarn global add headwind
+yarn global add crosswind
 ```
 
 :::
 
 ## Quick Start
 
-After installation, initialize a new Headwind project:
+After installation, initialize a new Crosswind project:
 
 ```bash
 # Create configuration file
-headwind init
+crosswind init
 
 # Build your CSS
-headwind build
+crosswind build
 
 # Or use watch mode for development
-headwind watch
+crosswind watch
 ```
 
 ## Configuration
 
-The `headwind init` command creates a basic `headwind.config.ts` file:
+The `crosswind init` command creates a basic `crosswind.config.ts` file:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/headwind.css',
-} satisfies HeadwindOptions
+  output: './dist/crosswind.css',
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -95,17 +95,17 @@ Customize this configuration to match your project structure. See the [Configura
 ### React / Next.js
 
 ```bash
-# Install Headwind
-bun add --dev headwind
+# Install Crosswind
+bun add --dev crosswind
 
 # Create config
-headwind init
+crosswind init
 ```
 
-Update your `headwind.config.ts`:
+Update your `crosswind.config.ts`:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   content: [
@@ -114,8 +114,8 @@ const config = {
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
   ],
-  output: './styles/headwind.css',
-} satisfies HeadwindOptions
+  output: './styles/crosswind.css',
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -124,7 +124,7 @@ Import the generated CSS in your app:
 
 ```typescript
 // app/layout.tsx or pages/_app.tsx
-import './styles/headwind.css'
+import './styles/crosswind.css'
 ```
 
 Add build scripts to `package.json`:
@@ -132,8 +132,8 @@ Add build scripts to `package.json`:
 ```json
 {
   "scripts": {
-    "dev": "headwind watch & next dev",
-    "build": "headwind build && next build"
+    "dev": "crosswind watch & next dev",
+    "build": "crosswind build && next build"
   }
 }
 ```
@@ -141,17 +141,17 @@ Add build scripts to `package.json`:
 ### Vue / Nuxt
 
 ```bash
-# Install Headwind
-bun add --dev headwind
+# Install Crosswind
+bun add --dev crosswind
 
 # Create config
-headwind init
+crosswind init
 ```
 
-Update your `headwind.config.ts`:
+Update your `crosswind.config.ts`:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   content: [
@@ -160,8 +160,8 @@ const config = {
     './pages/**/*.vue',
     './app.vue',
   ],
-  output: './assets/css/headwind.css',
-} satisfies HeadwindOptions
+  output: './assets/css/crosswind.css',
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -170,31 +170,31 @@ Import in your `app.vue` or main layout:
 
 ```vue
 <style>
-@import './assets/css/headwind.css';
+@import './assets/css/crosswind.css';
 </style>
 ```
 
 ### Svelte / SvelteKit
 
 ```bash
-# Install Headwind
-bun add --dev headwind
+# Install Crosswind
+bun add --dev crosswind
 
 # Create config
-headwind init
+crosswind init
 ```
 
-Update your `headwind.config.ts`:
+Update your `crosswind.config.ts`:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   content: [
     './src/**/*.{html,js,svelte,ts}',
   ],
-  output: './static/headwind.css',
-} satisfies HeadwindOptions
+  output: './static/crosswind.css',
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -204,31 +204,31 @@ Import in your root layout:
 ```html
 <!-- src/routes/+layout.svelte -->
 <script>
-  import '/static/headwind.css'
+  import '/static/crosswind.css'
 </script>
 ```
 
 ### Astro
 
 ```bash
-# Install Headwind
-bun add --dev headwind
+# Install Crosswind
+bun add --dev crosswind
 
 # Create config
-headwind init
+crosswind init
 ```
 
-Update your `headwind.config.ts`:
+Update your `crosswind.config.ts`:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   content: [
     './src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
   ],
-  output: './public/headwind.css',
-} satisfies HeadwindOptions
+  output: './public/crosswind.css',
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -238,29 +238,29 @@ Import in your base layout:
 ```astro
 ---
 // src/layouts/Layout.astro
-import '/headwind.css'
+import '/crosswind.css'
 ---
 ```
 
 ### Plain HTML
 
 ```bash
-# Install Headwind globally
-bun add --global headwind
+# Install Crosswind globally
+bun add --global crosswind
 
 # Create config
-headwind init
+crosswind init
 ```
 
-Update your `headwind.config.ts`:
+Update your `crosswind.config.ts`:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   content: ['./src/**/*.html'],
-  output: './dist/headwind.css',
-} satisfies HeadwindOptions
+  output: './dist/crosswind.css',
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -271,11 +271,11 @@ Link the CSS in your HTML:
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="/dist/headwind.css">
+  <link rel="stylesheet" href="/dist/crosswind.css">
 </head>
 <body>
   <div class="flex items-center justify-center h-screen">
-    <h1 class="text-4xl font-bold text-blue-500">Hello Headwind!</h1>
+    <h1 class="text-4xl font-bold text-blue-500">Hello Crosswind!</h1>
   </div>
 </body>
 </html>
@@ -289,68 +289,68 @@ Pre-built binaries are available for different platforms. Download the binary th
 
 ```sh [macOS (arm64)]
 # Download the binary
-curl -L https://github.com/stacksjs/headwind/releases/latest/download/headwind-darwin-arm64 -o headwind
+curl -L https://github.com/stacksjs/crosswind/releases/latest/download/crosswind-darwin-arm64 -o crosswind
 
 # Make it executable
-chmod +x headwind
+chmod +x crosswind
 
 # Move it to your PATH
-sudo mv headwind /usr/local/bin/headwind
+sudo mv crosswind /usr/local/bin/crosswind
 ```
 
 ```sh [macOS (x64)]
 # Download the binary
-curl -L https://github.com/stacksjs/headwind/releases/latest/download/headwind-darwin-x64 -o headwind
+curl -L https://github.com/stacksjs/crosswind/releases/latest/download/crosswind-darwin-x64 -o crosswind
 
 # Make it executable
-chmod +x headwind
+chmod +x crosswind
 
 # Move it to your PATH
-sudo mv headwind /usr/local/bin/headwind
+sudo mv crosswind /usr/local/bin/crosswind
 ```
 
 ```sh [Linux (arm64)]
 # Download the binary
-curl -L https://github.com/stacksjs/headwind/releases/latest/download/headwind-linux-arm64 -o headwind
+curl -L https://github.com/stacksjs/crosswind/releases/latest/download/crosswind-linux-arm64 -o crosswind
 
 # Make it executable
-chmod +x headwind
+chmod +x crosswind
 
 # Move it to your PATH
-sudo mv headwind /usr/local/bin/headwind
+sudo mv crosswind /usr/local/bin/crosswind
 ```
 
 ```sh [Linux (x64)]
 # Download the binary
-curl -L https://github.com/stacksjs/headwind/releases/latest/download/headwind-linux-x64 -o headwind
+curl -L https://github.com/stacksjs/crosswind/releases/latest/download/crosswind-linux-x64 -o crosswind
 
 # Make it executable
-chmod +x headwind
+chmod +x crosswind
 
 # Move it to your PATH
-sudo mv headwind /usr/local/bin/headwind
+sudo mv crosswind /usr/local/bin/crosswind
 ```
 
 ```sh [Windows (x64)]
 # Download the binary
-curl -L https://github.com/stacksjs/headwind/releases/latest/download/headwind-windows-x64.exe -o headwind.exe
+curl -L https://github.com/stacksjs/crosswind/releases/latest/download/crosswind-windows-x64.exe -o crosswind.exe
 
 # Move it to your PATH (adjust the path as needed)
-move headwind.exe C:\Windows\System32\headwind.exe
+move crosswind.exe C:\Windows\System32\crosswind.exe
 ```
 
 :::
 
 ::: tip
-You can also find Headwind binaries in [GitHub releases](https://github.com/stacksjs/headwind/releases).
+You can also find Crosswind binaries in [GitHub releases](https://github.com/stacksjs/crosswind/releases).
 :::
 
 ## Verify Installation
 
-Verify that Headwind is installed correctly:
+Verify that Crosswind is installed correctly:
 
 ```bash
-headwind --version
+crosswind --version
 ```
 
 You should see the installed version number.
@@ -362,7 +362,7 @@ You should see the installed version number.
 During development, use watch mode to automatically rebuild CSS when files change:
 
 ```bash
-headwind watch
+crosswind watch
 ```
 
 This will:
@@ -376,17 +376,17 @@ This will:
 When building for production:
 
 ```bash
-headwind build --minify
+crosswind build --minify
 ```
 
-Or configure minification in your `headwind.config.ts`:
+Or configure minification in your `crosswind.config.ts`:
 
 ```typescript
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/headwind.css',
+  output: './dist/crosswind.css',
   minify: process.env.NODE_ENV === 'production',
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ## Next Steps
@@ -412,11 +412,11 @@ If you get permission errors when installing globally:
 
 ```bash
 # Use sudo on macOS/Linux
-sudo bun add --global headwind
+sudo bun add --global crosswind
 
 # Or install locally and use npx
-bun add --dev headwind
-bunx headwind build
+bun add --dev crosswind
+bunx crosswind build
 ```
 
 ### TypeScript Errors
@@ -432,12 +432,12 @@ If you encounter TypeScript errors in your config file:
 2. Use the `satisfies` keyword for type checking:
 
    ```typescript
-   import type { HeadwindOptions } from 'headwind'
+   import type { CrosswindOptions } from 'crosswind'
 
    const config = {
      content: ['./src/**/*.tsx'],
-     output: './dist/headwind.css',
-   } satisfies HeadwindOptions
+     output: './dist/crosswind.css',
+   } satisfies CrosswindOptions
    ```
 
 ### Build Errors
@@ -449,11 +449,11 @@ If the build fails:
 3. Run with `--verbose` for detailed error information:
 
    ```bash
-   headwind build --verbose
+   crosswind build --verbose
    ```
 
 ## Support
 
-- [GitHub Issues](https://github.com/stacksjs/headwind/issues)
-- [Documentation](https://headwind.sh)
+- [GitHub Issues](https://github.com/stacksjs/crosswind/issues)
+- [Documentation](https://crosswind.sh)
 - [Discord Community](https://discord.gg/stacksjs)

@@ -1,10 +1,10 @@
 # Custom Rules
 
-Custom rules allow you to extend Headwind with your own utility patterns and CSS properties beyond the built-in utilities.
+Custom rules allow you to extend Crosswind with your own utility patterns and CSS properties beyond the built-in utilities.
 
 ## Overview
 
-While Headwind includes comprehensive built-in utilities, you can add custom rules to:
+While Crosswind includes comprehensive built-in utilities, you can add custom rules to:
 
 - Create domain-specific utilities
 - Add vendor-prefixed properties
@@ -16,7 +16,7 @@ While Headwind includes comprehensive built-in utilities, you can add custom rul
 Define custom rules in your configuration:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   rules: [
@@ -36,7 +36,7 @@ const config = {
       }),
     ],
   ],
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -284,7 +284,7 @@ const config = {
 Access theme values in custom rules:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   theme: {
@@ -312,7 +312,7 @@ const config = {
       },
     ],
   ],
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ### Vendor Prefixes

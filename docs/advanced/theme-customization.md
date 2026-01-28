@@ -1,14 +1,14 @@
 # Theme Customization
 
-Headwind's theme system allows you to customize every aspect of your design tokens including colors, spacing, typography, and more. The theme is fully compatible with Tailwind CSS, making migration seamless.
+Crosswind's theme system allows you to customize every aspect of your design tokens including colors, spacing, typography, and more. The theme is fully compatible with Tailwind CSS, making migration seamless.
 
 ## Overview
 
-The theme configuration defines the design tokens that utilities are generated from. When you use a utility like `bg-blue-500` or `p-4`, Headwind looks up the value in your theme configuration.
+The theme configuration defines the design tokens that utilities are generated from. When you use a utility like `bg-blue-500` or `p-4`, Crosswind looks up the value in your theme configuration.
 
 ```typescript
-// headwind.config.ts
-import type { HeadwindOptions } from 'headwind'
+// crosswind.config.ts
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   theme: {
@@ -21,7 +21,7 @@ const config = {
       8: '2rem', // p-8, m-8, etc.
     },
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -426,7 +426,7 @@ const config = {
 ## Complete Theme Example
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   theme: {
@@ -568,7 +568,7 @@ const config = {
       '2xl': '1536px',
     },
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -581,7 +581,7 @@ Create different themes for different projects:
 
 ```typescript
 // themes/light.ts
-// headwind.config.ts
+// crosswind.config.ts
 import { lightTheme } from './themes/light'
 
 export const lightTheme = {
@@ -626,7 +626,7 @@ const config = {
 Merge with the default theme:
 
 ```typescript
-import { defaultConfig } from 'headwind'
+import { defaultConfig } from 'crosswind'
 
 const config = {
   theme: {
@@ -707,7 +707,7 @@ const config = {
 
 ```typescript
 // theme/colors.ts
-// headwind.config.ts
+// crosswind.config.ts
 import { colors } from './theme/colors'
 import { spacing } from './theme/spacing'
 import { typography } from './theme/typography'
@@ -731,7 +731,7 @@ const config = {
 
 ## Migration from Tailwind
 
-Headwind themes are 100% compatible with Tailwind CSS:
+Crosswind themes are 100% compatible with Tailwind CSS:
 
 ```typescript
 // Your existing Tailwind config works as-is

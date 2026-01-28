@@ -1,32 +1,32 @@
 # API Reference
 
-This document provides a complete reference for Headwind's programmatic API. Use these functions and types to integrate Headwind into your build tools, custom scripts, or framework plugins.
+This document provides a complete reference for Crosswind's programmatic API. Use these functions and types to integrate Crosswind into your build tools, custom scripts, or framework plugins.
 
 ## Installation
 
 ```bash
-bun add headwind
+bun add crosswind
 ```
 
 ## Core Functions
 
-### `build(config: HeadwindConfig): Promise<BuildResult>`
+### `build(config: CrosswindConfig): Promise<BuildResult>`
 
 Build CSS from content files and return the result.
 
 **Parameters:**
-- `config` - Complete Headwind configuration object
+- `config` - Complete Crosswind configuration object
 
 **Returns:** `Promise<BuildResult>`
 
 **Example:**
 
 ```typescript
-import { build } from 'headwind'
+import { build } from 'crosswind'
 
 const result = await build({
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/headwind.css',
+  output: './dist/crosswind.css',
   minify: true,
   watch: false,
   theme: {
@@ -51,28 +51,28 @@ console.log(`Built ${result.classes.size} classes in ${result.duration}ms`)
 console.log(`Generated CSS:\n${result.css}`)
 ```
 
-### `buildAndWrite(config: HeadwindConfig): Promise<BuildResult>`
+### `buildAndWrite(config: CrosswindConfig): Promise<BuildResult>`
 
 Build CSS and write it to the output file.
 
 **Parameters:**
-- `config` - Complete Headwind configuration object
+- `config` - Complete Crosswind configuration object
 
 **Returns:** `Promise<BuildResult>`
 
 **Example:**
 
 ```typescript
-import { buildAndWrite } from 'headwind'
+import { buildAndWrite } from 'crosswind'
 
 const result = await buildAndWrite({
   content: ['./src/**/*.tsx'],
-  output: './dist/headwind.css',
+  output: './dist/crosswind.css',
   minify: true,
   // ... other config
 })
 
-console.log(`CSS written to ./dist/headwind.css`)
+console.log(`CSS written to ./dist/crosswind.css`)
 console.log(`File size: ${result.css.length} bytes`)
 ```
 
@@ -89,7 +89,7 @@ Write CSS string to a file.
 **Example:**
 
 ```typescript
-import { build, writeCSS } from 'headwind'
+import { build, writeCSS } from 'crosswind'
 
 const result = await build(config)
 await writeCSS(result.css, './custom/path/output.css')
@@ -107,7 +107,7 @@ Write transformed files to disk (used with compile class transformer).
 **Example:**
 
 ```typescript
-import { build, writeTransformedFiles } from 'headwind'
+import { build, writeTransformedFiles } from 'crosswind'
 
 const result = await build({
   // ... config with compileClass enabled
@@ -130,7 +130,7 @@ Class responsible for generating CSS from utility classes.
 **Constructor:**
 
 ```typescript
-new CSSGenerator(config: HeadwindConfig)
+new CSSGenerator(config: CrosswindConfig)
 ```
 
 **Methods:**
@@ -140,7 +140,7 @@ new CSSGenerator(config: HeadwindConfig)
 Generate CSS for a single utility class.
 
 ```typescript
-import { CSSGenerator } from 'headwind'
+import { CSSGenerator } from 'crosswind'
 
 const generator = new CSSGenerator(config)
 generator.generate('bg-blue-500')
@@ -175,7 +175,7 @@ generator.reset()
 **Complete example:**
 
 ```typescript
-import { CSSGenerator, defaultConfig } from 'headwind'
+import { CSSGenerator, defaultConfig } from 'crosswind'
 
 const config = {
   ...defaultConfig,
@@ -228,7 +228,7 @@ Scan files and extract utility classes.
 **Example:**
 
 ```typescript
-import { Scanner } from 'headwind'
+import { Scanner } from 'crosswind'
 
 const scanner = new Scanner(['./src/**/*.tsx'])
 const { classes, transformedFiles } = await scanner.scan()
@@ -253,7 +253,7 @@ Parse a utility class string into its components.
 **Example:**
 
 ```typescript
-import { parseClass } from 'headwind'
+import { parseClass } from 'crosswind'
 
 const parsed = parseClass('md:hover:bg-blue-500')
 
@@ -279,12 +279,12 @@ console.log(arbitrary.value) // '500px'
 
 ### `defaultConfig`
 
-The default Headwind configuration object.
+The default Crosswind configuration object.
 
 **Example:**
 
 ```typescript
-import { defaultConfig } from 'headwind'
+import { defaultConfig } from 'crosswind'
 
 // Extend default config
 const config = {
@@ -299,23 +299,23 @@ const config = {
 }
 ```
 
-### `loadConfig(options): Promise<HeadwindConfig>`
+### `loadConfig(options): Promise<CrosswindConfig>`
 
 Load configuration from file (used internally by CLI).
 
 **Parameters:**
-- `options.name` - Config name (default: 'headwind')
+- `options.name` - Config name (default: 'crosswind')
 - `options.defaultConfig` - Default configuration
 
-**Returns:** `Promise<HeadwindConfig>`
+**Returns:** `Promise<CrosswindConfig>`
 
 **Example:**
 
 ```typescript
-import { defaultConfig, loadConfig } from 'headwind'
+import { defaultConfig, loadConfig } from 'crosswind'
 
 const config = await loadConfig({
-  name: 'headwind',
+  name: 'crosswind',
   defaultConfig,
 })
 ```
@@ -345,7 +345,7 @@ Get all compiled classes.
 **Example:**
 
 ```typescript
-import { CompileClassTransformer } from 'headwind'
+import { CompileClassTransformer } from 'crosswind'
 
 const transformer = new CompileClassTransformer({
   trigger: ':hw:',
@@ -364,12 +364,12 @@ for (const [hash, data] of compiled) {
 
 ## Types
 
-### `HeadwindConfig`
+### `CrosswindConfig`
 
 Complete configuration interface.
 
 ```typescript
-interface HeadwindConfig {
+interface CrosswindConfig {
   content: string[]
   output: string
   minify: boolean
@@ -387,12 +387,12 @@ interface HeadwindConfig {
 }
 ```
 
-### `HeadwindOptions`
+### `CrosswindOptions`
 
 Partial configuration for user configs.
 
 ```typescript
-type HeadwindOptions = Partial<HeadwindConfig>
+type CrosswindOptions = Partial<CrosswindConfig>
 ```
 
 ### `Theme`
@@ -514,13 +514,13 @@ interface VariantConfig {
 ### Custom Build Pipeline
 
 ```typescript
-import { CSSGenerator, Scanner, writeCSS } from 'headwind'
+import { CSSGenerator, Scanner, writeCSS } from 'crosswind'
 
 async function customBuild() {
   // 1. Configure
   const config = {
     content: ['./src/**/*.tsx'],
-    output: './dist/headwind.css',
+    output: './dist/crosswind.css',
     minify: true,
     theme: {
       colors: { primary: '#3b82f6' },
@@ -554,7 +554,7 @@ await customBuild()
 ### Analyze Utility Usage
 
 ```typescript
-import { parseClass, Scanner } from 'headwind'
+import { parseClass, Scanner } from 'crosswind'
 
 async function analyzeUtilities() {
   const scanner = new Scanner(['./src/**/*.tsx'])
@@ -585,9 +585,9 @@ await analyzeUtilities()
 
 ```typescript
 import { watch } from 'node:fs'
-import { buildAndWrite } from 'headwind'
+import { buildAndWrite } from 'crosswind'
 
-async function watchMode(config: HeadwindConfig) {
+async function watchMode(config: CrosswindConfig) {
   console.log('Watching for changes...')
 
   // Initial build
@@ -618,16 +618,16 @@ await watchMode(config)
 ### Framework Plugin
 
 ```typescript
-import { buildAndWrite } from 'headwind'
+import { buildAndWrite } from 'crosswind'
 
 // Usage in vite.config.ts
 import { defineConfig } from 'vite'
-import { headwindPlugin } from './plugins/headwind'
+import { crosswindPlugin } from './plugins/crosswind'
 
 // Example Vite plugin
-export function headwindPlugin(config: HeadwindOptions) {
+export function crosswindPlugin(config: CrosswindOptions) {
   return {
-    name: 'vite-plugin-headwind',
+    name: 'vite-plugin-crosswind',
 
     async buildStart() {
       await buildAndWrite(config)
@@ -648,9 +648,9 @@ export function headwindPlugin(config: HeadwindOptions) {
 
 export default defineConfig({
   plugins: [
-    headwindPlugin({
+    crosswindPlugin({
       content: ['./src/**/*.tsx'],
-      output: './src/headwind.css',
+      output: './src/crosswind.css',
     }),
   ],
 })
@@ -659,7 +659,7 @@ export default defineConfig({
 ### Generate Multiple Themes
 
 ```typescript
-import { build, writeCSS } from 'headwind'
+import { build, writeCSS } from 'crosswind'
 
 const baseConfig = {
   content: ['./src/**/*.tsx'],
@@ -690,7 +690,7 @@ for (const [name, theme] of Object.entries(themes)) {
     theme,
   })
 
-  await writeCSS(result.css, `./dist/headwind-${name}.css`)
+  await writeCSS(result.css, `./dist/crosswind-${name}.css`)
   console.log(`Built ${name} theme: ${result.css.length} bytes`)
 }
 ```
@@ -699,7 +699,7 @@ for (const [name, theme] of Object.entries(themes)) {
 
 ```typescript
 import { expect, test } from 'bun:test'
-import { CSSGenerator, defaultConfig, parseClass } from 'headwind'
+import { CSSGenerator, defaultConfig, parseClass } from 'crosswind'
 
 test('parses utility class', () => {
   const parsed = parseClass('md:hover:bg-blue-500')
@@ -727,7 +727,7 @@ test('handles important modifier', () => {
 ## Error Handling
 
 ```typescript
-import { buildAndWrite } from 'headwind'
+import { buildAndWrite } from 'crosswind'
 
 try {
   const result = await buildAndWrite(config)
@@ -753,11 +753,11 @@ catch (error) {
 ### Caching Results
 
 ```typescript
-import { build } from 'headwind'
+import { build } from 'crosswind'
 
 const cache = new Map<string, BuildResult>()
 
-async function buildWithCache(config: HeadwindConfig) {
+async function buildWithCache(config: CrosswindConfig) {
   const key = JSON.stringify(config)
 
   if (cache.has(key)) {
@@ -775,7 +775,7 @@ async function buildWithCache(config: HeadwindConfig) {
 ### Parallel Builds
 
 ```typescript
-import { build, writeCSS } from 'headwind'
+import { build, writeCSS } from 'crosswind'
 
 const configs = [
   { output: './dist/app.css', content: ['./src/app/**/*.tsx'] },

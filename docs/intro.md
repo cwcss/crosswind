@@ -1,10 +1,10 @@
 # Introduction
 
-Headwind is a blazingly fast utility-first CSS framework built with Bun for exceptional performance. It generates only the CSS you need, with a familiar Tailwind-compatible syntax and powerful optimization features.
+Crosswind is a blazingly fast utility-first CSS framework built with Bun for exceptional performance. It generates only the CSS you need, with a familiar Tailwind-compatible syntax and powerful optimization features.
 
-## What is Headwind?
+## What is Crosswind?
 
-Headwind is a modern CSS framework that provides utility classes for building user interfaces. Unlike traditional CSS frameworks that ship pre-built components, Headwind gives you low-level utility classes that let you build completely custom designs without ever leaving your HTML.
+Crosswind is a modern CSS framework that provides utility classes for building user interfaces. Unlike traditional CSS frameworks that ship pre-built components, Crosswind gives you low-level utility classes that let you build completely custom designs without ever leaving your HTML.
 
 ### Key Features
 
@@ -19,26 +19,26 @@ Headwind is a modern CSS framework that provides utility classes for building us
 - **🔨 Class Compilation** - Compile groups of utilities into single optimized class names for smaller HTML
 - **🧪 Thoroughly Tested** - 999+ tests including comprehensive performance benchmarks
 
-## Why Headwind?
+## Why Crosswind?
 
 ### Performance-First
 
-Headwind is built with Bun, making it one of the fastest CSS frameworks available:
+Crosswind is built with Bun, making it one of the fastest CSS frameworks available:
 
 ```bash
 # Generate 1000+ utilities in under 10ms
-headwind build
+crosswind build
 # ✅ Built 1243 classes in 8.45ms
 ```
 
 ### On-Demand CSS Generation
 
-Unlike traditional frameworks that ship large CSS files, Headwind scans your source files and generates only the CSS you use:
+Unlike traditional frameworks that ship large CSS files, Crosswind scans your source files and generates only the CSS you use:
 
 ```html
 <!-- Only these classes generate CSS -->
 <div class="flex items-center justify-between px-4 py-2">
-  <h1 class="text-2xl font-bold text-blue-500">Hello Headwind!</h1>
+  <h1 class="text-2xl font-bold text-blue-500">Hello Crosswind!</h1>
 </div>
 ```
 
@@ -50,7 +50,7 @@ This approach results in:
 
 ### Tailwind-Compatible Syntax
 
-If you know Tailwind, you already know Headwind:
+If you know Tailwind, you already know Crosswind:
 
 ```html
 <!-- Flexbox utilities -->
@@ -71,7 +71,7 @@ If you know Tailwind, you already know Headwind:
 
 ### Advanced Optimization
 
-Headwind includes a compile class transformer that optimizes your HTML by compiling groups of utilities into single class names:
+Crosswind includes a compile class transformer that optimizes your HTML by compiling groups of utilities into single class names:
 
 ```html
 <!-- Before compilation -->
@@ -95,19 +95,19 @@ Benefits:
 
 ### 1. Scan Your Files
 
-Headwind scans your source files for utility classes:
+Crosswind scans your source files for utility classes:
 
 ```typescript
-// headwind.config.ts
+// crosswind.config.ts
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/headwind.css',
+  output: './dist/crosswind.css',
 }
 ```
 
 ### 2. Generate CSS
 
-For each utility class found, Headwind generates the corresponding CSS:
+For each utility class found, Crosswind generates the corresponding CSS:
 
 ```html
 <!-- Input -->
@@ -128,10 +128,10 @@ For each utility class found, Headwind generates the corresponding CSS:
 
 ### 3. Watch for Changes
 
-During development, Headwind watches your files and automatically rebuilds when changes are detected:
+During development, Crosswind watches your files and automatically rebuilds when changes are detected:
 
 ```bash
-headwind watch
+crosswind watch
 # 👀 Watching for changes...
 # ✅ Built 1243 classes in 8.45ms
 ```
@@ -140,17 +140,17 @@ headwind watch
 
 ### Installation
 
-Install Headwind via your package manager:
+Install Crosswind via your package manager:
 
 ```bash
 # Using Bun (recommended)
-bun add --dev headwind
+bun add --dev crosswind
 
 # Using npm
-npm install --save-dev headwind
+npm install --save-dev crosswind
 
 # Using pnpm
-pnpm add --save-dev headwind
+pnpm add --save-dev crosswind
 ```
 
 ### Configuration
@@ -158,18 +158,18 @@ pnpm add --save-dev headwind
 Create a configuration file:
 
 ```bash
-headwind init
+crosswind init
 ```
 
-This creates a `headwind.config.ts` file:
+This creates a `crosswind.config.ts` file:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/headwind.css',
-} satisfies HeadwindOptions
+  output: './dist/crosswind.css',
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -180,10 +180,10 @@ Generate your CSS file:
 
 ```bash
 # One-time build
-headwind build
+crosswind build
 
 # Watch mode for development
-headwind watch
+crosswind watch
 ```
 
 ### Use in Your HTML
@@ -194,11 +194,11 @@ Include the generated CSS in your project:
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="/dist/headwind.css">
+  <link rel="stylesheet" href="/dist/crosswind.css">
 </head>
 <body>
   <div class="flex items-center justify-center h-screen">
-    <h1 class="text-4xl font-bold text-blue-500">Hello Headwind!</h1>
+    <h1 class="text-4xl font-bold text-blue-500">Hello Crosswind!</h1>
   </div>
 </body>
 </html>
@@ -310,7 +310,7 @@ const config = {
       mono: ['Fira Code', 'monospace'],
     },
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ### Shortcuts
@@ -324,7 +324,7 @@ const config = {
     'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600',
     'card': 'rounded-lg shadow-md p-6 bg-white',
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 Use shortcuts like any other utility:
@@ -336,7 +336,7 @@ Use shortcuts like any other utility:
 
 ## Philosophy
 
-Headwind is built on several core principles:
+Crosswind is built on several core principles:
 
 1. **Performance First** - Built with Bun for maximum speed
 2. **Developer Experience** - TypeScript-first, fully typed APIs
@@ -348,21 +348,21 @@ Headwind is built on several core principles:
 
 ## Next Steps
 
-Now that you understand what Headwind is and how it works, explore:
+Now that you understand what Crosswind is and how it works, explore:
 
-- [Installation Guide](./install.md) - Set up Headwind in your project
-- [Configuration Guide](./config.md) - Customize Headwind to your needs
+- [Installation Guide](./install.md) - Set up Crosswind in your project
+- [Configuration Guide](./config.md) - Customize Crosswind to your needs
 - [Usage Guide](./usage.md) - Learn all available utility classes
 - [CLI Reference](./features/cli.md) - Explore CLI commands and options
 - [Compile Class Transformer](./features/compile-class.md) - Optimize your HTML
 
 ## Community & Support
 
-- **GitHub** - [github.com/stacksjs/headwind](https://github.com/stacksjs/headwind)
+- **GitHub** - [github.com/stacksjs/crosswind](https://github.com/stacksjs/crosswind)
 - **Discord** - [Join the Stacks Discord](https://discord.gg/stacksjs)
-- **Issues** - [Report bugs or request features](https://github.com/stacksjs/headwind/issues)
-- **Discussions** - [Ask questions and share ideas](https://github.com/stacksjs/headwind/discussions)
+- **Issues** - [Report bugs or request features](https://github.com/stacksjs/crosswind/issues)
+- **Discussions** - [Ask questions and share ideas](https://github.com/stacksjs/crosswind/discussions)
 
 ## License
 
-Headwind is open-source software licensed under the [MIT license](https://github.com/stacksjs/headwind/blob/main/LICENSE.md).
+Crosswind is open-source software licensed under the [MIT license](https://github.com/stacksjs/crosswind/blob/main/LICENSE.md).

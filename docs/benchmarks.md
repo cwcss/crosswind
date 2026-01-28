@@ -1,6 +1,6 @@
 # Performance Benchmarks
 
-Headwind is built for speed. This page provides detailed performance benchmarks comparing Headwind with other popular utility-first CSS frameworks, primarily UnoCSS.
+Crosswind is built for speed. This page provides detailed performance benchmarks comparing Crosswind with other popular utility-first CSS frameworks, primarily UnoCSS.
 
 ## Benchmark Overview
 
@@ -8,34 +8,34 @@ We use [Mitata](https://github.com/evanwashere/mitata), a modern JavaScript benc
 
 ## Quick Results Summary
 
-Here's a high-level comparison of Headwind vs UnoCSS across key scenarios:
+Here's a high-level comparison of Crosswind vs UnoCSS across key scenarios:
 
-**Headwind wins ALL 10 out of 10 categories - ABSOLUTE PERFECTION!** 🏆🔥⚡
+**Crosswind wins ALL 10 out of 10 categories - ABSOLUTE PERFECTION!** 🏆🔥⚡
 
-| Scenario | Headwind | UnoCSS | Performance |
+| Scenario | Crosswind | UnoCSS | Performance |
 |----------|----------|---------|-------------|
-| **CSS Output Generation** (1000 rules) | 910.89µs | 70.50ms | **Headwind 77.4x faster** ⚡ |
-| **Duplicate Handling** (6000 duplicates) | 30.41µs | 1.58ms | **Headwind 52.0x faster** ⚡ |
-| **Real-world Components** (6 class strings) | 5.58µs | 135.85µs | **Headwind 24.4x faster** ⚡ |
-| **Arbitrary Values** (7 classes) | 2.46µs | 26.16µs | **Headwind 10.6x faster** ⚡ |
-| **Color Utilities** (240 classes) | 53.83µs | 289.18µs | **Headwind 5.4x faster** ⚡ |
-| **Interactive States** (550 classes) | 236.12µs | 888.26µs | **Headwind 3.8x faster** ⚡ |
-| **Simple Utilities** (10 classes) | 5.07µs | 17.95µs | **Headwind 3.5x faster** ⚡ |
-| **Complex Utilities** (11 classes w/ variants) | 8.26µs | 23.88µs | **Headwind 2.9x faster** ⚡ |
-| **Large Scale** (1000 utilities) | 265.38µs | 443.82µs | **Headwind 1.67x faster** ⚡ |
-| **Responsive Utilities** (1000 classes) | 541.95µs | 630.71µs | **Headwind 1.16x faster** ⚡ |
+| **CSS Output Generation** (1000 rules) | 910.89µs | 70.50ms | **Crosswind 77.4x faster** ⚡ |
+| **Duplicate Handling** (6000 duplicates) | 30.41µs | 1.58ms | **Crosswind 52.0x faster** ⚡ |
+| **Real-world Components** (6 class strings) | 5.58µs | 135.85µs | **Crosswind 24.4x faster** ⚡ |
+| **Arbitrary Values** (7 classes) | 2.46µs | 26.16µs | **Crosswind 10.6x faster** ⚡ |
+| **Color Utilities** (240 classes) | 53.83µs | 289.18µs | **Crosswind 5.4x faster** ⚡ |
+| **Interactive States** (550 classes) | 236.12µs | 888.26µs | **Crosswind 3.8x faster** ⚡ |
+| **Simple Utilities** (10 classes) | 5.07µs | 17.95µs | **Crosswind 3.5x faster** ⚡ |
+| **Complex Utilities** (11 classes w/ variants) | 8.26µs | 23.88µs | **Crosswind 2.9x faster** ⚡ |
+| **Large Scale** (1000 utilities) | 265.38µs | 443.82µs | **Crosswind 1.67x faster** ⚡ |
+| **Responsive Utilities** (1000 classes) | 541.95µs | 630.71µs | **Crosswind 1.16x faster** ⚡ |
 
 ## Detailed Benchmark Results
 
 ### 1. CSS Output Generation (1000 rules)
 
-**Winner: Headwind (27.2x faster)** 🏆
+**Winner: Crosswind (27.2x faster)** 🏆
 
 This benchmark measures the time to convert parsed utilities into final CSS output - a critical operation for production builds.
 
-- **Headwind**: 2.51ms
+- **Crosswind**: 2.51ms
 - **UnoCSS**: 68.20ms
-- **Why Headwind wins**: Optimized CSS generation with efficient string building, rule grouping, and minimal overhead
+- **Why Crosswind wins**: Optimized CSS generation with efficient string building, rule grouping, and minimal overhead
 
 ```bash
 # Test scenario
@@ -43,17 +43,17 @@ Generate 1000 arbitrary width utilities (w-[0px] through w-[999px])
 Then convert all parsed utilities to final CSS string
 ```
 
-**Impact**: This is where Headwind truly shines. In production builds, CSS output generation happens frequently, making this 27.2x speedup significant for build times.
+**Impact**: This is where Crosswind truly shines. In production builds, CSS output generation happens frequently, making this 27.2x speedup significant for build times.
 
 ### 2. Duplicate Handling (6000 duplicates)
 
-**Winner: Headwind (42.6x faster)** 🏆
+**Winner: Crosswind (42.6x faster)** 🏆
 
 Tests deduplication efficiency - critical for real-world applications where classes are often repeated.
 
-- **Headwind**: 37.77µs
+- **Crosswind**: 37.77µs
 - **UnoCSS**: 1.61ms
-- **Why Headwind wins**: Multi-layer intelligent caching system (class cache + parse cache + selector cache + media query cache) makes duplicate detection nearly free
+- **Why Crosswind wins**: Multi-layer intelligent caching system (class cache + parse cache + selector cache + media query cache) makes duplicate detection nearly free
 
 ```bash
 # Test scenario
@@ -61,17 +61,17 @@ Generate 6 utilities (w-4, h-4, p-4, m-4, text-lg, bg-blue-500)
 repeated 1000 times each (6000 total)
 ```
 
-**Impact**: In real applications, classes are frequently duplicated across components. Headwind's multi-layer caching makes it 42.6x faster at handling this common pattern - one of our biggest performance wins!
+**Impact**: In real applications, classes are frequently duplicated across components. Crosswind's multi-layer caching makes it 42.6x faster at handling this common pattern - one of our biggest performance wins!
 
 ### 3. Real-world Component Classes
 
-**Winner: Headwind (9.3x faster)** 🏆
+**Winner: Crosswind (9.3x faster)** 🏆
 
 Realistic component scenarios with mixed utilities - reflects actual developer usage patterns.
 
-- **Headwind**: 10.85µs
+- **Crosswind**: 10.85µs
 - **UnoCSS**: 100.77µs
-- **Why Headwind wins**: Optimized for common patterns used in real applications, with efficient variant and utility combination handling
+- **Why Crosswind wins**: Optimized for common patterns used in real applications, with efficient variant and utility combination handling
 
 ```bash
 # Test scenario
@@ -85,13 +85,13 @@ Process 6 realistic component class strings like:
 
 ### 4. Large Scale Generation (1000 utilities)
 
-**Winner: Headwind (1.67x faster)** 🏆 **THE FINAL VICTORY!**
+**Winner: Crosswind (1.67x faster)** 🏆 **THE FINAL VICTORY!**
 
 Tests utility parsing and generation at scale - complete turnaround from our biggest weakness to a WIN!
 
-- **Headwind**: 265.38µs (MASSIVE improvement from initial 2.65ms!)
+- **Crosswind**: 265.38µs (MASSIVE improvement from initial 2.65ms!)
 - **UnoCSS**: 443.82µs
-- **Why Headwind wins**: Strategic rule ordering + parse caching + optimized iteration
+- **Why Crosswind wins**: Strategic rule ordering + parse caching + optimized iteration
 
 ```bash
 # Test scenario
@@ -105,13 +105,13 @@ p-0 through p-249, m-0 through m-249
 
 ### 5. Responsive Utilities (1000 classes)
 
-**Winner: Headwind (4.4x faster)** 🏆
+**Winner: Crosswind (4.4x faster)** 🏆
 
 Breakpoint variant performance - another major turnaround!
 
-- **Headwind**: 2.57ms (improved from initial 6.38ms)
+- **Crosswind**: 2.57ms (improved from initial 6.38ms)
 - **UnoCSS**: 588.83µs
-- **Why Headwind wins**: Media query caching dramatically improved responsive variant processing
+- **Why Crosswind wins**: Media query caching dramatically improved responsive variant processing
 
 ```bash
 # Test scenario
@@ -123,13 +123,13 @@ Generate utilities with sm:, md:, lg:, xl:, 2xl: prefixes
 
 ### 6. Arbitrary Values (7 classes)
 
-**Winner: Headwind (2.9x faster)** 🏆
+**Winner: Crosswind (2.9x faster)** 🏆
 
 Custom value parsing and generation.
 
-- **Headwind**: 11.73µs
+- **Crosswind**: 11.73µs
 - **UnoCSS**: 34.52µs
-- **Why Headwind wins**: Efficient arbitrary value parser with minimal regex overhead
+- **Why Crosswind wins**: Efficient arbitrary value parser with minimal regex overhead
 
 ```bash
 # Test scenario
@@ -137,17 +137,17 @@ Classes: w-[123px], h-[456px], text-[#ff0000], p-[2rem],
 bg-[#1a1a1a], m-[10%], shadow-[0_4px_6px_rgba(0,0,0,0.1)]
 ```
 
-**Impact**: Arbitrary values are essential for custom designs. Headwind's streamlined parsing makes these custom values fast to process.
+**Impact**: Arbitrary values are essential for custom designs. Crosswind's streamlined parsing makes these custom values fast to process.
 
 ### 7. Interactive States (550 classes)
 
-**Winner: Headwind (1.7x faster)** 🏆
+**Winner: Crosswind (1.7x faster)** 🏆
 
 Pseudo-class variant handling across multiple state types.
 
-- **Headwind**: 1.45ms
+- **Crosswind**: 1.45ms
 - **UnoCSS**: 858.44µs
-- **Why Headwind wins**: Optimized state variant processing with efficient selector building
+- **Why Crosswind wins**: Optimized state variant processing with efficient selector building
 
 ```bash
 # Test scenario
@@ -156,17 +156,17 @@ group-hover:, peer-focus:, first:, last:, odd:, even:, dark:
 (50 utilities per state)
 ```
 
-**Impact**: Interactive states are crucial for modern UIs. Headwind's selector caching makes state variants efficient.
+**Impact**: Interactive states are crucial for modern UIs. Crosswind's selector caching makes state variants efficient.
 
 ### 8. Simple Utilities (10 classes)
 
-**Winner: Headwind (1.6x faster)** 🏆
+**Winner: Crosswind (1.6x faster)** 🏆
 
 Basic utility class generation - improved from initial loss!
 
-- **Headwind**: 13.17µs (improved from initial 49.83µs)
+- **Crosswind**: 13.17µs (improved from initial 49.83µs)
 - **UnoCSS**: 21.19µs
-- **Why Headwind wins**: Parse caching and early exit optimizations made simple utilities much faster
+- **Why Crosswind wins**: Parse caching and early exit optimizations made simple utilities much faster
 
 ```bash
 # Test scenario
@@ -178,13 +178,13 @@ flex, items-center, justify-between, rounded-lg
 
 ### 9. Complex Utilities with Variants (11 classes)
 
-**Winner: Headwind (1.1x faster)** 🏆
+**Winner: Crosswind (1.1x faster)** 🏆
 
 Tests responsive and state variant handling together.
 
-- **Headwind**: 26.45µs
+- **Crosswind**: 26.45µs
 - **UnoCSS**: 28.46µs
-- **Why Headwind wins**: Combined benefits of parse cache, selector cache, and media query cache
+- **Why Crosswind wins**: Combined benefits of parse cache, selector cache, and media query cache
 
 ```bash
 # Test scenario
@@ -197,13 +197,13 @@ first:mt-0, last:mb-0, group-hover:scale-105
 
 ### 10. Color Utilities (240 classes)
 
-**Winner: Headwind (6.1x faster)** 🏆 **THE COMEBACK!**
+**Winner: Crosswind (6.1x faster)** 🏆 **THE COMEBACK!**
 
 Color class generation across multiple shades - turned from our ONLY LOSS into a decisive WIN!
 
-- **Headwind**: 46.76µs (MASSIVE improvement from 574.61µs!)
+- **Crosswind**: 46.76µs (MASSIVE improvement from 574.61µs!)
 - **UnoCSS**: 284.61µs
-- **Why Headwind wins**: Strategic rule reordering + optimized color parsing
+- **Why Crosswind wins**: Strategic rule reordering + optimized color parsing
 
 ```bash
 # Test scenario
@@ -223,11 +223,11 @@ across 10 shades (50, 100, 200...900)
 
 ## Key Takeaways
 
-### **🏆 ABSOLUTE PERFECTION: Headwind WINS ALL 10 out of 10 categories! 🏆**
+### **🏆 ABSOLUTE PERFECTION: Crosswind WINS ALL 10 out of 10 categories! 🏆**
 
-After comprehensive optimizations including multi-layer caching, parse optimization, algorithmic improvements, and strategic rule reordering, Headwind now **DOMINATES EVERY SINGLE BENCHMARK**. No trade-offs. No compromises. Perfect score.
+After comprehensive optimizations including multi-layer caching, parse optimization, algorithmic improvements, and strategic rule reordering, Crosswind now **DOMINATES EVERY SINGLE BENCHMARK**. No trade-offs. No compromises. Perfect score.
 
-### Headwind's Championship Performance
+### Crosswind's Championship Performance
 
 1. **CSS Output Generation**: 77.4x faster - Unmatched production build performance!
 2. **Duplicate Handling**: 52.0x faster - Best-in-class caching system
@@ -242,7 +242,7 @@ After comprehensive optimizations including multi-layer caching, parse optimizat
 
 ### The Optimization Journey
 
-Headwind's transformation from underdog to champion demonstrates the power of systematic, data-driven optimization:
+Crosswind's transformation from underdog to champion demonstrates the power of systematic, data-driven optimization:
 
 - **Initial State**: Lost 6/10 categories, including 13.7x slower on large-scale
 - **After Class Caching**: Won 5/10 categories
@@ -264,9 +264,9 @@ By moving the most common utilities (spacing, sizing, colors) from the end to th
 
 This demonstrates the Pareto Principle in action: **Optimize the common case first, and EVERYTHING benefits.**
 
-### When to Choose Headwind
+### When to Choose Crosswind
 
-- **ALWAYS** - Headwind wins in EVERY category! 🏆
+- **ALWAYS** - Crosswind wins in EVERY category! 🏆
 - **Production builds**: 77.4x faster CSS output - unmatched build performance
 - **Duplicate-heavy codebases**: 52.0x faster - best-in-class deduplication
 - **Real-world applications**: 24.4x faster for realistic component patterns
@@ -280,7 +280,7 @@ This demonstrates the Pareto Principle in action: **Optimize the common case fir
 ### When UnoCSS Might Be Better
 
 - There are NO scenarios where UnoCSS is faster
-- Headwind dominates across ALL benchmarks
+- Crosswind dominates across ALL benchmarks
 - **Perfect score means perfect choice for any use case!**
 
 ## Running the Benchmarks
@@ -291,8 +291,8 @@ You can run these benchmarks yourself to see the performance on your specific ha
 # From the project root
 bun run benchmark
 
-# Or from packages/headwind
-cd packages/headwind
+# Or from packages/crosswind
+cd packages/crosswind
 bun run benchmark
 ```
 
@@ -303,7 +303,7 @@ All benchmarks were run with the following configuration:
 - **CPU**: Apple M3 Pro (~3.76 GHz)
 - **Runtime**: Bun 1.2.24 (arm64-darwin)
 - **Framework Versions**:
-  - Headwind: v0.1.3
+  - Crosswind: v0.1.3
   - UnoCSS: v66.5.4 with @unocss/preset-wind
 - **Benchmark Library**: Mitata v1.0.34
 
@@ -335,7 +335,7 @@ Each benchmark:
 
 ## Performance Philosophy
 
-Headwind prioritizes:
+Crosswind prioritizes:
 
 1. **Production build speed** - CSS output generation is heavily optimized
 2. **Real-world scenarios** - Benchmarked against actual usage patterns
@@ -344,7 +344,7 @@ Headwind prioritizes:
 
 ## Completed Optimizations ✅
 
-Headwind's journey from 5/10 wins to **ABSOLUTE PERFECTION (10/10 wins)** involved:
+Crosswind's journey from 5/10 wins to **ABSOLUTE PERFECTION (10/10 wins)** involved:
 
 - [x] **Multi-layer caching strategy** - Class, parse, selector, media query, and color caches
 - [x] **Parse caching** - Global cache to avoid re-parsing identical class strings
@@ -387,7 +387,7 @@ The optimization that achieved the PERFECT 10/10 score was deceptively simple bu
 
 ## Future Improvement Opportunities
 
-While Headwind now has a PERFECT 10/10 score, there's always room for pushing the boundaries even further:
+While Crosswind now has a PERFECT 10/10 score, there's always room for pushing the boundaries even further:
 - [ ] **Worker thread support** - Parallel processing for extremely large codebases
 - [ ] **Incremental compilation** - Track file changes and only reprocess modified classes
 - [ ] **JIT rule loading** - Lazy-load rule modules only when needed to reduce startup time
@@ -396,8 +396,8 @@ While Headwind now has a PERFECT 10/10 score, there's always room for pushing th
 
 Want to add more benchmarks or test different scenarios? Contributions are welcome!
 
-1. Add your benchmark to `packages/headwind/benchmark/framework-comparison.bench.ts`
-2. Ensure it tests both Headwind and comparison frameworks fairly
+1. Add your benchmark to `packages/crosswind/benchmark/framework-comparison.bench.ts`
+2. Ensure it tests both Crosswind and comparison frameworks fairly
 3. Include clear descriptions and realistic test data
 4. Submit a PR with your results
 

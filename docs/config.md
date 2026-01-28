@@ -1,24 +1,24 @@
 # Configuration
 
-Headwind is configured using a `headwind.config.ts` (or `headwind.config.js`) file in your project root. The configuration file is automatically loaded when running any Headwind command.
+Crosswind is configured using a `crosswind.config.ts` (or `crosswind.config.js`) file in your project root. The configuration file is automatically loaded when running any Crosswind command.
 
 ## Quick Start
 
 Create a configuration file using the init command:
 
 ```bash
-headwind init
+crosswind init
 ```
 
-This creates a basic `headwind.config.ts` file:
+This creates a basic `crosswind.config.ts` file:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/headwind.css',
-} satisfies HeadwindOptions
+  output: './dist/crosswind.css',
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -40,7 +40,7 @@ const config = {
     './components/**/*.vue',
     './pages/**/*.svelte',
   ],
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 **Tips:**
@@ -53,14 +53,14 @@ const config = {
 
 - **Type:** `string`
 - **Required:** Yes
-- **Default:** `'./headwind.css'`
+- **Default:** `'./crosswind.css'`
 
 Path to the output CSS file.
 
 ```typescript
 const config = {
-  output: './dist/styles/headwind.css',
-} satisfies HeadwindOptions
+  output: './dist/styles/crosswind.css',
+} satisfies CrosswindOptions
 ```
 
 ### theme
@@ -116,7 +116,7 @@ const config = {
       full: '9999px',
     },
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ### preflight
@@ -130,7 +130,7 @@ Include CSS reset/normalize styles (similar to Tailwind's preflight).
 ```typescript
 const config = {
   preflight: true, // Include reset styles
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 Preflight includes:
@@ -151,7 +151,7 @@ Minify the output CSS for production.
 ```typescript
 const config = {
   minify: true, // Enable minification
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 When enabled, the output CSS is minified by removing:
@@ -176,7 +176,7 @@ const config = {
     classPrefix: 'hw-', // Prefix for generated names (default)
     layer: 'shortcuts', // Layer name (default)
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 **Options:**
@@ -219,7 +219,7 @@ const config = {
     'card': 'rounded-lg shadow-md p-6 bg-white',
     'input': 'border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500',
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 **Usage:**
@@ -250,7 +250,7 @@ const config = {
       'custom-property': match.groups.value,
     }),
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 **Example:**
@@ -267,7 +267,7 @@ const config = {
       margin: `${match.groups.size}px`,
     }),
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ### presets
@@ -285,16 +285,16 @@ const config = {
   presets: [
     myCustomPreset,
   ],
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 **Creating a Preset:**
 
 ```typescript
 // presets/custom.ts
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
-export const myCustomPreset: Partial<HeadwindConfig> = {
+export const myCustomPreset: Partial<CrosswindConfig> = {
   theme: {
     colors: {
       brand: '#3b82f6',
@@ -309,12 +309,12 @@ export const myCustomPreset: Partial<HeadwindConfig> = {
 ## Complete Configuration Example
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   // Required
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/headwind.css',
+  output: './dist/crosswind.css',
 
   // Optional
   preflight: true,
@@ -356,7 +356,7 @@ const config = {
       'background-image': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     },
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -366,14 +366,14 @@ export default config
 You can create different configurations for different environments:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const isDev = process.env.NODE_ENV === 'development'
 const isProd = process.env.NODE_ENV === 'production'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: isProd ? './dist/headwind.min.css' : './dist/headwind.css',
+  output: isProd ? './dist/crosswind.min.css' : './dist/crosswind.css',
 
   preflight: true,
   minify: isProd,
@@ -381,39 +381,39 @@ const config = {
   compileClass: {
     enabled: isProd, // Only compile in production
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 
 export default config
 ```
 
 ## TypeScript Support
 
-Headwind provides full TypeScript support with type checking and autocomplete:
+Crosswind provides full TypeScript support with type checking and autocomplete:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 // Use satisfies for type checking while preserving literal types
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/headwind.css',
-} satisfies HeadwindOptions
+  output: './dist/crosswind.css',
+} satisfies CrosswindOptions
 
 export default config
 ```
 
 ## Configuration Loading
 
-Headwind automatically searches for configuration files in this order:
+Crosswind automatically searches for configuration files in this order:
 
-1. `headwind.config.ts`
-2. `headwind.config.js`
-3. `headwind.config.mjs`
+1. `crosswind.config.ts`
+2. `crosswind.config.js`
+3. `crosswind.config.mjs`
 
 You can also specify a custom config path:
 
 ```bash
-headwind build --config ./config/custom.config.ts
+crosswind build --config ./config/custom.config.ts
 ```
 
 ## Configuration Override
@@ -422,15 +422,15 @@ CLI options override configuration file settings:
 
 ```bash
 # Override output path
-headwind build --output ./dist/custom.css
+crosswind build --output ./dist/custom.css
 
 # Override content patterns
-headwind build --content "./src/**/*.tsx"
+crosswind build --content "./src/**/*.tsx"
 ```
 
 ## Best Practices
 
-1. **Use TypeScript** - Enable type checking with `satisfies HeadwindOptions`
+1. **Use TypeScript** - Enable type checking with `satisfies CrosswindOptions`
 2. **Specific Content Patterns** - Use precise glob patterns for better performance
 3. **Environment Variables** - Use environment variables for environment-specific settings
 4. **Organize Presets** - Extract common configurations into reusable presets

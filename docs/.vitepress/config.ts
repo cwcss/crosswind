@@ -22,7 +22,7 @@ const nav = [
   { text: 'News', link: 'https://stacksjs.org/news' },
   {
     text: 'Changelog',
-    link: 'https://github.com/stacksjs/headwind/blob/main/CHANGELOG.md',
+    link: 'https://github.com/stacksjs/crosswind/blob/main/CHANGELOG.md',
   },
   // { text: 'Blog', link: 'https://updates.ow3.org' },
   {
@@ -84,12 +84,12 @@ const sidebar = [
   { text: 'Showcase', link: '/showcase' },
 ]
 const description = 'Blazingly fast utility-first CSS framework built with Bun. Generate only the CSS you need with Tailwind-compatible syntax.'
-const title = 'Headwind | Blazingly Fast Utility-First CSS Built with Bun'
+const title = 'Crosswind | Blazingly Fast Utility-First CSS Built with Bun'
 
 export default withPwa(
   defineConfig({
     lang: 'en-US',
-    title: 'Headwind',
+    title: 'Crosswind',
     description,
     metaChunk: true,
     cleanUrls: true,
@@ -104,7 +104,7 @@ export default withPwa(
       ['meta', { name: 'author', content: 'Stacks.js, Inc.' }],
       ['meta', {
         name: 'tags',
-        content: 'headwind, css framework, utility-first, tailwind, unocss, bun, typescript, fast, lightweight',
+        content: 'crosswind, css framework, utility-first, tailwind, unocss, bun, typescript, fast, lightweight',
       }],
 
       ['meta', { property: 'og:type', content: 'website' }],
@@ -112,9 +112,9 @@ export default withPwa(
       ['meta', { property: 'og:title', content: title }],
       ['meta', { property: 'og:description', content: description }],
 
-      ['meta', { property: 'og:site_name', content: 'Headwind' }],
+      ['meta', { property: 'og:site_name', content: 'Crosswind' }],
       ['meta', { property: 'og:image', content: './images/og-image.jpg' }],
-      ['meta', { property: 'og:url', content: 'https://headwind.stacksjs.org/' }],
+      ['meta', { property: 'og:url', content: 'https://crosswind.stacksjs.org/' }],
       // ['script', { 'src': 'https://cdn.usefathom.com/script.js', 'data-site': '', 'data-spa': 'auto', 'defer': '' }],
       ...analyticsHead,
     ],
@@ -132,7 +132,7 @@ export default withPwa(
       sidebar,
 
       editLink: {
-        pattern: 'https://github.com/stacksjs/headwind/edit/main/docs/:path',
+        pattern: 'https://github.com/stacksjs/crosswind/edit/main/docs/:path',
         text: 'Edit this page on GitHub',
       },
 
@@ -144,7 +144,7 @@ export default withPwa(
       socialLinks: [
         { icon: 'twitter', link: 'https://twitter.com/stacksjs' },
         { icon: 'bluesky', link: 'https://bsky.app/profile/chrisbreuer.dev' },
-        { icon: 'github', link: 'https://github.com/stacksjs/headwind' },
+        { icon: 'github', link: 'https://github.com/stacksjs/crosswind' },
         { icon: 'discord', link: 'https://discord.gg/stacksjs' },
       ],
 

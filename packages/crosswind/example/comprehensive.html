@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crosswind - Comprehensive Example</title>
+</head>
+<body>
+  <!-- Layout Utilities -->
+  <div class="relative top-4 z-10 aspect-square">
+    <div class="absolute inset-0 overflow-hidden">Content</div>
+  </div>
+
+  <!-- Grid Utilities -->
+  <div class="grid grid-cols-3 gap-4">
+    <div class="col-span-2">Span 2</div>
+    <div>Cell</div>
+  </div>
+
+  <!-- Typography -->
+  <div class="uppercase italic underline whitespace-nowrap truncate">
+    Styled Text
+  </div>
+
+  <!-- Transforms -->
+  <div class="scale-150 rotate-45 translate-x-4 skew-x-12">
+    Transformed
+  </div>
+
+  <!-- Transitions -->
+  <button class="transition-all duration-300 ease-in-out hover:opacity-50">
+    Animated Button
+  </button>
+
+  <!-- Filters -->
+  <div class="blur-sm grayscale-100 brightness-150">
+    Filtered Content
+  </div>
+
+  <!-- Interactivity -->
+  <div class="cursor-pointer select-none pointer-events-auto resize-both">
+    Interactive
+  </div>
+
+  <!-- Arbitrary Values -->
+  <div class="w-[250px] p-[2.5rem] bg-[#ff6b6b]">
+    Custom Values
+  </div>
+
+  <!-- Important Modifier -->
+  <div class="!text-white !bg-black !p-8">
+    Important Styles
+  </div>
+
+  <!-- SVG -->
+  <svg class="fill-current stroke-current">
+    <circle cx="50" cy="50" r="40" />
+  </svg>
+
+  <!-- Table -->
+  <table class="border-collapse table-fixed">
+    <tr><td>Cell</td></tr>
+  </table>
+
+  <!-- Scroll -->
+  <div class="scroll-smooth scroll-p-4 snap-y">
+    Scrollable
+  </div>
+</body>
+</html>

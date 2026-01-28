@@ -21,11 +21,11 @@ export default {
         { text: 'Stacks Framework', link: 'https://stacksjs.org' },
       ],
     },
-    { text: 'GitHub', link: 'https://github.com/stacksjs/headwind' },
+    { text: 'GitHub', link: 'https://github.com/stacksjs/crosswind' },
   ],
 
   markdown: {
-    title: 'Headwind - Blazingly Fast Utility-First CSS',
+    title: 'Crosswind - Blazingly Fast Utility-First CSS',
     meta: {
       description: 'A utility-first CSS framework built with Bun for exceptional performance. Generate only the CSS you need.',
       author: 'Stacks.js',
@@ -110,7 +110,7 @@ export default {
 
   sitemap: {
     enabled: true,
-    baseUrl: 'https://headwind.sh',
+    baseUrl: 'https://crosswind.sh',
     priorityMap: {
       '/': 1.0,
       '/intro': 0.9,

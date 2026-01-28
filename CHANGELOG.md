@@ -75,47 +75,47 @@
 - Glenn Michael Torregosa <gtorregosa@gmail.com>
 - glennmichael123 <gtorregosa@gmail.com>
 
-[Compare changes](https://github.com/headwindcss/headwind/compare/v0.1.3...v0.1.4)
+[Compare changes](https://github.com/stacksjs/crosswind/compare/v0.1.3...v0.1.4)
 
 ### 🧹 Chores
 
-- release v0.1.4 ([233963b](https://github.com/headwindcss/headwind/commit/233963b))
-- wip ([a4c6d8a](https://github.com/headwindcss/headwind/commit/a4c6d8a))
-- wip ([e1e3f4f](https://github.com/headwindcss/headwind/commit/e1e3f4f))
-- wip ([352b160](https://github.com/headwindcss/headwind/commit/352b160))
-- wip ([46b97c2](https://github.com/headwindcss/headwind/commit/46b97c2))
-- wip ([e15e163](https://github.com/headwindcss/headwind/commit/e15e163))
-- wip ([b5c003b](https://github.com/headwindcss/headwind/commit/b5c003b))
-- wip ([0547ef5](https://github.com/headwindcss/headwind/commit/0547ef5))
-- wip ([56b34ea](https://github.com/headwindcss/headwind/commit/56b34ea))
-- wip ([23e3c54](https://github.com/headwindcss/headwind/commit/23e3c54))
-- wip ([69a9fbc](https://github.com/headwindcss/headwind/commit/69a9fbc))
-- wip ([c31cbbd](https://github.com/headwindcss/headwind/commit/c31cbbd))
-- wip ([66adcf1](https://github.com/headwindcss/headwind/commit/66adcf1))
-- wip ([385d534](https://github.com/headwindcss/headwind/commit/385d534))
+- release v0.1.4 ([233963b](https://github.com/stacksjs/crosswind/commit/233963b))
+- wip ([a4c6d8a](https://github.com/stacksjs/crosswind/commit/a4c6d8a))
+- wip ([e1e3f4f](https://github.com/stacksjs/crosswind/commit/e1e3f4f))
+- wip ([352b160](https://github.com/stacksjs/crosswind/commit/352b160))
+- wip ([46b97c2](https://github.com/stacksjs/crosswind/commit/46b97c2))
+- wip ([e15e163](https://github.com/stacksjs/crosswind/commit/e15e163))
+- wip ([b5c003b](https://github.com/stacksjs/crosswind/commit/b5c003b))
+- wip ([0547ef5](https://github.com/stacksjs/crosswind/commit/0547ef5))
+- wip ([56b34ea](https://github.com/stacksjs/crosswind/commit/56b34ea))
+- wip ([23e3c54](https://github.com/stacksjs/crosswind/commit/23e3c54))
+- wip ([69a9fbc](https://github.com/stacksjs/crosswind/commit/69a9fbc))
+- wip ([c31cbbd](https://github.com/stacksjs/crosswind/commit/c31cbbd))
+- wip ([66adcf1](https://github.com/stacksjs/crosswind/commit/66adcf1))
+- wip ([385d534](https://github.com/stacksjs/crosswind/commit/385d534))
 
 ### Contributors
 
 - Chris <chrisbreuer93@gmail.com>
 - glennmichael123 <gtorregosa@gmail.com>
 
-[Compare changes](https://github.com/headwindcss/headwind/compare/v0.1.3...HEAD)
+[Compare changes](https://github.com/stacksjs/crosswind/compare/v0.1.3...HEAD)
 
 ### 🧹 Chores
 
-- wip ([a4c6d8a](https://github.com/headwindcss/headwind/commit/a4c6d8a))
-- wip ([e1e3f4f](https://github.com/headwindcss/headwind/commit/e1e3f4f))
-- wip ([352b160](https://github.com/headwindcss/headwind/commit/352b160))
-- wip ([46b97c2](https://github.com/headwindcss/headwind/commit/46b97c2))
-- wip ([e15e163](https://github.com/headwindcss/headwind/commit/e15e163))
-- wip ([b5c003b](https://github.com/headwindcss/headwind/commit/b5c003b))
-- wip ([0547ef5](https://github.com/headwindcss/headwind/commit/0547ef5))
-- wip ([56b34ea](https://github.com/headwindcss/headwind/commit/56b34ea))
-- wip ([23e3c54](https://github.com/headwindcss/headwind/commit/23e3c54))
-- wip ([69a9fbc](https://github.com/headwindcss/headwind/commit/69a9fbc))
-- wip ([c31cbbd](https://github.com/headwindcss/headwind/commit/c31cbbd))
-- wip ([66adcf1](https://github.com/headwindcss/headwind/commit/66adcf1))
-- wip ([385d534](https://github.com/headwindcss/headwind/commit/385d534))
+- wip ([a4c6d8a](https://github.com/stacksjs/crosswind/commit/a4c6d8a))
+- wip ([e1e3f4f](https://github.com/stacksjs/crosswind/commit/e1e3f4f))
+- wip ([352b160](https://github.com/stacksjs/crosswind/commit/352b160))
+- wip ([46b97c2](https://github.com/stacksjs/crosswind/commit/46b97c2))
+- wip ([e15e163](https://github.com/stacksjs/crosswind/commit/e15e163))
+- wip ([b5c003b](https://github.com/stacksjs/crosswind/commit/b5c003b))
+- wip ([0547ef5](https://github.com/stacksjs/crosswind/commit/0547ef5))
+- wip ([56b34ea](https://github.com/stacksjs/crosswind/commit/56b34ea))
+- wip ([23e3c54](https://github.com/stacksjs/crosswind/commit/23e3c54))
+- wip ([69a9fbc](https://github.com/stacksjs/crosswind/commit/69a9fbc))
+- wip ([c31cbbd](https://github.com/stacksjs/crosswind/commit/c31cbbd))
+- wip ([66adcf1](https://github.com/stacksjs/crosswind/commit/66adcf1))
+- wip ([385d534](https://github.com/stacksjs/crosswind/commit/385d534))
 
 ### Contributors
 

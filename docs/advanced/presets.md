@@ -1,6 +1,6 @@
 # Presets
 
-Presets allow you to create reusable, shareable configurations that can be used across multiple Headwind projects. They're perfect for maintaining design systems, organizational standards, or common UI patterns.
+Presets allow you to create reusable, shareable configurations that can be used across multiple Crosswind projects. They're perfect for maintaining design systems, organizational standards, or common UI patterns.
 
 ## Overview
 
@@ -8,16 +8,16 @@ A preset is a configuration object that can include theme customization, shortcu
 
 ```typescript
 // Before: Duplicate configuration in each project
-// project-a/headwind.config.ts
+// project-a/crosswind.config.ts
 // After: Share configuration via preset
-import { companyPreset } from '@company/headwind-preset'
+import { companyPreset } from '@company/crosswind-preset'
 
 const config = {
   theme: { colors: { primary: '#3b82f6' } },
   shortcuts: { btn: 'px-4 py-2 rounded' },
 }
 
-// project-b/headwind.config.ts
+// project-b/crosswind.config.ts
 const config = {
   theme: { colors: { primary: '#3b82f6' } },
   shortcuts: { btn: 'px-4 py-2 rounded' },
@@ -35,7 +35,7 @@ const config = {
 A preset is an object that implements the `Preset` interface:
 
 ```typescript
-import type { Preset } from 'headwind'
+import type { Preset } from 'crosswind'
 
 export const myPreset: Preset = {
   name: 'my-preset',
@@ -61,7 +61,7 @@ export const myPreset: Preset = {
 
 ```typescript
 // presets/minimal.ts
-import type { Preset } from 'headwind'
+import type { Preset } from 'crosswind'
 
 export const minimalPreset: Preset = {
   name: 'minimal',
@@ -91,15 +91,15 @@ export const minimalPreset: Preset = {
 ### Single Preset
 
 ```typescript
-// headwind.config.ts
-import type { HeadwindOptions } from 'headwind'
+// crosswind.config.ts
+import type { CrosswindOptions } from 'crosswind'
 import { minimalPreset } from './presets/minimal'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/headwind.css',
+  output: './dist/crosswind.css',
   presets: [minimalPreset],
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -127,7 +127,7 @@ const config = {
 You can extend a preset with additional configuration:
 
 ```typescript
-import { companyPreset } from '@company/headwind-preset'
+import { companyPreset } from '@company/crosswind-preset'
 
 const config = {
   presets: [companyPreset],
@@ -152,7 +152,7 @@ const config = {
 
 ```typescript
 // presets/design-system.ts
-import type { Preset } from 'headwind'
+import type { Preset } from 'crosswind'
 
 export const designSystemPreset: Preset = {
   name: 'design-system',
@@ -234,7 +234,7 @@ export const designSystemPreset: Preset = {
 
 ```typescript
 // presets/components.ts
-import type { Preset } from 'headwind'
+import type { Preset } from 'crosswind'
 
 export const componentsPreset: Preset = {
   name: 'components',
@@ -279,7 +279,7 @@ export const componentsPreset: Preset = {
 
 ```typescript
 // presets/utilities.ts
-import type { Preset } from 'headwind'
+import type { Preset } from 'crosswind'
 
 export const utilitiesPreset: Preset = {
   name: 'utilities',
@@ -335,7 +335,7 @@ export const utilitiesPreset: Preset = {
 
 ```typescript
 // presets/react.ts
-import type { Preset } from 'headwind'
+import type { Preset } from 'crosswind'
 
 export const reactPreset: Preset = {
   name: 'react',
@@ -374,12 +374,12 @@ Create a shareable preset package:
 
 ```bash
 # Create package
-mkdir my-headwind-preset
-cd my-headwind-preset
+mkdir my-crosswind-preset
+cd my-crosswind-preset
 bun init
 
 # Package structure
-my-headwind-preset/
+my-crosswind-preset/
 ├── package.json
 ├── src/
 │   └── index.ts
@@ -388,7 +388,7 @@ my-headwind-preset/
 
 ```typescript
 // src/index.ts
-import type { Preset } from 'headwind'
+import type { Preset } from 'crosswind'
 
 export const myPreset: Preset = {
   name: 'my-preset',
@@ -401,7 +401,7 @@ export default myPreset
 ```json
 // package.json
 {
-  "name": "@company/headwind-preset",
+  "name": "@company/crosswind-preset",
   "version": "1.0.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -417,10 +417,10 @@ export default myPreset
     "prepublishOnly": "bun run build"
   },
   "peerDependencies": {
-    "headwind": ">=1.0.0"
+    "crosswind": ">=1.0.0"
   },
   "devDependencies": {
-    "headwind": "latest",
+    "crosswind": "latest",
     "typescript": "latest"
   }
 }
@@ -429,12 +429,12 @@ export default myPreset
 ### Usage of Published Preset
 
 ```bash
-bun add @company/headwind-preset
+bun add @company/crosswind-preset
 ```
 
 ```typescript
-// headwind.config.ts
-import { myPreset } from '@company/headwind-preset'
+// crosswind.config.ts
+import { myPreset } from '@company/crosswind-preset'
 
 const config = {
   presets: [myPreset],
@@ -497,7 +497,7 @@ const config = {
 ### Preset with Custom Preflight
 
 ```typescript
-import type { Preflight, Preset } from 'headwind'
+import type { Preflight, Preset } from 'crosswind'
 
 const customPreflight: Preflight = {
   getCSS: () => `
@@ -593,7 +593,7 @@ Include documentation in your preset files:
  * - Form utilities
  *
  * @example
- * import { companyPreset } from '@company/headwind-preset'
+ * import { companyPreset } from '@company/crosswind-preset'
  *
  * const config = {
  *   presets: [companyPreset],
@@ -698,7 +698,7 @@ const config = {
 **Solution:** Import and use the `Preset` type:
 
 ```typescript
-import type { Preset } from 'headwind'
+import type { Preset } from 'crosswind'
 
 export const myPreset: Preset = {
   name: 'my-preset',

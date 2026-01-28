@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "Headwind"
+  name: "Crosswind"
   text: "Blazingly Fast Utility-First CSS"
   tagline: "Built with Bun for exceptional performance. Generate only the CSS you need."
   image: /images/logo-white.png
@@ -13,7 +13,7 @@ hero:
       link: /intro
     - theme: alt
       text: View on GitHub
-      link: https://github.com/stacksjs/headwind
+      link: https://github.com/stacksjs/crosswind
 
 features:
   - title: "Performance"

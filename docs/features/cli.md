@@ -1,17 +1,17 @@
 # CLI Commands
 
-Headwind provides a powerful command-line interface for building, watching, and analyzing your CSS.
+Crosswind provides a powerful command-line interface for building, watching, and analyzing your CSS.
 
 ## Installation
 
-Install Headwind globally or locally:
+Install Crosswind globally or locally:
 
 ```bash
 # Global (use anywhere)
-bun add --global headwind
+bun add --global crosswind
 
 # Local (project-specific)
-bun add --dev headwind
+bun add --dev crosswind
 ```
 
 ## Commands
@@ -21,7 +21,7 @@ bun add --dev headwind
 Build CSS from your content files.
 
 ```bash
-headwind build [options]
+crosswind build [options]
 ```
 
 **Options:**
@@ -38,25 +38,25 @@ headwind build [options]
 
 ```bash
 # Basic build
-headwind build
+crosswind build
 
 # Build with custom output
-headwind build --output ./dist/styles.css
+crosswind build --output ./dist/styles.css
 
 # Build and minify
-headwind build --minify
+crosswind build --minify
 
 # Build with specific content
-headwind build --content "./src/**/*.tsx"
+crosswind build --content "./src/**/*.tsx"
 
 # Build with custom config
-headwind build --config ./custom.config.ts
+crosswind build --config ./custom.config.ts
 
 # Build with verbose output
-headwind build --verbose
+crosswind build --verbose
 
 # Build without preflight CSS
-headwind build --no-preflight
+crosswind build --no-preflight
 ```
 
 **Output:**
@@ -64,7 +64,7 @@ headwind build --no-preflight
 ```bash
 🚀 Building CSS...
 ✅ Built 1243 classes in 8.45ms
-📝 Output: ./dist/headwind.css
+📝 Output: ./dist/crosswind.css
 📦 File size: 24.35 KB
 ```
 
@@ -73,7 +73,7 @@ headwind build --no-preflight
 Build and watch for changes (equivalent to `build --watch`).
 
 ```bash
-headwind watch [options]
+crosswind watch [options]
 ```
 
 **Options:**
@@ -88,16 +88,16 @@ headwind watch [options]
 
 ```bash
 # Basic watch mode
-headwind watch
+crosswind watch
 
 # Watch with custom output
-headwind watch --output ./dist/styles.css
+crosswind watch --output ./dist/styles.css
 
 # Watch with minification
-headwind watch --minify
+crosswind watch --minify
 
 # Watch with verbose output
-headwind watch --verbose
+crosswind watch --verbose
 ```
 
 **Output:**
@@ -105,7 +105,7 @@ headwind watch --verbose
 ```bash
 🚀 Building CSS...
 ✅ Built 1243 classes in 8.45ms
-📝 Output: ./dist/headwind.css
+📝 Output: ./dist/crosswind.css
 📦 File size: 24.35 KB
 👀 Watching for changes...
 
@@ -117,10 +117,10 @@ headwind watch --verbose
 
 ### `init`
 
-Create a `headwind.config.ts` configuration file.
+Create a `crosswind.config.ts` configuration file.
 
 ```bash
-headwind init [options]
+crosswind init [options]
 ```
 
 **Options:**
@@ -131,33 +131,33 @@ headwind init [options]
 
 ```bash
 # Create config
-headwind init
+crosswind init
 
 # Force overwrite
-headwind init --force
+crosswind init --force
 ```
 
 **Output:**
 
 ```bash
-✅ Created headwind.config.ts
+✅ Created crosswind.config.ts
 
 Next steps:
-  1. Update the content paths in headwind.config.ts
-  2. Run: headwind build
+  1. Update the content paths in crosswind.config.ts
+  2. Run: crosswind build
 ```
 
 **Generated file:**
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/headwind.css',
+  output: './dist/crosswind.css',
   minify: false,
   watch: false,
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -167,7 +167,7 @@ export default config
 Analyze utility class usage and show statistics.
 
 ```bash
-headwind analyze [options]
+crosswind analyze [options]
 ```
 
 **Options:**
@@ -181,16 +181,16 @@ headwind analyze [options]
 
 ```bash
 # Basic analysis
-headwind analyze
+crosswind analyze
 
 # Show top 20 utilities
-headwind analyze --top 20
+crosswind analyze --top 20
 
 # JSON output
-headwind analyze --json
+crosswind analyze --json
 
 # Detailed analysis
-headwind analyze --verbose
+crosswind analyze --verbose
 ```
 
 **Output:**
@@ -240,7 +240,7 @@ headwind analyze --verbose
 Remove the output CSS file.
 
 ```bash
-headwind clean [options]
+crosswind clean [options]
 ```
 
 **Options:**
@@ -251,16 +251,16 @@ headwind clean [options]
 
 ```bash
 # Clean output
-headwind clean
+crosswind clean
 
 # Clean with custom config
-headwind clean --config ./custom.config.ts
+crosswind clean --config ./custom.config.ts
 ```
 
 **Output:**
 
 ```bash
-✅ Removed ./dist/headwind.css
+✅ Removed ./dist/crosswind.css
 ```
 
 ### `preflight`
@@ -268,7 +268,7 @@ headwind clean --config ./custom.config.ts
 Generate only the preflight (reset) CSS.
 
 ```bash
-headwind preflight [options]
+crosswind preflight [options]
 ```
 
 **Options:**
@@ -279,10 +279,10 @@ headwind preflight [options]
 
 ```bash
 # Generate preflight CSS
-headwind preflight
+crosswind preflight
 
 # Custom output path
-headwind preflight --output ./reset.css
+crosswind preflight --output ./reset.css
 ```
 
 **Output:**
@@ -295,12 +295,12 @@ headwind preflight --output ./reset.css
 
 ### `version`
 
-Show the Headwind version.
+Show the Crosswind version.
 
 ```bash
-headwind version
+crosswind version
 # or
-headwind --version
+crosswind --version
 ```
 
 **Output:**
@@ -314,9 +314,9 @@ headwind --version
 Show help information.
 
 ```bash
-headwind --help
+crosswind --help
 # or
-headwind [command] --help
+crosswind [command] --help
 ```
 
 ## Global Options
@@ -332,7 +332,7 @@ CLI options override configuration file settings:
 
 ```bash
 # Config file specifies: output: './dist/styles.css'
-headwind build --output ./public/app.css
+crosswind build --output ./public/app.css
 
 # Actual output: ./public/app.css (CLI option wins)
 ```
@@ -349,7 +349,7 @@ Priority order (highest to lowest):
 
 ```bash
 # Run locally installed
-bunx headwind build
+bunx crosswind build
 
 # Run scripts
 bun run build
@@ -359,7 +359,7 @@ bun run build
 
 ```bash
 # Run locally installed
-npx headwind build
+npx crosswind build
 
 # Run scripts
 npm run build
@@ -369,7 +369,7 @@ npm run build
 
 ```bash
 # Run locally installed
-pnpm dlx headwind build
+pnpm dlx crosswind build
 
 # Run scripts
 pnpm build
@@ -379,7 +379,7 @@ pnpm build
 
 ```bash
 # Run locally installed
-yarn headwind build
+yarn crosswind build
 
 # Run scripts
 yarn build
@@ -387,17 +387,17 @@ yarn build
 
 ## npm Scripts
 
-Add Headwind commands to your `package.json`:
+Add Crosswind commands to your `package.json`:
 
 ```json
 {
   "scripts": {
-    "dev": "headwind watch & vite dev",
-    "build": "headwind build --minify && vite build",
-    "css:build": "headwind build",
-    "css:watch": "headwind watch",
-    "css:analyze": "headwind analyze --verbose",
-    "css:clean": "headwind clean"
+    "dev": "crosswind watch & vite dev",
+    "build": "crosswind build --minify && vite build",
+    "css:build": "crosswind build",
+    "css:watch": "crosswind watch",
+    "css:analyze": "crosswind analyze --verbose",
+    "css:clean": "crosswind clean"
   }
 }
 ```
@@ -423,7 +423,7 @@ jobs:
         run: bun install
 
       - name: Build CSS
-        run: bun run headwind build --minify
+        run: bun run crosswind build --minify
 
       - name: Run tests
         run: bun test
@@ -437,17 +437,17 @@ build:
   image: oven/bun:latest
   script:
     - bun install
-    - bun run headwind build --minify
+    - bun run crosswind build --minify
   artifacts:
     paths:
-      - dist/headwind.css
+      - dist/crosswind.css
 ```
 
 ### Vercel
 
 ```json
 {
-  "buildCommand": "headwind build --minify && next build",
+  "buildCommand": "crosswind build --minify && next build",
   "outputDirectory": ".next"
 }
 ```
@@ -456,7 +456,7 @@ build:
 
 ```toml
 [build]
-command = "headwind build --minify && npm run build"
+command = "crosswind build --minify && npm run build"
 publish = "dist"
 ```
 
@@ -468,26 +468,26 @@ Specify different configs for different environments:
 
 ```bash
 # Development
-headwind build --config ./headwind.dev.config.ts
+crosswind build --config ./crosswind.dev.config.ts
 
 # Production
-headwind build --config ./headwind.prod.config.ts --minify
+crosswind build --config ./crosswind.prod.config.ts --minify
 
 # Testing
-headwind build --config ./headwind.test.config.ts
+crosswind build --config ./crosswind.test.config.ts
 ```
 
 ### Programmatic Usage
 
-While the CLI is convenient, you can also use Headwind programmatically:
+While the CLI is convenient, you can also use Crosswind programmatically:
 
 ```typescript
-import { build, buildAndWrite } from 'headwind'
+import { build, buildAndWrite } from 'crosswind'
 
 // Build only (get result)
 const result = await build({
   content: ['./src/**/*.tsx'],
-  output: './dist/headwind.css',
+  output: './dist/crosswind.css',
   minify: true,
 })
 
@@ -496,7 +496,7 @@ console.log(`Built ${result.classes.size} classes in ${result.duration}ms`)
 // Build and write to file
 await buildAndWrite({
   content: ['./src/**/*.tsx'],
-  output: './dist/headwind.css',
+  output: './dist/crosswind.css',
   minify: true,
 })
 ```
@@ -505,10 +505,10 @@ await buildAndWrite({
 
 ```bash
 # Clean, build, and analyze
-headwind clean && headwind build --minify && headwind analyze
+crosswind clean && crosswind build --minify && crosswind analyze
 
 # Watch in one terminal, dev server in another
-headwind watch &
+crosswind watch &
 npm run dev
 ```
 
@@ -521,15 +521,15 @@ Use environment variables for dynamic configuration:
 export NODE_ENV=production
 
 # Build with env-specific config
-headwind build --minify
+crosswind build --minify
 ```
 
 ```typescript
-// headwind.config.ts
+// crosswind.config.ts
 const isProd = process.env.NODE_ENV === 'production'
 
 const config = {
-  output: isProd ? './dist/headwind.min.css' : './dist/headwind.css',
+  output: isProd ? './dist/crosswind.min.css' : './dist/crosswind.css',
   minify: isProd,
 }
 ```
@@ -538,22 +538,22 @@ const config = {
 
 ### Command Not Found
 
-**Problem:** `command not found: headwind`
+**Problem:** `command not found: crosswind`
 
 **Solutions:**
 
 1. Install globally:
 
    ```bash
-   bun add --global headwind
+   bun add --global crosswind
    ```
 
 2. Or use with package runner:
 
    ```bash
-   bunx headwind build
+   bunx crosswind build
    # or
-   npx headwind build
+   npx crosswind build
    ```
 
 3. Or use npm scripts:
@@ -561,7 +561,7 @@ const config = {
    ```json
    {
      "scripts": {
-       "build": "headwind build"
+       "build": "crosswind build"
      }
    }
    ```
@@ -599,7 +599,7 @@ const config = {
 1. Verify config path:
 
    ```bash
-   headwind build --config ./headwind.config.ts --verbose
+   crosswind build --config ./crosswind.config.ts --verbose
    ```
 
 2. Check config file syntax:
@@ -624,7 +624,7 @@ const config = {
 1. Run with verbose output:
 
    ```bash
-   headwind build --verbose
+   crosswind build --verbose
    ```
 
 2. Check content patterns:
@@ -638,12 +638,12 @@ const config = {
 
    ```typescript
    // Use type checking
-   import type { HeadwindOptions } from 'headwind'
+   import type { CrosswindOptions } from 'crosswind'
 
    const config = {
      content: ['./src/**/*.tsx'],
-     output: './dist/headwind.css',
-   } satisfies HeadwindOptions // Type error will show if invalid
+     output: './dist/crosswind.css',
+   } satisfies CrosswindOptions // Type error will show if invalid
    ```
 
 ## Performance Tips
@@ -652,10 +652,10 @@ const config = {
 
    ```bash
    # ❌ Slow
-   headwind build --content "./**/*.tsx"
+   crosswind build --content "./**/*.tsx"
 
    # ✅ Fast
-   headwind build --content "./src/**/*.tsx"
+   crosswind build --content "./src/**/*.tsx"
    ```
 
 2. **Exclude unnecessary files:**
@@ -671,21 +671,21 @@ const config = {
 
    ```bash
    # Faster than rebuilding manually
-   headwind watch
+   crosswind watch
    ```
 
 4. **Enable minify only in production:**
 
    ```bash
    # Development (fast)
-   headwind build
+   crosswind build
 
    # Production (optimized)
-   headwind build --minify
+   crosswind build --minify
    ```
 
 ## Related
 
 - [Configuration](../config.md) - Configuration options
 - [Watch Mode](./watch-mode.md) - Automatic rebuilding
-- [Programmatic API](../api-reference.md) - Use Headwind in code
+- [Programmatic API](../api-reference.md) - Use Crosswind in code

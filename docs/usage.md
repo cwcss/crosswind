@@ -1,10 +1,10 @@
 # Usage
 
-Learn how to use Headwind's utility classes to build beautiful user interfaces.
+Learn how to use Crosswind's utility classes to build beautiful user interfaces.
 
 ## Utility Classes
 
-Headwind provides a comprehensive set of utility classes that you can compose to build any design directly in your HTML.
+Crosswind provides a comprehensive set of utility classes that you can compose to build any design directly in your HTML.
 
 ### Layout
 

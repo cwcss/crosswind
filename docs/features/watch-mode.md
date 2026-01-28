@@ -12,15 +12,15 @@ Start watch mode using the CLI:
 
 ```bash
 # Using the watch command
-headwind watch
+crosswind watch
 
 # Or using build with --watch flag
-headwind build --watch
+crosswind build --watch
 ```
 
 ## How It Works
 
-When you start watch mode, Headwind:
+When you start watch mode, Crosswind:
 
 1. **Performs Initial Build** - Generates CSS from your current files
 2. **Watches Content Directories** - Monitors all directories matching your content patterns
@@ -33,8 +33,8 @@ When you start watch mode, Headwind:
 Watch mode uses the content patterns from your configuration file:
 
 ```typescript
-// headwind.config.ts
-import type { HeadwindOptions } from 'headwind'
+// crosswind.config.ts
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   content: [
@@ -42,8 +42,8 @@ const config = {
     './components/**/*.vue',
     './pages/**/*.svelte',
   ],
-  output: './dist/headwind.css',
-} satisfies HeadwindOptions
+  output: './dist/crosswind.css',
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -65,7 +65,7 @@ Watch mode monitors these file extensions by default:
 
 ### Fast Rebuilds
 
-Headwind's watch mode is optimized for speed:
+Crosswind's watch mode is optimized for speed:
 
 ```bash
 📝 src/App.tsx changed, rebuilding...
@@ -79,7 +79,7 @@ Typical rebuild times are under 10ms for most projects.
 Use `--verbose` to see detailed information during watch mode:
 
 ```bash
-headwind watch --verbose
+crosswind watch --verbose
 ```
 
 This shows:
@@ -100,7 +100,7 @@ const config = {
     './pages/**/*.tsx', // Watches: ./pages
     './components/**/*.tsx', // Watches: ./components
   ],
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 ```
 
 ## CLI Options
@@ -109,19 +109,19 @@ Customize watch mode behavior with CLI options:
 
 ```bash
 # Basic watch
-headwind watch
+crosswind watch
 
 # Watch with custom output
-headwind watch --output ./dist/custom.css
+crosswind watch --output ./dist/custom.css
 
 # Watch with minification
-headwind watch --minify
+crosswind watch --minify
 
 # Watch with verbose logging
-headwind watch --verbose
+crosswind watch --verbose
 
 # Watch with custom config
-headwind watch --config ./custom.config.ts
+crosswind watch --config ./custom.config.ts
 ```
 
 ## Development Workflow
@@ -131,7 +131,7 @@ headwind watch --config ./custom.config.ts
 1. **Terminal 1: Watch Mode**
 
    ```bash
-   headwind watch
+   crosswind watch
    ```
 
 2. **Terminal 2: Dev Server**
@@ -149,10 +149,10 @@ Add watch mode to your npm scripts:
 ```json
 {
   "scripts": {
-    "dev": "headwind watch & vite dev",
-    "dev:headwind": "headwind watch",
+    "dev": "crosswind watch & vite dev",
+    "dev:crosswind": "crosswind watch",
     "dev:app": "vite dev",
-    "build": "headwind build --minify && vite build"
+    "build": "crosswind build --minify && vite build"
   }
 }
 ```
@@ -163,13 +163,13 @@ Run watch mode alongside your development server:
 
 ```bash
 # Using npm-run-all
-npm-run-all --parallel dev:headwind dev:app
+npm-run-all --parallel dev:crosswind dev:app
 
 # Using concurrently
-concurrently "headwind watch" "vite dev"
+concurrently "crosswind watch" "vite dev"
 
 # Using &
-headwind watch & npm run dev
+crosswind watch & npm run dev
 ```
 
 ## Performance
@@ -226,7 +226,7 @@ Watch mode is highly performant thanks to Bun:
 1. Check your content patterns:
 
    ```bash
-   headwind watch --verbose
+   crosswind watch --verbose
    ```
 
    Look for the "👀 Watching:" output to see what's being monitored.
@@ -284,11 +284,11 @@ Watch mode is highly performant thanks to Bun:
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  // Vite will handle HMR, Headwind handles CSS
+  // Vite will handle HMR, Crosswind handles CSS
   server: {
     watch: {
-      // Don't watch headwind output to avoid loops
-      ignored: ['**/dist/headwind.css']
+      // Don't watch crosswind output to avoid loops
+      ignored: ['**/dist/crosswind.css']
     }
   }
 })
@@ -299,8 +299,8 @@ export default defineConfig({
 ```json
 {
   "scripts": {
-    "dev": "headwind watch & next dev",
-    "build": "headwind build --minify && next build"
+    "dev": "crosswind watch & next dev",
+    "build": "crosswind build --minify && next build"
   }
 }
 ```
@@ -312,7 +312,7 @@ export default defineConfig({
 module.exports = {
   // Webpack config
   watchOptions: {
-    ignored: /dist\/headwind\.css/, // Ignore Headwind output
+    ignored: /dist\/crosswind\.css/, // Ignore Crosswind output
   }
 }
 ```
@@ -328,15 +328,15 @@ module.exports = {
 
    ```bash
    # Development
-   headwind watch
+   crosswind watch
 
    # Production
-   headwind build --minify
+   crosswind build --minify
    ```
 
 3. **Combine with Hot Module Replacement (HMR)**
    - Let your dev server handle HMR
-   - Let Headwind handle CSS generation
+   - Let Crosswind handle CSS generation
    - Both work seamlessly together
 
 4. **Monitor Watch Output**

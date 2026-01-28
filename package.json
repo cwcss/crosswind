@@ -5,13 +5,13 @@
   "description": "A performant Utility-First CSS framework. Similar to Tailwind or UnoCSS.",
   "author": "Chris Breuer <chris@stacksjs.org>",
   "license": "MIT",
-  "homepage": "https://github.com/stacksjs/headwind#readme",
+  "homepage": "https://github.com/stacksjs/crosswind#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stacksjs/headwind.git"
+    "url": "git+https://github.com/stacksjs/crosswind.git"
   },
   "bugs": {
-    "url": "https://github.com/stacksjs/headwind/issues"
+    "url": "https://github.com/stacksjs/crosswind/issues"
   },
   "keywords": [
     "css",
@@ -20,12 +20,12 @@
     "css-framework",
     "bun",
     "performance",
-    "headwind",
+    "crosswind",
     "atomic-css",
     "typescript"
   ],
   "scripts": {
-    "build": "cd packages/headwind && bun run build",
+    "build": "cd packages/crosswind && bun run build",
     "fresh": "bunx rimraf node_modules/ bun.lock && bun i",
     "test": "bun test",
     "lint": "bunx --bun pickier run --mode lint",

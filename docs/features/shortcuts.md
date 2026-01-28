@@ -20,7 +20,7 @@ Instead of writing the same combination of utilities multiple times:
 Define a shortcut once and reuse it:
 
 ```typescript
-// headwind.config.ts
+// crosswind.config.ts
 const config = {
   shortcuts: {
     'btn-primary': 'px-4 py-2 rounded font-semibold transition-colors bg-blue-500 text-white hover:bg-blue-600',
@@ -35,10 +35,10 @@ const config = {
 
 ## Configuration
 
-Define shortcuts in your `headwind.config.ts`:
+Define shortcuts in your `crosswind.config.ts`:
 
 ```typescript
-import type { HeadwindOptions } from 'headwind'
+import type { CrosswindOptions } from 'crosswind'
 
 const config = {
   shortcuts: {
@@ -57,7 +57,7 @@ const config = {
     'input': 'border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500',
     'input-error': 'input border-red-500 focus:ring-red-500',
   },
-} satisfies HeadwindOptions
+} satisfies CrosswindOptions
 
 export default config
 ```
@@ -465,7 +465,7 @@ const config = {
 
 ```typescript
 // shortcuts/buttons.ts
-// headwind.config.ts
+// crosswind.config.ts
 import { buttonShortcuts } from './shortcuts/buttons'
 import { cardShortcuts } from './shortcuts/cards'
 
@@ -495,7 +495,7 @@ Share shortcuts across projects using presets:
 
 ```typescript
 // presets/design-system.ts
-// headwind.config.ts
+// crosswind.config.ts
 import { designSystemPreset } from './presets/design-system'
 
 export const designSystemPreset = {
@@ -541,7 +541,7 @@ const config = {
 3. Config is loaded:
 
    ```bash
-   headwind build --verbose
+   crosswind build --verbose
    ```
 
 ### Circular References

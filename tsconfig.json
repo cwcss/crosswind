@@ -6,7 +6,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "paths": {
-      "@stacksjs/headwind": ["./packages/headwind/src/index.ts"]
+      "@stacksjs/crosswind": ["./packages/crosswind/src/index.ts"]
     },
     "resolveJsonModule": true,
     "types": ["bun"],
@@ -25,6 +25,6 @@
     "skipLibCheck": true
   },
   "exclude": [
-    "packages/headwind/examples/**/*"
+    "packages/crosswind/examples/**/*"
   ]
 }
