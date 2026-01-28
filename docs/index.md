@@ -13,7 +13,7 @@ hero:
       link: /intro
     - theme: alt
       text: View on GitHub
-      link: https://github.com/stacksjs/crosswind
+      link: https://github.com/cwcss/crosswind
 
 features:
   - title: "Performance"

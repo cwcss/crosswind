@@ -21,7 +21,7 @@ export default {
         { text: 'Stacks Framework', link: 'https://stacksjs.org' },
       ],
     },
-    { text: 'GitHub', link: 'https://github.com/stacksjs/crosswind' },
+    { text: 'GitHub', link: 'https://github.com/cwcss/crosswind' },
   ],
 
   markdown: {

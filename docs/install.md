@@ -289,7 +289,7 @@ Pre-built binaries are available for different platforms. Download the binary th
 
 ```sh [macOS (arm64)]
 # Download the binary
-curl -L https://github.com/stacksjs/crosswind/releases/latest/download/crosswind-darwin-arm64 -o crosswind
+curl -L https://github.com/cwcss/crosswind/releases/latest/download/crosswind-darwin-arm64 -o crosswind
 
 # Make it executable
 chmod +x crosswind
@@ -300,7 +300,7 @@ sudo mv crosswind /usr/local/bin/crosswind
 
 ```sh [macOS (x64)]
 # Download the binary
-curl -L https://github.com/stacksjs/crosswind/releases/latest/download/crosswind-darwin-x64 -o crosswind
+curl -L https://github.com/cwcss/crosswind/releases/latest/download/crosswind-darwin-x64 -o crosswind
 
 # Make it executable
 chmod +x crosswind
@@ -311,7 +311,7 @@ sudo mv crosswind /usr/local/bin/crosswind
 
 ```sh [Linux (arm64)]
 # Download the binary
-curl -L https://github.com/stacksjs/crosswind/releases/latest/download/crosswind-linux-arm64 -o crosswind
+curl -L https://github.com/cwcss/crosswind/releases/latest/download/crosswind-linux-arm64 -o crosswind
 
 # Make it executable
 chmod +x crosswind
@@ -322,7 +322,7 @@ sudo mv crosswind /usr/local/bin/crosswind
 
 ```sh [Linux (x64)]
 # Download the binary
-curl -L https://github.com/stacksjs/crosswind/releases/latest/download/crosswind-linux-x64 -o crosswind
+curl -L https://github.com/cwcss/crosswind/releases/latest/download/crosswind-linux-x64 -o crosswind
 
 # Make it executable
 chmod +x crosswind
@@ -333,7 +333,7 @@ sudo mv crosswind /usr/local/bin/crosswind
 
 ```sh [Windows (x64)]
 # Download the binary
-curl -L https://github.com/stacksjs/crosswind/releases/latest/download/crosswind-windows-x64.exe -o crosswind.exe
+curl -L https://github.com/cwcss/crosswind/releases/latest/download/crosswind-windows-x64.exe -o crosswind.exe
 
 # Move it to your PATH (adjust the path as needed)
 move crosswind.exe C:\Windows\System32\crosswind.exe
@@ -342,7 +342,7 @@ move crosswind.exe C:\Windows\System32\crosswind.exe
 :::
 
 ::: tip
-You can also find Crosswind binaries in [GitHub releases](https://github.com/stacksjs/crosswind/releases).
+You can also find Crosswind binaries in [GitHub releases](https://github.com/cwcss/crosswind/releases).
 :::
 
 ## Verify Installation
@@ -454,6 +454,6 @@ If the build fails:
 
 ## Support
 
-- [GitHub Issues](https://github.com/stacksjs/crosswind/issues)
+- [GitHub Issues](https://github.com/cwcss/crosswind/issues)
 - [Documentation](https://crosswind.sh)
 - [Discord Community](https://discord.gg/stacksjs)

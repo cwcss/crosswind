@@ -16,6 +16,7 @@ examples/plugin/
 ## Usage
 
 The plugin works by intercepting HTML imports in your TypeScript/JavaScript code. When you import an HTML file, the plugin:
+
 1. Scans the HTML for Crosswind utility classes
 2. Generates the corresponding CSS
 3. Injects the CSS into the `<head>` section
@@ -24,7 +25,7 @@ The plugin works by intercepting HTML imports in your TypeScript/JavaScript code
 ### Basic Setup
 
 ```typescript
-import { plugin } from '@stacksjs/crosswind'
+import { plugin } from '@cwcss/crosswind'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],
@@ -34,6 +35,7 @@ await Bun.build({
 ```
 
 **Your TypeScript file** (`src/index.ts`):
+
 ```typescript
 import html from './index.html'
 
@@ -44,7 +46,7 @@ document.body.innerHTML = html
 ### With Custom Configuration
 
 ```typescript
-import { plugin } from '@stacksjs/crosswind'
+import { plugin } from '@cwcss/crosswind'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],
@@ -87,7 +89,9 @@ bun run build.ts
 ## Options
 
 ### `config`
+
 Custom Crosswind configuration to override defaults. This can include:
+
 - `minify`: Minify the generated CSS
 - `theme`: Custom theme colors, spacing, fonts, etc.
 - `shortcuts`: Define utility class shortcuts
@@ -95,11 +99,13 @@ Custom Crosswind configuration to override defaults. This can include:
 - And more...
 
 ### `includePreflight`
+
 Whether to include preflight (reset) CSS. Default: `true`
 
 ## Use Cases
 
 This plugin is ideal for:
+
 - Single Page Applications (SPAs) that import HTML templates
 - Component-based architectures where HTML is imported as strings
 - Build processes that need automatic CSS generation from HTML

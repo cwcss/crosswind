@@ -57,7 +57,7 @@ export default {
 } satisfies CrosswindOptions
 ```
 
-2. **Add utility classes to your HTML**:
+1. **Add utility classes to your HTML**:
 
 ```html
 <div class="flex items-center justify-between p-4 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600">
@@ -65,7 +65,7 @@ export default {
 </div>
 ```
 
-3. **Build your CSS**:
+1. **Build your CSS**:
 
 ```bash
 # Build once
@@ -323,7 +323,7 @@ To contribute to Crosswind development:
 
 ```bash
 # Clone the repository
-git clone https://github.com/stacksjs/crosswind.git
+git clone https://github.com/cwcss/crosswind.git
 cd crosswind
 
 # Install dependencies
@@ -357,7 +357,7 @@ For comprehensive documentation, visit [crosswind.stacksjs.org](https://crosswin
 
 ## Changelog
 
-Please see our [releases](https://github.com/stacksjs/crosswind/releases) page for more information on what has changed recently.
+Please see our [releases](https://github.com/cwcss/crosswind/releases) page for more information on what has changed recently.
 
 ## Contributing
 
@@ -375,7 +375,7 @@ We welcome contributions! Whether it's:
 
 For help, discussion about best practices, or any other conversation that would benefit from being searchable:
 
-[Discussions on GitHub](https://github.com/stacksjs/crosswind/discussions)
+[Discussions on GitHub](https://github.com/cwcss/crosswind/discussions)
 
 For casual chit-chat with others using this package:
 
@@ -403,8 +403,8 @@ Made with 💙
 <!-- Badges -->
 [npm-version-src]: https://img.shields.io/npm/v/crosswind?style=flat-square
 [npm-version-href]: https://npmjs.com/package/crosswind
-[github-actions-src]: https://img.shields.io/github/actions/workflow/status/stacksjs/crosswind/ci.yml?style=flat-square&branch=main
-[github-actions-href]: https://github.com/stacksjs/crosswind/actions?query=workflow%3Aci
+[github-actions-src]: https://img.shields.io/github/actions/workflow/status/cwcss/crosswind/ci.yml?style=flat-square&branch=main
+[github-actions-href]: https://github.com/cwcss/crosswind/actions?query=workflow%3Aci
 
-<!-- [codecov-src]: https://img.shields.io/codecov/c/gh/stacksjs/crosswind/main?style=flat-square
-[codecov-href]: https://codecov.io/gh/stacksjs/crosswind -->
+<!-- [codecov-src]: https://img.shields.io/codecov/c/gh/cwcss/crosswind/main?style=flat-square
+[codecov-href]: https://codecov.io/gh/cwcss/crosswind -->

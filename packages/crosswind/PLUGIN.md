@@ -5,12 +5,13 @@ A Bun plugin that automatically generates and injects Crosswind CSS into your HT
 ## Installation
 
 ```bash
-bun add @stacksjs/crosswind
+bun add @cwcss/crosswind
 ```
 
 ## Quick Start
 
 **1. Create your HTML file** (`src/template.html`):
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -26,6 +27,7 @@ bun add @stacksjs/crosswind
 ```
 
 **2. Import it in your TypeScript** (`src/index.ts`):
+
 ```typescript
 import template from './template.html'
 
@@ -34,8 +36,9 @@ document.body.innerHTML = template
 ```
 
 **3. Build with the plugin**:
+
 ```typescript
-import { plugin } from '@stacksjs/crosswind'
+import { plugin } from '@cwcss/crosswind'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],
@@ -45,6 +48,7 @@ await Bun.build({
 ```
 
 The plugin will automatically:
+
 - Scan the HTML for utility classes
 - Generate CSS for those classes
 - Inject the CSS into the `<head>` section
@@ -54,7 +58,7 @@ The plugin will automatically:
 ### Basic Configuration
 
 ```typescript
-import { plugin } from '@stacksjs/crosswind'
+import { plugin } from '@cwcss/crosswind'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],
@@ -70,7 +74,7 @@ await Bun.build({
 ### Custom Theme
 
 ```typescript
-import { plugin } from '@stacksjs/crosswind'
+import { plugin } from '@cwcss/crosswind'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],
@@ -103,7 +107,7 @@ await Bun.build({
 ### Advanced Configuration
 
 ```typescript
-import { plugin } from '@stacksjs/crosswind'
+import { plugin } from '@cwcss/crosswind'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],
@@ -187,6 +191,7 @@ See the [examples/plugin](./examples/plugin) directory for a complete working ex
 ## Performance
 
 The plugin is highly performant:
+
 - Processes 1000 utilities in ~7ms
 - Minimal overhead in build process
 - Lazy loading - only processes imported HTML files
@@ -196,7 +201,7 @@ The plugin is highly performant:
 The plugin is fully typed. Import the types:
 
 ```typescript
-import type { CrosswindPluginOptions } from '@stacksjs/crosswind'
+import type { CrosswindPluginOptions } from '@cwcss/crosswind'
 
 const options: CrosswindPluginOptions = {
   config: {
@@ -211,7 +216,7 @@ The plugin also respects `crosswind.config.ts` in your project root:
 
 ```typescript
 // crosswind.config.ts
-import type { CrosswindOptions } from '@stacksjs/crosswind'
+import type { CrosswindOptions } from '@cwcss/crosswind'
 
 export default {
   minify: true,

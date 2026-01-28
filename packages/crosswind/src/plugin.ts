@@ -22,7 +22,7 @@ export interface CrosswindPluginOptions {
  *
  * @example
  * ```typescript
- * import { plugin } from '@stacksjs/crosswind'
+ * import { plugin } from '@cwcss/crosswind'
  *
  * await Bun.build({
  *   entrypoints: ['./src/index.ts'],

@@ -208,7 +208,7 @@ cli
       process.exit(1)
     }
 
-    const defaultConfig = `import type { CrosswindOptions } from '@stacksjs/crosswind'
+    const defaultConfig = `import type { CrosswindOptions } from '@cwcss/crosswind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],

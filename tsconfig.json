@@ -6,7 +6,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "paths": {
-      "@stacksjs/crosswind": ["./packages/crosswind/src/index.ts"]
+      "@cwcss/crosswind": ["./packages/crosswind/src/index.ts"]
     },
     "resolveJsonModule": true,
     "types": ["bun"],

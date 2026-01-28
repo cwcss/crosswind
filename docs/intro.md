@@ -358,11 +358,11 @@ Now that you understand what Crosswind is and how it works, explore:
 
 ## Community & Support
 
-- **GitHub** - [github.com/stacksjs/crosswind](https://github.com/stacksjs/crosswind)
+- **GitHub** - [github.com/cwcss/crosswind](https://github.com/cwcss/crosswind)
 - **Discord** - [Join the Stacks Discord](https://discord.gg/stacksjs)
-- **Issues** - [Report bugs or request features](https://github.com/stacksjs/crosswind/issues)
-- **Discussions** - [Ask questions and share ideas](https://github.com/stacksjs/crosswind/discussions)
+- **Issues** - [Report bugs or request features](https://github.com/cwcss/crosswind/issues)
+- **Discussions** - [Ask questions and share ideas](https://github.com/cwcss/crosswind/discussions)
 
 ## License
 
-Crosswind is open-source software licensed under the [MIT license](https://github.com/stacksjs/crosswind/blob/main/LICENSE.md).
+Crosswind is open-source software licensed under the [MIT license](https://github.com/cwcss/crosswind/blob/main/LICENSE.md).

@@ -1,4 +1,4 @@
-import { plugin } from '@stacksjs/crosswind'
+import { plugin } from '@cwcss/crosswind'
 
 // Build with crosswind plugin
 // The plugin will automatically process HTML files that are imported in your TypeScript/JavaScript code

@@ -1,17 +1,17 @@
 {
-  "name": "@stacksjs/crosswind",
+  "name": "@cwcss/crosswind",
   "type": "module",
   "version": "0.1.4",
   "description": "A performant Utility-First CSS framework. Similar to Tailwind or UnoCSS.",
   "author": "Chris Breuer <chris@stacksjs.org>",
   "license": "MIT",
-  "homepage": "https://github.com/stacksjs/crosswind#readme",
+  "homepage": "https://github.com/cwcss/crosswind#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stacksjs/crosswind.git"
+    "url": "git+https://github.com/cwcss/crosswind.git"
   },
   "bugs": {
-    "url": "https://github.com/stacksjs/crosswind/issues"
+    "url": "https://github.com/cwcss/crosswind/issues"
   },
   "keywords": [
     "css",

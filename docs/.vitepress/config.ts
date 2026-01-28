@@ -22,7 +22,7 @@ const nav = [
   { text: 'News', link: 'https://stacksjs.org/news' },
   {
     text: 'Changelog',
-    link: 'https://github.com/stacksjs/crosswind/blob/main/CHANGELOG.md',
+    link: 'https://github.com/cwcss/crosswind/blob/main/CHANGELOG.md',
   },
   // { text: 'Blog', link: 'https://updates.ow3.org' },
   {
@@ -132,7 +132,7 @@ export default withPwa(
       sidebar,
 
       editLink: {
-        pattern: 'https://github.com/stacksjs/crosswind/edit/main/docs/:path',
+        pattern: 'https://github.com/cwcss/crosswind/edit/main/docs/:path',
         text: 'Edit this page on GitHub',
       },
 
@@ -144,7 +144,7 @@ export default withPwa(
       socialLinks: [
         { icon: 'twitter', link: 'https://twitter.com/stacksjs' },
         { icon: 'bluesky', link: 'https://bsky.app/profile/chrisbreuer.dev' },
-        { icon: 'github', link: 'https://github.com/stacksjs/crosswind' },
+        { icon: 'github', link: 'https://github.com/cwcss/crosswind' },
         { icon: 'discord', link: 'https://discord.gg/stacksjs' },
       ],
 
