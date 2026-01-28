@@ -157,6 +157,7 @@ export interface ParsedClass {
   value?: string
   important: boolean
   arbitrary: boolean
+  typeHint?: string // Type hint for arbitrary values, e.g., 'color' in text-[color:var(--muted)]
 }
 
 export interface CSSRule {

@@ -348,6 +348,11 @@ export const colorRule: UtilityRule = (parsed, config) => {
 
   const value = parsed.value
 
+  // Handle type hint for color: text-[color:var(--muted)] -> color: var(--muted)
+  if (parsed.arbitrary && parsed.typeHint === 'color') {
+    return { [prop]: value }
+  }
+
   // Build/update flat color cache if needed
   if (flatColorCache === null || flatColorCacheConfig !== config.theme.colors) {
     flatColorCache = buildFlatColorCache(config.theme.colors)
@@ -454,6 +459,16 @@ export const fontSizeRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'text' && parsed.value) {
     // Handle arbitrary values first
     if (parsed.arbitrary) {
+      // If there's a type hint, only handle font-size if it's a length-related type
+      // For 'color' type hint, let colorRule handle it
+      if (parsed.typeHint) {
+        if (parsed.typeHint === 'color') {
+          return undefined // Let colorRule handle it
+        }
+        // 'length' type hint or other size-related types -> font-size
+        return { 'font-size': parsed.value } as Record<string, string>
+      }
+      // No type hint - default to font-size (backwards compatible)
       return { 'font-size': parsed.value } as Record<string, string>
     }
     const fontSize = config.theme.fontSize[parsed.value]

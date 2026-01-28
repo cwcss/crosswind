@@ -989,17 +989,31 @@ function parseClassImpl(className: string): ParsedClass {
 
   // Check for arbitrary values with brackets BEFORE splitting on colons
   // This handles cases like bg-[url(https://...)] where the URL contains colons
+  // Also handles type hints like text-[color:var(--muted)]
   const preArbitraryMatch = cleanClassName.match(/^((?:[a-z-]+:)*)([a-z-]+?)-\[(.+)\]$/)
   if (preArbitraryMatch) {
     const variantPart = preArbitraryMatch[1]
     const variants = variantPart ? variantPart.split(':').filter(Boolean) : []
+    let value = preArbitraryMatch[3]
+    let typeHint: string | undefined
+
+    // Check for type hint in arbitrary value: text-[color:var(--muted)]
+    // Type hints are: color, length, url, number, percentage, position, etc.
+    // Don't match if it looks like a CSS variable var(--...) or CSS function
+    const typeHintMatch = value.match(/^(color|length|url|number|percentage|position|line-width|absolute-size|relative-size|image|angle|time|flex|string|family-name):(.*)/i)
+    if (typeHintMatch) {
+      typeHint = typeHintMatch[1].toLowerCase()
+      value = typeHintMatch[2]
+    }
+
     return {
       raw: className,
       variants,
       utility: preArbitraryMatch[2],
-      value: preArbitraryMatch[3],
+      value,
       important,
       arbitrary: true,
+      typeHint,
     }
   }
 
@@ -1039,16 +1053,28 @@ function parseClassImpl(className: string): ParsedClass {
     }
   }
 
-  // Check for arbitrary values: w-[100px] or bg-[#ff0000]
+  // Check for arbitrary values: w-[100px] or bg-[#ff0000] or text-[color:var(--muted)]
   const arbitraryMatch = utility.match(/^([a-z-]+?)-\[(.+?)\]$/)
   if (arbitraryMatch) {
+    let value = arbitraryMatch[2]
+    let typeHint: string | undefined
+
+    // Check for type hint in arbitrary value: text-[color:var(--muted)]
+    // Type hints are: color, length, url, number, percentage, position, etc.
+    const typeHintMatch = value.match(/^(color|length|url|number|percentage|position|line-width|absolute-size|relative-size|image|angle|time|flex|string|family-name):(.*)/i)
+    if (typeHintMatch) {
+      typeHint = typeHintMatch[1].toLowerCase()
+      value = typeHintMatch[2]
+    }
+
     return {
       raw: className,
       variants,
       utility: arbitraryMatch[1],
-      value: arbitraryMatch[2],
+      value,
       important,
       arbitrary: true,
+      typeHint,
     }
   }
 

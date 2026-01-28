@@ -126,6 +126,63 @@ describe('Arbitrary Values and Properties', () => {
       })
     })
 
+    describe('Type hints in arbitrary values', () => {
+      it('should handle color type hint with CSS variable', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('text-[color:var(--muted)]')
+        expect(gen.toCSS(false)).toContain('color: var(--muted);')
+      })
+
+      it('should handle length type hint', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('text-[length:1.5rem]')
+        expect(gen.toCSS(false)).toContain('font-size: 1.5rem;')
+      })
+
+      it('should handle border color type hint', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('border-[color:var(--border)]')
+        expect(gen.toCSS(false)).toContain('border-color: var(--border);')
+      })
+
+      it('should handle bg color type hint', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('bg-[color:var(--background)]')
+        expect(gen.toCSS(false)).toContain('background-color: var(--background);')
+      })
+
+      it('should parse type hint correctly', () => {
+        const result = parseClass('text-[color:var(--muted)]')
+        expect(result.utility).toBe('text')
+        expect(result.value).toBe('var(--muted)')
+        expect(result.typeHint).toBe('color')
+        expect(result.arbitrary).toBe(true)
+      })
+
+      it('should parse length type hint correctly', () => {
+        const result = parseClass('w-[length:100px]')
+        expect(result.utility).toBe('w')
+        expect(result.value).toBe('100px')
+        expect(result.typeHint).toBe('length')
+        expect(result.arbitrary).toBe(true)
+      })
+
+      it('should not confuse CSS var() with type hint', () => {
+        const result = parseClass('text-[var(--size)]')
+        expect(result.utility).toBe('text')
+        expect(result.value).toBe('var(--size)')
+        expect(result.typeHint).toBeUndefined()
+      })
+
+      it('should handle type hint with variant', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('hover:text-[color:var(--muted)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain(':hover')
+        expect(css).toContain('color: var(--muted);')
+      })
+    })
+
     describe('Modern CSS units', () => {
       it('should handle dvh units', () => {
         const gen = new CSSGenerator(defaultConfig)
