@@ -419,9 +419,13 @@ function applyOpacity(color: string, opacity: number): string {
     cleanColor = color.slice(1, -1)
   }
 
-  // If color is hex (#rrggbb), convert to rgb with alpha
+  // If color is hex (#rgb or #rrggbb), convert to rgb with alpha
   if (cleanColor.charCodeAt(0) === 35) { // '#' char code for faster check
-    const hex = cleanColor.slice(1)
+    let hex = cleanColor.slice(1)
+    // Expand 3-char hex (#rgb) to 6-char (#rrggbb)
+    if (hex.length === 3) {
+      hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
+    }
     const r = Number.parseInt(hex.slice(0, 2), 16)
     const g = Number.parseInt(hex.slice(2, 4), 16)
     const b = Number.parseInt(hex.slice(4, 6), 16)

@@ -27,7 +27,11 @@ function buildShadowColorCache(colors: Record<string, any>): Map<string, string>
 
 function applyShadowOpacity(color: string, opacity: number): string {
   if (color.charCodeAt(0) === 35) { // '#'
-    const hex = color.slice(1)
+    let hex = color.slice(1)
+    // Expand 3-char hex (#rgb) to 6-char (#rrggbb)
+    if (hex.length === 3) {
+      hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
+    }
     const r = Number.parseInt(hex.slice(0, 2), 16)
     const g = Number.parseInt(hex.slice(2, 4), 16)
     const b = Number.parseInt(hex.slice(4, 6), 16)
