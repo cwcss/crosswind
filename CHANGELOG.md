@@ -1,3 +1,106 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.1.3...v0.1.4)
+
+### 🧹 Chores
+
+- release v0.1.4 ([3719b4c](https://github.com/cwcss/crosswind/commit/3719b4c))
+- wip ([311a34a](https://github.com/cwcss/crosswind/commit/311a34a))
+- wip ([a8f0eac](https://github.com/cwcss/crosswind/commit/a8f0eac))
+- wip ([666877a](https://github.com/cwcss/crosswind/commit/666877a))
+- wip ([cf2d716](https://github.com/cwcss/crosswind/commit/cf2d716))
+- wip ([9d4fc6f](https://github.com/cwcss/crosswind/commit/9d4fc6f))
+- wip ([6a58870](https://github.com/cwcss/crosswind/commit/6a58870))
+- wip ([7a891d8](https://github.com/cwcss/crosswind/commit/7a891d8))
+- wip ([b8d8d0d](https://github.com/cwcss/crosswind/commit/b8d8d0d))
+- wip ([a365623](https://github.com/cwcss/crosswind/commit/a365623))
+- wip ([a189f76](https://github.com/cwcss/crosswind/commit/a189f76))
+- wip ([266fdc5](https://github.com/cwcss/crosswind/commit/266fdc5))
+- release v0.1.4 ([d3c7763](https://github.com/cwcss/crosswind/commit/d3c7763))
+- wip ([5c3b3f2](https://github.com/cwcss/crosswind/commit/5c3b3f2))
+- wip ([ca1795c](https://github.com/cwcss/crosswind/commit/ca1795c))
+- wip ([bcb554e](https://github.com/cwcss/crosswind/commit/bcb554e))
+- wip ([0b35e2b](https://github.com/cwcss/crosswind/commit/0b35e2b))
+- wip ([6ad0cc4](https://github.com/cwcss/crosswind/commit/6ad0cc4))
+- wip ([5ca440d](https://github.com/cwcss/crosswind/commit/5ca440d))
+- wip ([155be12](https://github.com/cwcss/crosswind/commit/155be12))
+- wip ([1b1ff35](https://github.com/cwcss/crosswind/commit/1b1ff35))
+- wip ([fc69e98](https://github.com/cwcss/crosswind/commit/fc69e98))
+- release v0.1.4 ([27a66ba](https://github.com/cwcss/crosswind/commit/27a66ba))
+- wip ([a4c6d8a](https://github.com/cwcss/crosswind/commit/a4c6d8a))
+- wip ([e1e3f4f](https://github.com/cwcss/crosswind/commit/e1e3f4f))
+- wip ([352b160](https://github.com/cwcss/crosswind/commit/352b160))
+- wip ([46b97c2](https://github.com/cwcss/crosswind/commit/46b97c2))
+- wip ([e15e163](https://github.com/cwcss/crosswind/commit/e15e163))
+- wip ([b5c003b](https://github.com/cwcss/crosswind/commit/b5c003b))
+- wip ([0547ef5](https://github.com/cwcss/crosswind/commit/0547ef5))
+- wip ([56b34ea](https://github.com/cwcss/crosswind/commit/56b34ea))
+- wip ([23e3c54](https://github.com/cwcss/crosswind/commit/23e3c54))
+- wip ([69a9fbc](https://github.com/cwcss/crosswind/commit/69a9fbc))
+- wip ([c31cbbd](https://github.com/cwcss/crosswind/commit/c31cbbd))
+- wip ([66adcf1](https://github.com/cwcss/crosswind/commit/66adcf1))
+- wip ([385d534](https://github.com/cwcss/crosswind/commit/385d534))
+
+### 📄 Miscellaneous
+
+- Update release.yml ([ded3699](https://github.com/cwcss/crosswind/commit/ded3699))
+- Merge pull request #14 from cwcss/feat/pantry-release ([1e8e98c](https://github.com/cwcss/crosswind/commit/1e8e98c)) ([#14](https://github.com/cwcss/crosswind/issues/14), [#14](https://github.com/cwcss/crosswind/issues/14))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+- Glenn Michael Torregosa <gtorregosa@gmail.com>
+- glennmichael123 <gtorregosa@gmail.com>
+
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.1.3...HEAD)
+
+### 🧹 Chores
+
+- wip ([311a34a](https://github.com/cwcss/crosswind/commit/311a34a))
+- wip ([a8f0eac](https://github.com/cwcss/crosswind/commit/a8f0eac))
+- wip ([666877a](https://github.com/cwcss/crosswind/commit/666877a))
+- wip ([cf2d716](https://github.com/cwcss/crosswind/commit/cf2d716))
+- wip ([9d4fc6f](https://github.com/cwcss/crosswind/commit/9d4fc6f))
+- wip ([6a58870](https://github.com/cwcss/crosswind/commit/6a58870))
+- wip ([7a891d8](https://github.com/cwcss/crosswind/commit/7a891d8))
+- wip ([b8d8d0d](https://github.com/cwcss/crosswind/commit/b8d8d0d))
+- wip ([a365623](https://github.com/cwcss/crosswind/commit/a365623))
+- wip ([a189f76](https://github.com/cwcss/crosswind/commit/a189f76))
+- wip ([266fdc5](https://github.com/cwcss/crosswind/commit/266fdc5))
+- release v0.1.4 ([d3c7763](https://github.com/cwcss/crosswind/commit/d3c7763))
+- wip ([5c3b3f2](https://github.com/cwcss/crosswind/commit/5c3b3f2))
+- wip ([ca1795c](https://github.com/cwcss/crosswind/commit/ca1795c))
+- wip ([bcb554e](https://github.com/cwcss/crosswind/commit/bcb554e))
+- wip ([0b35e2b](https://github.com/cwcss/crosswind/commit/0b35e2b))
+- wip ([6ad0cc4](https://github.com/cwcss/crosswind/commit/6ad0cc4))
+- wip ([5ca440d](https://github.com/cwcss/crosswind/commit/5ca440d))
+- wip ([155be12](https://github.com/cwcss/crosswind/commit/155be12))
+- wip ([1b1ff35](https://github.com/cwcss/crosswind/commit/1b1ff35))
+- wip ([fc69e98](https://github.com/cwcss/crosswind/commit/fc69e98))
+- release v0.1.4 ([27a66ba](https://github.com/cwcss/crosswind/commit/27a66ba))
+- wip ([a4c6d8a](https://github.com/cwcss/crosswind/commit/a4c6d8a))
+- wip ([e1e3f4f](https://github.com/cwcss/crosswind/commit/e1e3f4f))
+- wip ([352b160](https://github.com/cwcss/crosswind/commit/352b160))
+- wip ([46b97c2](https://github.com/cwcss/crosswind/commit/46b97c2))
+- wip ([e15e163](https://github.com/cwcss/crosswind/commit/e15e163))
+- wip ([b5c003b](https://github.com/cwcss/crosswind/commit/b5c003b))
+- wip ([0547ef5](https://github.com/cwcss/crosswind/commit/0547ef5))
+- wip ([56b34ea](https://github.com/cwcss/crosswind/commit/56b34ea))
+- wip ([23e3c54](https://github.com/cwcss/crosswind/commit/23e3c54))
+- wip ([69a9fbc](https://github.com/cwcss/crosswind/commit/69a9fbc))
+- wip ([c31cbbd](https://github.com/cwcss/crosswind/commit/c31cbbd))
+- wip ([66adcf1](https://github.com/cwcss/crosswind/commit/66adcf1))
+- wip ([385d534](https://github.com/cwcss/crosswind/commit/385d534))
+
+### 📄 Miscellaneous
+
+- Update release.yml ([ded3699](https://github.com/cwcss/crosswind/commit/ded3699))
+- Merge pull request #14 from cwcss/feat/pantry-release ([1e8e98c](https://github.com/cwcss/crosswind/commit/1e8e98c)) ([#14](https://github.com/cwcss/crosswind/issues/14), [#14](https://github.com/cwcss/crosswind/issues/14))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+- Glenn Michael Torregosa <gtorregosa@gmail.com>
+- glennmichael123 <gtorregosa@gmail.com>
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.1.3...HEAD)
 
 ### 🧹 Chores
