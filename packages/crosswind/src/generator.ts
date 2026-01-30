@@ -269,16 +269,49 @@ const RING_MAP: Record<string, Record<string, string>> = {
   'ring-inset': { '--hw-ring-inset': 'inset' },
 }
 
-// Shadow utilities - direct raw class to CSS
+// Shadow utilities - use CSS variable system for shadow color support
+// --hw-shadow holds the default shadow, --hw-shadow-colored replaces colors with var(--hw-shadow-color)
+// box-shadow references --hw-shadow which can be swapped to --hw-shadow-colored by a shadow-{color} utility
 const SHADOW_MAP: Record<string, Record<string, string>> = {
-  'shadow-sm': { 'box-shadow': '0 1px 2px 0 rgb(0 0 0 / 0.05)' },
-  'shadow': { 'box-shadow': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)' },
-  'shadow-md': { 'box-shadow': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)' },
-  'shadow-lg': { 'box-shadow': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)' },
-  'shadow-xl': { 'box-shadow': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)' },
-  'shadow-2xl': { 'box-shadow': '0 25px 50px -12px rgb(0 0 0 / 0.25)' },
-  'shadow-inner': { 'box-shadow': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)' },
-  'shadow-none': { 'box-shadow': '0 0 #0000' },
+  'shadow-sm': {
+    '--hw-shadow': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+    '--hw-shadow-colored': '0 1px 2px 0 var(--hw-shadow-color)',
+    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+  },
+  'shadow': {
+    '--hw-shadow': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+    '--hw-shadow-colored': '0 1px 3px 0 var(--hw-shadow-color), 0 1px 2px -1px var(--hw-shadow-color)',
+    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+  },
+  'shadow-md': {
+    '--hw-shadow': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+    '--hw-shadow-colored': '0 4px 6px -1px var(--hw-shadow-color), 0 2px 4px -2px var(--hw-shadow-color)',
+    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+  },
+  'shadow-lg': {
+    '--hw-shadow': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+    '--hw-shadow-colored': '0 10px 15px -3px var(--hw-shadow-color), 0 4px 6px -4px var(--hw-shadow-color)',
+    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+  },
+  'shadow-xl': {
+    '--hw-shadow': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+    '--hw-shadow-colored': '0 20px 25px -5px var(--hw-shadow-color), 0 8px 10px -6px var(--hw-shadow-color)',
+    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+  },
+  'shadow-2xl': {
+    '--hw-shadow': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
+    '--hw-shadow-colored': '0 25px 50px -12px var(--hw-shadow-color)',
+    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+  },
+  'shadow-inner': {
+    '--hw-shadow': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
+    '--hw-shadow-colored': 'inset 0 2px 4px 0 var(--hw-shadow-color)',
+    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+  },
+  'shadow-none': {
+    '--hw-shadow': '0 0 #0000',
+    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+  },
 }
 
 // Border radius - direct raw class to CSS
@@ -1285,6 +1318,8 @@ export class CSSGenerator {
   private screenBreakpoints: Map<string, string>
   // Cache for utility+value combinations that don't match any rule (negative cache)
   private noMatchCache: Set<string> = new Set()
+  // Preserve extend colors for CSS variable generation (only custom colors, not defaults)
+  private extendColors: Record<string, string | Record<string, string>> | null = null
 
   constructor(private config: CrosswindConfig) {
     // Merge preset themes into the main config theme
@@ -1294,6 +1329,11 @@ export class CSSGenerator {
           this.config.theme = deepMerge(this.config.theme, preset.theme)
         }
       }
+    }
+
+    // Save extend colors before merging (for CSS variable generation)
+    if (config.theme.extend?.colors) {
+      this.extendColors = config.theme.extend.colors as Record<string, string | Record<string, string>>
     }
 
     // Merge theme.extend into theme (allows users to add custom values without replacing defaults)
@@ -2094,10 +2134,12 @@ export class CSSGenerator {
 
   /**
    * Generate :root CSS variables from theme colors
+   * Uses only extend colors (custom) if available, to avoid dumping 300+ default Tailwind colors.
    * Flattens nested color objects: { monokai: { bg: '#2d2a2e' } } -> --monokai-bg: #2d2a2e
    */
   private generateCSSVariables(): string | null {
-    const colors = this.config.theme.colors
+    // Prefer extend colors (user's custom colors only), fall back to all theme colors
+    const colors = this.extendColors || this.config.theme.colors
     if (!colors || Object.keys(colors).length === 0) return null
 
     const vars: string[] = []
