@@ -1,3 +1,13 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.1.4...v0.1.5)
+
+### 🧹 Chores
+
+- release v0.1.5 ([663f6dc](https://github.com/cwcss/crosswind/commit/663f6dc))
+
+### Contributors
+
+- glennmichael123 <gtorregosa@gmail.com>
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.1.3...v0.1.4)
 
 ### 🧹 Chores
