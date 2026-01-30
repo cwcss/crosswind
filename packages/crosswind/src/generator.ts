@@ -1770,9 +1770,9 @@ export class CSSGenerator {
     for (let i = 0; i < rulesLength; i++) {
       const result = builtInRules[i](parsed, this.config)
       if (result) {
-        // Handle both old format (just properties) and new format (object with properties and childSelector)
+        // Handle both old format (just properties) and new format (object with properties and childSelector/pseudoElement)
         if ('properties' in result && typeof result.properties === 'object') {
-          this.addRule(parsed, result.properties, result.childSelector)
+          this.addRule(parsed, result.properties, result.childSelector, result.pseudoElement)
         }
         else {
           this.addRule(parsed, result as Record<string, string>)
@@ -1788,12 +1788,16 @@ export class CSSGenerator {
   /**
    * Add a CSS rule with variants applied
    */
-  private addRule(parsed: ParsedClass, properties: Record<string, string>, childSelector?: string): void {
+  private addRule(parsed: ParsedClass, properties: Record<string, string>, childSelector?: string, pseudoElement?: string): void {
     // Use cached selector if available
-    const cacheKey = `${parsed.raw}${childSelector || ''}`
+    const cacheKey = `${parsed.raw}${childSelector || ''}${pseudoElement || ''}`
     let selector = this.selectorCache.get(cacheKey)
     if (!selector) {
       selector = this.buildSelector(parsed)
+      // Append pseudo-element directly (no space)
+      if (pseudoElement) {
+        selector += pseudoElement
+      }
       // Append child selector if provided
       if (childSelector) {
         selector += ` ${childSelector}`
@@ -2020,6 +2024,14 @@ export class CSSGenerator {
       }
     }
 
+    // Generate CSS variables from theme colors if enabled
+    if (this.config.cssVariables) {
+      const vars = this.generateCSSVariables()
+      if (vars) {
+        parts.push(minify ? vars.replace(/\s+/g, ' ').trim() : vars)
+      }
+    }
+
     // Base rules (no media query)
     const baseRules = this.rules.get('base') || []
     if (baseRules.length > 0) {
@@ -2078,6 +2090,32 @@ export class CSSGenerator {
     }
 
     return grouped
+  }
+
+  /**
+   * Generate :root CSS variables from theme colors
+   * Flattens nested color objects: { monokai: { bg: '#2d2a2e' } } -> --monokai-bg: #2d2a2e
+   */
+  private generateCSSVariables(): string | null {
+    const colors = this.config.theme.colors
+    if (!colors || Object.keys(colors).length === 0) return null
+
+    const vars: string[] = []
+    for (const [name, value] of Object.entries(colors)) {
+      if (typeof value === 'string') {
+        vars.push(`  --${name}: ${value};`)
+      }
+      else if (typeof value === 'object' && value !== null) {
+        for (const [shade, shadeValue] of Object.entries(value)) {
+          if (typeof shadeValue === 'string') {
+            vars.push(`  --${name}-${shade}: ${shadeValue};`)
+          }
+        }
+      }
+    }
+
+    if (vars.length === 0) return null
+    return `:root {\n${vars.join('\n')}\n}`
   }
 
   /**

@@ -1,9 +1,7 @@
 import type { BunPressOptions } from '@stacksjs/bunpress'
 
-export default {
+const config: BunPressOptions = {
   verbose: false,
-  docsDir: './docs',
-  outDir: './dist',
 
   nav: [
     { text: 'Home', link: '/' },
@@ -133,9 +131,6 @@ export default {
     ],
   },
 
-  fathom: {
-    enabled: true,
-    siteId: 'HEADWIND',
-    honorDNT: true,
-  },
-} satisfies BunPressOptions
+}
+
+export default config

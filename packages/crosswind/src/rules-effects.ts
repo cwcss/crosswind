@@ -1,6 +1,52 @@
 import type { UtilityRule } from './rules'
 
+// =============================================================================
+// Shadow color helpers
+// =============================================================================
+
+// Flat color cache for shadow color lookups
+let shadowColorCache: Map<string, string> | null = null
+let shadowColorCacheConfig: any = null
+
+function buildShadowColorCache(colors: Record<string, any>): Map<string, string> {
+  const cache = new Map<string, string>()
+  for (const [name, value] of Object.entries(colors)) {
+    if (typeof value === 'string') {
+      cache.set(name, value)
+    }
+    else if (typeof value === 'object' && value !== null) {
+      for (const [shade, shadeValue] of Object.entries(value)) {
+        if (typeof shadeValue === 'string') {
+          cache.set(`${name}-${shade}`, shadeValue)
+        }
+      }
+    }
+  }
+  return cache
+}
+
+function applyShadowOpacity(color: string, opacity: number): string {
+  if (color.charCodeAt(0) === 35) { // '#'
+    const hex = color.slice(1)
+    const r = Number.parseInt(hex.slice(0, 2), 16)
+    const g = Number.parseInt(hex.slice(2, 4), 16)
+    const b = Number.parseInt(hex.slice(4, 6), 16)
+    return `rgb(${r} ${g} ${b} / ${opacity})`
+  }
+  return color
+}
+
+/**
+ * Replace color values in a shadow string with var(--hw-shadow-color)
+ * e.g., '0 10px 15px -3px rgb(0 0 0 / 0.1)' -> '0 10px 15px -3px var(--hw-shadow-color)'
+ */
+function createColoredShadow(shadow: string): string {
+  return shadow.replace(/rgba?\([^)]+\)/g, 'var(--hw-shadow-color)')
+}
+
+// =============================================================================
 // Backgrounds, Borders, Effects utilities
+// =============================================================================
 
 // Background utilities
 export const backgroundAttachmentRule: UtilityRule = (parsed) => {
@@ -175,13 +221,73 @@ export const outlineRule: UtilityRule = (parsed, config) => {
 
 // Effect utilities
 export const boxShadowThemeRule: UtilityRule = (parsed, config) => {
-  if (parsed.utility === 'shadow' && parsed.value) {
-    const shadow = config.theme.boxShadow[parsed.value]
-    return shadow ? { 'box-shadow': shadow } : undefined
+  if (parsed.utility === 'shadow') {
+    const shadow = parsed.value
+      ? config.theme.boxShadow[parsed.value]
+      : config.theme.boxShadow.DEFAULT
+    if (!shadow) return undefined
+
+    // shadow-none is a simple reset — no CSS variables needed
+    if (shadow === 'none') {
+      return {
+        '--hw-shadow': '0 0 #0000',
+        'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+      } as Record<string, string>
+    }
+
+    // Generate CSS variable-based shadow for color support
+    const colored = createColoredShadow(shadow)
+    return {
+      '--hw-shadow': shadow,
+      '--hw-shadow-colored': colored,
+      'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+    } as Record<string, string>
   }
-  if (parsed.utility === 'shadow' && !parsed.value) {
-    return { 'box-shadow': config.theme.boxShadow.DEFAULT }
+}
+
+// Shadow color utilities (shadow-{color}, shadow-{color}/{opacity})
+export const shadowColorRule: UtilityRule = (parsed, config) => {
+  if (parsed.utility !== 'shadow' || !parsed.value)
+    return undefined
+
+  // Skip if it matches a theme shadow size (sm, md, lg, xl, none, DEFAULT)
+  if (config.theme.boxShadow[parsed.value])
+    return undefined
+
+  // Build/update color cache if needed
+  if (shadowColorCache === null || shadowColorCacheConfig !== config.theme.colors) {
+    shadowColorCache = buildShadowColorCache(config.theme.colors)
+    shadowColorCacheConfig = config.theme.colors
   }
+
+  const value = parsed.value
+  const slashIdx = value.indexOf('/')
+
+  let colorName: string
+  let opacity: number | undefined
+
+  if (slashIdx !== -1) {
+    colorName = value.slice(0, slashIdx)
+    const opacityValue = Number.parseInt(value.slice(slashIdx + 1), 10)
+    if (Number.isNaN(opacityValue) || opacityValue < 0 || opacityValue > 100)
+      return undefined
+    opacity = opacityValue / 100
+  }
+  else {
+    colorName = value
+  }
+
+  const resolvedColor = shadowColorCache.get(colorName)
+  if (!resolvedColor) return undefined
+
+  const finalColor = opacity !== undefined
+    ? applyShadowOpacity(resolvedColor, opacity)
+    : resolvedColor
+
+  return {
+    '--hw-shadow-color': finalColor,
+    '--hw-shadow': 'var(--hw-shadow-colored)',
+  } as Record<string, string>
 }
 
 export const textShadowRule: UtilityRule = (parsed) => {
@@ -342,6 +448,7 @@ export const effectsRules: UtilityRule[] = [
   borderStyleRule,
   outlineRule,
   boxShadowThemeRule,
+  shadowColorRule,
   textShadowRule,
   opacityRule,
   mixBlendModeRule,

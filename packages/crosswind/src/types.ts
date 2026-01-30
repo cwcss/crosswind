@@ -79,6 +79,8 @@ export interface CrosswindConfig {
   compileClass?: CompileClassConfig
   attributify?: AttributifyConfig
   bracketSyntax?: BracketSyntaxConfig
+  /** Generate :root CSS variables from theme colors (e.g., --monokai-bg: #2d2a2e) */
+  cssVariables?: boolean
 }
 
 export interface Theme {
@@ -170,6 +172,7 @@ export interface CSSRule {
 export interface UtilityRuleResult {
   properties: Record<string, string>
   childSelector?: string
+  pseudoElement?: string // e.g., '::placeholder' — appended to selector without space
 }
 
 export type CustomRule = [RegExp, (match: RegExpMatchArray) => Record<string, string> | undefined]

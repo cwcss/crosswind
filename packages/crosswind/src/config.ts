@@ -509,6 +509,7 @@ export const defaultConfig: CrosswindConfig = {
   blocklist: [],
   preflights: [tailwindPreflight],
   presets: [],
+  cssVariables: false,
 }
 
 // Lazy-loaded config to avoid top-level await (enables bun --compile)

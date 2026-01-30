@@ -454,6 +454,58 @@ function applyOpacity(color: string, opacity: number): string {
   return cleanColor
 }
 
+// Placeholder color utilities (placeholder-{color})
+export const placeholderColorRule: UtilityRule = (parsed, config) => {
+  if (parsed.utility !== 'placeholder' || !parsed.value)
+    return undefined
+
+  // Build/update flat color cache if needed
+  if (flatColorCache === null || flatColorCacheConfig !== config.theme.colors) {
+    flatColorCache = buildFlatColorCache(config.theme.colors)
+    flatColorCacheConfig = config.theme.colors
+  }
+
+  const value = parsed.value
+  const slashIdx = value.indexOf('/')
+
+  if (slashIdx === -1) {
+    // No opacity
+    const colorVal = flatColorCache.get(value)
+    if (colorVal) {
+      return {
+        properties: { color: colorVal },
+        pseudoElement: '::placeholder',
+      }
+    }
+  }
+  else {
+    // With opacity modifier
+    const colorValue = value.slice(0, slashIdx)
+    const opacityValue = Number.parseInt(value.slice(slashIdx + 1), 10)
+    if (Number.isNaN(opacityValue) || opacityValue < 0 || opacityValue > 100)
+      return undefined
+    const opacity = opacityValue / 100
+    const baseColor = flatColorCache.get(colorValue)
+    if (baseColor) {
+      return {
+        properties: { color: applyOpacity(baseColor, opacity) },
+        pseudoElement: '::placeholder',
+      }
+    }
+  }
+
+  // Special colors
+  const specialColor = SPECIAL_COLORS[parsed.value]
+  if (specialColor) {
+    return {
+      properties: { color: specialColor },
+      pseudoElement: '::placeholder',
+    }
+  }
+
+  return undefined
+}
+
 // Typography utilities
 export const fontSizeRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'text' && parsed.value) {
@@ -700,6 +752,9 @@ export const builtInRules: UtilityRule[] = [
 
   // Effects rules that use 'bg' utility (bg-gradient-*, bg-fixed, bg-clip-*, etc.)
   ...effectsRules,
+
+  // Placeholder color rule (placeholder-{color} -> ::placeholder { color })
+  placeholderColorRule,
 
   // Color rule (bg, text, border are very common)
   // IMPORTANT: This must come AFTER all specific text-*, bg-*, border-* rules
