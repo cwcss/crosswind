@@ -392,5 +392,172 @@ describe('Arbitrary Values and Properties', () => {
         expect(gen.toCSS(false)).toContain('transform: rotate(0.25turn);')
       })
     })
+
+    describe('CSS Selector Escaping', () => {
+      it('should properly escape calc() with viewport units', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('h-[calc(100vh-4rem)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('height: calc(100vh-4rem);')
+        // Verify the selector is properly escaped with backslashes
+        expect(css).toContain('.h-\\[calc\\(100vh-4rem\\)\\]')
+      })
+
+      it('should properly escape calc() with percentage', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-[calc(100%-2rem)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('width: calc(100%-2rem);')
+        expect(css).toContain('.w-\\[calc\\(100\\%-2rem\\)\\]')
+      })
+
+      it('should properly escape min() function', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-[min(100%,500px)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('width: min(100%,500px);')
+        expect(css).toContain('.w-\\[min\\(100\\%\\,500px\\)\\]')
+      })
+
+      it('should properly escape max() function', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('h-[max(50vh,300px)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('height: max(50vh,300px);')
+        expect(css).toContain('.h-\\[max\\(50vh\\,300px\\)\\]')
+      })
+
+      it('should properly escape clamp() function', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('text-[clamp(1rem,2.5vw,3rem)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('font-size: clamp(1rem,2.5vw,3rem);')
+        expect(css).toContain('.text-\\[clamp\\(1rem\\,2\\.5vw\\,3rem\\)\\]')
+      })
+
+      it('should properly escape nested functions', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('[grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('grid-template-columns: repeat(auto-fit,minmax(200px,1fr));')
+        // The selector should have all parentheses and commas escaped
+        expect(css).toMatch(/\.\\\[grid-template-columns\\:repeat\\\(auto-fit\\,minmax\\\(200px\\,1fr\\\)\\\)\\\]/)
+      })
+
+      it('should properly escape rgba colors', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('bg-[rgba(0,0,0,0.5)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('background-color: rgba(0,0,0,0.5);')
+        expect(css).toContain('.bg-\\[rgba\\(0\\,0\\,0\\,0\\.5\\)\\]')
+      })
+
+      it('should properly escape hsla colors', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('bg-[hsla(120,50%,50%,0.8)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('background-color: hsla(120,50%,50%,0.8);')
+        expect(css).toContain('.bg-\\[hsla\\(120\\,50\\%\\,50\\%\\,0\\.8\\)\\]')
+      })
+
+      it('should properly escape hash in hex colors', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('bg-[#ff6600]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('background-color: #ff6600;')
+        expect(css).toContain('.bg-\\[\\#ff6600\\]')
+      })
+
+      it('should handle complex calc with multiple operations', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-[calc((100vw-64px)/2)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('width: calc((100vw-64px)/2);')
+      })
+
+      it('should handle sidebar-style height calculation', () => {
+        // This is the specific use case that triggered the fix
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('h-[calc(100vh-4rem)]')
+        const css = gen.toCSS(false)
+        // Must contain valid CSS
+        expect(css).toContain('height: calc(100vh-4rem);')
+        // Selector must be properly escaped so browser can match it
+        expect(css).toMatch(/\.h-\\\[calc\\\(100vh-4rem\\\)\\\]/)
+      })
+
+      it('should handle min-height with calc', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('min-h-[calc(100vh-64px)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('min-height: calc(100vh-64px);')
+      })
+
+      it('should handle max-width with calc', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('max-w-[calc(100%-2rem)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('max-width: calc(100%-2rem);')
+      })
+
+      it('should escape special characters with variants', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('lg:h-[calc(100vh-4rem)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('@media (min-width: 1024px)')
+        expect(css).toContain('height: calc(100vh-4rem);')
+      })
+
+      it('should escape special characters with hover variant', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('hover:bg-[rgba(0,0,0,0.1)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain(':hover')
+        expect(css).toContain('background-color: rgba(0,0,0,0.1);')
+      })
+
+      it('should handle CSS var with fallback containing comma', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('[color:var(--primary,#000)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('color: var(--primary,#000);')
+      })
+
+      it('should handle transform with translate', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('[transform:translateX(calc(100%+1rem))]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('transform: translateX(calc(100%+1rem));')
+      })
+
+      it('should handle filter with multiple functions', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('[filter:blur(4px)brightness(0.9)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('filter: blur(4px)brightness(0.9);')
+      })
+
+      it('should properly escape plus sign in selectors', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('[margin:calc(1rem+2px)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('margin: calc(1rem+2px);')
+        expect(css).toContain('.\\[margin\\:calc\\(1rem\\+2px\\)\\]')
+      })
+
+      it('should properly escape tilde in selectors', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('[content:~test]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('.\\[content\\:\\~test\\]')
+      })
+
+      it('should properly escape greater than sign in selectors', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('[content:a>b]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('.\\[content\\:a\\>b\\]')
+      })
+    })
   })
 })
