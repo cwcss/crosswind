@@ -1434,18 +1434,50 @@ export class CSSGenerator {
 
     // Width: w-{size}
     if (utility === 'w' && value) {
-      const sizeVal = SIZE_VALUES[value]
+      // Try SIZE_VALUES first, then spacing config, then use raw value (for arbitrary values like calc())
+      const sizeVal = SIZE_VALUES[value] || this.config.theme.spacing[value]
       if (sizeVal) {
         this.addRule(parsed, { width: sizeVal })
+        return
+      }
+      // Handle arbitrary values (calc, min, max, clamp, etc.)
+      if (parsed.arbitrary) {
+        // Check if it's a fraction in arbitrary syntax: w-[1/2] or w-[100/100]
+        const fractionMatch = value.match(/^(\d+)\/(\d+)$/)
+        if (fractionMatch) {
+          const num = Number(fractionMatch[1])
+          const denom = Number(fractionMatch[2])
+          if (!Number.isNaN(num) && !Number.isNaN(denom) && denom !== 0) {
+            this.addRule(parsed, { width: `${(num / denom) * 100}%` })
+            return
+          }
+        }
+        this.addRule(parsed, { width: value })
         return
       }
     }
 
     // Height: h-{size}
     if (utility === 'h' && value) {
-      const sizeVal = SIZE_VALUES[value]
+      // Try SIZE_VALUES first, then spacing config, then use raw value (for arbitrary values like calc())
+      const sizeVal = SIZE_VALUES[value] || this.config.theme.spacing[value]
       if (sizeVal) {
         this.addRule(parsed, { height: value === 'screen' ? '100vh' : sizeVal })
+        return
+      }
+      // Handle arbitrary values (calc, min, max, clamp, etc.)
+      if (parsed.arbitrary) {
+        // Check if it's a fraction in arbitrary syntax: h-[1/2] or h-[100/100]
+        const fractionMatch = value.match(/^(\d+)\/(\d+)$/)
+        if (fractionMatch) {
+          const num = Number(fractionMatch[1])
+          const denom = Number(fractionMatch[2])
+          if (!Number.isNaN(num) && !Number.isNaN(denom) && denom !== 0) {
+            this.addRule(parsed, { height: `${(num / denom) * 100}%` })
+            return
+          }
+        }
+        this.addRule(parsed, { height: value })
         return
       }
     }
@@ -2028,8 +2060,11 @@ export class CSSGenerator {
     let needsEscape = false
     for (let i = 0; i < className.length; i++) {
       const c = className.charCodeAt(i)
-      // Check for : (58), . (46), / (47), @ (64), space (32), [ (91), ] (93)
-      if (c === 58 || c === 46 || c === 47 || c === 64 || c === 32 || c === 91 || c === 93) {
+      // Check for special CSS selector characters:
+      // : (58), . (46), / (47), @ (64), space (32), [ (91), ] (93)
+      // ( (40), ) (41), % (37), # (35), , (44), > (62), + (43), ~ (126)
+      if (c === 58 || c === 46 || c === 47 || c === 64 || c === 32 || c === 91 || c === 93 ||
+          c === 40 || c === 41 || c === 37 || c === 35 || c === 44 || c === 62 || c === 43 || c === 126) {
         needsEscape = true
         break
       }
@@ -2037,7 +2072,7 @@ export class CSSGenerator {
     if (!needsEscape) {
       return className
     }
-    return className.replace(/[:./@ \[\]]/g, '\\$&')
+    return className.replace(/[:./@ \[\]()%#,>+~]/g, '\\$&')
   }
 
   /**
