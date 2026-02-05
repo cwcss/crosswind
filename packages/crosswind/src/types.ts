@@ -2,22 +2,22 @@ export interface CompileClassConfig {
   /**
    * Enable compile class transformer
    * @default false
-   */
+  */
   enabled?: boolean
   /**
    * Trigger string to mark classes for compilation
    * @default ':hw:'
-   */
+  */
   trigger?: string
   /**
    * Prefix for generated class names
    * @default 'hw-'
-   */
+  */
   classPrefix?: string
   /**
    * Layer name for compiled classes
    * @default 'shortcuts'
-   */
+  */
   layer?: string
 }
 
@@ -27,18 +27,18 @@ export interface AttributifyConfig {
    * Allows using HTML attributes instead of class names
    * e.g., <div hw-flex hw-bg="blue-500">
    * @default false
-   */
+  */
   enabled?: boolean
   /**
    * Prefix for attributify attributes (to avoid conflicts with HTML attributes)
    * e.g., with prefix 'hw-': <div hw-flex hw-bg="blue-500">
    * @default 'hw-'
-   */
+  */
   prefix?: string
   /**
    * Attributes to ignore (won't be treated as utilities)
    * @default ['class', 'className', 'style', 'id', ...]
-   */
+  */
   ignoreAttributes?: string[]
 }
 
@@ -47,18 +47,18 @@ export interface BracketSyntaxConfig {
    * Enable bracket/grouped syntax
    * Allows grouping utilities like: flex[col jc-center ai-center] or text[white 2rem 700]
    * @default false
-   */
+  */
   enabled?: boolean
   /**
    * Enable colon syntax for simple values
    * e.g., bg:black, w:100%, text:white
    * @default false
-   */
+  */
   colonSyntax?: boolean
   /**
    * Mapping of shorthand abbreviations to full utility names
    * e.g., { 'jc': 'justify', 'ai': 'items', 'col': 'col' }
-   */
+  */
   aliases?: Record<string, string>
 }
 

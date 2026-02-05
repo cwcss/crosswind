@@ -11,28 +11,27 @@ Instead of manually rebuilding your CSS after every change, watch mode monitors 
 Start watch mode using the CLI:
 
 ```bash
+
 # Using the watch command
+
 crosswind watch
 
 # Or using build with --watch flag
-crosswind build --watch
-```
 
-## How It Works
+crosswind build --watch
+```## How It Works
 
 When you start watch mode, Crosswind:
 
-1. **Performs Initial Build** - Generates CSS from your current files
-2. **Watches Content Directories** - Monitors all directories matching your content patterns
-3. **Detects Changes** - Listens for file modifications, additions, and deletions
-4. **Rebuilds Automatically** - Regenerates CSS when changes are detected
-5. **Shows Statistics** - Displays build time and class count after each rebuild
+1.**Performs Initial Build**- Generates CSS from your current files
+2.**Watches Content Directories**- Monitors all directories matching your content patterns
+3.**Detects Changes**- Listens for file modifications, additions, and deletions
+4.**Rebuilds Automatically**- Regenerates CSS when changes are detected
+5.**Shows Statistics**- Displays build time and class count after each rebuild
 
 ## Configuration
 
-Watch mode uses the content patterns from your configuration file:
-
-```typescript
+Watch mode uses the content patterns from your configuration file:```typescript
 // crosswind.config.ts
 import type { CrosswindOptions } from 'crosswind'
 
@@ -46,43 +45,35 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
 
-## File Types
+```## File Types
 
 Watch mode monitors these file extensions by default:
 
-- `.html` - HTML files
-- `.js` - JavaScript files
-- `.ts` - TypeScript files
-- `.jsx` - React JSX files
-- `.tsx` - React TypeScript files
-- `.stx` - Stacks template files
-- `.vue` - Vue single-file components
-- `.svelte` - Svelte components
+-`.html`- HTML files
+-`.js`- JavaScript files
+-`.ts`- TypeScript files
+-`.jsx`- React JSX files
+-`.tsx`- React TypeScript files
+-`.stx`- Stacks template files
+-`.vue`- Vue single-file components
+-`.svelte`- Svelte components
 
 ## Features
 
 ### Fast Rebuilds
 
-Crosswind's watch mode is optimized for speed:
-
-```bash
+Crosswind's watch mode is optimized for speed:```bash
 📝 src/App.tsx changed, rebuilding...
 ✅ Built 1243 classes in 8.45ms
-```
-
-Typical rebuild times are under 10ms for most projects.
+```Typical rebuild times are under 10ms for most projects.
 
 ### Verbose Output
 
-Use `--verbose` to see detailed information during watch mode:
-
-```bash
+Use`--verbose`to see detailed information during watch mode:```bash
 crosswind watch --verbose
-```
 
-This shows:
+```This shows:
 
 - File paths being watched
 - Content patterns being used
@@ -91,9 +82,7 @@ This shows:
 
 ### Multiple Directories
 
-Watch mode automatically monitors all directories specified in your content patterns:
-
-```typescript
+Watch mode automatically monitors all directories specified in your content patterns:```typescript
 const config = {
   content: [
     './src/**/*.tsx', // Watches: ./src
@@ -101,52 +90,49 @@ const config = {
     './components/**/*.tsx', // Watches: ./components
   ],
 } satisfies CrosswindOptions
-```
+```## CLI Options
 
-## CLI Options
+Customize watch mode behavior with CLI options:```bash
 
-Customize watch mode behavior with CLI options:
-
-```bash
 # Basic watch
+
 crosswind watch
 
 # Watch with custom output
+
 crosswind watch --output ./dist/custom.css
 
 # Watch with minification
+
 crosswind watch --minify
 
 # Watch with verbose logging
+
 crosswind watch --verbose
 
 # Watch with custom config
+
 crosswind watch --config ./custom.config.ts
+
 ```
 
 ## Development Workflow
 
 ### Recommended Setup
 
-1. **Terminal 1: Watch Mode**
-
-   ```bash
+1.**Terminal 1: Watch Mode**```bash
    crosswind watch
    ```
 
-2. **Terminal 2: Dev Server**
-
-   ```bash
+2.**Terminal 2: Dev Server**```bash
    npm run dev
-   # or
+
+# or
+
    bun dev
-   ```
+   ```### Package.json Scripts
 
-### Package.json Scripts
-
-Add watch mode to your npm scripts:
-
-```json
+Add watch mode to your npm scripts:```json
 {
   "scripts": {
     "dev": "crosswind watch & vite dev",
@@ -155,21 +141,22 @@ Add watch mode to your npm scripts:
     "build": "crosswind build --minify && vite build"
   }
 }
-```
+```### Parallel Development
 
-### Parallel Development
+Run watch mode alongside your development server:```bash
 
-Run watch mode alongside your development server:
-
-```bash
 # Using npm-run-all
+
 npm-run-all --parallel dev:crosswind dev:app
 
 # Using concurrently
+
 concurrently "crosswind watch" "vite dev"
 
 # Using &
+
 crosswind watch & npm run dev
+
 ```
 
 ## Performance
@@ -184,9 +171,7 @@ Watch mode is highly performant thanks to Bun:
 
 ### Optimization Tips
 
-1. **Use Specific Patterns**
-
-   ```typescript
+1.**Use Specific Patterns**```typescript
    // ❌ Too broad
    content: ['./**/*.tsx']
 
@@ -194,9 +179,7 @@ Watch mode is highly performant thanks to Bun:
    content: ['./src/**/*.tsx', './components/**/*.tsx']
    ```
 
-2. **Exclude Unnecessary Directories**
-
-   ```typescript
+2.**Exclude Unnecessary Directories**```typescript
    // Use negative patterns if needed
    content: [
      './src/**/*.tsx',
@@ -205,81 +188,48 @@ Watch mode is highly performant thanks to Bun:
    ]
    ```
 
-3. **Avoid Watching Build Directories**
-
-   ```typescript
+3.**Avoid Watching Build Directories**```typescript
    // ❌ Don't watch output directories
    content: ['./dist/**/*.tsx'] // Bad!
 
    // ✅ Only watch source directories
    content: ['./src/**/*.tsx']
-   ```
+   ```## Troubleshooting
 
-## Troubleshooting
+### Watch Not Detecting Changes**Problem:**Files change but CSS doesn't rebuild**Solutions:**1. Check your content patterns:```bash
 
-### Watch Not Detecting Changes
-
-**Problem:** Files change but CSS doesn't rebuild
-
-**Solutions:**
-
-1. Check your content patterns:
-
-   ```bash
    crosswind watch --verbose
-   ```
+   ```Look for the "👀 Watching:" output to see what's being monitored.
 
-   Look for the "👀 Watching:" output to see what's being monitored.
+2. Ensure file extensions are supported:```typescript
 
-2. Ensure file extensions are supported:
-
-   ```typescript
    // Add all file types you're using
    content: ['./src/**/*.{html,js,ts,jsx,tsx,vue,svelte}']
-   ```
+   ```3. Verify the file is within watched directories:```bash
 
-3. Verify the file is within watched directories:
+# The file must match your content patterns
 
-   ```bash
-   # The file must match your content patterns
-   # ./src/components/Button.tsx ✅ matches ./src/**/*.tsx
-   # ./lib/Button.tsx ❌ doesn't match ./src/**/*.tsx
-   ```
+# ./src/components/Button.tsx ✅ matches ./src/**/*.tsx
 
-### High CPU Usage
+# ./lib/Button.tsx ❌ doesn't match ./src/**/*.tsx
 
-**Problem:** Watch mode uses too much CPU
+   ```### High CPU Usage**Problem:**Watch mode uses too much CPU**Solutions:**1. Use more specific content patterns
 
-**Solutions:**
-
-1. Use more specific content patterns
 2. Exclude unnecessary directories
 3. Reduce the number of files being watched
 
-### Permission Errors
+### Permission Errors**Problem:**Watch mode fails with permission errors**Solutions:**1. Check directory permissions:```bash
 
-**Problem:** Watch mode fails with permission errors
-
-**Solutions:**
-
-1. Check directory permissions:
-
-   ```bash
    ls -la ./src
-   ```
+   ```2. Run with appropriate permissions:```bash
 
-2. Run with appropriate permissions:
+# On macOS/Linux
 
-   ```bash
-   # On macOS/Linux
    chmod -R u+rw ./src
-   ```
+   ```## Integration with Build Tools
 
-## Integration with Build Tools
+### Vite```typescript
 
-### Vite
-
-```typescript
 // vite.config.ts
 import { defineConfig } from 'vite'
 
@@ -292,22 +242,16 @@ export default defineConfig({
     }
   }
 })
-```
+```### Next.js```json
 
-### Next.js
-
-```json
 {
   "scripts": {
     "dev": "crosswind watch & next dev",
     "build": "crosswind build --minify && next build"
   }
 }
-```
 
-### Webpack
-
-```javascript
+```### Webpack```javascript
 // webpack.config.js
 module.exports = {
   // Webpack config
@@ -319,28 +263,29 @@ module.exports = {
 
 ## Best Practices
 
-1. **Always Use Watch Mode in Development**
-   - Provides instant feedback
+1.**Always Use Watch Mode in Development**- Provides instant feedback
+
    - Catches missing utilities immediately
    - Shows real-time class usage
 
-2. **Use Build Mode in Production**
+2.**Use Build Mode in Production**```bash
 
-   ```bash
-   # Development
+# Development
+
    crosswind watch
 
-   # Production
+# Production
+
    crosswind build --minify
    ```
 
-3. **Combine with Hot Module Replacement (HMR)**
-   - Let your dev server handle HMR
+3.**Combine with Hot Module Replacement (HMR)**- Let your dev server handle HMR
+
    - Let Crosswind handle CSS generation
    - Both work seamlessly together
 
-4. **Monitor Watch Output**
-   - Check for errors during rebuilds
+4.**Monitor Watch Output**- Check for errors during rebuilds
+
    - Verify class counts make sense
    - Watch for performance issues
 

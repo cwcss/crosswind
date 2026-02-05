@@ -5,7 +5,7 @@ import { builtInRules } from './rules'
 
 /**
  * Deep merge objects
- */
+*/
 function deepMerge<T extends Record<string, any>>(target: T, source: Partial<T>): T {
   const result = { ...target }
   for (const key in source) {
@@ -1305,7 +1305,7 @@ const PREFIX_VARIANTS: Record<string, string> = {
 
 /**
  * Generates CSS rules from parsed utility classes
- */
+*/
 export class CSSGenerator {
   private rules: Map<string, CSSRule[]> = new Map()
   private classCache: Set<string> = new Set()
@@ -1368,7 +1368,7 @@ export class CSSGenerator {
   /**
    * Build a prefix-based lookup map for rules
    * This allows O(1) lookup instead of O(n) iteration
-   */
+  */
   private buildRuleLookup(): void {
     // Pre-processing done in constructor
     // Rule caching happens during generation
@@ -1376,7 +1376,7 @@ export class CSSGenerator {
 
   /**
    * Generate CSS for a utility class
-   */
+  */
   generate(className: string): void {
     // Check cache for already processed classes
     if (this.classCache.has(className)) {
@@ -1859,7 +1859,7 @@ export class CSSGenerator {
 
   /**
    * Add a CSS rule with variants applied
-   */
+  */
   private addRule(parsed: ParsedClass, properties: Record<string, string>, childSelector?: string, pseudoElement?: string): void {
     // Use cached selector if available
     const cacheKey = `${parsed.raw}${childSelector || ''}${pseudoElement || ''}`
@@ -1902,7 +1902,7 @@ export class CSSGenerator {
   /**
    * Build CSS selector with pseudo-classes and variants
    * Optimized with pre-computed lookup maps for O(1) variant resolution
-   */
+  */
   private buildSelector(parsed: ParsedClass): string {
     let selector = `.${this.escapeSelector(parsed.raw)}`
     let prefix = ''
@@ -1962,7 +1962,7 @@ export class CSSGenerator {
   /**
    * Get media query for responsive and media variants
    * Optimized with pre-cached lookups and early returns
-   */
+  */
   private getMediaQuery(parsed: ParsedClass): string | undefined {
     const variants = parsed.variants
     const variantsLen = variants.length
@@ -2054,7 +2054,7 @@ export class CSSGenerator {
   /**
    * Escape special characters in class names for CSS selectors
    * Optimized with charCode checks for common fast path
-   */
+  */
   private escapeSelector(className: string): string {
     // Fast path: check if string needs escaping at all
     let needsEscape = false
@@ -2077,7 +2077,7 @@ export class CSSGenerator {
 
   /**
    * Generate final CSS output
-   */
+  */
   toCSS(includePreflight = true, minify = false): string {
     const parts: string[] = []
 
@@ -2127,7 +2127,7 @@ export class CSSGenerator {
 
   /**
    * Convert rules to CSS string
-   */
+  */
   private rulesToCSS(rules: CSSRule[], minify: boolean): string {
     const grouped = this.groupRulesBySelector(rules)
     const parts: string[] = []
@@ -2150,7 +2150,7 @@ export class CSSGenerator {
 
   /**
    * Group rules by selector and merge properties
-   */
+  */
   private groupRulesBySelector(rules: CSSRule[]): Map<string, Map<string, string>> {
     const grouped = new Map<string, Map<string, string>>()
 
@@ -2171,7 +2171,7 @@ export class CSSGenerator {
    * Generate :root CSS variables from theme colors
    * Uses only extend colors (custom) if available, to avoid dumping 300+ default Tailwind colors.
    * Flattens nested color objects: { monokai: { bg: '#2d2a2e' } } -> --monokai-bg: #2d2a2e
-   */
+  */
   private generateCSSVariables(): string | null {
     // Prefer extend colors (user's custom colors only), fall back to all theme colors
     const colors = this.extendColors || this.config.theme.colors
@@ -2197,7 +2197,7 @@ export class CSSGenerator {
 
   /**
    * Reset the generator state
-   */
+  */
   reset(): void {
     this.rules.clear()
     this.classCache.clear()

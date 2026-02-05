@@ -11,34 +11,24 @@ Instead of writing long lists of utility classes in your HTML:
 <div class="flex items-center justify-between px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
   Content
 </div>
-```
+```You can compile them into a single class:```html
 
-You can compile them into a single class:
-
-```html
 <!-- After: ~20 characters -->
 <div class="hw-2k9d3a">
   Content
 </div>
-```
 
-## How It Works
+```## How It Works
 
 ### 1. Mark Classes for Compilation
 
-Add the `:hw:` trigger to mark utility groups for compilation:
-
-```html
+Add the`:hw:`trigger to mark utility groups for compilation:```html
 <div class=":hw: flex items-center justify-between px-4 py-2 bg-white rounded-lg shadow-md">
   Content
 </div>
-```
+```### 2. Build with Compile Class Enabled
 
-### 2. Build with Compile Class Enabled
-
-Configure the transformer in your config:
-
-```typescript
+Configure the transformer in your config:```typescript
 // crosswind.config.ts
 import type { CrosswindOptions } from 'crosswind'
 
@@ -54,37 +44,26 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
 
-### 3. Build Your Project
+```### 3. Build Your Project
 
-Run the build command:
-
-```bash
+Run the build command:```bash
 crosswind build
-```
+```The transformer will:
 
-The transformer will:
-
-1. **Scan Files** - Find all classes marked with `:hw:`
-2. **Generate Names** - Create deterministic hashed class names
-3. **Transform Files** - Replace original classes with compiled names
-4. **Generate CSS** - Output CSS for both compiled and original utilities
+1.**Scan Files**- Find all classes marked with`:hw:`2.**Generate Names**- Create deterministic hashed class names
+3.**Transform Files**- Replace original classes with compiled names
+4.**Generate CSS**- Output CSS for both compiled and original utilities
 
 ### 4. Result
 
-Your HTML is automatically transformed:
-
-```html
+Your HTML is automatically transformed:```html
 <!-- Your source file is updated automatically -->
 <div class="hw-2k9d3a">
   Content
 </div>
-```
 
-And CSS is generated for the compiled class:
-
-```css
+```And CSS is generated for the compiled class:```css
 .hw-2k9d3a {
   display: flex;
   align-items: center;
@@ -97,53 +76,39 @@ And CSS is generated for the compiled class:
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
 }
-```
+```## Configuration
 
-## Configuration
+### Enable/Disable```typescript
 
-### Enable/Disable
-
-```typescript
 const config = {
   compileClass: {
     enabled: true, // Enable compile class transformer
   },
 } satisfies CrosswindOptions
-```
 
-### Custom Trigger
+```### Custom Trigger
 
-Change the trigger string:
-
-```typescript
+Change the trigger string:```typescript
 const config = {
   compileClass: {
     enabled: true,
     trigger: ':compile:', // Use custom trigger
   },
 } satisfies CrosswindOptions
-```
+```Usage:```html
 
-Usage:
-
-```html
 <div class=":compile: flex items-center p-4">Content</div>
-```
 
-### Custom Prefix
+```### Custom Prefix
 
-Customize the generated class name prefix:
-
-```typescript
+Customize the generated class name prefix:```typescript
 const config = {
   compileClass: {
     enabled: true,
     classPrefix: 'c-', // Use 'c-' prefix instead of 'hw-'
   },
 } satisfies CrosswindOptions
-```
-
-Generated classes: `c-abc123`, `c-def456`, etc.
+```Generated classes:`c-abc123`, `c-def456`, etc.
 
 ### Layer Configuration
 
@@ -160,29 +125,17 @@ const config = {
 
 ## Benefits
 
-### 1. Smaller HTML Files
+### 1. Smaller HTML Files**Before:**```html
 
-**Before:**
-
-```html
 <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
   Click Me
 </button>
-```
 
-**Character count:** 285 characters
-
-**After:**
-
-```html
+```**Character count:**285 characters**After:**```html
 <button class="hw-8k2j9s">
   Click Me
 </button>
-```
-
-**Character count:** 49 characters
-
-**Savings:** ~82% reduction
+```**Character count:**49 characters**Savings:**~82% reduction
 
 ### 2. Better Caching
 
@@ -193,9 +146,7 @@ Compiled class names are deterministic - the same utilities always generate the 
 <div class=":hw: flex items-center p-4">
 <div class=":hw: p-4 flex items-center"> // Order doesn't matter
 <div class=":hw: flex items-center p-4">  // Same hash
-```
-
-Benefits:
+```Benefits:
 
 - Browser cache reuses compiled classes across pages
 - CDN caching is more effective
@@ -203,27 +154,19 @@ Benefits:
 
 ### 3. Automatic Deduplication
 
-Identical utility groups share the same compiled class:
-
-```html
+Identical utility groups share the same compiled class:```html
 <!-- These both use hw-abc123 -->
 <div class="hw-abc123">Card 1</div>
 <div class="hw-abc123">Card 2</div>
-```
 
-Only one CSS rule is generated:
-
-```css
+```Only one CSS rule is generated:```css
 .hw-abc123 {
-  /* utilities */
+  /*utilities*/
 }
-```
+```## Framework Integration
 
-## Framework Integration
+### React / Next.js```tsx
 
-### React / Next.js
-
-```tsx
 // Component.tsx
 export function Button({ children }: { children: React.ReactNode }) {
   return (
@@ -232,11 +175,8 @@ export function Button({ children }: { children: React.ReactNode }) {
     </button>
   )
 }
-```
 
-After build:
-
-```tsx
+```After build:```tsx
 // Component.tsx (automatically transformed)
 export function Button({ children }: { children: React.ReactNode }) {
   return (
@@ -245,33 +185,23 @@ export function Button({ children }: { children: React.ReactNode }) {
     </button>
   )
 }
-```
+```### Vue```vue
 
-### Vue
-
-```vue
 <!-- Button.vue -->
 <template>
   <button class=":hw: bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
     <slot />
   </button>
 </template>
-```
 
-### Svelte
-
-```svelte
+```### Svelte```svelte
 <!-- Button.svelte -->
 <button class=":hw: bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
   <slot />
 </button>
-```
+```## Build Output
 
-## Build Output
-
-When compile class is enabled, you'll see statistics:
-
-```bash
+When compile class is enabled, you'll see statistics:```bash
 $ crosswind build
 
 🚀 Building CSS...
@@ -286,22 +216,17 @@ $ crosswind build
   hw-8k2j9s ← inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md
   hw-7k3m2p ← bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded
   ...
-```
 
-## Advanced Usage
+```## Advanced Usage
 
 ### Conditional Classes
 
-Works with dynamic classes:
-
-```tsx
+Works with dynamic classes:```tsx
 // React
 <div className={`:hw: flex ${isActive ? 'bg-blue-500' : 'bg-gray-500'} p-4`}>
   Content
 </div>
-```
-
-**Note:** Only the static parts (`:hw: flex p-4`) will be compiled. Dynamic parts remain as-is.
+```**Note:**Only the static parts (`:hw: flex p-4`) will be compiled. Dynamic parts remain as-is.
 
 ### With Shortcuts
 
@@ -318,21 +243,15 @@ const config = {
     enabled: true,
   },
 }
-```
+```Usage:```html
 
-Usage:
-
-```html
 <button class=":hw: btn-primary">Click Me</button>
 <!-- Compiles to -->
 <button class="hw-k7m3n2">Click Me</button>
-```
 
-### Component Libraries
+```### Component Libraries
 
-Create a compiled component library:
-
-```typescript
+Create a compiled component library:```typescript
 // components/Button.tsx
 export const buttonClasses = {
   primary: ':hw: bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded',
@@ -350,35 +269,29 @@ export const buttonClasses = {
 
 ### 1. Use for Repeated Patterns
 
-✅ **Good:**
-
-```html
+✅**Good:**```html
 <!-- Card pattern used multiple times -->
 <div class=":hw: rounded-lg shadow-md p-6 bg-white">Card 1</div>
 <div class=":hw: rounded-lg shadow-md p-6 bg-white">Card 2</div>
 <div class=":hw: rounded-lg shadow-md p-6 bg-white">Card 3</div>
+
 ```
 
-❌ **Avoid:**
-
-```html
+❌**Avoid:**```html
 <!-- One-off utility combinations -->
 <div class=":hw: mt-4">Unique element</div>
 ```
 
 ### 2. Group Related Utilities
 
-✅ **Good:**
-
-```html
+✅**Good:**```html
 <div class=":hw: flex items-center justify-between">
   <span class=":hw: text-lg font-bold text-gray-900">Title</span>
 </div>
+
 ```
 
-❌ **Avoid:**
-
-```html
+❌**Avoid:**```html
 <div class=":hw: flex :hw: items-center :hw: justify-between">
   Separate compilations
 </div>
@@ -386,9 +299,7 @@ export const buttonClasses = {
 
 ### 3. Use with Component Classes
 
-✅ **Good:**
-
-```tsx
+✅**Good:**```tsx
 // Define component styles once
 function Card({ children }) {
   return (
@@ -397,27 +308,23 @@ function Card({ children }) {
     </div>
   )
 }
+
 ```
 
 ### 4. Keep Dynamic Values Separate
 
-✅ **Good:**
-
-```tsx
+✅**Good:**```tsx
 <div className={`:hw: flex items-center p-4 ${className}`}>
   Static compiled + dynamic
 </div>
 ```
 
-❌ **Avoid:**
-
-```tsx
+❌**Avoid:**```tsx
 <div className={`:hw: flex items-center p-4 ${dynamicPadding} ${dynamicBg}`}>
   Too much dynamic content
 </div>
-```
 
-## Performance Impact
+```## Performance Impact
 
 ### Build Time
 
@@ -429,91 +336,48 @@ Compile class adds minimal overhead:
 | 1000    | 8ms            | 10ms         | +2ms     |
 | 10000   | 15ms           | 19ms         | +4ms     |
 
-### Runtime Performance
+### Runtime Performance**Benefits:**- Smaller HTML = faster parsing
 
-**Benefits:**
-
-- Smaller HTML = faster parsing
 - Fewer class names = faster DOM operations
-- Better gzip compression
-
-**Measurements:**
-
-- HTML size: ~60% reduction
+- Better gzip compression**Measurements:**- HTML size: ~60% reduction
 - Parse time: ~15% faster
 - Memory usage: ~10% lower
 
 ## Troubleshooting
 
-### Classes Not Compiling
+### Classes Not Compiling**Check:**1. Transformer is enabled:```typescript
 
-**Check:**
-
-1. Transformer is enabled:
-
-   ```typescript
    compileClass: { enabled: true }
-   ```
-
-2. Trigger is correct:
-
-   ```html
+   ```2. Trigger is correct:```html
    <div class=":hw: flex items-center">  <!-- ✅ -->
    <div class="hw: flex items-center">   <!-- ❌ Wrong trigger -->
-   ```
-
-3. Files are in content patterns:
-
-   ```typescript
+   ```3. Files are in content patterns:```typescript
    content: ['./src/**/*.tsx'] // Must match your files
-   ```
-
-### Wrong Hash Generated
-
-**Cause:** Different utility order generates different hashes.
-
-**Solution:** Utilities are automatically sorted before hashing:
-
-```html
+   ```### Wrong Hash Generated**Cause:**Different utility order generates different hashes.**Solution:**Utilities are automatically sorted before hashing:```html
 <!-- Both generate the same hash -->
 <div class=":hw: flex items-center p-4">
 <div class=":hw: p-4 flex items-center">
-```
+```### Source Files Not Transformed**Check:**1. Build completed successfully
 
-### Source Files Not Transformed
-
-**Check:**
-
-1. Build completed successfully
 2. Files have write permissions
 3. No syntax errors in files
 
 ## Migration Guide
 
-### From Regular Classes
+### From Regular Classes```diff
 
-```diff
 - <div class="flex items-center justify-between p-4 bg-white rounded shadow">
-+ <div class=":hw: flex items-center justify-between p-4 bg-white rounded shadow">
-```
+- <div class=":hw: flex items-center justify-between p-4 bg-white rounded shadow">
 
-Run build:
-
-```bash
+```Run build:```bash
 crosswind build
-```
+```Result:```html
 
-Result:
-
-```html
 <div class="hw-abc123">
-```
 
-### Gradual Adoption
+```### Gradual Adoption
 
-You can mix compiled and regular classes:
-
-```html
+You can mix compiled and regular classes:```html
 <!-- Compile repeated patterns -->
 <div class=":hw: flex items-center p-4 bg-white rounded">
   <!-- Use regular classes for one-offs -->

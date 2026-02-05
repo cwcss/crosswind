@@ -35,7 +35,7 @@ interface AnalyzeOptions extends GlobalOptions {
 
 /**
  * Load custom config if specified
- */
+*/
 async function loadCustomConfig(configPath?: string): Promise<CrosswindConfig> {
   if (configPath) {
     if (!existsSync(configPath)) {
@@ -57,7 +57,7 @@ async function loadCustomConfig(configPath?: string): Promise<CrosswindConfig> {
 
 /**
  * Merge CLI options with config
- */
+*/
 function mergeConfig(baseConfig: CrosswindConfig, options: BuildOptions): CrosswindConfig {
   return {
     ...baseConfig,
@@ -70,7 +70,7 @@ function mergeConfig(baseConfig: CrosswindConfig, options: BuildOptions): Crossw
 
 /**
  * Run the build process
- */
+*/
 async function runBuild(buildConfig: CrosswindConfig, options: BuildOptions): Promise<void> {
   try {
     const startMsg = options.verbose ? '🚀 Building CSS (verbose mode)...' : '🚀 Building CSS...'
@@ -126,7 +126,7 @@ async function runBuild(buildConfig: CrosswindConfig, options: BuildOptions): Pr
 
 /**
  * Setup file watching
- */
+*/
 function setupWatch(buildConfig: CrosswindConfig, options: BuildOptions): void {
   console.log('👀 Watching for changes...')
 

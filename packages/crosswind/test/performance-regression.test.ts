@@ -29,7 +29,7 @@ import { defaultConfig } from '../src/config'
  * The most common utilities (spacing, sizing, colors) are placed at the beginning of the
  * builtInRules array for O(1) lookup performance. The "Rule Ordering Performance - Critical!"
  * test ensures this optimization stays in place.
- */
+*/
 
 describe('Performance Regression Tests', () => {
   let gen: CSSGenerator

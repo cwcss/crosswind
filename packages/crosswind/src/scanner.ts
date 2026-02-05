@@ -10,7 +10,7 @@ export interface ScanResult {
 
 /**
  * Scans files for utility classes using Bun's fast Glob API
- */
+*/
 export class Scanner {
   constructor(
     private patterns: string[],
@@ -20,7 +20,7 @@ export class Scanner {
 
   /**
    * Scan all files matching the patterns and extract utility classes
-   */
+  */
   async scan(): Promise<ScanResult> {
     const allClasses = new Set<string>()
     const transformedFiles = new Map<string, string>()
@@ -64,7 +64,7 @@ export class Scanner {
 
   /**
    * Scan a single file for utility classes
-   */
+  */
   async scanFile(filePath: string): Promise<Set<string>> {
     try {
       const content = await Bun.file(filePath).text()
@@ -77,7 +77,7 @@ export class Scanner {
 
   /**
    * Scan content string for utility classes
-   */
+  */
   scanContent(content: string): Set<string> {
     return extractClasses(content, this.extractOptions)
   }

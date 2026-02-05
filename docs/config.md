@@ -1,6 +1,6 @@
 # Configuration
 
-Crosswind is configured using a `crosswind.config.ts` (or `crosswind.config.js`) file in your project root. The configuration file is automatically loaded when running any Crosswind command.
+Crosswind is configured using a `crosswind.config.ts`(or`crosswind.config.js`) file in your project root. The configuration file is automatically loaded when running any Crosswind command.
 
 ## Quick Start
 
@@ -8,11 +8,8 @@ Create a configuration file using the init command:
 
 ```bash
 crosswind init
-```
+```This creates a basic`crosswind.config.ts`file:```typescript
 
-This creates a basic `crosswind.config.ts` file:
-
-```typescript
 import type { CrosswindOptions } from 'crosswind'
 
 const config = {
@@ -21,19 +18,16 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
+
 ```
 
 ## Configuration Options
 
 ### content
 
-- **Type:** `string[]`
-- **Required:** Yes
-- **Default:** `[]`
-
-Glob patterns to scan for utility classes. Supports all file types including HTML, JavaScript, TypeScript, JSX, and TSX.
-
-```typescript
+-**Type:**`string[]`
+-**Required:**Yes
+-**Default:**`[]`Glob patterns to scan for utility classes. Supports all file types including HTML, JavaScript, TypeScript, JSX, and TSX.```typescript
 const config = {
   content: [
     './src/**/*.{html,js,ts,jsx,tsx}',
@@ -41,37 +35,28 @@ const config = {
     './pages/**/*.svelte',
   ],
 } satisfies CrosswindOptions
-```
+```**Tips:**- Use specific patterns to improve scan performance
 
-**Tips:**
-
-- Use specific patterns to improve scan performance
 - Exclude `node_modules` and build directories
 - Include all file types where you use utility classes
 
 ### output
 
-- **Type:** `string`
-- **Required:** Yes
-- **Default:** `'./crosswind.css'`
-
-Path to the output CSS file.
-
-```typescript
+-**Type:**`string`
+-**Required:**Yes
+-**Default:**`'./crosswind.css'`Path to the output CSS file.```typescript
 const config = {
   output: './dist/styles/crosswind.css',
 } satisfies CrosswindOptions
+
 ```
 
 ### theme
 
-- **Type:** `object`
-- **Required:** No
-- **Default:** Default Tailwind-compatible theme
+-**Type:**`object`-**Required:**No
+-**Default:**Default Tailwind-compatible theme
 
-Customize colors, spacing, fonts, and other design tokens.
-
-```typescript
+Customize colors, spacing, fonts, and other design tokens.```typescript
 const config = {
   theme: {
     colors: {
@@ -121,16 +106,13 @@ const config = {
 
 ### preflight
 
-- **Type:** `boolean`
-- **Required:** No
-- **Default:** `true`
-
-Include CSS reset/normalize styles (similar to Tailwind's preflight).
-
-```typescript
+-**Type:**`boolean`
+-**Required:**No
+-**Default:**`true`Include CSS reset/normalize styles (similar to Tailwind's preflight).```typescript
 const config = {
   preflight: true, // Include reset styles
 } satisfies CrosswindOptions
+
 ```
 
 Preflight includes:
@@ -142,13 +124,9 @@ Preflight includes:
 
 ### minify
 
-- **Type:** `boolean`
-- **Required:** No
-- **Default:** `false`
-
-Minify the output CSS for production.
-
-```typescript
+-**Type:**`boolean`
+-**Required:**No
+-**Default:**`false`Minify the output CSS for production.```typescript
 const config = {
   minify: true, // Enable minification
 } satisfies CrosswindOptions
@@ -162,13 +140,9 @@ When enabled, the output CSS is minified by removing:
 
 ### compileClass
 
-- **Type:** `object`
-- **Required:** No
-- **Default:** `{ enabled: false }`
-
-Configure the compile class transformer to optimize HTML by compiling groups of utilities into single class names.
-
-```typescript
+-**Type:**`object`
+-**Required:**No
+-**Default:**`{ enabled: false }`Configure the compile class transformer to optimize HTML by compiling groups of utilities into single class names.```typescript
 const config = {
   compileClass: {
     enabled: true, // Enable the transformer
@@ -177,18 +151,11 @@ const config = {
     layer: 'shortcuts', // Layer name (default)
   },
 } satisfies CrosswindOptions
-```
 
-**Options:**
-
-- **enabled** - Enable or disable the transformer
-- **trigger** - String to mark classes for compilation (e.g., `:hw:`)
-- **classPrefix** - Prefix for generated class names (e.g., `hw-`)
-- **layer** - CSS layer name for future CSS layers support
-
-**Usage:**
-
-```html
+```**Options:**-**enabled**- Enable or disable the transformer
+-**trigger**- String to mark classes for compilation (e.g., `:hw:`)
+-**classPrefix**- Prefix for generated class names (e.g., `hw-`)
+-**layer**- CSS layer name for future CSS layers support**Usage:**```html
 <!-- Before compilation -->
 <div class=":hw: flex items-center justify-between px-4 py-2">
   Content
@@ -204,13 +171,9 @@ See [Compile Class Documentation](./features/compile-class.md) for more details.
 
 ### shortcuts
 
-- **Type:** `object`
-- **Required:** No
-- **Default:** `{}`
-
-Define reusable utility combinations as shortcuts.
-
-```typescript
+-**Type:**`object`
+-**Required:**No
+-**Default:**`{}`Define reusable utility combinations as shortcuts.```typescript
 const config = {
   shortcuts: {
     'btn': 'px-4 py-2 rounded font-semibold',
@@ -220,11 +183,8 @@ const config = {
     'input': 'border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500',
   },
 } satisfies CrosswindOptions
-```
 
-**Usage:**
-
-```html
+```**Usage:**```html
 <button class="btn-primary">Click Me</button>
 <div class="card">Card content</div>
 <input class="input" type="text" />
@@ -232,13 +192,9 @@ const config = {
 
 ### rules
 
-- **Type:** `object`
-- **Required:** No
-- **Default:** `{}`
-
-Add custom utility rules.
-
-```typescript
+-**Type:**`object`
+-**Required:**No
+-**Default:**`{}`Add custom utility rules.```typescript
 const config = {
   rules: {
     // Static rule
@@ -251,11 +207,8 @@ const config = {
     }),
   },
 } satisfies CrosswindOptions
-```
 
-**Example:**
-
-```typescript
+```**Example:**```typescript
 const config = {
   rules: {
     // Add custom gradient utility
@@ -272,13 +225,9 @@ const config = {
 
 ### presets
 
-- **Type:** `array`
-- **Required:** No
-- **Default:** `[]`
-
-Extend configuration with shareable presets.
-
-```typescript
+-**Type:**`array`
+-**Required:**No
+-**Default:**`[]`Extend configuration with shareable presets.```typescript
 import { myCustomPreset } from './presets/custom'
 
 const config = {
@@ -286,11 +235,8 @@ const config = {
     myCustomPreset,
   ],
 } satisfies CrosswindOptions
-```
 
-**Creating a Preset:**
-
-```typescript
+```**Creating a Preset:**```typescript
 // presets/custom.ts
 import type { CrosswindOptions } from 'crosswind'
 
@@ -304,11 +250,8 @@ export const myCustomPreset: Partial<CrosswindConfig> = {
     btn: 'px-4 py-2 rounded',
   },
 }
-```
+```## Complete Configuration Example```typescript
 
-## Complete Configuration Example
-
-```typescript
 import type { CrosswindOptions } from 'crosswind'
 
 const config = {
@@ -359,13 +302,10 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
 
-## Environment-Specific Configuration
+```## Environment-Specific Configuration
 
-You can create different configurations for different environments:
-
-```typescript
+You can create different configurations for different environments:```typescript
 import type { CrosswindOptions } from 'crosswind'
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -384,13 +324,9 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
+```## TypeScript Support
 
-## TypeScript Support
-
-Crosswind provides full TypeScript support with type checking and autocomplete:
-
-```typescript
+Crosswind provides full TypeScript support with type checking and autocomplete:```typescript
 import type { CrosswindOptions } from 'crosswind'
 
 // Use satisfies for type checking while preserving literal types
@@ -400,42 +336,33 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
 
-## Configuration Loading
+```## Configuration Loading
 
 Crosswind automatically searches for configuration files in this order:
 
-1. `crosswind.config.ts`
-2. `crosswind.config.js`
-3. `crosswind.config.mjs`
-
-You can also specify a custom config path:
-
-```bash
+1.`crosswind.config.ts`2.`crosswind.config.js`3.`crosswind.config.mjs`You can also specify a custom config path:```bash
 crosswind build --config ./config/custom.config.ts
-```
+```## Configuration Override
 
-## Configuration Override
+CLI options override configuration file settings:```bash
 
-CLI options override configuration file settings:
-
-```bash
 # Override output path
+
 crosswind build --output ./dist/custom.css
 
 # Override content patterns
+
 crosswind build --content "./src/**/*.tsx"
-```
 
-## Best Practices
+```## Best Practices
 
-1. **Use TypeScript** - Enable type checking with `satisfies CrosswindOptions`
-2. **Specific Content Patterns** - Use precise glob patterns for better performance
-3. **Environment Variables** - Use environment variables for environment-specific settings
-4. **Organize Presets** - Extract common configurations into reusable presets
-5. **Version Control** - Commit your configuration file to version control
-6. **Comment Complex Rules** - Add comments to explain custom rules and utilities
+1.**Use TypeScript**- Enable type checking with`satisfies CrosswindOptions`
+2.**Specific Content Patterns**- Use precise glob patterns for better performance
+3.**Environment Variables**- Use environment variables for environment-specific settings
+4.**Organize Presets**- Extract common configurations into reusable presets
+5.**Version Control**- Commit your configuration file to version control
+6.**Comment Complex Rules**- Add comments to explain custom rules and utilities
 
 ## Related
 

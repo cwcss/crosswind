@@ -6,22 +6,10 @@ This document provides a complete reference for Crosswind's programmatic API. Us
 
 ```bash
 bun add crosswind
-```
+```## Core Functions
 
-## Core Functions
+### `build(config: CrosswindConfig): Promise<BuildResult>`Build CSS from content files and return the result.**Parameters:**-`config` - Complete Crosswind configuration object**Returns:**`Promise<BuildResult>`**Example:**```typescript
 
-### `build(config: CrosswindConfig): Promise<BuildResult>`
-
-Build CSS from content files and return the result.
-
-**Parameters:**
-- `config` - Complete Crosswind configuration object
-
-**Returns:** `Promise<BuildResult>`
-
-**Example:**
-
-```typescript
 import { build } from 'crosswind'
 
 const result = await build({
@@ -49,20 +37,8 @@ const result = await build({
 
 console.log(`Built ${result.classes.size} classes in ${result.duration}ms`)
 console.log(`Generated CSS:\n${result.css}`)
-```
 
-### `buildAndWrite(config: CrosswindConfig): Promise<BuildResult>`
-
-Build CSS and write it to the output file.
-
-**Parameters:**
-- `config` - Complete Crosswind configuration object
-
-**Returns:** `Promise<BuildResult>`
-
-**Example:**
-
-```typescript
+```###`buildAndWrite(config: CrosswindConfig): Promise<BuildResult>`Build CSS and write it to the output file.**Parameters:**-`config` - Complete Crosswind configuration object**Returns:**`Promise<BuildResult>`**Example:**```typescript
 import { buildAndWrite } from 'crosswind'
 
 const result = await buildAndWrite({
@@ -74,39 +50,15 @@ const result = await buildAndWrite({
 
 console.log(`CSS written to ./dist/crosswind.css`)
 console.log(`File size: ${result.css.length} bytes`)
-```
+```###`writeCSS(css: string, outputPath: string): Promise<void>`Write CSS string to a file.**Parameters:**-`css`- CSS content to write
 
-### `writeCSS(css: string, outputPath: string): Promise<void>`
-
-Write CSS string to a file.
-
-**Parameters:**
-- `css` - CSS content to write
-- `outputPath` - Path to output file
-
-**Returns:** `Promise<void>`
-
-**Example:**
-
-```typescript
+-`outputPath` - Path to output file**Returns:**`Promise<void>`**Example:**```typescript
 import { build, writeCSS } from 'crosswind'
 
 const result = await build(config)
 await writeCSS(result.css, './custom/path/output.css')
-```
 
-### `writeTransformedFiles(transformedFiles: Map<string, string>): Promise<void>`
-
-Write transformed files to disk (used with compile class transformer).
-
-**Parameters:**
-- `transformedFiles` - Map of file paths to transformed content
-
-**Returns:** `Promise<void>`
-
-**Example:**
-
-```typescript
+```###`writeTransformedFiles(transformedFiles: Map<string, string>): Promise<void>`Write transformed files to disk (used with compile class transformer).**Parameters:**-`transformedFiles` - Map of file paths to transformed content**Returns:**`Promise<void>`**Example:**```typescript
 import { build, writeTransformedFiles } from 'crosswind'
 
 const result = await build({
@@ -119,27 +71,14 @@ const result = await build({
 if (result.transformedFiles) {
   await writeTransformedFiles(result.transformedFiles)
 }
-```
-
-## Generator
+```## Generator
 
 ### `CSSGenerator`
 
-Class responsible for generating CSS from utility classes.
-
-**Constructor:**
-
-```typescript
+Class responsible for generating CSS from utility classes.**Constructor:**```typescript
 new CSSGenerator(config: CrosswindConfig)
-```
 
-**Methods:**
-
-#### `generate(className: string): void`
-
-Generate CSS for a single utility class.
-
-```typescript
+```**Methods:**#### `generate(className: string): void`Generate CSS for a single utility class.```typescript
 import { CSSGenerator } from 'crosswind'
 
 const generator = new CSSGenerator(config)
@@ -148,33 +87,15 @@ generator.generate('p-4')
 generator.generate('flex')
 
 const css = generator.toCSS()
-```
+```####`toCSS(minify?: boolean): string`Generate final CSS output.**Parameters:**-`minify` - Whether to minify the output (default: false)**Returns:**`string`- Generated CSS```typescript
 
-#### `toCSS(minify?: boolean): string`
-
-Generate final CSS output.
-
-**Parameters:**
-- `minify` - Whether to minify the output (default: false)
-
-**Returns:** `string` - Generated CSS
-
-```typescript
 const css = generator.toCSS(true) // Minified
 const prettyCSS = generator.toCSS(false) // Formatted
-```
 
-#### `reset(): void`
-
-Reset the generator state (clear all generated rules).
-
-```typescript
+```####`reset(): void`Reset the generator state (clear all generated rules).```typescript
 generator.reset()
-```
+```**Complete example:**```typescript
 
-**Complete example:**
-
-```typescript
 import { CSSGenerator, defaultConfig } from 'crosswind'
 
 const config = {
@@ -198,36 +119,20 @@ generator.generate('hover:bg-blue-600')
 // Get CSS
 const css = generator.toCSS()
 console.log(css)
-```
 
-## Scanner
+```## Scanner
 
 ### `Scanner`
 
-Class responsible for scanning files for utility classes.
-
-**Constructor:**
-
-```typescript
+Class responsible for scanning files for utility classes.**Constructor:**```typescript
 new Scanner(
   patterns: string[],
   transformer?: CompileClassTransformer | null
 )
-```
+```**Methods:**#### `scan(): Promise<{ classes: Set<string>, transformedFiles: Map<string, string> }>`Scan files and extract utility classes.**Returns:**Object with:
 
-**Methods:**
-
-#### `scan(): Promise<{ classes: Set<string>, transformedFiles: Map<string, string> }>`
-
-Scan files and extract utility classes.
-
-**Returns:** Object with:
-- `classes` - Set of found utility classes
-- `transformedFiles` - Map of transformed files (if transformer provided)
-
-**Example:**
-
-```typescript
+-`classes`- Set of found utility classes
+-`transformedFiles` - Map of transformed files (if transformer provided)**Example:**```typescript
 import { Scanner } from 'crosswind'
 
 const scanner = new Scanner(['./src/**/*.tsx'])
@@ -237,22 +142,11 @@ console.log(`Found ${classes.size} classes:`)
 for (const className of classes) {
   console.log(`  - ${className}`)
 }
-```
 
-## Parser
+```## Parser
 
-### `parseClass(className: string): ParsedClass`
+### `parseClass(className: string): ParsedClass`Parse a utility class string into its components.**Parameters:**-`className` - Class name to parse**Returns:**`ParsedClass` object**Example:**```typescript
 
-Parse a utility class string into its components.
-
-**Parameters:**
-- `className` - Class name to parse
-
-**Returns:** `ParsedClass` object
-
-**Example:**
-
-```typescript
 import { parseClass } from 'crosswind'
 
 const parsed = parseClass('md:hover:bg-blue-500')
@@ -273,17 +167,11 @@ console.log(important.important) // true
 const arbitrary = parseClass('w-[500px]')
 console.log(arbitrary.arbitrary) // true
 console.log(arbitrary.value) // '500px'
-```
-
-## Configuration
+```## Configuration
 
 ### `defaultConfig`
 
-The default Crosswind configuration object.
-
-**Example:**
-
-```typescript
+The default Crosswind configuration object.**Example:**```typescript
 import { defaultConfig } from 'crosswind'
 
 // Extend default config
@@ -297,54 +185,29 @@ const config = {
     },
   },
 }
-```
 
-### `loadConfig(options): Promise<CrosswindConfig>`
-
-Load configuration from file (used internally by CLI).
-
-**Parameters:**
-- `options.name` - Config name (default: 'crosswind')
-- `options.defaultConfig` - Default configuration
-
-**Returns:** `Promise<CrosswindConfig>`
-
-**Example:**
-
-```typescript
+```###`loadConfig(options): Promise<CrosswindConfig>`Load configuration from file (used internally by CLI).**Parameters:**-`options.name`- Config name (default: 'crosswind')
+-`options.defaultConfig` - Default configuration**Returns:**`Promise<CrosswindConfig>`**Example:**```typescript
 import { defaultConfig, loadConfig } from 'crosswind'
 
 const config = await loadConfig({
   name: 'crosswind',
   defaultConfig,
 })
-```
-
-## Compile Class Transformer
+```## Compile Class Transformer
 
 ### `CompileClassTransformer`
 
-Class for transforming compile class markers into optimized class names.
-
-**Constructor:**
-
-```typescript
+Class for transforming compile class markers into optimized class names.**Constructor:**```typescript
 new CompileClassTransformer(config?: {
   trigger?: string
   classPrefix?: string
   layer?: string
 })
-```
 
-**Methods:**
+```**Methods:**#### `getCompiledClasses(): Map<string, { className: string, utilities: string[] }>`
 
-#### `getCompiledClasses(): Map<string, { className: string, utilities: string[] }>`
-
-Get all compiled classes.
-
-**Example:**
-
-```typescript
+Get all compiled classes.**Example:**```typescript
 import { CompileClassTransformer } from 'crosswind'
 
 const transformer = new CompileClassTransformer({
@@ -360,15 +223,10 @@ const compiled = transformer.getCompiledClasses()
 for (const [hash, data] of compiled) {
   console.log(`${data.className}: ${data.utilities.join(' ')}`)
 }
-```
+```## Types
 
-## Types
+### `CrosswindConfig`Complete configuration interface.```typescript
 
-### `CrosswindConfig`
-
-Complete configuration interface.
-
-```typescript
 interface CrosswindConfig {
   content: string[]
   output: string
@@ -385,21 +243,11 @@ interface CrosswindConfig {
   presets: Preset[]
   compileClass?: CompileClassConfig
 }
-```
 
-### `CrosswindOptions`
-
-Partial configuration for user configs.
-
-```typescript
+```###`CrosswindOptions`Partial configuration for user configs.```typescript
 type CrosswindOptions = Partial<CrosswindConfig>
-```
+```###`Theme`Theme configuration interface.```typescript
 
-### `Theme`
-
-Theme configuration interface.
-
-```typescript
 interface Theme {
   colors: Record<string, string | Record<string, string>>
   spacing: Record<string, string>
@@ -409,13 +257,8 @@ interface Theme {
   borderRadius: Record<string, string>
   boxShadow: Record<string, string>
 }
-```
 
-### `BuildResult`
-
-Result from build operations.
-
-```typescript
+```###`BuildResult`Result from build operations.```typescript
 interface BuildResult {
   css: string
   classes: Set<string>
@@ -423,13 +266,8 @@ interface BuildResult {
   compiledClasses?: Map<string, { className: string, utilities: string[] }>
   transformedFiles?: Map<string, string>
 }
-```
+```###`ParsedClass`Parsed utility class structure.```typescript
 
-### `ParsedClass`
-
-Parsed utility class structure.
-
-```typescript
 interface ParsedClass {
   raw: string
   variants: string[]
@@ -438,13 +276,8 @@ interface ParsedClass {
   important: boolean
   arbitrary: boolean
 }
-```
 
-### `Preset`
-
-Preset configuration interface.
-
-```typescript
+```###`Preset`Preset configuration interface.```typescript
 interface Preset {
   name: string
   theme?: Partial<Theme>
@@ -453,47 +286,27 @@ interface Preset {
   variants?: Partial<VariantConfig>
   preflights?: Preflight[]
 }
-```
+```###`CustomRule`Custom rule definition.```typescript
 
-### `CustomRule`
-
-Custom rule definition.
-
-```typescript
 type CustomRule = [
   RegExp,
   (match: RegExpMatchArray) => Record<string, string> | undefined
 ]
-```
 
-### `Preflight`
-
-Preflight CSS definition.
-
-```typescript
+```###`Preflight`Preflight CSS definition.```typescript
 interface Preflight {
   getCSS: () => string
 }
-```
+```###`CompileClassConfig`Compile class transformer configuration.```typescript
 
-### `CompileClassConfig`
-
-Compile class transformer configuration.
-
-```typescript
 interface CompileClassConfig {
   enabled?: boolean
   trigger?: string
   classPrefix?: string
   layer?: string
 }
-```
 
-### `VariantConfig`
-
-Variant configuration interface.
-
-```typescript
+```###`VariantConfig`Variant configuration interface.```typescript
 interface VariantConfig {
   responsive: boolean
   hover: boolean
@@ -507,13 +320,10 @@ interface VariantConfig {
   after: boolean
   // ... and many more
 }
-```
+```## Advanced Usage Examples
 
-## Advanced Usage Examples
+### Custom Build Pipeline```typescript
 
-### Custom Build Pipeline
-
-```typescript
 import { CSSGenerator, Scanner, writeCSS } from 'crosswind'
 
 async function customBuild() {
@@ -549,11 +359,8 @@ async function customBuild() {
 }
 
 await customBuild()
-```
 
-### Analyze Utility Usage
-
-```typescript
+```### Analyze Utility Usage```typescript
 import { parseClass, Scanner } from 'crosswind'
 
 async function analyzeUtilities() {
@@ -579,11 +386,8 @@ async function analyzeUtilities() {
 }
 
 await analyzeUtilities()
-```
+```### Watch Mode Implementation```typescript
 
-### Watch Mode Implementation
-
-```typescript
 import { watch } from 'node:fs'
 import { buildAndWrite } from 'crosswind'
 
@@ -613,11 +417,8 @@ async function watchMode(config: CrosswindConfig) {
 }
 
 await watchMode(config)
-```
 
-### Framework Plugin
-
-```typescript
+```### Framework Plugin```typescript
 import { buildAndWrite } from 'crosswind'
 
 // Usage in vite.config.ts
@@ -654,11 +455,8 @@ export default defineConfig({
     }),
   ],
 })
-```
+```### Generate Multiple Themes```typescript
 
-### Generate Multiple Themes
-
-```typescript
 import { build, writeCSS } from 'crosswind'
 
 const baseConfig = {
@@ -693,11 +491,8 @@ for (const [name, theme] of Object.entries(themes)) {
   await writeCSS(result.css, `./dist/crosswind-${name}.css`)
   console.log(`Built ${name} theme: ${result.css.length} bytes`)
 }
-```
 
-### Testing Utilities
-
-```typescript
+```### Testing Utilities```typescript
 import { expect, test } from 'bun:test'
 import { CSSGenerator, defaultConfig, parseClass } from 'crosswind'
 
@@ -722,11 +517,8 @@ test('handles important modifier', () => {
   const parsed = parseClass('!text-red-500')
   expect(parsed.important).toBe(true)
 })
-```
+```## Error Handling```typescript
 
-## Error Handling
-
-```typescript
 import { buildAndWrite } from 'crosswind'
 
 try {
@@ -746,13 +538,11 @@ catch (error) {
     }
   }
 }
-```
 
-## Performance Optimization
+```## Performance Optimization
 
-### Caching Results
+### Caching Results```typescript
 
-```typescript
 import { build } from 'crosswind'
 
 const cache = new Map<string, BuildResult>()
@@ -770,11 +560,8 @@ async function buildWithCache(config: CrosswindConfig) {
 
   return result
 }
-```
+```### Parallel Builds```typescript
 
-### Parallel Builds
-
-```typescript
 import { build, writeCSS } from 'crosswind'
 
 const configs = [
@@ -792,6 +579,7 @@ await Promise.all(
     writeCSS(result.css, configs[i].output)
   )
 )
+
 ```
 
 ## Related

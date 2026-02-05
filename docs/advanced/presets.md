@@ -26,15 +26,11 @@ const config = {
 const config = {
   presets: [companyPreset],
 }
-```
-
-## Creating a Preset
+```## Creating a Preset
 
 ### Basic Preset Structure
 
-A preset is an object that implements the `Preset` interface:
-
-```typescript
+A preset is an object that implements the`Preset`interface:```typescript
 import type { Preset } from 'crosswind'
 
 export const myPreset: Preset = {
@@ -55,11 +51,8 @@ export const myPreset: Preset = {
     // Preflight CSS
   ],
 }
-```
 
-### Simple Example
-
-```typescript
+```### Simple Example```typescript
 // presets/minimal.ts
 import type { Preset } from 'crosswind'
 
@@ -84,13 +77,10 @@ export const minimalPreset: Preset = {
     'btn-outline': 'btn bg-white text-black hover:bg-gray-100',
   },
 }
-```
+```## Using Presets
 
-## Using Presets
+### Single Preset```typescript
 
-### Single Preset
-
-```typescript
 // crosswind.config.ts
 import type { CrosswindOptions } from 'crosswind'
 import { minimalPreset } from './presets/minimal'
@@ -102,13 +92,10 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
 
-### Multiple Presets
+```### Multiple Presets
 
-Presets are merged in order, with later presets taking precedence:
-
-```typescript
+Presets are merged in order, with later presets taking precedence:```typescript
 import { basePreset } from './presets/base'
 import { componentsPreset } from './presets/components'
 import { utilitiesPreset } from './presets/utilities'
@@ -120,13 +107,9 @@ const config = {
     utilitiesPreset, // Applied last, overrides both
   ],
 }
-```
+```### Extending Presets
 
-### Extending Presets
-
-You can extend a preset with additional configuration:
-
-```typescript
+You can extend a preset with additional configuration:```typescript
 import { companyPreset } from '@company/crosswind-preset'
 
 const config = {
@@ -144,13 +127,11 @@ const config = {
     'project-specific': 'custom utilities',
   },
 }
-```
 
-## Preset Examples
+```## Preset Examples
 
-### Design System Preset
+### Design System Preset```typescript
 
-```typescript
 // presets/design-system.ts
 import type { Preset } from 'crosswind'
 
@@ -228,11 +209,8 @@ export const designSystemPreset: Preset = {
     'label': 'block text-sm font-medium text-gray-700 mb-1',
   },
 }
-```
+```### Component Library Preset```typescript
 
-### Component Library Preset
-
-```typescript
 // presets/components.ts
 import type { Preset } from 'crosswind'
 
@@ -273,11 +251,8 @@ export const componentsPreset: Preset = {
     'table-cell': 'px-6 py-4 whitespace-nowrap text-sm',
   },
 }
-```
 
-### Utility Preset
-
-```typescript
+```### Utility Preset```typescript
 // presets/utilities.ts
 import type { Preset } from 'crosswind'
 
@@ -329,11 +304,8 @@ export const utilitiesPreset: Preset = {
     ],
   ],
 }
-```
+```### Framework-Specific Preset```typescript
 
-### Framework-Specific Preset
-
-```typescript
 // presets/react.ts
 import type { Preset } from 'crosswind'
 
@@ -364,21 +336,21 @@ export const reactPreset: Preset = {
     'focus-within': true,
   },
 }
-```
 
-## Publishing Presets
+```## Publishing Presets
 
 ### As NPM Package
 
-Create a shareable preset package:
+Create a shareable preset package:```bash
 
-```bash
 # Create package
+
 mkdir my-crosswind-preset
 cd my-crosswind-preset
 bun init
 
 # Package structure
+
 my-crosswind-preset/
 ├── package.json
 ├── src/
@@ -424,42 +396,38 @@ export default myPreset
     "typescript": "latest"
   }
 }
-```
+```### Usage of Published Preset```bash
 
-### Usage of Published Preset
-
-```bash
 bun add @company/crosswind-preset
+
 ```
 
 ```typescript
+
 // crosswind.config.ts
 import { myPreset } from '@company/crosswind-preset'
 
 const config = {
   presets: [myPreset],
 }
-```
 
-## Preset Composition
+```## Preset Composition
 
 ### Layered Presets
 
-Build complex configurations by layering presets:
-
-```typescript
+Build complex configurations by layering presets:```typescript
 // Base layer - foundational styles
 const basePreset: Preset = {
   name: 'base',
   theme: {
-    colors: { /* base colors */ },
+    colors: { /*base colors*/ },
   },
 }
 
 // Component layer - reusable components
 const componentPreset: Preset = {
   name: 'components',
-  shortcuts: { /* component shortcuts */ },
+  shortcuts: { /*component shortcuts*/ },
 }
 
 // Brand layer - company branding
@@ -474,13 +442,9 @@ const brandPreset: Preset = {
 const config = {
   presets: [basePreset, componentPreset, brandPreset],
 }
-```
+```### Conditional Presets
 
-### Conditional Presets
-
-Apply presets based on environment:
-
-```typescript
+Apply presets based on environment:```typescript
 const isDev = process.env.NODE_ENV === 'development'
 
 const config = {
@@ -490,19 +454,16 @@ const config = {
     ...(isDev ? [devPreset] : [prodPreset]),
   ],
 }
-```
 
-## Advanced Preset Patterns
+```## Advanced Preset Patterns
 
-### Preset with Custom Preflight
+### Preset with Custom Preflight```typescript
 
-```typescript
 import type { Preflight, Preset } from 'crosswind'
 
 const customPreflight: Preflight = {
-  getCSS: () => `
-    /* Custom reset */
-    * {
+  getCSS: () => `/*Custom reset*/*{
+
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -515,21 +476,16 @@ const customPreflight: Preflight = {
     body {
       line-height: 1.6;
       color: #333;
-    }
-  `,
+    }`,
 }
 
 export const presetWithPreflight: Preset = {
   name: 'with-preflight',
   preflights: [customPreflight],
 }
-```
+```### Preset Factory
 
-### Preset Factory
-
-Create presets dynamically:
-
-```typescript
+Create presets dynamically:```typescript
 interface BrandConfig {
   primary: string
   secondary: string
@@ -564,59 +520,31 @@ const myBrandPreset = createBrandPreset({
 const config = {
   presets: [myBrandPreset],
 }
-```
 
-## Best Practices
+```## Best Practices
 
 ### 1. Name Your Presets
 
-Always provide a descriptive name:
-
-```typescript
+Always provide a descriptive name:```typescript
 const preset: Preset = {
   name: 'company-design-system', // ✅ Clear and descriptive
   // ...
 }
-```
+```### 2. Document Your Presets
 
-### 2. Document Your Presets
-
-Include documentation in your preset files:
-
-```typescript
-/**
- * Company Design System Preset
- *
- * Includes:
- * - Brand colors and typography
- * - Standard component shortcuts
- * - Form utilities
- *
- * @example
- * import { companyPreset } from '@company/crosswind-preset'
- *
- * const config = {
- *   presets: [companyPreset],
- * }
- */
+Include documentation in your preset files:```typescript
+/***Company Design System Preset**Includes:*- Brand colors and typography*- Standard component shortcuts*- Form utilities**@example*import { companyPreset } from '@company/crosswind-preset'**const config = {*presets: [companyPreset],*}*/
 export const companyPreset: Preset = {
   // ...
 }
-```
 
-### 3. Version Your Presets
+```### 3. Version Your Presets
 
-Use semantic versioning for published presets:
-
-- **Major**: Breaking changes to shortcuts or theme
-- **Minor**: New shortcuts or theme additions
-- **Patch**: Bug fixes or improvements
+Use semantic versioning for published presets:***Major**: Breaking changes to shortcuts or theme***Minor**: New shortcuts or theme additions***Patch**: Bug fixes or improvements
 
 ### 4. Keep Presets Focused
 
-Create multiple focused presets rather than one monolithic preset:
-
-```typescript
+Create multiple focused presets rather than one monolithic preset:```typescript
 import { componentPreset } from './presets/components'
 // ❌ Avoid - everything in one preset
 import { everythingPreset } from './presets/everything'
@@ -624,13 +552,9 @@ import { everythingPreset } from './presets/everything'
 import { themePreset } from './presets/theme'
 
 import { utilityPreset } from './presets/utilities'
-```
+```### 5. Provide Examples
 
-### 5. Provide Examples
-
-Include usage examples with your preset:
-
-```typescript
+Include usage examples with your preset:```typescript
 // presets/example.ts
 export const examplePreset: Preset = {
   name: 'example',
@@ -645,70 +569,37 @@ const exampleConfig = {
 }
 
 // <button class="btn">Click Me</button>
-```
 
-## Troubleshooting
+```## Troubleshooting
 
-### Preset Not Applied
+### Preset Not Applied**Check:**1. Preset is imported correctly:```typescript
 
-**Check:**
-
-1. Preset is imported correctly:
-
-   ```typescript
    import { myPreset } from './presets/my-preset'
-   ```
-
-2. Preset is added to config:
-
-   ```typescript
+   ```2. Preset is added to config:```typescript
    const config = {
      presets: [myPreset], // ✅
    }
-   ```
-
-3. Preset has correct structure:
-
-   ```typescript
+   ```3. Preset has correct structure:```typescript
    const preset: Preset = {
      name: 'my-preset', // Required
      // ...
    }
-   ```
-
-### Preset Order Issues
-
-**Problem:** Later presets override earlier ones
-
-**Solution:** Order presets from most general to most specific:
-
-```typescript
+   ```### Preset Order Issues**Problem:**Later presets override earlier ones**Solution:**Order presets from most general to most specific:```typescript
 const config = {
   presets: [
     generalPreset, // Base configuration
     specificPreset, // More specific overrides
   ],
 }
-```
+```### Type Errors**Problem:**TypeScript errors when creating preset**Solution:**Import and use the`Preset`type:```typescript
 
-### Type Errors
-
-**Problem:** TypeScript errors when creating preset
-
-**Solution:** Import and use the `Preset` type:
-
-```typescript
 import type { Preset } from 'crosswind'
 
 export const myPreset: Preset = {
   name: 'my-preset',
   // TypeScript will validate structure
 }
+
 ```
 
-## Related
-
-- [Configuration](../config.md) - Main configuration options
-- [Theme Customization](./theme-customization.md) - Customizing themes
-- [Shortcuts](../features/shortcuts.md) - Creating shortcuts
-- [Custom Rules](./custom-rules.md) - Adding custom rules
+## Related*[Configuration](../config.md) - Main configuration options*[Theme Customization](./theme-customization.md) - Customizing themes*[Shortcuts](../features/shortcuts.md) - Creating shortcuts*[Custom Rules](./custom-rules.md) - Adding custom rules

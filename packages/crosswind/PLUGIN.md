@@ -8,9 +8,7 @@ A Bun plugin that automatically generates and injects Crosswind CSS into your HT
 bun add @cwcss/crosswind
 ```
 
-## Quick Start
-
-**1. Create your HTML file** (`src/template.html`):
+## Quick Start**1. Create your HTML file**(`src/template.html`)
 
 ```html
 <!DOCTYPE html>
@@ -24,18 +22,14 @@ bun add @cwcss/crosswind
   </div>
 </body>
 </html>
-```
-
-**2. Import it in your TypeScript** (`src/index.ts`):
+```**2. Import it in your TypeScript**(`src/index.ts`):
 
 ```typescript
 import template from './template.html'
 
 // The HTML now has Crosswind CSS injected
 document.body.innerHTML = template
-```
-
-**3. Build with the plugin**:
+```**3. Build with the plugin**:
 
 ```typescript
 import { plugin } from '@cwcss/crosswind'
@@ -45,19 +39,16 @@ await Bun.build({
   outdir: './dist',
   plugins: [plugin()],
 })
-```
-
-The plugin will automatically:
+```The plugin will automatically:
 
 - Scan the HTML for utility classes
 - Generate CSS for those classes
-- Inject the CSS into the `<head>` section
+- Inject the CSS into the`<head>`section
 
 ## Configuration
 
-### Basic Configuration
+### Basic Configuration```typescript
 
-```typescript
 import { plugin } from '@cwcss/crosswind'
 
 await Bun.build({
@@ -69,11 +60,8 @@ await Bun.build({
     }),
   ],
 })
-```
 
-### Custom Theme
-
-```typescript
+```### Custom Theme```typescript
 import { plugin } from '@cwcss/crosswind'
 
 await Bun.build({
@@ -102,11 +90,8 @@ await Bun.build({
     }),
   ],
 })
-```
+```### Advanced Configuration```typescript
 
-### Advanced Configuration
-
-```typescript
 import { plugin } from '@cwcss/crosswind'
 
 await Bun.build({
@@ -136,9 +121,8 @@ await Bun.build({
     }),
   ],
 })
-```
 
-## API Reference
+```## API Reference
 
 ### `plugin(options?)`
 
@@ -146,32 +130,35 @@ Creates a Crosswind Bun plugin instance.
 
 #### Options
 
-- **`config`** (`Partial<CrosswindConfig>`) - Custom Crosswind configuration
-  - `minify` - Minify the generated CSS
-  - `theme` - Custom theme (colors, spacing, fonts, etc.)
-  - `shortcuts` - Utility class shortcuts
-  - `safelist` - Classes to always include
-  - `blocklist` - Classes to never include
-  - `variants` - Enable/disable variants
+-**`config`**(`Partial<CrosswindConfig>`) - Custom Crosswind configuration
+
+  - `minify`- Minify the generated CSS
+
+  -`theme`- Custom theme (colors, spacing, fonts, etc.)
+  -`shortcuts`- Utility class shortcuts
+  -`safelist`- Classes to always include
+  -`blocklist`- Classes to never include
+  -`variants` - Enable/disable variants
+
   - And more...
 
-- **`includePreflight`** (`boolean`) - Include preflight CSS (default: `true`)
+-**`includePreflight`**(`boolean`) - Include preflight CSS (default: `true`)
 
 ## How It Works
 
-1. The plugin registers an `onLoad` handler for `.html` files
+1. The plugin registers an `onLoad`handler for`.html`files
 2. When Bun encounters an HTML import, the plugin intercepts it
 3. It extracts all utility classes from the HTML using Crosswind's parser
 4. It generates CSS for those classes using Crosswind's generator
-5. The CSS is injected into the `<head>` section
+5. The CSS is injected into the`<head>`section
 6. The processed HTML is returned to the bundle
 
 ## Use Cases
 
-- **SPAs**: Import HTML templates with automatic CSS generation
-- **Web Components**: Load component templates with scoped styles
-- **Static Sites**: Process HTML pages during build
-- **Email Templates**: Generate inline CSS for email HTML
+-**SPAs**: Import HTML templates with automatic CSS generation
+-**Web Components**: Load component templates with scoped styles
+-**Static Sites**: Process HTML pages during build
+-**Email Templates**: Generate inline CSS for email HTML
 
 ## Examples
 
@@ -198,9 +185,7 @@ The plugin is highly performant:
 
 ## TypeScript Support
 
-The plugin is fully typed. Import the types:
-
-```typescript
+The plugin is fully typed. Import the types:```typescript
 import type { CrosswindPluginOptions } from '@cwcss/crosswind'
 
 const options: CrosswindPluginOptions = {
@@ -208,13 +193,9 @@ const options: CrosswindPluginOptions = {
     minify: true,
   },
 }
-```
+```## Configuration File
 
-## Configuration File
-
-The plugin also respects `crosswind.config.ts` in your project root:
-
-```typescript
+The plugin also respects`crosswind.config.ts`in your project root:```typescript
 // crosswind.config.ts
 import type { CrosswindOptions } from '@cwcss/crosswind'
 
@@ -226,6 +207,7 @@ export default {
     },
   },
 } satisfies CrosswindOptions
+
 ```
 
 The plugin will merge this config with any options passed to it.

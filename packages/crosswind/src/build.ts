@@ -13,7 +13,7 @@ export interface BuildResult {
 
 /**
  * Build CSS from content patterns
- */
+*/
 export async function build(config: CrosswindConfig): Promise<BuildResult> {
   const startTime = performance.now()
 
@@ -70,14 +70,14 @@ export async function build(config: CrosswindConfig): Promise<BuildResult> {
 
 /**
  * Write CSS to output file
- */
+*/
 export async function writeCSS(css: string, outputPath: string): Promise<void> {
   await Bun.write(outputPath, css)
 }
 
 /**
  * Write transformed files to disk
- */
+*/
 export async function writeTransformedFiles(transformedFiles: Map<string, string>): Promise<void> {
   const writes = Array.from(transformedFiles.entries()).map(([path, content]) =>
     Bun.write(path, content),
@@ -87,7 +87,7 @@ export async function writeTransformedFiles(transformedFiles: Map<string, string
 
 /**
  * Build and write CSS to output file
- */
+*/
 export async function buildAndWrite(config: CrosswindConfig): Promise<BuildResult> {
   const result = await build(config)
   await writeCSS(result.css, config.output)

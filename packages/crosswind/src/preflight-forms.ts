@@ -3,7 +3,7 @@ import type { Preflight } from './types'
 /**
  * Tailwind Forms preflight styles
  * Provides default styling for form elements to make them easy to customize with utilities
- */
+*/
 export const tailwindFormsPreflight: Preflight = {
   getCSS: () => `
 /* Tailwind Forms */

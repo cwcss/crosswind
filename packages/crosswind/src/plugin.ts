@@ -8,12 +8,12 @@ import { extractClasses } from './parser'
 export interface CrosswindPluginOptions {
   /**
    * Custom config to override default config
-   */
+  */
   config?: CrosswindOptions
   /**
    * Include preflight CSS
    * @default true
-   */
+  */
   includePreflight?: boolean
 }
 
@@ -30,7 +30,7 @@ export interface CrosswindPluginOptions {
  *   plugins: [plugin()],
  * })
  * ```
- */
+*/
 export function plugin(options: CrosswindPluginOptions = {}): BunPlugin {
   return {
     name: 'bun-plugin-crosswind',

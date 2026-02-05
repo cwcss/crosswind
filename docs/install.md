@@ -10,74 +10,81 @@ Install Crosswind as a development dependency in your project:
 
 ```sh [bun]
 bun add --dev crosswind
+
 # or
+
 bun install --dev crosswind
 ```
 
 ```sh [npm]
 npm install --save-dev crosswind
+
 # or
+
 npm i -D crosswind
 ```
 
 ```sh [pnpm]
 pnpm add --save-dev crosswind
+
 # or
+
 pnpm add -D crosswind
 ```
 
 ```sh [yarn]
 yarn add --dev crosswind
-```
-
-:::
+```:::
 
 ### Global Installation
 
 For global installation (to use the CLI anywhere):
 
-::: code-group
-
-```sh [bun]
+::: code-group```sh [bun]
 bun add --global crosswind
+
 ```
 
 ```sh [npm]
+
 npm install --global crosswind
+
 # or
+
 npm i -g crosswind
+
 ```
 
 ```sh [pnpm]
+
 pnpm add --global crosswind
+
 ```
 
 ```sh [yarn]
-yarn global add crosswind
-```
 
-:::
+yarn global add crosswind
+
+```:::
 
 ## Quick Start
 
-After installation, initialize a new Crosswind project:
+After installation, initialize a new Crosswind project:```bash
 
-```bash
 # Create configuration file
+
 crosswind init
 
 # Build your CSS
+
 crosswind build
 
 # Or use watch mode for development
+
 crosswind watch
-```
+```## Configuration
 
-## Configuration
-
-The `crosswind init` command creates a basic `crosswind.config.ts` file:
-
-```typescript
+The`crosswind init`command creates a basic`crosswind.config.ts`file:```typescript
 import type { CrosswindOptions } from 'crosswind'
 
 const config = {
@@ -86,23 +93,21 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
 
-Customize this configuration to match your project structure. See the [Configuration Guide](./config.md) for all available options.
+```Customize this configuration to match your project structure. See the [Configuration Guide](./config.md) for all available options.
 
 ## Framework Integration
 
-### React / Next.js
+### React / Next.js```bash
 
-```bash
 # Install Crosswind
+
 bun add --dev crosswind
 
 # Create config
-crosswind init
-```
 
-Update your `crosswind.config.ts`:
+crosswind init
+```Update your`crosswind.config.ts`:
 
 ```typescript
 import type { CrosswindOptions } from 'crosswind'
@@ -118,37 +123,32 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
+```Import the generated CSS in your app:```typescript
 
-Import the generated CSS in your app:
-
-```typescript
 // app/layout.tsx or pages/_app.tsx
 import './styles/crosswind.css'
-```
 
-Add build scripts to `package.json`:
+```Add build scripts to`package.json`:
 
 ```json
+
 {
   "scripts": {
     "dev": "crosswind watch & next dev",
     "build": "crosswind build && next build"
   }
 }
-```
 
-### Vue / Nuxt
+```### Vue / Nuxt```bash
 
-```bash
 # Install Crosswind
+
 bun add --dev crosswind
 
 # Create config
-crosswind init
-```
 
-Update your `crosswind.config.ts`:
+crosswind init
+```Update your`crosswind.config.ts`:
 
 ```typescript
 import type { CrosswindOptions } from 'crosswind'
@@ -164,27 +164,22 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
+```Import in your`app.vue`or main layout:```vue
 
-Import in your `app.vue` or main layout:
-
-```vue
 <style>
 @import './assets/css/crosswind.css';
 </style>
-```
 
-### Svelte / SvelteKit
+```### Svelte / SvelteKit```bash
 
-```bash
 # Install Crosswind
+
 bun add --dev crosswind
 
 # Create config
-crosswind init
-```
 
-Update your `crosswind.config.ts`:
+crosswind init
+```Update your`crosswind.config.ts`:
 
 ```typescript
 import type { CrosswindOptions } from 'crosswind'
@@ -197,28 +192,23 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
+```Import in your root layout:```html
 
-Import in your root layout:
-
-```html
 <!-- src/routes/+layout.svelte -->
 <script>
   import '/static/crosswind.css'
 </script>
-```
 
-### Astro
+```### Astro```bash
 
-```bash
 # Install Crosswind
+
 bun add --dev crosswind
 
 # Create config
-crosswind init
-```
 
-Update your `crosswind.config.ts`:
+crosswind init
+```Update your`crosswind.config.ts`:
 
 ```typescript
 import type { CrosswindOptions } from 'crosswind'
@@ -231,28 +221,26 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
 
-Import in your base layout:
+```Import in your base layout:```astro
 
-```astro
 ---
+
 // src/layouts/Layout.astro
+
 import '/crosswind.css'
 ---
-```
 
-### Plain HTML
+```### Plain HTML```bash
 
-```bash
 # Install Crosswind globally
+
 bun add --global crosswind
 
 # Create config
-crosswind init
-```
 
-Update your `crosswind.config.ts`:
+crosswind init
+```Update your`crosswind.config.ts`:
 
 ```typescript
 import type { CrosswindOptions } from 'crosswind'
@@ -263,11 +251,8 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
+```Link the CSS in your HTML:```html
 
-Link the CSS in your HTML:
-
-```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -279,67 +264,81 @@ Link the CSS in your HTML:
   </div>
 </body>
 </html>
-```
 
-## Binaries
+```## Binaries
 
 Pre-built binaries are available for different platforms. Download the binary that matches your platform and architecture:
 
-::: code-group
+::: code-group```sh [macOS (arm64)]
 
-```sh [macOS (arm64)]
 # Download the binary
-curl -L https://github.com/cwcss/crosswind/releases/latest/download/crosswind-darwin-arm64 -o crosswind
+
+curl -L <https://github.com/cwcss/crosswind/releases/latest/download/crosswind-darwin-arm64> -o crosswind
 
 # Make it executable
+
 chmod +x crosswind
 
 # Move it to your PATH
+
 sudo mv crosswind /usr/local/bin/crosswind
 ```
 
 ```sh [macOS (x64)]
+
 # Download the binary
-curl -L https://github.com/cwcss/crosswind/releases/latest/download/crosswind-darwin-x64 -o crosswind
+
+curl -L <https://github.com/cwcss/crosswind/releases/latest/download/crosswind-darwin-x64> -o crosswind
 
 # Make it executable
+
 chmod +x crosswind
 
 # Move it to your PATH
+
 sudo mv crosswind /usr/local/bin/crosswind
 ```
 
 ```sh [Linux (arm64)]
+
 # Download the binary
-curl -L https://github.com/cwcss/crosswind/releases/latest/download/crosswind-linux-arm64 -o crosswind
+
+curl -L <https://github.com/cwcss/crosswind/releases/latest/download/crosswind-linux-arm64> -o crosswind
 
 # Make it executable
+
 chmod +x crosswind
 
 # Move it to your PATH
+
 sudo mv crosswind /usr/local/bin/crosswind
 ```
 
 ```sh [Linux (x64)]
+
 # Download the binary
-curl -L https://github.com/cwcss/crosswind/releases/latest/download/crosswind-linux-x64 -o crosswind
+
+curl -L <https://github.com/cwcss/crosswind/releases/latest/download/crosswind-linux-x64> -o crosswind
 
 # Make it executable
+
 chmod +x crosswind
 
 # Move it to your PATH
+
 sudo mv crosswind /usr/local/bin/crosswind
 ```
 
 ```sh [Windows (x64)]
+
 # Download the binary
-curl -L https://github.com/cwcss/crosswind/releases/latest/download/crosswind-windows-x64.exe -o crosswind.exe
+
+curl -L <https://github.com/cwcss/crosswind/releases/latest/download/crosswind-windows-x64.exe> -o crosswind.exe
 
 # Move it to your PATH (adjust the path as needed)
-move crosswind.exe C:\Windows\System32\crosswind.exe
-```
 
-:::
+move crosswind.exe C:\Windows\System32\crosswind.exe
+```:::
 
 ::: tip
 You can also find Crosswind binaries in [GitHub releases](https://github.com/cwcss/crosswind/releases).
@@ -347,25 +346,18 @@ You can also find Crosswind binaries in [GitHub releases](https://github.com/cwc
 
 ## Verify Installation
 
-Verify that Crosswind is installed correctly:
-
-```bash
+Verify that Crosswind is installed correctly:```bash
 crosswind --version
-```
 
-You should see the installed version number.
+```You should see the installed version number.
 
 ## Development Workflow
 
 ### Watch Mode
 
-During development, use watch mode to automatically rebuild CSS when files change:
-
-```bash
+During development, use watch mode to automatically rebuild CSS when files change:```bash
 crosswind watch
-```
-
-This will:
+```This will:
 
 - Watch all files matching your content patterns
 - Automatically rebuild CSS on changes
@@ -373,23 +365,20 @@ This will:
 
 ### Build for Production
 
-When building for production:
-
-```bash
+When building for production:```bash
 crosswind build --minify
-```
 
-Or configure minification in your `crosswind.config.ts`:
+```Or configure minification in your`crosswind.config.ts`:
 
 ```typescript
+
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/crosswind.css',
   minify: process.env.NODE_ENV === 'production',
 } satisfies CrosswindOptions
-```
 
-## Next Steps
+```## Next Steps
 
 - [Configuration Guide](./config.md) - Learn about all configuration options
 - [Usage Guide](./usage.md) - Start using utility classes
@@ -400,55 +389,43 @@ const config = {
 
 ### Bun Not Found
 
-If you get a "bun: command not found" error, install Bun:
+If you get a "bun: command not found" error, install Bun:```bash
+curl -fsSL <https://bun.sh/install> | bash
+```### Permission Denied
 
-```bash
-curl -fsSL https://bun.sh/install | bash
-```
+If you get permission errors when installing globally:```bash
 
-### Permission Denied
-
-If you get permission errors when installing globally:
-
-```bash
 # Use sudo on macOS/Linux
+
 sudo bun add --global crosswind
 
 # Or install locally and use npx
+
 bun add --dev crosswind
 bunx crosswind build
-```
 
-### TypeScript Errors
+```### TypeScript Errors
 
 If you encounter TypeScript errors in your config file:
 
-1. Ensure you have TypeScript installed:
+1. Ensure you have TypeScript installed:```bash
 
-   ```bash
    bun add --dev typescript
-   ```
-
-2. Use the `satisfies` keyword for type checking:
-
-   ```typescript
+   ```2. Use the`satisfies`keyword for type checking:```typescript
    import type { CrosswindOptions } from 'crosswind'
 
    const config = {
      content: ['./src/**/*.tsx'],
      output: './dist/crosswind.css',
    } satisfies CrosswindOptions
-   ```
-
-### Build Errors
+   ```### Build Errors
 
 If the build fails:
 
 1. Check that your content patterns are correct
 2. Ensure the output directory exists or can be created
-3. Run with `--verbose` for detailed error information:
+3. Run with`--verbose`for detailed error information:```bash
 
-   ```bash
    crosswind build --verbose
    ```
 

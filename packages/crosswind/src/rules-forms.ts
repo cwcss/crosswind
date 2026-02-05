@@ -3,7 +3,7 @@ import type { UtilityRule } from './rules'
 /**
  * Tailwind Forms utility classes
  * Provides form-* classes that can be used to explicitly apply form styles
- */
+*/
 
 const baseInputStyles = {
   'appearance': 'none',
