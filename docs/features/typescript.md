@@ -28,13 +28,9 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
+```## Type Checking
 
-## Type Checking
-
-The `satisfies` keyword provides type checking while preserving literal types:
-
-```typescript
+The`satisfies`keyword provides type checking while preserving literal types:```typescript
 import type { CrosswindOptions } from 'crosswind'
 
 // ✅ Type-safe with autocompletion
@@ -50,15 +46,12 @@ const badConfig = {
   outputPath: './dist/crosswind.css', // Error: 'outputPath' does not exist
   // ^^^^^^^^ Property error
 } satisfies CrosswindOptions
-```
 
-## Available Types
+```## Available Types
 
 ### CrosswindConfig
 
-Main configuration interface:
-
-```typescript
+Main configuration interface:```typescript
 interface CrosswindConfig {
   content: string[]
   output: string
@@ -75,13 +68,9 @@ interface CrosswindConfig {
   presets: Preset[]
   compileClass?: CompileClassConfig
 }
-```
+```### Theme
 
-### Theme
-
-Theme customization types:
-
-```typescript
+Theme customization types:```typescript
 interface Theme {
   colors: Record<string, string | Record<string, string>>
   spacing: Record<string, string>
@@ -91,42 +80,33 @@ interface Theme {
   borderRadius: Record<string, string>
   boxShadow: Record<string, string>
 }
-```
 
-### CompileClassConfig
+```### CompileClassConfig
 
-Compile class configuration:
-
-```typescript
+Compile class configuration:```typescript
 interface CompileClassConfig {
   enabled?: boolean
   trigger?: string
   classPrefix?: string
   layer?: string
 }
-```
+```### CustomRule
 
-### CustomRule
-
-Custom rule type:
-
-```typescript
+Custom rule type:```typescript
 type CustomRule = [
   RegExp,
   (match: RegExpMatchArray) => Record<string, string> | undefined
 ]
-```
 
-## Autocompletion
+```## Autocompletion
 
 Get IntelliSense and autocompletion in your IDE:
 
 ### VSCode
 
 1. Install the TypeScript extension (comes pre-installed)
-2. Create `crosswind.config.ts` with the type import:
+2. Create`crosswind.config.ts`with the type import:```typescript
 
-```typescript
 import type { CrosswindOptions } from 'crosswind'
 
 const config = {
@@ -135,11 +115,8 @@ const config = {
     // Autocomplete shows all theme options
   },
 } satisfies CrosswindOptions
-```
+```### Theme Autocompletion```typescript
 
-### Theme Autocompletion
-
-```typescript
 const config = {
   theme: {
     // Autocomplete shows: colors, spacing, fontSize, etc.
@@ -151,11 +128,8 @@ const config = {
     },
   },
 } satisfies CrosswindOptions
-```
 
-### Shortcuts Autocompletion
-
-```typescript
+```### Shortcuts Autocompletion```typescript
 const config = {
   shortcuts: {
     // Autocomplete for shortcut names
@@ -163,13 +137,9 @@ const config = {
     'btn-primary': 'btn bg-blue-500', // Autocomplete shows existing shortcuts
   },
 } satisfies CrosswindOptions
-```
+```## Type Inference
 
-## Type Inference
-
-TypeScript infers types from your configuration:
-
-```typescript
+TypeScript infers types from your configuration:```typescript
 const config = {
   theme: {
     colors: {
@@ -186,13 +156,11 @@ const config = {
 // TypeScript knows:
 // config.theme.colors.primary is string
 // config.theme.colors.brand is Record<string, string>
-```
 
-## Programmatic API Types
+```## Programmatic API Types
 
-### Build Function
+### Build Function```typescript
 
-```typescript
 import type { BuildResult, CrosswindConfig } from 'crosswind'
 import { build } from 'crosswind'
 
@@ -206,11 +174,8 @@ const result: BuildResult = await build({
 // result.duration: number
 // result.compiledClasses?: Map<string, { className: string; utilities: string[] }>
 // result.transformedFiles?: Map<string, string>
-```
+```### BuildResult Type```typescript
 
-### BuildResult Type
-
-```typescript
 interface BuildResult {
   css: string
   classes: Set<string>
@@ -218,11 +183,8 @@ interface BuildResult {
   compiledClasses?: Map<string, { className: string, utilities: string[] }>
   transformedFiles?: Map<string, string>
 }
-```
 
-### Using with async/await
-
-```typescript
+```### Using with async/await```typescript
 import { build, buildAndWrite } from 'crosswind'
 
 async function buildStyles() {
@@ -242,13 +204,9 @@ async function buildStyles() {
     minify: true,
   })
 }
-```
+```## Custom Rules with Types
 
-## Custom Rules with Types
-
-Define type-safe custom rules:
-
-```typescript
+Define type-safe custom rules:```typescript
 import type { CustomRule, CrosswindConfig } from 'crosswind'
 
 const customRules: CustomRule[] = [
@@ -267,13 +225,10 @@ const customRules: CustomRule[] = [
 const config = {
   rules: customRules,
 } satisfies CrosswindOptions
-```
 
-## Preset Types
+```## Preset Types
 
-Create type-safe presets:
-
-```typescript
+Create type-safe presets:```typescript
 import type { Preset, Theme } from 'crosswind'
 
 const myPreset: Preset = {
@@ -304,15 +259,11 @@ const myPreset: Preset = {
 const config = {
   presets: [myPreset],
 }
-```
-
-## Extending Types
+```## Extending Types
 
 ### Custom Theme Values
 
-Extend the theme with custom properties:
-
-```typescript
+Extend the theme with custom properties:```typescript
 import type { CrosswindOptions, Theme } from 'crosswind'
 
 interface CustomTheme extends Theme {
@@ -331,13 +282,10 @@ const config = {
     },
   } as CustomTheme,
 } satisfies CrosswindOptions
-```
 
-### Custom Config
+```### Custom Config
 
-Create a custom config interface:
-
-```typescript
+Create a custom config interface:```typescript
 import type { CrosswindOptions } from 'crosswind'
 
 interface MyConfig extends Partial<CrosswindConfig> {
@@ -359,13 +307,9 @@ const config: MyConfig = {
     author: 'Your Name',
   },
 }
-```
+```## Type Guards
 
-## Type Guards
-
-Use type guards for runtime type checking:
-
-```typescript
+Use type guards for runtime type checking:```typescript
 import type { CrosswindOptions } from 'crosswind'
 
 function isValidConfig(config: unknown): config is CrosswindConfig {
@@ -385,13 +329,10 @@ if (isValidConfig(config)) {
   // TypeScript knows config is CrosswindConfig
   console.log(config.content)
 }
-```
 
-## Generics
+```## Generics
 
-Use generics for flexible, type-safe functions:
-
-```typescript
+Use generics for flexible, type-safe functions:```typescript
 import type { CrosswindOptions } from 'crosswind'
 
 function createConfig<T extends Partial<CrosswindConfig>>(config: T): T {
@@ -411,13 +352,9 @@ const config = createConfig({
 })
 
 // TypeScript infers the exact type
-```
+```## Module Augmentation
 
-## Module Augmentation
-
-Extend Crosswind types globally:
-
-```typescript
+Extend Crosswind types globally:```typescript
 // Now use in config
 import type { CrosswindOptions } from 'crosswind'
 
@@ -450,13 +387,11 @@ const config = {
     },
   },
 } satisfies CrosswindOptions
-```
 
-## Integration with Build Tools
+```## Integration with Build Tools
 
-### Vite
+### Vite```typescript
 
-```typescript
 import type { CrosswindOptions } from 'crosswind'
 import { build } from 'crosswind'
 // vite.config.ts
@@ -478,11 +413,8 @@ export default defineConfig({
     },
   ],
 })
-```
+```### Next.js```typescript
 
-### Next.js
-
-```typescript
 import type { CrosswindOptions } from 'crosswind'
 // next.config.ts
 import type { NextConfig } from 'next'
@@ -504,13 +436,10 @@ const nextConfig: NextConfig = {
 }
 
 export default nextConfig
-```
 
-## Type Utilities
+```## Type Utilities
 
-Crosswind provides useful type utilities:
-
-```typescript
+Crosswind provides useful type utilities:```typescript
 import type {
   CustomRule,
   CrosswindConfig,
@@ -526,23 +455,17 @@ type ConfigSpacing = Theme['spacing']
 // Use utility types
 type RequiredConfig = Required<CrosswindConfig>
 type PartialTheme = Partial<Theme>
-```
+```## Best Practices
 
-## Best Practices
+### 1. Always Use Type Imports```typescript
 
-### 1. Always Use Type Imports
-
-```typescript
 // ✅ Type-only import
 import type { CrosswindOptions } from 'crosswind'
 
 // ❌ Value import (unnecessary)
 import { CrosswindConfig } from 'crosswind'
-```
 
-### 2. Use `satisfies` for Validation
-
-```typescript
+```### 2. Use`satisfies`for Validation```typescript
 // ✅ Validates types while preserving literals
 const config = {
   content: ['./src/**/*.tsx'],
@@ -552,11 +475,8 @@ const config = {
 const config: Partial<CrosswindConfig> = {
   content: ['./src/**/*.tsx'],
 }
-```
+```### 3. Separate Type Definitions```typescript
 
-### 3. Separate Type Definitions
-
-```typescript
 // types/crosswind.ts
 import type { CrosswindOptions, Preset } from 'crosswind'
 
@@ -574,78 +494,48 @@ export interface MyConfig extends Partial<CrosswindConfig> {
 const config: MyConfig = {
   // ...
 }
-```
 
-### 4. Document Custom Types
-
-```typescript
-/**
- * Custom theme with extended color palette
- */
+```### 4. Document Custom Types```typescript
+/***Custom theme with extended color palette*/
 interface CustomTheme extends Theme {
-  /**
-   * Brand colors for the application
-   */
+  /***Brand colors for the application*/
   brandColors: {
     primary: string
     secondary: string
     accent: string
   }
 }
-```
+```## Troubleshooting
 
-## Troubleshooting
+### Type Errors**Problem:**TypeScript errors in config```typescript
 
-### Type Errors
-
-**Problem:** TypeScript errors in config
-
-```typescript
 // Error: Type 'string' is not assignable to type 'string[]'
 const config = {
   content: './src/**/*.tsx', // Should be array
 } satisfies CrosswindOptions
-```
 
-**Solution:**
-
-```typescript
+```**Solution:**```typescript
 const config = {
   content: ['./src/**/*.tsx'], // Correct: array
 } satisfies CrosswindOptions
 ```
 
-### Missing Types
+### Missing Types**Problem:**Cannot find type definitions**Solution:**```bash
 
-**Problem:** Cannot find type definitions
-
-**Solution:**
-
-```bash
 # Ensure TypeScript is installed
+
 bun add --dev typescript
 
 # Ensure types are imported
+
 import type { CrosswindOptions } from 'crosswind'
-```
 
-### Autocomplete Not Working
+```### Autocomplete Not Working**Problem:**No autocompletion in IDE**Solutions:**1. Restart TypeScript server
 
-**Problem:** No autocompletion in IDE
-
-**Solutions:**
-
-1. Restart TypeScript server
 2. Check tsconfig.json includes the config file
-3. Ensure proper imports:
+3. Ensure proper imports:```typescript
 
-   ```typescript
    import type { CrosswindOptions } from 'crosswind'
    ```
 
-## Related
-
-- [Configuration](../config.md) - Full configuration guide
-- [Custom Rules](../advanced/custom-rules.md) - Creating custom utilities
-- [Presets](../advanced/presets.md) - Reusable configurations
-- [API Reference](../api-reference.md) - Programmatic API
+## Related*[Configuration](../config.md) - Full configuration guide*[Custom Rules](../advanced/custom-rules.md) - Creating custom utilities*[Presets](../advanced/presets.md) - Reusable configurations*[API Reference](../api-reference.md) - Programmatic API

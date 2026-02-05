@@ -7,20 +7,21 @@ Crosswind integrates seamlessly with modern JavaScript frameworks and build tool
 ### Create React App
 
 ```bash
+
 # Create React app
+
 bunx create-react-app my-app
 cd my-app
 
 # Install Crosswind
+
 bun add --dev crosswind
 
 # Initialize Crosswind
+
 bunx crosswind init
-```
+```**Configuration:**```typescript
 
-**Configuration:**
-
-```typescript
 // crosswind.config.ts
 import type { CrosswindOptions } from 'crosswind'
 
@@ -31,18 +32,12 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
 
-**Import CSS:**
-
-```tsx
+```**Import CSS:**```tsx
 // src/index.tsx or src/App.tsx
 import './crosswind.css'
-```
+```**Package.json scripts:**```json
 
-**Package.json scripts:**
-
-```json
 {
   "scripts": {
     "prestart": "crosswind build",
@@ -52,11 +47,8 @@ import './crosswind.css'
     "dev": "crosswind watch & react-scripts start"
   }
 }
-```
 
-**Example component:**
-
-```tsx
+```**Example component:**```tsx
 // src/components/Button.tsx
 interface ButtonProps {
   variant?: 'primary' | 'secondary'
@@ -88,58 +80,48 @@ export function Button({
     </button>
   )
 }
-```
+```### Vite + React```bash
 
-### Vite + React
-
-```bash
 # Create Vite app
+
 bun create vite my-app --template react-ts
 cd my-app
 bun install
 
 # Install Crosswind
+
 bun add --dev crosswind
 bunx crosswind init
-```
 
-**Configuration:**
-
-```typescript
+```**Configuration:**```typescript
 // crosswind.config.ts
 const config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}', './index.html'],
   output: './src/crosswind.css',
   watch: true,
 }
-```
+```**Concurrent development:**```json
 
-**Concurrent development:**
-
-```json
 {
   "scripts": {
     "dev": "crosswind watch & vite",
     "build": "crosswind build --minify && tsc && vite build"
   }
 }
-```
 
-### Next.js
+```### Next.js```bash
 
-```bash
 # Create Next.js app
+
 bunx create-next-app@latest my-app
 cd my-app
 
 # Install Crosswind
+
 bun add --dev crosswind
 bunx crosswind init
-```
+```**Configuration:**```typescript
 
-**Configuration:**
-
-```typescript
 // crosswind.config.ts
 const config = {
   content: [
@@ -150,11 +132,8 @@ const config = {
   output: './styles/crosswind.css',
   minify: process.env.NODE_ENV === 'production',
 }
-```
 
-**Import in layout:**
-
-```tsx
+```**Import in layout:**```tsx
 // app/layout.tsx
 import '../styles/crosswind.css'
 
@@ -169,11 +148,8 @@ export default function RootLayout({
     </html>
   )
 }
-```
+```**Development script:**```json
 
-**Development script:**
-
-```json
 {
   "scripts": {
     "dev": "crosswind watch & next dev",
@@ -181,11 +157,8 @@ export default function RootLayout({
     "start": "next start"
   }
 }
-```
 
-**Example Next.js component:**
-
-```tsx
+```**Example Next.js component:**```tsx
 // components/Card.tsx
 interface CardProps {
   title: string
@@ -206,47 +179,37 @@ export function Card({ title, description, image }: CardProps) {
     </div>
   )
 }
-```
+```## Vue
 
-## Vue
+### Vue 3 + Vite```bash
 
-### Vue 3 + Vite
-
-```bash
 # Create Vue app
+
 bun create vite my-app --template vue-ts
 cd my-app
 bun install
 
 # Install Crosswind
+
 bun add --dev crosswind
 bunx crosswind init
-```
 
-**Configuration:**
-
-```typescript
+```**Configuration:**```typescript
 // crosswind.config.ts
 const config = {
   content: ['./src/**/*.{vue,js,ts,jsx,tsx}', './index.html'],
   output: './src/crosswind.css',
 }
-```
+```**Import CSS:**```typescript
 
-**Import CSS:**
-
-```typescript
 // src/main.ts
 import { createApp } from 'vue'
 import App from './App.vue'
 import './crosswind.css'
 
 createApp(App).mount('#app')
-```
 
-**Example component:**
-
-```vue
+```**Example component:**```vue
 <!-- src/components/Button.vue -->
 <script setup lang="ts">
 interface Props {
@@ -281,35 +244,29 @@ const sizeClasses = {
     <slot />
   </button>
 </template>
-```
+```**Development:**```json
 
-**Development:**
-
-```json
 {
   "scripts": {
     "dev": "crosswind watch & vite",
     "build": "crosswind build --minify && vue-tsc && vite build"
   }
 }
-```
 
-### Nuxt 3
+```### Nuxt 3```bash
 
-```bash
 # Create Nuxt app
+
 bunx nuxi@latest init my-app
 cd my-app
 bun install
 
 # Install Crosswind
+
 bun add --dev crosswind
 bunx crosswind init
-```
+```**Configuration:**```typescript
 
-**Configuration:**
-
-```typescript
 // crosswind.config.ts
 const config = {
   content: [
@@ -321,21 +278,15 @@ const config = {
   ],
   output: './assets/css/crosswind.css',
 }
-```
 
-**Import in Nuxt config:**
-
-```typescript
+```**Import in Nuxt config:**```typescript
 // nuxt.config.ts
 export default defineNuxtConfig({
   css: ['~/assets/css/crosswind.css'],
   devtools: { enabled: true },
 })
-```
+```**Development:**```json
 
-**Development:**
-
-```json
 {
   "scripts": {
     "dev": "crosswind watch & nuxt dev",
@@ -343,47 +294,38 @@ export default defineNuxtConfig({
     "generate": "crosswind build --minify && nuxt generate"
   }
 }
-```
 
-## Svelte
+```## Svelte
 
-### SvelteKit
+### SvelteKit```bash
 
-```bash
 # Create SvelteKit app
+
 bun create svelte@latest my-app
 cd my-app
 bun install
 
 # Install Crosswind
+
 bun add --dev crosswind
 bunx crosswind init
-```
+```**Configuration:**```typescript
 
-**Configuration:**
-
-```typescript
 // crosswind.config.ts
 const config = {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   output: './src/crosswind.css',
 }
-```
 
-**Import CSS:**
-
-```svelte
+```**Import CSS:**```svelte
 <!-- src/routes/+layout.svelte -->
 <script>
   import '../crosswind.css'
 </script>
 
 <slot />
-```
+```**Example component:**```svelte
 
-**Example component:**
-
-```svelte
 <!-- src/lib/components/Card.svelte -->
 <script lang="ts">
   export let title: string
@@ -401,68 +343,56 @@ const config = {
   <p class="text-gray-600">{description}</p>
   <slot />
 </div>
-```
 
-**Development:**
-
-```json
+```**Development:**```json
 {
   "scripts": {
     "dev": "crosswind watch & vite dev",
     "build": "crosswind build --minify && vite build"
   }
 }
-```
+```### Svelte + Vite```bash
 
-### Svelte + Vite
-
-```bash
 # Create Svelte app
+
 bun create vite my-app --template svelte-ts
 cd my-app
 bun install
 bun add --dev crosswind
 bunx crosswind init
-```
 
-**Configuration:**
-
-```typescript
+```**Configuration:**```typescript
 // crosswind.config.ts
 const config = {
   content: ['./src/**/*.{html,js,svelte,ts}', './index.html'],
   output: './src/crosswind.css',
 }
-```
+```## Astro```bash
 
-## Astro
-
-```bash
 # Create Astro app
+
 bun create astro@latest my-app
 cd my-app
 bun install
 
 # Install Crosswind
+
 bun add --dev crosswind
 bunx crosswind init
-```
 
-**Configuration:**
-
-```typescript
+```**Configuration:**```typescript
 // crosswind.config.ts
 const config = {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   output: './src/crosswind.css',
 }
-```
 
-**Import CSS:**
+```**Import CSS:**```astro
 
-```astro
 ---
+
 // src/layouts/Layout.astro
+
 import '../crosswind.css'
 ---
 
@@ -476,12 +406,10 @@ import '../crosswind.css'
     <slot />
   </body>
 </html>
-```
 
-**Example component:**
-
-```astro
+```**Example component:**```astro
 ---
+
 // src/components/Hero.astro
 interface Props {
   title: string
@@ -497,106 +425,83 @@ const { title, subtitle } = Astro.props
     <p class="text-xl text-white opacity-90">{subtitle}</p>
   </div>
 </section>
-```
+```**Development:**```json
 
-**Development:**
-
-```json
 {
   "scripts": {
     "dev": "crosswind watch & astro dev",
     "build": "crosswind build --minify && astro build"
   }
 }
-```
 
-## Solid.js
+```## Solid.js```bash
 
-```bash
 # Create Solid app
+
 bunx degit solidjs/templates/ts my-app
 cd my-app
 bun install
 
 # Install Crosswind
+
 bun add --dev crosswind
 bunx crosswind init
-```
+```**Configuration:**```typescript
 
-**Configuration:**
-
-```typescript
 // crosswind.config.ts
 const config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}', './index.html'],
   output: './src/crosswind.css',
 }
-```
 
-**Import CSS:**
-
-```tsx
+```**Import CSS:**```tsx
 // src/index.tsx
 import { render } from 'solid-js/web'
 import App from './App'
 import './crosswind.css'
 
 render(() => <App />, document.getElementById('root')!)
-```
+```## Qwik```bash
 
-## Qwik
-
-```bash
 # Create Qwik app
+
 bun create qwik@latest
 cd my-app
 bun install
 
 # Install Crosswind
+
 bun add --dev crosswind
 bunx crosswind init
-```
 
-**Configuration:**
-
-```typescript
+```**Configuration:**```typescript
 // crosswind.config.ts
 const config = {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   output: './src/crosswind.css',
 }
-```
+```**Import in root:**```tsx
 
-**Import in root:**
-
-```tsx
 // src/root.tsx
 import './crosswind.css'
-```
 
-## Static Site Generators
+```## Static Site Generators
 
-### 11ty (Eleventy)
+### 11ty (Eleventy)```bash
 
-```bash
 # Install Crosswind
+
 bun add --dev crosswind
 bunx crosswind init
-```
+```**Configuration:**```typescript
 
-**Configuration:**
-
-```typescript
 // crosswind.config.ts
 const config = {
   content: ['./src/**/*.{html,md,njk,liquid}'],
   output: './_site/css/crosswind.css',
 }
-```
 
-**Template:**
-
-```html
+```**Template:**```html
 <!-- src/_includes/layout.njk -->
 <!DOCTYPE html>
 <html>
@@ -607,30 +512,23 @@ const config = {
     {{ content | safe }}
   </body>
 </html>
-```
+```**Build script:**```json
 
-**Build script:**
-
-```json
 {
   "scripts": {
     "build": "crosswind build --minify && eleventy",
     "dev": "crosswind watch & eleventy --serve"
   }
 }
-```
 
-### Hugo
+```### Hugo```bash
 
-```bash
 # In your Hugo project
+
 bun add --dev crosswind
 bunx crosswind init
-```
+```**Configuration:**```typescript
 
-**Configuration:**
-
-```typescript
 // crosswind.config.ts
 const config = {
   content: [
@@ -639,11 +537,8 @@ const config = {
   ],
   output: './static/css/crosswind.css',
 }
-```
 
-**Template:**
-
-```html
+```**Template:**```html
 <!-- layouts/_default/baseof.html -->
 <!DOCTYPE html>
 <html>
@@ -654,13 +549,10 @@ const config = {
     {{ block "main" . }}{{ end }}
   </body>
 </html>
-```
+```## Build Tool Integration
 
-## Build Tool Integration
+### Webpack```javascript
 
-### Webpack
-
-```javascript
 // webpack.config.js
 const { spawn } = require('node:child_process')
 
@@ -677,11 +569,8 @@ module.exports = {
     }
   ]
 }
-```
 
-### Rollup
-
-```javascript
+```### Rollup```javascript
 // rollup.config.js
 import { spawn } from 'node:child_process'
 
@@ -700,14 +589,11 @@ function crosswind() {
 export default {
   plugins: [crosswind()],
 }
-```
+```### esbuild```javascript
 
-### esbuild
-
-```javascript
 import { spawn } from 'node:child_process'
 // build.js
-import * as esbuild from 'esbuild'
+import*as esbuild from 'esbuild'
 
 // Build CSS first
 await new Promise((resolve) => {
@@ -721,49 +607,37 @@ await esbuild.build({
   bundle: true,
   outfile: 'dist/bundle.js',
 })
-```
 
-## Best Practices
+```## Best Practices
 
 ### 1. Watch Mode in Development
 
-Run Crosswind in watch mode during development:
-
-```json
+Run Crosswind in watch mode during development:```json
 {
   "scripts": {
     "dev": "crosswind watch & vite dev"
   }
 }
-```
+```### 2. Build CSS Before Production
 
-### 2. Build CSS Before Production
-
-Always build CSS before your framework build:
-
-```json
+Always build CSS before your framework build:```json
 {
   "scripts": {
     "build": "crosswind build --minify && vite build"
   }
 }
-```
 
-### 3. Gitignore Generated CSS
+```### 3. Gitignore Generated CSS```gitignore
 
-```gitignore
 # .gitignore
+
 /src/crosswind.css
 /dist/crosswind.css
-```
-
-Regenerate CSS during build instead of committing it.
+```Regenerate CSS during build instead of committing it.
 
 ### 4. Content Paths
 
-Include all files that contain utility classes:
-
-```typescript
+Include all files that contain utility classes:```typescript
 const config = {
   content: [
     './src/**/*.{js,jsx,ts,tsx,vue,svelte}',
@@ -771,23 +645,17 @@ const config = {
     './components/**/*.{js,ts}',
   ],
 }
-```
 
-### 5. Component Libraries
+```### 5. Component Libraries
 
-For shared component libraries:
-
-```typescript
+For shared component libraries:```typescript
 // crosswind.config.ts in component library
 const config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   output: './dist/crosswind.css',
 }
-```
+```Publish both components and CSS:```json
 
-Publish both components and CSS:
-
-```json
 {
   "files": ["dist"],
   "exports": {
@@ -795,15 +663,15 @@ Publish both components and CSS:
     "./css": "./dist/crosswind.css"
   }
 }
-```
 
-## Framework-Specific Tips
+```## Framework-Specific Tips
 
 ### React
 
-Use class composition utilities like `clsx` or `classnames`:
+Use class composition utilities like`clsx`or`classnames`:
 
 ```tsx
+
 import clsx from 'clsx'
 
 function Button({ primary, large, className }) {
@@ -818,13 +686,10 @@ function Button({ primary, large, className }) {
     />
   )
 }
-```
 
-### Vue
+```### Vue
 
-Use computed properties for dynamic classes:
-
-```vue
+Use computed properties for dynamic classes:```vue
 <script setup>
 import { computed } from 'vue'
 
@@ -842,13 +707,9 @@ const classes = computed(() => [
     <slot />
   </button>
 </template>
-```
+```### Svelte
 
-### Svelte
-
-Use class directives:
-
-```svelte
+Use class directives:```svelte
 <script>
   export let primary = false
   export let large = false
@@ -864,33 +725,21 @@ Use class directives:
 >
   <slot />
 </button>
-```
 
-## Troubleshooting
+```## Troubleshooting
 
-### CSS Not Updating
+### CSS Not Updating**Solution:**Ensure watch mode is running:```bash
 
-**Solution:** Ensure watch mode is running:
-
-```bash
 crosswind watch
-```
+```### Classes Not Found**Solution:**Check content paths include all files:```typescript
 
-### Classes Not Found
-
-**Solution:** Check content paths include all files:
-
-```typescript
 content: ['./src/**/*.{js,jsx,ts,tsx}']
-```
 
-### Build Failing in CI
+```### Build Failing in CI**Solution:**Run Crosswind build before framework build:```yaml
 
-**Solution:** Run Crosswind build before framework build:
-
-```yaml
 - run: bun run crosswind build --minify
 - run: bun run build
+
 ```
 
 ## Related

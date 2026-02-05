@@ -15,29 +15,28 @@ Instead of writing the same combination of utilities multiple times:
 <button class="px-4 py-2 rounded font-semibold transition-colors bg-blue-500 text-white hover:bg-blue-600">
   Button 2
 </button>
-```
+```Define a shortcut once and reuse it:```typescript
 
-Define a shortcut once and reuse it:
-
-```typescript
 // crosswind.config.ts
 const config = {
   shortcuts: {
     'btn-primary': 'px-4 py-2 rounded font-semibold transition-colors bg-blue-500 text-white hover:bg-blue-600',
   },
 }
+
 ```
 
 ```html
+
 <button class="btn-primary">Button 1</button>
 <button class="btn-primary">Button 2</button>
-```
 
-## Configuration
+```## Configuration
 
-Define shortcuts in your `crosswind.config.ts`:
+Define shortcuts in your`crosswind.config.ts`:
 
 ```typescript
+
 import type { CrosswindOptions } from 'crosswind'
 
 const config = {
@@ -60,39 +59,31 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
 
-## String vs Array Format
+```## String vs Array Format
 
 Shortcuts can be defined as strings or arrays:
 
-### String Format
+### String Format```typescript
 
-```typescript
 const config = {
   shortcuts: {
     btn: 'px-4 py-2 rounded font-semibold transition-colors',
   },
 }
-```
+```### Array Format```typescript
 
-### Array Format
-
-```typescript
 const config = {
   shortcuts: {
     btn: ['px-4', 'py-2', 'rounded', 'font-semibold', 'transition-colors'],
   },
 }
-```
 
-Both formats generate the same CSS. Use whichever you prefer for readability.
+```Both formats generate the same CSS. Use whichever you prefer for readability.
 
 ## Composing Shortcuts
 
-Shortcuts can reference other shortcuts:
-
-```typescript
+Shortcuts can reference other shortcuts:```typescript
 const config = {
   shortcuts: {
     // Base button
@@ -107,13 +98,10 @@ const config = {
     'btn-primary-sm': 'btn-primary px-2 py-1 text-sm',
   },
 }
-```
+```## Usage Examples
 
-## Usage Examples
+### Button System```typescript
 
-### Button System
-
-```typescript
 // Config
 const config = {
   shortcuts: {
@@ -136,18 +124,17 @@ const config = {
     'btn-primary-lg': 'btn-primary btn-lg',
   },
 }
+
 ```
 
 ```html
+
 <button class="btn-primary-sm">Small Primary</button>
 <button class="btn-primary-lg">Large Primary</button>
 <button class="btn-secondary-md">Medium Secondary</button>
 <button class="btn-ghost-sm">Small Ghost</button>
-```
 
-### Card Components
-
-```typescript
+```### Card Components```typescript
 const config = {
   shortcuts: {
     // Cards
@@ -180,11 +167,8 @@ const config = {
     <button class="btn-primary">Action</button>
   </div>
 </div>
-```
+```### Form Elements```typescript
 
-### Form Elements
-
-```typescript
 const config = {
   shortcuts: {
     // Inputs
@@ -203,9 +187,11 @@ const config = {
     'form-help': 'text-gray-500 text-sm mt-1',
   },
 }
+
 ```
 
 ```html
+
 <div class="form-group">
   <label class="label-required">Email</label>
   <input type="email" class="input" placeholder="you@example.com" />
@@ -217,11 +203,8 @@ const config = {
   <input type="password" class="input-error" />
   <p class="form-error">Password is required</p>
 </div>
-```
 
-### Layout Patterns
-
-```typescript
+```### Layout Patterns```typescript
 const config = {
   shortcuts: {
     // Containers
@@ -239,11 +222,8 @@ const config = {
     'grid-auto-fit': 'grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4',
   },
 }
-```
+```### Typography```typescript
 
-### Typography
-
-```typescript
 const config = {
   shortcuts: {
     // Headings
@@ -261,13 +241,10 @@ const config = {
     'prose-headings': 'prose font-bold text-gray-900 mt-8 mb-4',
   },
 }
-```
 
-## Dynamic Shortcuts
+```## Dynamic Shortcuts
 
-While shortcuts are static, you can use them with dynamic classes:
-
-```tsx
+While shortcuts are static, you can use them with dynamic classes:```tsx
 // React
 function Button({ variant = 'primary', size = 'md', ...props }) {
   return <button className={`btn-${variant}-${size}`} {...props} />
@@ -282,29 +259,23 @@ function Button({ variant = 'primary', size = 'md', ...props }) {
 
 ### 1. Use Descriptive Names
 
-✅ **Good:**
-
-```typescript
+✅**Good:**```typescript
 shortcuts: {
   'btn-primary': '...',
   'card-hover': '...',
   'input-error': '...',
 }
+
 ```
 
-❌ **Avoid:**
-
-```typescript
+❌**Avoid:**```typescript
 shortcuts: {
   'bp': '...',  // What does 'bp' mean?
   'ch': '...',  // Too cryptic
   'ie': '...',  // Unclear
 }
-```
+```### 2. Follow a Naming Convention```typescript
 
-### 2. Follow a Naming Convention
-
-```typescript
 // Component-based naming
 'btn-*': 'button styles',
 'card-*': 'card styles',
@@ -312,31 +283,25 @@ shortcuts: {
 
 // BEM-inspired naming
 'block-element-modifier': 'styles',
+
 ```
 
 ### 3. Keep Shortcuts Focused
 
-✅ **Good:**
-
-```typescript
+✅**Good:**```typescript
 shortcuts: {
   'btn': 'px-4 py-2 rounded font-semibold transition',
   'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600',
 }
 ```
 
-❌ **Avoid:**
-
-```typescript
+❌**Avoid:**```typescript
 shortcuts: {
   // Too many utilities in one shortcut
   'btn': 'px-4 py-2 rounded font-semibold transition bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed',
 }
-```
 
-### 4. Compose Larger Patterns
-
-```typescript
+```### 4. Compose Larger Patterns```typescript
 shortcuts: {
   // Small, reusable pieces
   'btn': 'px-4 py-2 rounded transition',
@@ -346,11 +311,8 @@ shortcuts: {
   // Composed patterns
   'btn-primary': 'btn text-button primary-colors',
 }
-```
+```### 5. Document Your Shortcuts```typescript
 
-### 5. Document Your Shortcuts
-
-```typescript
 const config = {
   shortcuts: {
     // Buttons
@@ -364,35 +326,26 @@ const config = {
     'btn-secondary': 'btn bg-gray-500 text-white hover:bg-gray-600',
   },
 }
-```
 
-## Performance
+```## Performance
 
 Shortcuts have zero runtime overhead:
 
-- **Build time:** Shortcuts are resolved during CSS generation
-- **Output CSS:** Same as writing utilities directly
-- **No JavaScript:** Pure CSS solution
+-**Build time:**Shortcuts are resolved during CSS generation
+-**Output CSS:**Same as writing utilities directly
+-**No JavaScript:**Pure CSS solution
 
 ### Example
 
-Input:
-
-```typescript
+Input:```typescript
 shortcuts: {
   'btn': 'px-4 py-2 rounded bg-blue-500',
 }
-```
+```HTML:```html
 
-HTML:
-
-```html
 <button class="btn">Click</button>
-```
 
-Generated CSS:
-
-```css
+```Generated CSS:```css
 .btn {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -401,15 +354,12 @@ Generated CSS:
   border-radius: 0.25rem;
   background-color: #3b82f6;
 }
-```
-
-This is identical to using utilities directly.
+```This is identical to using utilities directly.
 
 ## Combining with Other Features
 
-### With Compile Class
+### With Compile Class```typescript
 
-```typescript
 const config = {
   shortcuts: {
     'btn-primary': 'px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600',
@@ -418,9 +368,11 @@ const config = {
     enabled: true,
   },
 }
+
 ```
 
 ```html
+
 <!-- Use shortcut with compile class -->
 <button class=":hw: btn-primary">
   Click Me
@@ -430,13 +382,10 @@ const config = {
 <button class="hw-abc123">
   Click Me
 </button>
-```
 
-### With Responsive Variants
+```### With Responsive Variants
 
-Shortcuts work with all variants:
-
-```html
+Shortcuts work with all variants:```html
 <div class="btn-primary md:btn-primary-lg">
   Responsive button
 </div>
@@ -444,26 +393,19 @@ Shortcuts work with all variants:
 <div class="card hover:card-hover dark:bg-gray-800">
   Responsive card
 </div>
-```
+```### With Custom Rules```typescript
 
-### With Custom Rules
-
-```typescript
 const config = {
   shortcuts: {
     'gradient-primary': 'bg-gradient-to-r from-blue-500 to-purple-500',
   },
   rules: [
-    [/^from-(\w+)-(\d+)$/, ([, color, shade]) => ({ '--tw-gradient-from': `var(--color-${color}-${shade})` })],
+    [/^from-(\w+)-(\d+)$/, ([, color, shade]) => ({ '--tw-gradient-from': `var(--color-${color}-${shade})`})],
   ],
-}
-```
+}```## Organizing Shortcuts
 
-## Organizing Shortcuts
+### Separate Files```typescript
 
-### Separate Files
-
-```typescript
 // shortcuts/buttons.ts
 // crosswind.config.ts
 import { buttonShortcuts } from './shortcuts/buttons'
@@ -487,13 +429,10 @@ const config = {
     ...cardShortcuts,
   },
 }
-```
 
-### Presets
+```### Presets
 
-Share shortcuts across projects using presets:
-
-```typescript
+Share shortcuts across projects using presets:```typescript
 // presets/design-system.ts
 // crosswind.config.ts
 import { designSystemPreset } from './presets/design-system'
@@ -515,59 +454,35 @@ export const designSystemPreset = {
 const config = {
   presets: [designSystemPreset],
 }
-```
+```## Troubleshooting
 
-## Troubleshooting
+### Shortcut Not Working**Check:**1. Shortcut is defined in config:```typescript
 
-### Shortcut Not Working
-
-**Check:**
-
-1. Shortcut is defined in config:
-
-   ```typescript
    shortcuts: {
      'btn': 'px-4 py-2 rounded', // ✅
    }
-   ```
-
-2. Name matches exactly:
-
-   ```html
+   ```2. Name matches exactly:```html
    <button class="btn">✅ Works</button>
    <button class="BTN">❌ Wrong case</button>
-   ```
-
-3. Config is loaded:
-
-   ```bash
+   ```3. Config is loaded:```bash
    crosswind build --verbose
    ```
 
-### Circular References
+### Circular References**Problem:**```typescript
 
-**Problem:**
-
-```typescript
 shortcuts: {
   'a': 'b',
   'b': 'a', // ❌ Circular reference
 }
-```
 
-**Solution:** Avoid shortcuts that reference each other in a loop.
+```**Solution:**Avoid shortcuts that reference each other in a loop.
 
-### Naming Conflicts
+### Naming Conflicts**Problem:**```typescript
 
-**Problem:**
-
-```typescript
 shortcuts: {
   'flex': 'display-flex', // ❌ Conflicts with built-in 'flex' utility
 }
-```
-
-**Solution:** Use unique names:
+```**Solution:**Use unique names:
 
 ```typescript
 shortcuts: {

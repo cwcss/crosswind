@@ -7,102 +7,91 @@ Crosswind provides a powerful command-line interface for building, watching, and
 Install Crosswind globally or locally:
 
 ```bash
+
 # Global (use anywhere)
+
 bun add --global crosswind
 
 # Local (project-specific)
+
 bun add --dev crosswind
-```
+```## Commands
 
-## Commands
+### `build`Build CSS from your content files.```bash
 
-### `build`
-
-Build CSS from your content files.
-
-```bash
 crosswind build [options]
-```
 
-**Options:**
+```**Options:**- `--output <path>`- Output CSS file path
+-`--minify`- Minify CSS output
+-`--watch`- Watch for file changes
+-`--content <pattern>`- Content file pattern
+-`--config <path>`- Path to config file
+-`--verbose`- Show detailed output
+-`--no-preflight` - Skip preflight CSS**Examples:**```bash
 
-- `--output <path>` - Output CSS file path
-- `--minify` - Minify CSS output
-- `--watch` - Watch for file changes
-- `--content <pattern>` - Content file pattern
-- `--config <path>` - Path to config file
-- `--verbose` - Show detailed output
-- `--no-preflight` - Skip preflight CSS
-
-**Examples:**
-
-```bash
 # Basic build
+
 crosswind build
 
 # Build with custom output
+
 crosswind build --output ./dist/styles.css
 
 # Build and minify
+
 crosswind build --minify
 
 # Build with specific content
+
 crosswind build --content "./src/**/*.tsx"
 
 # Build with custom config
+
 crosswind build --config ./custom.config.ts
 
 # Build with verbose output
+
 crosswind build --verbose
 
 # Build without preflight CSS
+
 crosswind build --no-preflight
-```
+```**Output:**```bash
 
-**Output:**
-
-```bash
 🚀 Building CSS...
 ✅ Built 1243 classes in 8.45ms
 📝 Output: ./dist/crosswind.css
 📦 File size: 24.35 KB
-```
 
-### `watch`
-
-Build and watch for changes (equivalent to `build --watch`).
+```###`watch`Build and watch for changes (equivalent to`build --watch`).
 
 ```bash
+
 crosswind watch [options]
-```
 
-**Options:**
+```**Options:**- `--output <path>`- Output CSS file path
+-`--minify`- Minify CSS output
+-`--content <pattern>`- Content file pattern
+-`--config <path>`- Path to config file
+-`--verbose` - Show detailed output**Examples:**```bash
 
-- `--output <path>` - Output CSS file path
-- `--minify` - Minify CSS output
-- `--content <pattern>` - Content file pattern
-- `--config <path>` - Path to config file
-- `--verbose` - Show detailed output
-
-**Examples:**
-
-```bash
 # Basic watch mode
+
 crosswind watch
 
 # Watch with custom output
+
 crosswind watch --output ./dist/styles.css
 
 # Watch with minification
+
 crosswind watch --minify
 
 # Watch with verbose output
+
 crosswind watch --verbose
-```
+```**Output:**```bash
 
-**Output:**
-
-```bash
 🚀 Building CSS...
 ✅ Built 1243 classes in 8.45ms
 📝 Output: ./dist/crosswind.css
@@ -113,43 +102,29 @@ crosswind watch --verbose
 
 📝 src/App.tsx changed, rebuilding...
 ✅ Built 1245 classes in 7.23ms
-```
 
-### `init`
-
-Create a `crosswind.config.ts` configuration file.
-
-```bash
+```###`init`Create a`crosswind.config.ts`configuration file.```bash
 crosswind init [options]
-```
+```**Options:**- `--force` - Overwrite existing config file**Examples:**```bash
 
-**Options:**
-
-- `--force` - Overwrite existing config file
-
-**Examples:**
-
-```bash
 # Create config
+
 crosswind init
 
 # Force overwrite
+
 crosswind init --force
-```
 
-**Output:**
-
-```bash
+```**Output:**```bash
 ✅ Created crosswind.config.ts
 
 Next steps:
+
   1. Update the content paths in crosswind.config.ts
   2. Run: crosswind build
-```
 
-**Generated file:**
+```**Generated file:**```typescript
 
-```typescript
 import type { CrosswindOptions } from 'crosswind'
 
 const config = {
@@ -160,42 +135,32 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
 
-### `analyze`
-
-Analyze utility class usage and show statistics.
-
-```bash
+```###`analyze`Analyze utility class usage and show statistics.```bash
 crosswind analyze [options]
-```
+```**Options:**- `--config <path>`- Path to config file
 
-**Options:**
+-`--verbose`- Show detailed output
+-`--json`- Output as JSON
+-`--top <n>` - Show top N most used classes (default: 10)**Examples:**```bash
 
-- `--config <path>` - Path to config file
-- `--verbose` - Show detailed output
-- `--json` - Output as JSON
-- `--top <n>` - Show top N most used classes (default: 10)
-
-**Examples:**
-
-```bash
 # Basic analysis
+
 crosswind analyze
 
 # Show top 20 utilities
+
 crosswind analyze --top 20
 
 # JSON output
+
 crosswind analyze --json
 
 # Detailed analysis
+
 crosswind analyze --verbose
-```
 
-**Output:**
-
-```bash
+```**Output:**```bash
 🔍 Analyzing utility classes...
 
 📊 Total classes: 1243
@@ -213,9 +178,7 @@ crosswind analyze --verbose
   border               38 classes
   rounded              32 classes
   shadow               28 classes
-```
-
-**JSON output** (`--json`):
+```**JSON output**(`--json`):
 
 ```json
 {
@@ -233,111 +196,75 @@ crosswind analyze --verbose
     "justify-between"
   ]
 }
-```
+```###`clean`Remove the output CSS file.```bash
 
-### `clean`
-
-Remove the output CSS file.
-
-```bash
 crosswind clean [options]
-```
 
-**Options:**
+```**Options:**- `--config <path>` - Path to config file**Examples:**```bash
 
-- `--config <path>` - Path to config file
-
-**Examples:**
-
-```bash
 # Clean output
+
 crosswind clean
 
 # Clean with custom config
+
 crosswind clean --config ./custom.config.ts
-```
+```**Output:**```bash
 
-**Output:**
-
-```bash
 ✅ Removed ./dist/crosswind.css
-```
 
-### `preflight`
-
-Generate only the preflight (reset) CSS.
-
-```bash
+```###`preflight`Generate only the preflight (reset) CSS.```bash
 crosswind preflight [options]
-```
+```**Options:**- `--output <path>`- Output CSS file path (default:`./preflight.css`)**Examples:**```bash
 
-**Options:**
-
-- `--output <path>` - Output CSS file path (default: `./preflight.css`)
-
-**Examples:**
-
-```bash
 # Generate preflight CSS
+
 crosswind preflight
 
 # Custom output path
+
 crosswind preflight --output ./reset.css
-```
 
-**Output:**
-
-```bash
+```**Output:**```bash
 ✅ Generated preflight CSS
 📝 Output: ./preflight.css
 📦 File size: 3.21 KB
-```
+```###`version`Show the Crosswind version.```bash
 
-### `version`
-
-Show the Crosswind version.
-
-```bash
 crosswind version
+
 # or
+
 crosswind --version
-```
 
-**Output:**
-
-```bash
+```**Output:**```bash
 1.0.0
-```
+```###`help`Show help information.```bash
 
-### `help`
-
-Show help information.
-
-```bash
 crosswind --help
-# or
-crosswind [command] --help
-```
 
-## Global Options
+# or
+
+crosswind [command] --help
+
+```## Global Options
 
 These options work with all commands:
 
-- `--config <path>` - Path to custom config file
-- `--verbose` - Show detailed output
+-`--config <path>`- Path to custom config file
+-`--verbose`- Show detailed output
 
 ## Configuration Priority
 
-CLI options override configuration file settings:
+CLI options override configuration file settings:```bash
 
-```bash
 # Config file specifies: output: './dist/styles.css'
+
 crosswind build --output ./public/app.css
 
 # Actual output: ./public/app.css (CLI option wins)
-```
 
-Priority order (highest to lowest):
+```Priority order (highest to lowest):
 
 1. CLI options
 2. Config file
@@ -345,49 +272,47 @@ Priority order (highest to lowest):
 
 ## Using with Package Managers
 
-### Bun (recommended)
+### Bun (recommended)```bash
 
-```bash
 # Run locally installed
+
 bunx crosswind build
 
 # Run scripts
+
 bun run build
-```
 
-### npm
+```### npm```bash
 
-```bash
 # Run locally installed
+
 npx crosswind build
 
 # Run scripts
+
 npm run build
-```
+```### pnpm```bash
 
-### pnpm
-
-```bash
 # Run locally installed
+
 pnpm dlx crosswind build
 
 # Run scripts
+
 pnpm build
-```
 
-### Yarn
+```### Yarn```bash
 
-```bash
 # Run locally installed
+
 yarn crosswind build
 
 # Run scripts
+
 yarn build
-```
+```## npm Scripts
 
-## npm Scripts
-
-Add Crosswind commands to your `package.json`:
+Add Crosswind commands to your`package.json`:
 
 ```json
 {
@@ -400,14 +325,12 @@ Add Crosswind commands to your `package.json`:
     "css:clean": "crosswind clean"
   }
 }
-```
+```## Continuous Integration
 
-## Continuous Integration
+### GitHub Actions```yaml
 
-### GitHub Actions
-
-```yaml
 # .github/workflows/ci.yml
+
 name: CI
 
 on: [push]
@@ -416,72 +339,70 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+
       - uses: actions/checkout@v3
       - uses: oven-sh/setup-bun@v1
 
       - name: Install dependencies
+
         run: bun install
 
       - name: Build CSS
+
         run: bun run crosswind build --minify
 
       - name: Run tests
+
         run: bun test
-```
 
-### GitLab CI
+```### GitLab CI```yaml
 
-```yaml
 # .gitlab-ci.yml
+
 build:
   image: oven/bun:latest
   script:
+
     - bun install
     - bun run crosswind build --minify
+
   artifacts:
     paths:
+
       - dist/crosswind.css
-```
 
-### Vercel
+```### Vercel```json
 
-```json
 {
   "buildCommand": "crosswind build --minify && next build",
   "outputDirectory": ".next"
 }
-```
 
-### Netlify
-
-```toml
+```### Netlify```toml
 [build]
 command = "crosswind build --minify && npm run build"
 publish = "dist"
-```
-
-## Advanced Usage
+```## Advanced Usage
 
 ### Custom Configuration Files
 
-Specify different configs for different environments:
+Specify different configs for different environments:```bash
 
-```bash
 # Development
+
 crosswind build --config ./crosswind.dev.config.ts
 
 # Production
+
 crosswind build --config ./crosswind.prod.config.ts --minify
 
 # Testing
+
 crosswind build --config ./crosswind.test.config.ts
-```
 
-### Programmatic Usage
+```### Programmatic Usage
 
-While the CLI is convenient, you can also use Crosswind programmatically:
-
-```typescript
+While the CLI is convenient, you can also use Crosswind programmatically:```typescript
 import { build, buildAndWrite } from 'crosswind'
 
 // Build only (get result)
@@ -499,28 +420,27 @@ await buildAndWrite({
   output: './dist/crosswind.css',
   minify: true,
 })
-```
+```### Combine Multiple Commands```bash
 
-### Combine Multiple Commands
-
-```bash
 # Clean, build, and analyze
+
 crosswind clean && crosswind build --minify && crosswind analyze
 
 # Watch in one terminal, dev server in another
+
 crosswind watch &
 npm run dev
-```
 
-### Environment Variables
+```### Environment Variables
 
-Use environment variables for dynamic configuration:
+Use environment variables for dynamic configuration:```bash
 
-```bash
 # Set environment
+
 export NODE_ENV=production
 
 # Build with env-specific config
+
 crosswind build --minify
 ```
 
@@ -536,107 +456,43 @@ const config = {
 
 ## Troubleshooting
 
-### Command Not Found
-
-**Problem:** `command not found: crosswind`
-
-**Solutions:**
-
-1. Install globally:
+### Command Not Found**Problem:**`command not found: crosswind`**Solutions:**1. Install globally
 
    ```bash
    bun add --global crosswind
-   ```
-
-2. Or use with package runner:
-
-   ```bash
+   ```2. Or use with package runner:```bash
    bunx crosswind build
-   # or
+
+# or
+
    npx crosswind build
-   ```
-
-3. Or use npm scripts:
-
-   ```json
+   ```3. Or use npm scripts:```json
    {
      "scripts": {
        "build": "crosswind build"
      }
    }
-   ```
-
-### Permission Denied
-
-**Problem:** Permission errors when writing files
-
-**Solutions:**
-
-1. Check output directory permissions:
-
-   ```bash
+   ```### Permission Denied**Problem:**Permission errors when writing files**Solutions:**1. Check output directory permissions:```bash
    ls -la ./dist
-   ```
-
-2. Create directory if it doesn't exist:
-
-   ```bash
+   ```2. Create directory if it doesn't exist:```bash
    mkdir -p ./dist
-   ```
-
-3. Fix permissions:
-
-   ```bash
+   ```3. Fix permissions:```bash
    chmod -R u+w ./dist
-   ```
-
-### Config Not Loading
-
-**Problem:** Custom config not being used
-
-**Solutions:**
-
-1. Verify config path:
-
-   ```bash
+   ```### Config Not Loading**Problem:**Custom config not being used**Solutions:**1. Verify config path:```bash
    crosswind build --config ./crosswind.config.ts --verbose
-   ```
-
-2. Check config file syntax:
-
-   ```typescript
+   ```2. Check config file syntax:```typescript
    // Must have default export
    export default config
-   ```
-
-3. Ensure TypeScript is installed:
-
-   ```bash
+   ```3. Ensure TypeScript is installed:```bash
    bun add --dev typescript
-   ```
-
-### Build Failures
-
-**Problem:** Build fails with errors
-
-**Solutions:**
-
-1. Run with verbose output:
-
-   ```bash
+   ```### Build Failures**Problem:**Build fails with errors**Solutions:**1. Run with verbose output:```bash
    crosswind build --verbose
-   ```
+   ```2. Check content patterns:```bash
 
-2. Check content patterns:
+# Test if files exist
 
-   ```bash
-   # Test if files exist
    ls -la ./src/**/*.tsx
-   ```
-
-3. Validate config:
-
-   ```typescript
+   ```3. Validate config:```typescript
    // Use type checking
    import type { CrosswindOptions } from 'crosswind'
 
@@ -648,39 +504,39 @@ const config = {
 
 ## Performance Tips
 
-1. **Use specific content patterns:**
+1.**Use specific content patterns:**```bash
 
-   ```bash
-   # ❌ Slow
+# ❌ Slow
+
    crosswind build --content "./**/*.tsx"
 
-   # ✅ Fast
+# ✅ Fast
+
    crosswind build --content "./src/**/*.tsx"
    ```
 
-2. **Exclude unnecessary files:**
-
-   ```typescript
+2.**Exclude unnecessary files:**```typescript
    content: [
      './src/**/*.tsx',
      '!./src/**/*.test.tsx', // Exclude tests
    ]
    ```
 
-3. **Use watch mode in development:**
+3.**Use watch mode in development:**```bash
 
-   ```bash
-   # Faster than rebuilding manually
+# Faster than rebuilding manually
+
    crosswind watch
    ```
 
-4. **Enable minify only in production:**
+4.**Enable minify only in production:**```bash
 
-   ```bash
-   # Development (fast)
+# Development (fast)
+
    crosswind build
 
-   # Production (optimized)
+# Production (optimized)
+
    crosswind build --minify
    ```
 

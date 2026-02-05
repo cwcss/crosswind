@@ -43,7 +43,7 @@ function applyShadowOpacity(color: string, opacity: number): string {
 /**
  * Replace color values in a shadow string with var(--hw-shadow-color)
  * e.g., '0 10px 15px -3px rgb(0 0 0 / 0.1)' -> '0 10px 15px -3px var(--hw-shadow-color)'
- */
+*/
 function createColoredShadow(shadow: string): string {
   return shadow.replace(/rgba?\([^)]+\)/g, 'var(--hw-shadow-color)')
 }

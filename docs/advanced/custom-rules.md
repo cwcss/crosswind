@@ -39,49 +39,36 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
+```## Rule Format
 
-## Rule Format
-
-Each custom rule is a tuple:
-
-```typescript
+Each custom rule is a tuple:```typescript
 type CustomRule = [
   RegExp, // Pattern to match
   (match: RegExpMatchArray) => Record<string, string> | undefined
 ]
-```
 
-### Pattern (RegExp)
+```### Pattern (RegExp)
 
-The first element is a regular expression that matches utility class names:
-
-```typescript
+The first element is a regular expression that matches utility class names:```typescript
 /^my-utility-(\d+)$/  // Matches: my-utility-1, my-utility-24, etc.
 /^custom-(\w+)$/      // Matches: custom-red, custom-blue, etc.
 /^prefix-/            // Matches: anything starting with prefix-
-```
+```### Handler Function
 
-### Handler Function
-
-The second element is a function that returns CSS properties:
-
-```typescript
+The second element is a function that returns CSS properties:```typescript
 (match: RegExpMatchArray) => {
   return {
     'property-name': 'value',
     'another-property': 'another-value',
   }
 }
-```
 
-Return `undefined` to skip generating CSS for the match.
+```Return`undefined`to skip generating CSS for the match.
 
 ## Examples
 
-### Simple Static Rule
+### Simple Static Rule```typescript
 
-```typescript
 const config = {
   rules: [
     [
@@ -94,17 +81,11 @@ const config = {
     ],
   ],
 }
-```
+```Usage:```html
 
-Usage:
-
-```html
 <div class="glass">Glassmorphism effect</div>
-```
 
-### Dynamic Numeric Values
-
-```typescript
+```### Dynamic Numeric Values```typescript
 const config = {
   rules: [
     [
@@ -115,18 +96,12 @@ const config = {
     ],
   ],
 }
-```
+```Usage:```html
 
-Usage:
-
-```html
 <div class="aspect-16/9">16:9 aspect ratio</div>
 <div class="aspect-4/3">4:3 aspect ratio</div>
-```
 
-### Color Utilities
-
-```typescript
+```### Color Utilities```typescript
 const config = {
   rules: [
     [
@@ -149,18 +124,12 @@ const config = {
     ],
   ],
 }
-```
+```Usage:```html
 
-Usage:
-
-```html
 <span class="brand-primary">Primary brand color</span>
 <span class="brand-secondary">Secondary brand color</span>
-```
 
-### Grid Template Utilities
-
-```typescript
+```### Grid Template Utilities```typescript
 const config = {
   rules: [
     [
@@ -183,21 +152,15 @@ const config = {
     ],
   ],
 }
-```
+```Usage:```html
 
-Usage:
-
-```html
 <div class="grid grid-areas-header">
   <header class="grid-area-[header]">Header</header>
   <nav class="grid-area-[nav]">Nav</nav>
   <main class="grid-area-[main]">Main</main>
 </div>
-```
 
-### Animation Utilities
-
-```typescript
+```### Animation Utilities```typescript
 const config = {
   rules: [
     [
@@ -214,23 +177,17 @@ const config = {
     ],
   ],
 }
-```
+```Usage:```html
 
-Usage:
-
-```html
 <div class="animate-delay-500 animate-duration-1000">
   Delayed animation
 </div>
-```
 
-## Advanced Patterns
+```## Advanced Patterns
 
 ### Multiple Properties
 
-Generate multiple CSS properties from a single utility:
-
-```typescript
+Generate multiple CSS properties from a single utility:```typescript
 const config = {
   rules: [
     [
@@ -244,13 +201,9 @@ const config = {
     ],
   ],
 }
-```
+```### Conditional Logic
 
-### Conditional Logic
-
-Use conditional logic in handlers:
-
-```typescript
+Use conditional logic in handlers:```typescript
 const config = {
   rules: [
     [
@@ -277,13 +230,10 @@ const config = {
     ],
   ],
 }
-```
 
-### Using Theme Values
+```### Using Theme Values
 
-Access theme values in custom rules:
-
-```typescript
+Access theme values in custom rules:```typescript
 import type { CrosswindOptions } from 'crosswind'
 
 const config = {
@@ -313,53 +263,41 @@ const config = {
     ],
   ],
 } satisfies CrosswindOptions
-```
+```### Vendor Prefixes
 
-### Vendor Prefixes
-
-Add vendor prefixes for experimental features:
-
-```typescript
+Add vendor prefixes for experimental features:```typescript
 const config = {
   rules: [
     [
       /^backdrop-blur-(\d+)$/,
       (match) => {
-        const value = `blur(${match[1]}px)`
-        return {
+        const value = `blur(${match[1]}px)`return {
           '-webkit-backdrop-filter': value,
           'backdrop-filter': value,
         }
       },
     ],
   ],
-}
-```
+}```### Child Selectors
 
-### Child Selectors
-
-Return utilities that affect child elements:
-
-```typescript
+Return utilities that affect child elements:```typescript
 const config = {
   rules: [
     [
       /^stack-(\d+)$/,
       match => ({
-        '> * + *': {
-          'margin-top': `${match[1] * 0.25}rem`,
+        '>*+*': {
+          'margin-top': `${match[1]*0.25}rem`,
         },
       }),
     ],
   ],
 }
-```
 
-## Complex Examples
+```## Complex Examples
 
-### Glassmorphism Utility
+### Glassmorphism Utility```typescript
 
-```typescript
 const config = {
   rules: [
     [
@@ -388,11 +326,8 @@ const config = {
     ],
   ],
 }
-```
+```### Gradient Utilities```typescript
 
-### Gradient Utilities
-
-```typescript
 const config = {
   rules: [
     [
@@ -422,19 +357,13 @@ const config = {
     ],
   ],
 }
-```
 
-Usage:
-
-```html
+```Usage:```html
 <div class="gradient-blue-to-purple">
   Blue to purple gradient
 </div>
-```
+```### Responsive Font Sizes```typescript
 
-### Responsive Font Sizes
-
-```typescript
 const config = {
   rules: [
     [
@@ -458,27 +387,21 @@ const config = {
     ],
   ],
 }
+
 ```
 
 ## Best Practices
 
 ### 1. Use Specific Patterns
 
-✅ **Good:**
-
-```typescript
+✅**Good:**```typescript
 /^my-utility-(\d+)$/ // Specific pattern
 ```
 
-❌ **Avoid:**
-
-```typescript
+❌**Avoid:**```typescript
 /^my-/ // Too broad, might conflict
-```
 
-### 2. Validate Input
-
-```typescript
+```### 2. Validate Input```typescript
 const config = {
   rules: [
     [
@@ -498,11 +421,8 @@ const config = {
     ],
   ],
 }
-```
+```### 3. Return Undefined for Invalid Values```typescript
 
-### 3. Return Undefined for Invalid Values
-
-```typescript
 const config = {
   rules: [
     [
@@ -514,16 +434,13 @@ const config = {
           return undefined // Don't generate CSS
         }
 
-        return { /* ... */ }
+        return { /*...*/ }
       },
     ],
   ],
 }
-```
 
-### 4. Document Your Rules
-
-```typescript
+```### 4. Document Your Rules```typescript
 const config = {
   rules: [
     // Custom aspect ratio utility
@@ -545,30 +462,26 @@ const config = {
     ],
   ],
 }
-```
+```### 5. Namespace Custom Utilities```typescript
 
-### 5. Namespace Custom Utilities
-
-```typescript
 // Prefix with your project/brand name
 /^acme-(\w+)$/      // Acme Corp utilities
 /^myapp-(\w+)$/     // MyApp utilities
 /^custom-(\w+)$/    // Generic custom utilities
+
 ```
 
 ## Performance
 
 Custom rules have minimal performance impact:
 
-- **Matching:** Regex matching is fast
-- **Generation:** Only matched classes generate CSS
-- **Output:** Same as built-in utilities
+-**Matching:**Regex matching is fast
+-**Generation:**Only matched classes generate CSS
+-**Output:**Same as built-in utilities
 
 ### Optimization Tips
 
-1. **Use specific patterns:**
-
-   ```typescript
+1.**Use specific patterns:**```typescript
    // ✅ Fast
    /^my-utility-(\d+)$/
 
@@ -576,21 +489,17 @@ Custom rules have minimal performance impact:
    /^my-/
    ```
 
-2. **Avoid complex logic:**
-
-   ```typescript
+2.**Avoid complex logic:**```typescript
    // ✅ Simple check
    if (value === 'sm')
-     return { /* ... */ }
+     return { /*...*/ }
 
    // ❌ Complex computation
    if (expensiveFunction(value))
-     return { /* ... */ }
+     return { /*...*/ }
    ```
 
-3. **Cache computed values:**
-
-   ```typescript
+3.**Cache computed values:**```typescript
    const computedValues = new Map()
 
    const rule = [
@@ -602,55 +511,32 @@ Custom rules have minimal performance impact:
          return computedValues.get(key)
        }
 
-       const result = { /* computed properties */ }
+       const result = { /*computed properties*/ }
        computedValues.set(key, result)
        return result
      },
    ]
-   ```
+   ```## Troubleshooting
 
-## Troubleshooting
+### Rule Not Matching**Check:**1. Pattern is correct:```typescript
 
-### Rule Not Matching
-
-**Check:**
-
-1. Pattern is correct:
-
-   ```typescript
    // Test pattern
    /^my-utility-(\d+)$/.test('my-utility-10') // true
-   ```
-
-2. Class name matches exactly:
-
-   ```html
+   ```2. Class name matches exactly:```html
    <div class="my-utility-10">✅ Matches</div>
    <div class="my-utility-abc">❌ No match</div>
-   ```
-
-3. Handler returns valid object:
-
-   ```typescript
+   ```3. Handler returns valid object:```typescript
    (match) => {
      console.log('Match:', match)
-     return { /* properties */ }
+     return { /*properties*/ }
    }
-   ```
+   ```### No CSS Generated**Check:**1. Handler returns object (not undefined)
 
-### No CSS Generated
-
-**Check:**
-
-1. Handler returns object (not undefined)
 2. Properties are valid CSS
 3. Rule is added to config array
 
-### Conflicts with Built-in Utilities
+### Conflicts with Built-in Utilities**Solution:**Use unique prefixes:```typescript
 
-**Solution:** Use unique prefixes:
-
-```typescript
 // ❌ Conflicts with built-in 'flex'
 /^flex$/
 

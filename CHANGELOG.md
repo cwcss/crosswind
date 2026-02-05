@@ -290,9 +290,9 @@
 ### 🧹 Chores
 
 - release v0.1.3 ([bf49808](https://github.com/stacksjs/headwind/commit/bf49808))
-- update `bun-git-hooks` ([9e24c59](https://github.com/stacksjs/headwind/commit/9e24c59))
+- update `bun-git-hooks`([9e24c59](https://github.com/stacksjs/headwind/commit/9e24c59))
 - adjust expectation ([6d9ca20](https://github.com/stacksjs/headwind/commit/6d9ca20))
-- use `clapp` ([355811b](https://github.com/stacksjs/headwind/commit/355811b))
+- use`clapp`([355811b](https://github.com/stacksjs/headwind/commit/355811b))
 
 ### Contributors
 
@@ -302,9 +302,9 @@
 
 ### 🧹 Chores
 
-- update `bun-git-hooks` ([9e24c59](https://github.com/stacksjs/headwind/commit/9e24c59))
+- update`bun-git-hooks`([9e24c59](https://github.com/stacksjs/headwind/commit/9e24c59))
 - adjust expectation ([6d9ca20](https://github.com/stacksjs/headwind/commit/6d9ca20))
-- use `clapp` ([355811b](https://github.com/stacksjs/headwind/commit/355811b))
+- use`clapp`([355811b](https://github.com/stacksjs/headwind/commit/355811b))
 
 ### Contributors
 
@@ -321,7 +321,7 @@
 - release v0.1.2 ([26255be](https://github.com/stacksjs/headwind/commit/26255be))
 - lint ([1bf7619](https://github.com/stacksjs/headwind/commit/1bf7619))
 - minor updates ([c4367f9](https://github.com/stacksjs/headwind/commit/c4367f9))
-- rename to `hw` prefix ([92a4264](https://github.com/stacksjs/headwind/commit/92a4264))
+- rename to`hw`prefix ([92a4264](https://github.com/stacksjs/headwind/commit/92a4264))
 - add headwind ([7f4b4e9](https://github.com/stacksjs/headwind/commit/7f4b4e9))
 - allow for multi-segment color names ([a07301a](https://github.com/stacksjs/headwind/commit/a07301a))
 - resolve typecheck ([78be83a](https://github.com/stacksjs/headwind/commit/78be83a))
@@ -341,7 +341,7 @@
 
 - lint ([1bf7619](https://github.com/stacksjs/headwind/commit/1bf7619))
 - minor updates ([c4367f9](https://github.com/stacksjs/headwind/commit/c4367f9))
-- rename to `hw` prefix ([92a4264](https://github.com/stacksjs/headwind/commit/92a4264))
+- rename to`hw` prefix ([92a4264](https://github.com/stacksjs/headwind/commit/92a4264))
 - add headwind ([7f4b4e9](https://github.com/stacksjs/headwind/commit/7f4b4e9))
 - allow for multi-segment color names ([a07301a](https://github.com/stacksjs/headwind/commit/a07301a))
 - resolve typecheck ([78be83a](https://github.com/stacksjs/headwind/commit/78be83a))

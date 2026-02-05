@@ -4,27 +4,27 @@ export interface CompileClassOptions {
   /**
    * Trigger string to mark classes for compilation
    * @default ':hw:'
-   */
+  */
   trigger?: string
   /**
    * Prefix for generated class names
    * @default 'hw-'
-   */
+  */
   classPrefix?: string
   /**
    * Hash function to generate class names
-   */
+  */
   hashFn?: (content: string) => string
   /**
    * Layer name for compiled classes
    * @default 'shortcuts'
-   */
+  */
   layer?: string
 }
 
 /**
  * Simple hash function for generating class names
- */
+*/
 function simpleHash(str: string): string {
   let hash = 0
   for (let i = 0; i < str.length; i++) {
@@ -37,7 +37,7 @@ function simpleHash(str: string): string {
 
 /**
  * Extract compile class markers from content
- */
+*/
 export function extractCompileClasses(
   content: string,
   options: CompileClassOptions = {},
@@ -78,7 +78,7 @@ export function extractCompileClasses(
 
 /**
  * Transform content by replacing compile markers with generated class names
- */
+*/
 export function transformContent(
   content: string,
   compiledClassMap: Map<string, string>,
@@ -132,7 +132,7 @@ export function transformContent(
 
 /**
  * Generate class names for compiled classes
- */
+*/
 export function generateCompiledClassNames(
   compiledClasses: Map<string, string[]>,
   options: CompileClassOptions = {},
@@ -153,7 +153,7 @@ export function generateCompiledClassNames(
 
 /**
  * Main transformer class
- */
+*/
 export class CompileClassTransformer {
   private compiledClasses = new Map<string, string[]>()
   private classNameMap = new Map<string, string>()
@@ -170,7 +170,7 @@ export class CompileClassTransformer {
 
   /**
    * Process a file and extract compile classes
-   */
+  */
   processFile(content: string): { content: string, hasChanges: boolean } {
     const extracted = extractCompileClasses(content, this.options)
 
@@ -203,7 +203,7 @@ export class CompileClassTransformer {
 
   /**
    * Get all compiled classes and their generated names
-   */
+  */
   getCompiledClasses(): Map<string, { className: string, utilities: string[] }> {
     const result = new Map<string, { className: string, utilities: string[] }>()
 
@@ -219,7 +219,7 @@ export class CompileClassTransformer {
 
   /**
    * Generate CSS for compiled classes
-   */
+  */
   generateCSS(config: CrosswindConfig, generator: any): string {
     const compiledClasses = this.getCompiledClasses()
     let css = ''
@@ -245,7 +245,7 @@ export class CompileClassTransformer {
 
   /**
    * Reset the transformer state
-   */
+  */
   reset(): void {
     this.compiledClasses.clear()
     this.classNameMap.clear()
@@ -253,7 +253,7 @@ export class CompileClassTransformer {
 
   /**
    * Get statistics about compiled classes
-   */
+  */
   getStats(): {
     totalGroups: number
     totalUtilities: number

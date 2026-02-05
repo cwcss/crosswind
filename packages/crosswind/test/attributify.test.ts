@@ -240,7 +240,7 @@ describe('Attributify Mode', () => {
       })
 
       it('should handle single quotes', () => {
-        const html = "<div hw-bg='blue-500' hw-text='white'></div>"
+        const html = `<div hw-bg='blue-500' hw-text='white'></div>`
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('bg-blue-500')).toBe(true)
         expect(result.has('text-white')).toBe(true)

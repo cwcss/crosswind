@@ -8,7 +8,7 @@ const bracketExpansionCache = new Map<string, string[]>()
 
 /**
  * Options for class extraction
- */
+*/
 export interface ExtractClassesOptions {
   attributify?: AttributifyConfig
   bracketSyntax?: BracketSyntaxConfig
@@ -17,7 +17,7 @@ export interface ExtractClassesOptions {
 /**
  * Default aliases for bracket syntax
  * Maps shorthand to full utility part
- */
+*/
 const defaultBracketAliases: Record<string, string> = {
   // Flexbox direction
   'col': 'col',
@@ -59,13 +59,13 @@ const defaultBracketAliases: Record<string, string> = {
 
 /**
  * Pre-compiled regex patterns for performance (avoid regex compilation on each call)
- */
+*/
 const SPECIAL_CHARS_REGEX = /[%#()]/
 const CSS_UNITS_REGEX = /^\d+(\.\d+)?(px|rem|em|vh|vw|dvh|dvw|svh|svw|lvh|lvw|ch|ex|lh|cap|ic|rlh|vi|vb|vmin|vmax|cqw|cqh|cqi|cqb|cqmin|cqmax|cm|mm|in|pt|pc|Q)$/
 
 /**
  * Check if value needs arbitrary bracket syntax
- */
+*/
 function needsArbitraryBrackets(value: string): boolean {
   return SPECIAL_CHARS_REGEX.test(value) || CSS_UNITS_REGEX.test(value)
 }
@@ -73,7 +73,7 @@ function needsArbitraryBrackets(value: string): boolean {
 /**
  * Handle min/max prefix patterns for sizing utilities
  * w[min 200px] -> min-w-[200px], h[max screen] -> max-h-screen
- */
+*/
 function handleMinMaxPattern(prefix: string, parts: string[]): string[] | null {
   if (parts.length !== 2) return null
   const [modifier, value] = parts
@@ -88,7 +88,7 @@ function handleMinMaxPattern(prefix: string, parts: string[]): string[] | null {
 /**
  * Mapping of bracket utility prefixes to their expansion patterns
  * This defines how utilities like flex[col jc-center] expand to real classes
- */
+*/
 const bracketUtilityMappings: Record<string, {
   // How to expand each part within brackets
   expand: (part: string, aliases: Record<string, string>) => string | null
@@ -570,7 +570,7 @@ const bracketUtilityMappings: Record<string, {
 /**
  * Common variant prefixes for responsive and state variants
  * Using Set for O(1) lookup instead of O(n) array search
- */
+*/
 const variantPrefixes = new Set([
   // Responsive
   'sm', 'md', 'lg', 'xl', '2xl',
@@ -613,7 +613,7 @@ const variantPrefixes = new Set([
  * e.g., hover:flex[col] -> ['hover:flex-col']
  * e.g., flex[md:col lg:row] -> ['md:flex-col', 'lg:flex-row']
  * e.g., -m[4] or m[-4] -> ['-m-4']
- */
+*/
 export function expandBracketSyntax(className: string, config?: BracketSyntaxConfig): string[] {
   // Check cache first
   const cacheKey = `${className}:${config?.colonSyntax}:${JSON.stringify(config?.aliases || {})}`
@@ -789,7 +789,7 @@ export function expandBracketSyntax(className: string, config?: BracketSyntaxCon
  * Also supports variant attributes:
  * e.g., <div hw-hover:bg="blue-600" hw-dark:text="white">
  * Returns classes like: hover:bg-blue-600, dark:text-white
- */
+*/
 export function extractAttributifyClasses(content: string, config?: AttributifyConfig): Set<string> {
   const classes = new Set<string>()
 
@@ -935,7 +935,7 @@ export function extractAttributifyClasses(content: string, config?: AttributifyC
 /**
  * Check if a string looks like a valid utility name (for attributify)
  * More permissive than isValidClassName since we need to match potential utilities
- */
+*/
 function isValidUtilityName(name: string): boolean {
   if (!name || name.length === 0) return false
   // Must start with letter, can contain letters, numbers, dashes, slashes (for fractions)
@@ -949,7 +949,7 @@ function isValidUtilityName(name: string): boolean {
  *          "hover:bg-blue-500" -> {raw: "hover:bg-blue-500", variants: ["hover"], utility: "bg", value: "blue-500", important: false, arbitrary: false}
  *          "!p-4" -> {raw: "!p-4", variants: [], utility: "p", value: "4", important: true, arbitrary: false}
  *          "w-[100px]" -> {raw: "w-[100px]", variants: [], utility: "w", value: "100px", important: false, arbitrary: true}
- */
+*/
 export function parseClass(className: string): ParsedClass {
   // Check cache first
   const cached = parseCache.get(className)
@@ -964,7 +964,7 @@ export function parseClass(className: string): ParsedClass {
 
 /**
  * Internal implementation of parseClass
- */
+*/
 function parseClassImpl(className: string): ParsedClass {
   // Check for important modifier
   let important = false
@@ -1337,7 +1337,7 @@ function parseClassImpl(className: string): ParsedClass {
  * Supports negative values like -m-4
  * Supports bracket syntax like flex[col jc-center] when enabled
  * Supports colon syntax like bg:black when enabled
- */
+*/
 function isValidClassName(name: string, bracketConfig?: BracketSyntaxConfig): boolean {
   // Quick check for obviously invalid names
   if (!name || name.length === 0) return false
@@ -1363,7 +1363,7 @@ function isValidClassName(name: string, bracketConfig?: BracketSyntaxConfig): bo
 /**
  * Split class string preserving bracket groups
  * e.g., "flex[col jc-center] bg:black p-4" -> ["flex[col jc-center]", "bg:black", "p-4"]
- */
+*/
 function splitClassString(classStr: string): string[] {
   const classes: string[] = []
   let current = ''
@@ -1397,12 +1397,13 @@ function splitClassString(classStr: string): string[] {
  * Extracts all utility classes from content
  * Matches class patterns in HTML/JSX attributes and template strings
  * Supports bracket syntax (e.g., flex[col jc-center]) and attributify mode
- */
+*/
 export function extractClasses(content: string, options?: ExtractClassesOptions): Set<string> {
   const classes = new Set<string>()
 
   // Match class="..." and className="..." and className={...}
   const patterns = [
+    // eslint-disable-next-line quotes
     /class(?:Name)?=["']([^"']+)["']/g,
     /class(?:Name)?=\{["']([^"']+)["']\}/g,
     /class(?:Name)?=\{`([^`]+)`\}/g,
@@ -1452,7 +1453,7 @@ export function extractClasses(content: string, options?: ExtractClassesOptions)
 
 /**
  * Helper to add a class with potential bracket syntax expansion
- */
+*/
 function addClassWithExpansion(classes: Set<string>, className: string, options?: ExtractClassesOptions): void {
   if (options?.bracketSyntax?.enabled) {
     // Check if this is bracket or colon syntax

@@ -13,7 +13,7 @@ export type UtilityRule = (parsed: ParsedClass, config: CrosswindConfig) => Reco
 /**
  * Built-in utility rules
  * Each rule checks if it matches the parsed class and returns CSS properties
- */
+*/
 
 // Display utilities
 export const displayRule: UtilityRule = (parsed) => {

@@ -3,15 +3,23 @@ const config = {
 
   ignores: [
     'node_modules/**',
-    'dist/**',
+    '**/dist/**',
     'fixtures/**',
     'docs/**',
     'packages/*/docs/**',
     '*.min.js',
+    '**/*.md',
+    'bun.lock',
+    '.claude/**',
+    '.zed/**',
+    '.github/**',
+    '**/*.html',
+    '**/*.css',
+    '**/*.json',
   ] as const,
 
   lint: {
-    ext: ['.ts', '.js', '.json', '.yaml', '.yml'] as const,
+    ext: ['ts', 'js', 'json', 'yaml', 'yml'] as const,
   },
 
   format: {

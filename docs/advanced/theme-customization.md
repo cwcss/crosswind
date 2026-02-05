@@ -4,7 +4,7 @@ Crosswind's theme system allows you to customize every aspect of your design tok
 
 ## Overview
 
-The theme configuration defines the design tokens that utilities are generated from. When you use a utility like `bg-blue-500` or `p-4`, Crosswind looks up the value in your theme configuration.
+The theme configuration defines the design tokens that utilities are generated from. When you use a utility like `bg-blue-500`or`p-4`, Crosswind looks up the value in your theme configuration.
 
 ```typescript
 // crosswind.config.ts
@@ -24,15 +24,11 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
-
-## Colors
+```## Colors
 
 ### Basic Colors
 
-Define simple color values:
-
-```typescript
+Define simple color values:```typescript
 const config = {
   theme: {
     colors: {
@@ -46,21 +42,14 @@ const config = {
     },
   },
 }
-```
 
-**Usage:**
-
-```html
+```**Usage:**```html
 <div class="bg-primary text-white">Primary</div>
 <div class="bg-danger text-white">Danger</div>
 <div class="border-2 border-success">Success</div>
-```
+```### Color Scales
 
-### Color Scales
-
-Define color palettes with shades:
-
-```typescript
+Define color palettes with shades:```typescript
 const config = {
   theme: {
     colors: {
@@ -91,21 +80,14 @@ const config = {
     },
   },
 }
-```
 
-**Usage:**
-
-```html
+```**Usage:**```html
 <div class="bg-gray-100 text-gray-900">Light gray</div>
 <div class="bg-blue-500 text-white">Blue 500</div>
 <div class="border border-gray-300">Border</div>
-```
+```### Custom Color Names
 
-### Custom Color Names
-
-Use any naming convention you prefer:
-
-```typescript
+Use any naming convention you prefer:```typescript
 const config = {
   theme: {
     colors: {
@@ -122,21 +104,14 @@ const config = {
     },
   },
 }
-```
 
-**Usage:**
-
-```html
+```**Usage:**```html
 <div class="bg-brand">Uses DEFAULT value</div>
 <div class="bg-brand-light">Light brand</div>
 <div class="text-accent">Accent text</div>
-```
+```### RGB/HSL Colors
 
-### RGB/HSL Colors
-
-Use any valid CSS color format:
-
-```typescript
+Use any valid CSS color format:```typescript
 const config = {
   theme: {
     colors: {
@@ -147,13 +122,10 @@ const config = {
     },
   },
 }
-```
 
-### CSS Variables
+```### CSS Variables
 
-Reference CSS custom properties:
-
-```typescript
+Reference CSS custom properties:```typescript
 const config = {
   theme: {
     colors: {
@@ -164,11 +136,8 @@ const config = {
     },
   },
 }
-```
+```**CSS:**```css
 
-**CSS:**
-
-```css
 :root {
   --color-primary: #3b82f6;
   --color-secondary: #8b5cf6;
@@ -180,13 +149,10 @@ const config = {
   --color-bg: #000000;
   --color-fg: #ffffff;
 }
-```
 
-## Spacing
+```## Spacing
 
-Control padding, margin, width, height, and other space-based utilities:
-
-```typescript
+Control padding, margin, width, height, and other space-based utilities:```typescript
 const config = {
   theme: {
     spacing: {
@@ -219,31 +185,17 @@ const config = {
     },
   },
 }
-```
+```**Usage:**```html
 
-**Usage:**
-
-```html
 <div class="p-4">Padding 1rem</div>
 <div class="m-8">Margin 2rem</div>
 <div class="w-64">Width 16rem</div>
 <div class="gap-2">Gap 0.5rem</div>
-```
 
-**Applies to:**
+```**Applies to:**- Padding: `p-*`, `px-*`, `py-*`, `pt-*`, `pr-*`, `pb-*`, `pl-*`- Margin:`m-*`, `mx-*`, `my-*`, `mt-*`, `mr-*`, `mb-*`, `ml-*`- Width:`w-*`- Height:`h-*`- Gap:`gap-*`, `gap-x-*`, `gap-y-*`- Inset:`top-*`, `right-*`, `bottom-*`, `left-*`, `inset-*`## Typography
 
-- Padding: `p-*`, `px-*`, `py-*`, `pt-*`, `pr-*`, `pb-*`, `pl-*`
-- Margin: `m-*`, `mx-*`, `my-*`, `mt-*`, `mr-*`, `mb-*`, `ml-*`
-- Width: `w-*`
-- Height: `h-*`
-- Gap: `gap-*`, `gap-x-*`, `gap-y-*`
-- Inset: `top-*`, `right-*`, `bottom-*`, `left-*`, `inset-*`
+### Font Family```typescript
 
-## Typography
-
-### Font Family
-
-```typescript
 const config = {
   theme: {
     fontFamily: {
@@ -255,22 +207,16 @@ const config = {
     },
   },
 }
-```
+```**Usage:**```html
 
-**Usage:**
-
-```html
 <div class="font-sans">Sans-serif text</div>
 <div class="font-serif">Serif text</div>
 <div class="font-mono">Monospace text</div>
 <div class="font-display">Display text</div>
-```
 
-### Font Size
+```### Font Size
 
-Font sizes include both size and line height:
-
-```typescript
+Font sizes include both size and line height:```typescript
 const config = {
   theme: {
     fontSize: {
@@ -287,21 +233,15 @@ const config = {
     },
   },
 }
-```
+```**Usage:**```html
 
-**Usage:**
-
-```html
 <p class="text-base">Base text</p>
 <h1 class="text-4xl">Large heading</h1>
 <small class="text-xs">Small text</small>
-```
 
-### Font Weight
+```### Font Weight
 
-Font weights are built-in but can be customized via custom rules:
-
-```html
+Font weights are built-in but can be customized via custom rules:```html
 <div class="font-thin">Thin (100)</div>
 <div class="font-light">Light (300)</div>
 <div class="font-normal">Normal (400)</div>
@@ -310,13 +250,10 @@ Font weights are built-in but can be customized via custom rules:
 <div class="font-bold">Bold (700)</div>
 <div class="font-extrabold">Extrabold (800)</div>
 <div class="font-black">Black (900)</div>
-```
+```## Borders
 
-## Borders
+### Border Radius```typescript
 
-### Border Radius
-
-```typescript
 const config = {
   theme: {
     borderRadius: {
@@ -332,22 +269,16 @@ const config = {
     },
   },
 }
-```
 
-**Usage:**
-
-```html
+```**Usage:**```html
 <div class="rounded">Default radius</div>
 <div class="rounded-lg">Large radius</div>
 <div class="rounded-full">Fully rounded</div>
 <div class="rounded-none">No radius</div>
-```
+```## Shadows
 
-## Shadows
+### Box Shadow```typescript
 
-### Box Shadow
-
-```typescript
 const config = {
   theme: {
     boxShadow: {
@@ -362,21 +293,15 @@ const config = {
     },
   },
 }
-```
 
-**Usage:**
-
-```html
+```**Usage:**```html
 <div class="shadow">Default shadow</div>
 <div class="shadow-lg">Large shadow</div>
 <div class="shadow-none">No shadow</div>
-```
+```## Breakpoints
 
-## Breakpoints
+### Screen Sizes```typescript
 
-### Screen Sizes
-
-```typescript
 const config = {
   theme: {
     screens: {
@@ -388,19 +313,13 @@ const config = {
     },
   },
 }
-```
 
-**Usage:**
-
-```html
+```**Usage:**```html
 <div class="text-base md:text-lg lg:text-xl">
   Responsive text
 </div>
-```
+```### Custom Breakpoints```typescript
 
-### Custom Breakpoints
-
-```typescript
 const config = {
   theme: {
     screens: {
@@ -413,19 +332,13 @@ const config = {
     },
   },
 }
-```
 
-**Usage:**
-
-```html
+```**Usage:**```html
 <div class="grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4">
   Custom breakpoints
 </div>
-```
+```## Complete Theme Example```typescript
 
-## Complete Theme Example
-
-```typescript
 import type { CrosswindOptions } from 'crosswind'
 
 const config = {
@@ -571,15 +484,12 @@ const config = {
 } satisfies CrosswindOptions
 
 export default config
-```
 
-## Advanced Patterns
+```## Advanced Patterns
 
 ### Theme Variants
 
-Create different themes for different projects:
-
-```typescript
+Create different themes for different projects:```typescript
 // themes/light.ts
 // crosswind.config.ts
 import { lightTheme } from './themes/light'
@@ -604,11 +514,8 @@ export const darkTheme = {
 const config = {
   theme: lightTheme,
 }
-```
+```### Dynamic Themes```typescript
 
-### Dynamic Themes
-
-```typescript
 const isDark = process.env.THEME === 'dark'
 
 const config = {
@@ -619,13 +526,10 @@ const config = {
     },
   },
 }
-```
 
-### Extending Default Theme
+```### Extending Default Theme
 
-Merge with the default theme:
-
-```typescript
+Merge with the default theme:```typescript
 import { defaultConfig } from 'crosswind'
 
 const config = {
@@ -637,15 +541,11 @@ const config = {
     },
   },
 }
-```
-
-## Best Practices
+```## Best Practices
 
 ### 1. Use Consistent Scales
 
-Maintain consistent spacing and sizing:
-
-```typescript
+Maintain consistent spacing and sizing:```typescript
 // ✅ Good - consistent scale
 spacing: {
   0: '0',
@@ -663,11 +563,8 @@ spacing: {
   2: '0.7rem',    // Inconsistent increment
   3: '1.2rem',    // Inconsistent increment
 }
-```
 
-### 2. Name Colors Semantically
-
-```typescript
+```### 2. Name Colors Semantically```typescript
 // ✅ Good - semantic names
 colors: {
   primary: '#3b82f6',
@@ -681,11 +578,8 @@ colors: {
   green: '#10b981',
   red: '#ef4444',
 }
-```
+```### 3. Document Custom Values```typescript
 
-### 3. Document Custom Values
-
-```typescript
 const config = {
   theme: {
     // Brand colors from design system v2.0
@@ -701,24 +595,21 @@ const config = {
     },
   },
 }
-```
 
-### 4. Organize Large Themes
-
-```typescript
+```### 4. Organize Large Themes```typescript
 // theme/colors.ts
 // crosswind.config.ts
 import { colors } from './theme/colors'
 import { spacing } from './theme/spacing'
 import { typography } from './theme/typography'
 
-export const colors = { /* colors */ }
+export const colors = { /*colors*/ }
 
 // theme/spacing.ts
-export const spacing = { /* spacing */ }
+export const spacing = { /*spacing*/ }
 
 // theme/typography.ts
-export const typography = { /* typography */ }
+export const typography = { /*typography*/ }
 
 const config = {
   theme: {
@@ -727,13 +618,9 @@ const config = {
     ...typography,
   },
 }
-```
+```## Migration from Tailwind
 
-## Migration from Tailwind
-
-Crosswind themes are 100% compatible with Tailwind CSS:
-
-```typescript
+Crosswind themes are 100% compatible with Tailwind CSS:```typescript
 // Your existing Tailwind config works as-is
 const config = {
   theme: {
@@ -746,47 +633,25 @@ const config = {
     },
   },
 }
-```
 
-## Troubleshooting
+```## Troubleshooting
 
-### Color Not Working
+### Color Not Working**Check:**1. Color is defined in theme:```typescript
 
-**Check:**
-
-1. Color is defined in theme:
-
-   ```typescript
    theme: {
      colors: {
        primary: '#3b82f6', // ✅
      },
    }
-   ```
-
-2. Using correct utility:
-
-   ```html
+   ```2. Using correct utility:```html
    <div class="bg-primary">✅ Works</div>
    <div class="background-primary">❌ Wrong utility</div>
-   ```
-
-### Spacing Values Not Applied
-
-**Check:**
-
-1. Using numeric keys:
-
-   ```typescript
+   ```### Spacing Values Not Applied**Check:**1. Using numeric keys:```typescript
    spacing: {
      4: '1rem',    // ✅
      'four': '1rem', // ❌ Won't work with p-four
    }
-   ```
-
-2. Values are strings:
-
-   ```typescript
+   ```2. Values are strings:```typescript
    spacing: {
      4: '1rem',  // ✅
      8: 2,       // ❌ Should be '2rem'

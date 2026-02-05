@@ -34,13 +34,9 @@ Control the display and positioning of elements:
 <div class="z-0">Z-index 0</div>
 <div class="z-10">Z-index 10</div>
 <div class="z-50">Z-index 50</div>
-```
+```### Flexbox
 
-### Flexbox
-
-Build flexible layouts with flexbox utilities:
-
-```html
+Build flexible layouts with flexbox utilities:```html
 <!-- Flex Container -->
 <div class="flex">
   <div>Item 1</div>
@@ -80,13 +76,10 @@ Build flexible layouts with flexbox utilities:
   <div class="flex-none">Don't grow</div>
   <div class="flex-auto">Auto</div>
 </div>
-```
 
-### Grid
+```### Grid
 
-Create grid layouts:
-
-```html
+Create grid layouts:```html
 <!-- Grid Container -->
 <div class="grid">
   <div>Item 1</div>
@@ -120,13 +113,9 @@ Create grid layouts:
   <div class="row-span-1">1 row</div>
   <div class="row-span-2">2 rows</div>
 </div>
-```
+```### Spacing
 
-### Spacing
-
-Control margin and padding:
-
-```html
+Control margin and padding:```html
 <!-- Padding -->
 <div class="p-4">Padding 1rem (all sides)</div>
 <div class="px-4">Padding 1rem (horizontal)</div>
@@ -155,13 +144,10 @@ Control margin and padding:
   <div>Item with horizontal spacing</div>
   <div>Item with horizontal spacing</div>
 </div>
-```
 
-### Sizing
+```### Sizing
 
-Control width and height:
-
-```html
+Control width and height:```html
 <!-- Width -->
 <div class="w-full">Full width</div>
 <div class="w-1/2">50% width</div>
@@ -182,13 +168,9 @@ Control width and height:
 <!-- Min/Max Height -->
 <div class="min-h-screen">Min height 100vh</div>
 <div class="max-h-64">Max height 16rem</div>
-```
+```### Typography
 
-### Typography
-
-Style text:
-
-```html
+Style text:```html
 <!-- Font Family -->
 <div class="font-sans">Sans-serif font</div>
 <div class="font-serif">Serif font</div>
@@ -245,13 +227,10 @@ Style text:
 <div class="tracking-tight">Tight tracking</div>
 <div class="tracking-normal">Normal tracking</div>
 <div class="tracking-wide">Wide tracking</div>
-```
 
-### Colors
+```### Colors
 
-Apply colors to backgrounds, text, and borders:
-
-```html
+Apply colors to backgrounds, text, and borders:```html
 <!-- Background Colors -->
 <div class="bg-white">White background</div>
 <div class="bg-black">Black background</div>
@@ -268,13 +247,9 @@ Apply colors to backgrounds, text, and borders:
 <!-- Border Colors -->
 <div class="border border-gray-300">Gray border</div>
 <div class="border-2 border-blue-500">Blue border</div>
-```
+```### Borders
 
-### Borders
-
-Control border width, radius, and style:
-
-```html
+Control border width, radius, and style:```html
 <!-- Border Width -->
 <div class="border">1px border</div>
 <div class="border-2">2px border</div>
@@ -296,13 +271,10 @@ Control border width, radius, and style:
 <div class="border border-solid">Solid border</div>
 <div class="border border-dashed">Dashed border</div>
 <div class="border border-dotted">Dotted border</div>
-```
 
-### Effects
+```### Effects
 
-Add shadows, opacity, and other effects:
-
-```html
+Add shadows, opacity, and other effects:```html
 <!-- Box Shadow -->
 <div class="shadow-sm">Small shadow</div>
 <div class="shadow">Default shadow</div>
@@ -317,13 +289,9 @@ Add shadows, opacity, and other effects:
 <div class="opacity-50">50% opacity</div>
 <div class="opacity-75">75% opacity</div>
 <div class="opacity-100">Fully opaque</div>
-```
+```### Transforms
 
-### Transforms
-
-Apply transformations:
-
-```html
+Apply transformations:```html
 <!-- Scale -->
 <div class="scale-50">50% scale</div>
 <div class="scale-100">100% scale</div>
@@ -338,13 +306,10 @@ Apply transformations:
 <div class="translate-x-4">Translate X by 1rem</div>
 <div class="translate-y-4">Translate Y by 1rem</div>
 <div class="-translate-x-4">Translate X by -1rem</div>
-```
 
-### Transitions
+```### Transitions
 
-Add smooth transitions:
-
-```html
+Add smooth transitions:```html
 <!-- Transition Property -->
 <div class="transition">Transition all properties</div>
 <div class="transition-colors">Transition colors only</div>
@@ -360,13 +325,9 @@ Add smooth transitions:
 <button class="bg-blue-500 hover:bg-blue-600 transition duration-300">
   Hover me
 </button>
-```
+```## Responsive Design
 
-## Responsive Design
-
-Use responsive variants to build adaptive layouts:
-
-```html
+Use responsive variants to build adaptive layouts:```html
 <!-- Responsive Grid -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
   <div>Item 1</div>
@@ -393,23 +354,20 @@ Use responsive variants to build adaptive layouts:
 <div class="block md:hidden">
   Visible only on small screens
 </div>
-```
 
-### Breakpoints
+```### Breakpoints
 
 | Breakpoint | Min Width | CSS |
 |------------|-----------|-----|
-| `sm:` | 640px | `@media (min-width: 640px)` |
-| `md:` | 768px | `@media (min-width: 768px)` |
-| `lg:` | 1024px | `@media (min-width: 1024px)` |
-| `xl:` | 1280px | `@media (min-width: 1280px)` |
-| `2xl:` | 1536px | `@media (min-width: 1536px)` |
+|`sm:`| 640px |`@media (min-width: 640px)`|
+|`md:`| 768px |`@media (min-width: 768px)`|
+|`lg:`| 1024px |`@media (min-width: 1024px)`|
+|`xl:`| 1280px |`@media (min-width: 1280px)`|
+|`2xl:`| 1536px |`@media (min-width: 1536px)`|
 
 ## State Variants
 
-Style elements based on their state:
-
-```html
+Style elements based on their state:```html
 <!-- Hover -->
 <button class="bg-blue-500 hover:bg-blue-600">
   Hover me
@@ -432,13 +390,9 @@ Style elements based on their state:
 <button class="bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:bg-gray-300 transition">
   Interactive button
 </button>
-```
+```## Dark Mode
 
-## Dark Mode
-
-Build dark mode interfaces:
-
-```html
+Build dark mode interfaces:```html
 <!-- Dark mode colors -->
 <div class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
   This adapts to dark mode
@@ -461,19 +415,13 @@ Build dark mode interfaces:
     </p>
   </main>
 </div>
-```
 
-To enable dark mode, add the `dark` class to your `<html>` or `<body>` element:
-
-```html
+```To enable dark mode, add the`dark`class to your`<html>`or`<body>`element:```html
 <html class="dark">
   <!-- Your content -->
 </html>
-```
+```Or toggle it with JavaScript:```javascript
 
-Or toggle it with JavaScript:
-
-```javascript
 // Toggle dark mode
 document.documentElement.classList.toggle('dark')
 
@@ -482,13 +430,10 @@ document.documentElement.classList.add('dark')
 
 // Disable dark mode
 document.documentElement.classList.remove('dark')
-```
 
-## Group & Peer Variants
+```## Group & Peer Variants
 
-Create parent-child interactions:
-
-```html
+Create parent-child interactions:```html
 <!-- Group Hover -->
 <div class="group">
   <img class="group-hover:scale-110 transition" src="image.jpg" />
@@ -502,13 +447,9 @@ Create parent-child interactions:
     I accept the terms
   </label>
 </div>
-```
+```## Pseudo-elements
 
-## Pseudo-elements
-
-Style pseudo-elements:
-
-```html
+Style pseudo-elements:```html
 <!-- Before/After -->
 <div class="before:content-['→'] before:mr-2">
   Text with arrow before
@@ -528,13 +469,10 @@ Style pseudo-elements:
 <p class="selection:bg-blue-200 selection:text-blue-900">
   Select this text to see custom selection colors
 </p>
-```
 
-## Arbitrary Values
+```## Arbitrary Values
 
-Use arbitrary values for one-off customizations:
-
-```html
+Use arbitrary values for one-off customizations:```html
 <!-- Arbitrary sizes -->
 <div class="w-[500px] h-[calc(100vh-4rem)]">
   Custom dimensions
@@ -558,13 +496,9 @@ Use arbitrary values for one-off customizations:
 <div class="grid-cols-[200px_minmax(0,1fr)_100px]">
   Custom grid template
 </div>
-```
+```## Important Modifier
 
-## Important Modifier
-
-Override styles with the `!` prefix:
-
-```html
+Override styles with the`!`prefix:```html
 <!-- Force a style to be !important -->
 <div class="text-blue-500 !text-red-500">
   This will be red (important override)
@@ -574,13 +508,10 @@ Override styles with the `!` prefix:
 <div class="some-third-party-class !bg-white !p-4">
   Override third-party styles
 </div>
-```
 
-## Combining Utilities
+```## Combining Utilities
 
-Build complex components by combining utilities:
-
-```html
+Build complex components by combining utilities:```html
 <!-- Card Component -->
 <div class="max-w-sm rounded-lg overflow-hidden shadow-lg bg-white">
   <img class="w-full" src="image.jpg" alt="Card image">
