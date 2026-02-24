@@ -8,7 +8,7 @@ import { layoutRules } from './rules-layout'
 import { transformsRules } from './rules-transforms'
 import { typographyRules } from './rules-typography'
 
-export type UtilityRule = (parsed: ParsedClass, config: CrosswindConfig) => Record<string, string> | UtilityRuleResult | undefined
+export type UtilityRule = (_parsed: ParsedClass, _config: CrosswindConfig) => Record<string, string> | UtilityRuleResult | undefined
 
 /**
  * Built-in utility rules

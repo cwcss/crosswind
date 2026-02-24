@@ -138,7 +138,7 @@ function setupWatch(buildConfig: CrosswindConfig, options: BuildOptions): void {
   }
 
   for (const dir of watchDirs) {
-    watch(dir, { recursive: true }, async (eventType, filename) => {
+    watch(dir, { recursive: true }, async (_eventType, filename) => {
       if (filename && /\.(?:html|js|ts|jsx|tsx|stx)$/.test(filename)) {
         console.log(`\n📝 ${filename} changed, rebuilding...`)
         await runBuild(buildConfig, options)

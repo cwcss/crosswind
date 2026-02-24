@@ -175,7 +175,7 @@ export interface UtilityRuleResult {
   pseudoElement?: string // e.g., '::placeholder' — appended to selector without space
 }
 
-export type CustomRule = [RegExp, (match: RegExpMatchArray) => Record<string, string> | undefined]
+export type CustomRule = [RegExp, (_match: RegExpMatchArray) => Record<string, string> | undefined]
 
 export interface Preflight {
   getCSS: () => string
