@@ -691,6 +691,9 @@ export const borderSideWidthRule: UtilityRule = (parsed) => {
 
 export const borderRadiusRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'rounded') {
+    if (parsed.arbitrary && parsed.value) {
+      return { 'border-radius': parsed.value } as Record<string, string>
+    }
     const value = parsed.value ? config.theme.borderRadius[parsed.value] : config.theme.borderRadius.DEFAULT
     return value ? { 'border-radius': value } : undefined
   }
