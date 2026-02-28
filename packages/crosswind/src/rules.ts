@@ -524,7 +524,10 @@ export const fontSizeRule: UtilityRule = (parsed, config) => {
         // 'length' type hint or other size-related types -> font-size
         return { 'font-size': parsed.value } as Record<string, string>
       }
-      // No type hint - default to font-size (backwards compatible)
+      // No type hint - detect if the value looks like a color and let colorRule handle it
+      if (/^#|^rgb|^hsl|^hwb|^lab|^lch|^oklch|^oklab|^color\(|^var\(--/.test(parsed.value)) {
+        return undefined
+      }
       return { 'font-size': parsed.value } as Record<string, string>
     }
     const fontSize = config.theme.fontSize[parsed.value]
