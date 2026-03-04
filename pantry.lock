@@ -1,0 +1,62 @@
+{
+  "version": "1.0.0",
+  "lockfileVersion": 1,
+  "generatedAt": "1772639490",
+  "packages": {
+    "npm:@tailwindcss/postcss@^4.1": {
+      "name": "npm:@tailwindcss/postcss",
+      "version": "^4.1",
+      "source": "pkgx"
+    },
+    "postcss@^8.5.6": {
+      "name": "postcss",
+      "version": "^8.5.6",
+      "source": "pkgx"
+    },
+    "bunfig@^0.15.0": {
+      "name": "bunfig",
+      "version": "^0.15.0",
+      "source": "pkgx"
+    },
+    "npm:@tailwindcss/vite@^4.1": {
+      "name": "npm:@tailwindcss/vite",
+      "version": "^4.1",
+      "source": "pkgx"
+    },
+    "npm:@unocss/core@^66.5.4": {
+      "name": "npm:@unocss/core",
+      "version": "^66.5.4",
+      "source": "pkgx"
+    },
+    "npm:@tailwindcss/node@^4.1.14": {
+      "name": "npm:@tailwindcss/node",
+      "version": "^4.1.14",
+      "source": "pkgx"
+    },
+    "npm:@unocss/preset-wind@^66.5.4": {
+      "name": "npm:@unocss/preset-wind",
+      "version": "^66.5.4",
+      "source": "pkgx"
+    },
+    "npm:@stacksjs/clapp@^0.2.0": {
+      "name": "npm:@stacksjs/clapp",
+      "version": "^0.2.0",
+      "source": "pkgx"
+    },
+    "mitata@^1.0.34": {
+      "name": "mitata",
+      "version": "^1.0.34",
+      "source": "pkgx"
+    },
+    "tailwindcss@^3": {
+      "name": "tailwindcss",
+      "version": "^3",
+      "source": "pkgx"
+    },
+    "tailwindcss-v4@npm:tailwindcss@^4": {
+      "name": "tailwindcss-v4",
+      "version": "npm:tailwindcss@^4",
+      "source": "pkgx"
+    }
+  }
+}

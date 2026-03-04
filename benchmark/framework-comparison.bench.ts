@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { bench, group, run } from 'mitata'
-import { CSSGenerator } from '../src/generator'
-import { defaultConfig } from '../src/config'
+import { CSSGenerator } from '../packages/crosswind/src/generator'
+import { defaultConfig } from '../packages/crosswind/src/config'
 
 // UnoCSS setup
 import { createGenerator } from '@unocss/core'
