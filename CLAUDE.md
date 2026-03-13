@@ -2,7 +2,7 @@
 
 ## About
 
-A performant Utility-First CSS framework. Similar to Tailwind or UnoCSS.
+A blazingly fast, on-demand utility-first CSS framework built with Bun that generates only the CSS classes actually used in your files. It provides Tailwind CSS-compatible utility classes with full variant support (responsive, state, dark mode, pseudo-elements), arbitrary values, shortcut aliases, compile-class HTML optimization, and both CLI and programmatic APIs. Zero runtime dependencies, with 1300+ tests and benchmarks showing it outperforms UnoCSS and Tailwind in all 20 benchmark scenarios.
 
 ## Linting
 
