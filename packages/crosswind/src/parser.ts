@@ -734,7 +734,8 @@ export function expandBracketSyntax(className: string, config?: BracketSyntaxCon
       const neg = isNegative ? '-' : ''
       if (needsArbitraryBrackets(partValue)) {
         results.push(`${variantPrefix}${innerVariant}${important}${neg}${partNegative}${prefix}-[${partValue}]`)
-      } else {
+      }
+else {
         results.push(`${variantPrefix}${innerVariant}${important}${neg}${partNegative}${prefix}-${partValue}`)
       }
     }
@@ -850,7 +851,8 @@ export function extractAttributifyClasses(content: string, config?: AttributifyC
     for (const pattern of ignoreList) {
       if (pattern.endsWith('*')) {
         if (baseAttr.startsWith(pattern.slice(0, -1))) return true
-      } else if (baseAttr === pattern) {
+      }
+else if (baseAttr === pattern) {
         return true
       }
     }
@@ -918,7 +920,8 @@ export function extractAttributifyClasses(content: string, config?: AttributifyC
             classes.add(className)
           }
         }
-      } else {
+      }
+else {
         // Boolean attribute: flex -> flex
         // Or with variant: hover:underline -> hover:underline
         const className = `${variantPrefix}${utilityName}`
@@ -1373,15 +1376,18 @@ function splitClassString(classStr: string): string[] {
     if (char === '[') {
       bracketDepth++
       current += char
-    } else if (char === ']') {
+    }
+else if (char === ']') {
       bracketDepth--
       current += char
-    } else if (/\s/.test(char) && bracketDepth === 0) {
+    }
+else if (/\s/.test(char) && bracketDepth === 0) {
       if (current) {
         classes.push(current)
         current = ''
       }
-    } else {
+    }
+else {
       current += char
     }
   }
