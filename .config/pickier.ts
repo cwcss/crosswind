@@ -1,7 +1,7 @@
 const config = {
   verbose: false,
 
-  ignores: [
+  ignores: ['CLAUDE.md', '*/CHANGELOG.md', 
     'node_modules/**',
     '**/dist/**',
     'fixtures/**',
