@@ -37,7 +37,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "crosswind": "./dist/bin/cli.js"
+    "crosswind": "./dist/cli.js"
   },
   "files": [
     "README.md",
