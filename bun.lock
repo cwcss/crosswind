@@ -5,15 +5,8 @@
     "": {
       "name": "@cwcss/crosswind",
       "devDependencies": {
-        "@stacksjs/bumpx": "^0.1.84",
         "@stacksjs/docs": "^0.70.23",
-        "@stacksjs/gitlint": "^0.1.5",
-        "@stacksjs/logsmith": "^0.1.18",
-        "@types/bun": "^1.2.23",
         "better-dx": "^0.2.7",
-        "buddy-bot": "^0.9.8",
-        "bun-git-hooks": "^0.3.1",
-        "bun-plugin-dtsx": "0.9.5",
       },
     },
     "packages/crosswind": {
