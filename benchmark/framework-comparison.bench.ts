@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+// @ts-ignore - mitata is an optional benchmark dependency
 import { bench, group, run } from 'mitata'
 import { CSSGenerator } from '../packages/crosswind/src/generator'
 import { defaultConfig } from '../packages/crosswind/src/config'
@@ -9,9 +10,11 @@ import presetWind from '@unocss/preset-wind'
 
 // Tailwind CSS v3 setup
 import postcss from 'postcss'
+// @ts-ignore - tailwindcss is an optional benchmark dependency
 import tailwindcss from 'tailwindcss'
 
 // Tailwind CSS v4 setup
+// @ts-ignore - @tailwindcss/postcss is an optional benchmark dependency
 import tailwindcssV4 from '@tailwindcss/postcss'
 
 // Initialize UnoCSS generator
