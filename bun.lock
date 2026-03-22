@@ -12,7 +12,7 @@
       "name": "@cwcss/crosswind",
       "version": "0.1.6",
       "bin": {
-        "crosswind": "./dist/bin/cli.js",
+        "crosswind": "./dist/cli.js",
       },
       "dependencies": {
         "@stacksjs/clapp": "^0.2.0",
@@ -23,9 +23,6 @@
       "name": "crosswind-vscode",
       "version": "0.1.6",
     },
-  },
-  "overrides": {
-    "unconfig": "0.3.10",
   },
   "packages": {
     "@cwcss/crosswind": ["@cwcss/crosswind@workspace:packages/crosswind"],
