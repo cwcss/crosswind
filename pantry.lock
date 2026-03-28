@@ -1,62 +1,79 @@
 {
   "version": "1.0.0",
-  "lockfileVersion": 1,
-  "generatedAt": "1772639490",
-  "packages": {
-    "npm:@tailwindcss/postcss@^4.1": {
-      "name": "npm:@tailwindcss/postcss",
-      "version": "^4.1",
-      "source": "pkgx"
+  "lockfileVersion": 2,
+  "workspaces": {
+    "": {
+      "name": "@cwcss/crosswind",
+      "devDependencies": {
+        "better-dx": "^0.2.7"
+      }
     },
-    "postcss@^8.5.6": {
-      "name": "postcss",
-      "version": "^8.5.6",
-      "source": "pkgx"
+    "packages/crosswind": {
+      "name": "@cwcss/crosswind",
+      "version": "0.1.6",
+      "dependencies": {
+        "@stacksjs/clapp": "^0.2.0",
+        "bunfig": "^0.15.0"
+      }
+    },
+    "packages/vscode": {
+      "name": "crosswind-vscode",
+      "version": "0.1.6"
+    }
+  },
+  "packages": {
+    "@stacksjs/clapp@0.2.0": {
+      "name": "@stacksjs/clapp",
+      "version": "0.2.0",
+      "source": "npm",
+      "resolved": "https://registry.npmjs.org/@stacksjs/clapp/-/clapp-0.2.0.tgz",
+      "integrity": "sha512-dSqnbeZjXnQLLvVxC5NU7D9Vpjxc6cC9Bo2ZwaqjgruK7pbVoFCI0goc9Mtf/lfSTbTx6Uvv/mbY7+cOW/j3Og==",
+      "dependencies": {
+        "mri": "^1.2.0",
+        "wrap-ansi": "^9.0.0"
+      },
+      "bin": {
+        "@stacksjs/clapp": "./dist/bin/cli.js",
+        "clapp": "./dist/bin/cli.js"
+      }
+    },
+    "better-dx@0.2.7": {
+      "name": "better-dx",
+      "version": "0.2.7",
+      "source": "npm",
+      "resolved": "https://registry.npmjs.org/better-dx/-/better-dx-0.2.7.tgz",
+      "integrity": "sha512-J5Msp8jYKl4/YrTt/IWE32ZZg36/+M5klkAhSZb6Av5LGuFd7tylTerKq/8AwZxAYl9h8ZXV79Paygc+YjmCyw==",
+      "peerDependencies": {
+        "@stacksjs/bumpx": "^0.2.4",
+        "@stacksjs/bunpress": "^0.1.1",
+        "@stacksjs/clarity": "^0.3.24",
+        "@stacksjs/gitlint": "^0.1.5",
+        "@stacksjs/logsmith": "^0.2.1",
+        "@types/bun": "^1.3.10",
+        "buddy-bot": "^0.9.17",
+        "bun-git-hooks": "^0.3.1",
+        "bun-plugin-dtsx": "^0.9.13",
+        "bunfig": "^0.15.6",
+        "pickier": "^0.1.20",
+        "ts-error-handling": "^0.1.1",
+        "typescript": "^5.9.3"
+      },
+      "bin": {
+        "better-dx": "./dist/bin/cli.js",
+        "dx": "./dist/bin/cli.js"
+      }
     },
     "bunfig@^0.15.0": {
       "name": "bunfig",
       "version": "^0.15.0",
-      "source": "pkgx"
-    },
-    "npm:@tailwindcss/vite@^4.1": {
-      "name": "npm:@tailwindcss/vite",
-      "version": "^4.1",
-      "source": "pkgx"
-    },
-    "npm:@unocss/core@^66.5.4": {
-      "name": "npm:@unocss/core",
-      "version": "^66.5.4",
-      "source": "pkgx"
-    },
-    "npm:@tailwindcss/node@^4.1.14": {
-      "name": "npm:@tailwindcss/node",
-      "version": "^4.1.14",
-      "source": "pkgx"
-    },
-    "npm:@unocss/preset-wind@^66.5.4": {
-      "name": "npm:@unocss/preset-wind",
-      "version": "^66.5.4",
-      "source": "pkgx"
-    },
-    "npm:@stacksjs/clapp@^0.2.0": {
-      "name": "npm:@stacksjs/clapp",
-      "version": "^0.2.0",
-      "source": "pkgx"
-    },
-    "mitata@^1.0.34": {
-      "name": "mitata",
-      "version": "^1.0.34",
-      "source": "pkgx"
-    },
-    "tailwindcss@^3": {
-      "name": "tailwindcss",
-      "version": "^3",
-      "source": "pkgx"
-    },
-    "tailwindcss-v4@npm:tailwindcss@^4": {
-      "name": "tailwindcss-v4",
-      "version": "npm:tailwindcss@^4",
-      "source": "pkgx"
+      "source": "npm",
+      "dependencies": {
+        "@stacksjs/clapp": "^0.2.0",
+        "@stacksjs/clarity": "^0.3.24"
+      },
+      "bin": {
+        "bunfig": "./bin/cli.js"
+      }
     }
   }
 }
