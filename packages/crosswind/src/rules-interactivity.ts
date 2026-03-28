@@ -129,18 +129,32 @@ export const captionSideRule: UtilityRule = (parsed) => {
 
 // Interactivity utilities
 export const accentColorRule: UtilityRule = (parsed, config) => {
-  if (parsed.utility === 'accent') {
-    if (parsed.value === 'auto') {
-      return { 'accent-color': 'auto' }
+  if (parsed.utility === 'accent' && parsed.value) {
+    // Special keywords
+    const special: Record<string, string> = {
+      auto: 'auto',
+      current: 'currentColor',
+      transparent: 'transparent',
+      inherit: 'inherit',
     }
-    if (parsed.value) {
-      const parts = parsed.value.split('-')
-      if (parts.length === 2) {
-        const [colorName, shade] = parts
-        const colorValue = config.theme.colors[colorName]
-        if (typeof colorValue === 'object' && colorValue[shade]) {
-          return { 'accent-color': colorValue[shade] }
-        }
+    if (special[parsed.value]) {
+      return { 'accent-color': special[parsed.value] }
+    }
+
+    // Direct color name (white, black, etc.)
+    const directColor = config.theme.colors[parsed.value]
+    if (typeof directColor === 'string') {
+      return { 'accent-color': directColor }
+    }
+
+    // Color with shade: accent-blue-500
+    const parts = parsed.value.split('-')
+    if (parts.length >= 2) {
+      const shade = parts[parts.length - 1]
+      const colorName = parts.slice(0, -1).join('-')
+      const colorValue = config.theme.colors[colorName]
+      if (typeof colorValue === 'object' && colorValue[shade]) {
+        return { 'accent-color': colorValue[shade] }
       }
     }
   }

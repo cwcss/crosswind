@@ -2010,7 +2010,19 @@ export class CSSGenerator {
       if (variant.charCodeAt(0) === 103 && variant.startsWith('group-')) { // 'g' = 103
         if (this.variantEnabled.group) {
           const groupVariant = variant.slice(6)
-          prefix = `.group:${groupVariant} `
+          // group-has-* needs special handling: group-has-[:checked] -> .group:has(:checked)
+          if (groupVariant.startsWith('has-')) {
+            const hasValue = groupVariant.slice(4)
+            if (hasValue.charCodeAt(0) === 91 && hasValue.charCodeAt(hasValue.length - 1) === 93) {
+              prefix = `.group:has(${hasValue.slice(1, -1)}) `
+            }
+            else {
+              prefix = `.group:has(:${hasValue}) `
+            }
+          }
+          else {
+            prefix = `.group:${groupVariant} `
+          }
         }
         continue
       }
@@ -2027,7 +2039,19 @@ export class CSSGenerator {
       if (variant.charCodeAt(0) === 112 && variant.startsWith('peer-')) { // 'p' = 112
         if (this.variantEnabled.peer) {
           const peerVariant = variant.slice(5)
-          prefix = `.peer:${peerVariant} ~ `
+          // peer-has-* needs special handling: peer-has-[:checked] -> .peer:has(:checked) ~
+          if (peerVariant.startsWith('has-')) {
+            const hasValue = peerVariant.slice(4)
+            if (hasValue.charCodeAt(0) === 91 && hasValue.charCodeAt(hasValue.length - 1) === 93) {
+              prefix = `.peer:has(${hasValue.slice(1, -1)}) ~ `
+            }
+            else {
+              prefix = `.peer:has(:${hasValue}) ~ `
+            }
+          }
+          else {
+            prefix = `.peer:${peerVariant} ~ `
+          }
         }
         continue
       }
