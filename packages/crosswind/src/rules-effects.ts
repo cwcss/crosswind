@@ -1,4 +1,5 @@
 import type { UtilityRule } from './rules'
+import { resolveColorValue } from './rules'
 
 // =============================================================================
 // Shadow color helpers
@@ -190,20 +191,10 @@ export const outlineRule: UtilityRule = (parsed, config) => {
       return { 'outline-width': '1px' } as Record<string, string>
     }
 
-    // Check for colors first (e.g., outline-blue-500)
-    const parts = parsed.value.split('-')
-    if (parts.length === 2) {
-      const [colorName, shade] = parts
-      const colorValue = config.theme.colors[colorName]
-      if (typeof colorValue === 'object' && colorValue[shade]) {
-        return { 'outline-color': colorValue[shade] } as Record<string, string>
-      }
-    }
-
-    // Direct color (e.g., outline-black)
-    const directColor = config.theme.colors[parsed.value]
-    if (typeof directColor === 'string') {
-      return { 'outline-color': directColor } as Record<string, string>
+    // Check for colors (e.g., outline-blue-500, outline-white/50)
+    const color = resolveColorValue(parsed.value, config)
+    if (color) {
+      return { 'outline-color': color } as Record<string, string>
     }
 
     // Check for width values

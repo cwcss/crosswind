@@ -446,8 +446,8 @@ export const colorRule: UtilityRule = (parsed, config) => {
   return undefined
 }
 
-// Helper to apply opacity to color (moved outside to reduce function creation)
-function applyOpacity(color: string, opacity: number): string {
+// Helper to apply opacity to color
+export function applyOpacity(color: string, opacity: number): string {
   // Strip brackets from arbitrary values: [#ff0000] -> #ff0000
   let cleanColor = color
   if (color.charCodeAt(0) === 91 && color.charCodeAt(color.length - 1) === 93) { // '[' and ']'
@@ -491,6 +491,52 @@ function applyOpacity(color: string, opacity: number): string {
   }
   // Fallback: use opacity as-is with the color
   return cleanColor
+}
+
+/**
+ * Shared helper: resolve a color value (with optional opacity) from theme config.
+ * Handles: special keywords, direct colors, color-shade, opacity modifiers (/50, /[0.04]).
+ * Returns the resolved CSS color string or undefined if not found.
+ */
+export function resolveColorValue(value: string, config: { theme: { colors: Record<string, any> } }): string | undefined {
+  const slashIdx = value.indexOf('/')
+  let colorKey = value
+  let opacity: number | undefined
+
+  if (slashIdx !== -1) {
+    colorKey = value.slice(0, slashIdx)
+    const opacityStr = value.slice(slashIdx + 1)
+    if (opacityStr.charCodeAt(0) === 91 && opacityStr.charCodeAt(opacityStr.length - 1) === 93) {
+      opacity = Number.parseFloat(opacityStr.slice(1, -1))
+      if (Number.isNaN(opacity) || opacity < 0 || opacity > 1) return undefined
+    }
+    else {
+      const opacityInt = Number.parseInt(opacityStr, 10)
+      if (Number.isNaN(opacityInt) || opacityInt < 0 || opacityInt > 100) return undefined
+      opacity = opacityInt / 100
+    }
+  }
+
+  // Special keywords
+  const special: Record<string, string> = { current: 'currentColor', transparent: 'transparent', inherit: 'inherit', auto: 'auto' }
+  if (special[colorKey]) return opacity !== undefined ? applyOpacity(special[colorKey], opacity) : special[colorKey]
+
+  // Direct color name (white, black, etc.)
+  const directColor = config.theme.colors[colorKey]
+  if (typeof directColor === 'string') return opacity !== undefined ? applyOpacity(directColor, opacity) : directColor
+
+  // Color with shade: blue-500, gray-300
+  const parts = colorKey.split('-')
+  if (parts.length >= 2) {
+    const shade = parts[parts.length - 1]
+    const colorName = parts.slice(0, -1).join('-')
+    const colorValue = config.theme.colors[colorName]
+    if (typeof colorValue === 'object' && colorValue[shade]) {
+      return opacity !== undefined ? applyOpacity(colorValue[shade], opacity) : colorValue[shade]
+    }
+  }
+
+  return undefined
 }
 
 // Placeholder color utilities (placeholder-{color})
