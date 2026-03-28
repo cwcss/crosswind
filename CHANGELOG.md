@@ -1,3 +1,126 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.1.6...v0.2.0)
+
+### 🚀 Features
+
+- improve arbitrary values ([9c6af1e](https://github.com/cwcss/crosswind/commit/9c6af1e))
+- handle arbitrary bracket opacity on named colors ([af6f0f3](https://github.com/cwcss/crosswind/commit/af6f0f3))
+
+### 🐛 Bug Fixes
+
+- resolve typecheck errors ([8876156](https://github.com/cwcss/crosswind/commit/8876156))
+- resolve typecheck errors ([18bbc68](https://github.com/cwcss/crosswind/commit/18bbc68))
+
+### 🧹 Chores
+
+- release v0.2.0 ([74a6cfa](https://github.com/cwcss/crosswind/commit/74a6cfa))
+- update lockfile ([a95e37f](https://github.com/cwcss/crosswind/commit/a95e37f))
+- release updates ([c3908da](https://github.com/cwcss/crosswind/commit/c3908da))
+- adjust test ([ce9472c](https://github.com/cwcss/crosswind/commit/ce9472c))
+- repo cleanup and modernization ([9f1d450](https://github.com/cwcss/crosswind/commit/9f1d450))
+- repo cleanup and modernization ([f5e5369](https://github.com/cwcss/crosswind/commit/f5e5369))
+- remove unocss ([4446ec1](https://github.com/cwcss/crosswind/commit/4446ec1))
+- remove @stacksjs/docs ([8ca150e](https://github.com/cwcss/crosswind/commit/8ca150e))
+- remove redundant docs/.vitepress ([9496179](https://github.com/cwcss/crosswind/commit/9496179))
+- use Pantry action for publish-commit and add job dependencies ([35b820a](https://github.com/cwcss/crosswind/commit/35b820a))
+- fix better-dx version to ^0.2.7 ([4afffd7](https://github.com/cwcss/crosswind/commit/4afffd7))
+- migrate to better-dx ([2489f19](https://github.com/cwcss/crosswind/commit/2489f19))
+- wip ([c636898](https://github.com/cwcss/crosswind/commit/c636898))
+- remove file ignores from pickier config ([2d048d6](https://github.com/cwcss/crosswind/commit/2d048d6))
+- add CLAUDE.md and CHANGELOG.md to pickier ignores ([4cfef69](https://github.com/cwcss/crosswind/commit/4cfef69))
+- fix lint warnings ([a5cba77](https://github.com/cwcss/crosswind/commit/a5cba77))
+- remove .pickierignore ([b7ba810](https://github.com/cwcss/crosswind/commit/b7ba810))
+- update better-dx to ^0.2.7 ([1f8781a](https://github.com/cwcss/crosswind/commit/1f8781a))
+- enrich CLAUDE.md with detailed project context from README ([2d63389](https://github.com/cwcss/crosswind/commit/2d63389))
+- update CLAUDE.md with project context and crosswind details ([b904cf8](https://github.com/cwcss/crosswind/commit/b904cf8))
+- add proper claude code guidelines ([5a9eda4](https://github.com/cwcss/crosswind/commit/5a9eda4))
+- use pantry monorepo action instead of pantry-setup ([521ecd4](https://github.com/cwcss/crosswind/commit/521ecd4))
+- ignore claude config in linter ([0661f46](https://github.com/cwcss/crosswind/commit/0661f46))
+- add claude code guidelines ([083b738](https://github.com/cwcss/crosswind/commit/083b738))
+- wip ([2c27184](https://github.com/cwcss/crosswind/commit/2c27184))
+- wip ([8737237](https://github.com/cwcss/crosswind/commit/8737237))
+- wip ([ac03495](https://github.com/cwcss/crosswind/commit/ac03495))
+- wip ([a9b683a](https://github.com/cwcss/crosswind/commit/a9b683a))
+- wip ([decfd0c](https://github.com/cwcss/crosswind/commit/decfd0c))
+- wip ([73a2c17](https://github.com/cwcss/crosswind/commit/73a2c17))
+- wip ([82f534d](https://github.com/cwcss/crosswind/commit/82f534d))
+- wip ([e02936f](https://github.com/cwcss/crosswind/commit/e02936f))
+- wip ([29df3e3](https://github.com/cwcss/crosswind/commit/29df3e3))
+- wip ([06de5a7](https://github.com/cwcss/crosswind/commit/06de5a7))
+- wip ([d62a10b](https://github.com/cwcss/crosswind/commit/d62a10b))
+- wip ([686497b](https://github.com/cwcss/crosswind/commit/686497b))
+- wip ([c8e4b32](https://github.com/cwcss/crosswind/commit/c8e4b32))
+- wip ([e8abd7b](https://github.com/cwcss/crosswind/commit/e8abd7b))
+- wip ([1734035](https://github.com/cwcss/crosswind/commit/1734035))
+- wip ([9f100ba](https://github.com/cwcss/crosswind/commit/9f100ba))
+- wip ([592599c](https://github.com/cwcss/crosswind/commit/592599c))
+- wip ([c3bea5d](https://github.com/cwcss/crosswind/commit/c3bea5d))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+- glennmichael123 <gtorregosa@gmail.com>
+
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.1.6...HEAD)
+
+### 🚀 Features
+
+- improve arbitrary values ([9c6af1e](https://github.com/cwcss/crosswind/commit/9c6af1e))
+- handle arbitrary bracket opacity on named colors ([af6f0f3](https://github.com/cwcss/crosswind/commit/af6f0f3))
+
+### 🐛 Bug Fixes
+
+- resolve typecheck errors ([8876156](https://github.com/cwcss/crosswind/commit/8876156))
+- resolve typecheck errors ([18bbc68](https://github.com/cwcss/crosswind/commit/18bbc68))
+
+### 🧹 Chores
+
+- update lockfile ([a95e37f](https://github.com/cwcss/crosswind/commit/a95e37f))
+- release updates ([c3908da](https://github.com/cwcss/crosswind/commit/c3908da))
+- adjust test ([ce9472c](https://github.com/cwcss/crosswind/commit/ce9472c))
+- repo cleanup and modernization ([9f1d450](https://github.com/cwcss/crosswind/commit/9f1d450))
+- repo cleanup and modernization ([f5e5369](https://github.com/cwcss/crosswind/commit/f5e5369))
+- remove unocss ([4446ec1](https://github.com/cwcss/crosswind/commit/4446ec1))
+- remove @stacksjs/docs ([8ca150e](https://github.com/cwcss/crosswind/commit/8ca150e))
+- remove redundant docs/.vitepress ([9496179](https://github.com/cwcss/crosswind/commit/9496179))
+- use Pantry action for publish-commit and add job dependencies ([35b820a](https://github.com/cwcss/crosswind/commit/35b820a))
+- fix better-dx version to ^0.2.7 ([4afffd7](https://github.com/cwcss/crosswind/commit/4afffd7))
+- migrate to better-dx ([2489f19](https://github.com/cwcss/crosswind/commit/2489f19))
+- wip ([c636898](https://github.com/cwcss/crosswind/commit/c636898))
+- remove file ignores from pickier config ([2d048d6](https://github.com/cwcss/crosswind/commit/2d048d6))
+- add CLAUDE.md and CHANGELOG.md to pickier ignores ([4cfef69](https://github.com/cwcss/crosswind/commit/4cfef69))
+- fix lint warnings ([a5cba77](https://github.com/cwcss/crosswind/commit/a5cba77))
+- remove .pickierignore ([b7ba810](https://github.com/cwcss/crosswind/commit/b7ba810))
+- update better-dx to ^0.2.7 ([1f8781a](https://github.com/cwcss/crosswind/commit/1f8781a))
+- enrich CLAUDE.md with detailed project context from README ([2d63389](https://github.com/cwcss/crosswind/commit/2d63389))
+- update CLAUDE.md with project context and crosswind details ([b904cf8](https://github.com/cwcss/crosswind/commit/b904cf8))
+- add proper claude code guidelines ([5a9eda4](https://github.com/cwcss/crosswind/commit/5a9eda4))
+- use pantry monorepo action instead of pantry-setup ([521ecd4](https://github.com/cwcss/crosswind/commit/521ecd4))
+- ignore claude config in linter ([0661f46](https://github.com/cwcss/crosswind/commit/0661f46))
+- add claude code guidelines ([083b738](https://github.com/cwcss/crosswind/commit/083b738))
+- wip ([2c27184](https://github.com/cwcss/crosswind/commit/2c27184))
+- wip ([8737237](https://github.com/cwcss/crosswind/commit/8737237))
+- wip ([ac03495](https://github.com/cwcss/crosswind/commit/ac03495))
+- wip ([a9b683a](https://github.com/cwcss/crosswind/commit/a9b683a))
+- wip ([decfd0c](https://github.com/cwcss/crosswind/commit/decfd0c))
+- wip ([73a2c17](https://github.com/cwcss/crosswind/commit/73a2c17))
+- wip ([82f534d](https://github.com/cwcss/crosswind/commit/82f534d))
+- wip ([e02936f](https://github.com/cwcss/crosswind/commit/e02936f))
+- wip ([29df3e3](https://github.com/cwcss/crosswind/commit/29df3e3))
+- wip ([06de5a7](https://github.com/cwcss/crosswind/commit/06de5a7))
+- wip ([d62a10b](https://github.com/cwcss/crosswind/commit/d62a10b))
+- wip ([686497b](https://github.com/cwcss/crosswind/commit/686497b))
+- wip ([c8e4b32](https://github.com/cwcss/crosswind/commit/c8e4b32))
+- wip ([e8abd7b](https://github.com/cwcss/crosswind/commit/e8abd7b))
+- wip ([1734035](https://github.com/cwcss/crosswind/commit/1734035))
+- wip ([9f100ba](https://github.com/cwcss/crosswind/commit/9f100ba))
+- wip ([592599c](https://github.com/cwcss/crosswind/commit/592599c))
+- wip ([c3bea5d](https://github.com/cwcss/crosswind/commit/c3bea5d))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+- glennmichael123 <gtorregosa@gmail.com>
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.1.4...v0.1.5)
 
 ### 🧹 Chores

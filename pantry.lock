@@ -63,10 +63,12 @@
         "dx": "./dist/bin/cli.js"
       }
     },
-    "bunfig@^0.15.0": {
+    "bunfig@0.15.6": {
       "name": "bunfig",
-      "version": "^0.15.0",
+      "version": "0.15.6",
       "source": "npm",
+      "resolved": "https://registry.npmjs.org/bunfig/-/bunfig-0.15.6.tgz",
+      "integrity": "sha512-7ynPmrn1dN5F+0DtUVY0Vo2MZOOnSdb6hpQePwABEYIJ+d/rSb3vaOVUs3MFxwxWuaVc1FEStVJG6+kCgbLuyg==",
       "dependencies": {
         "@stacksjs/clapp": "^0.2.0",
         "@stacksjs/clarity": "^0.3.24"
