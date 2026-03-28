@@ -236,6 +236,37 @@ describe('Edge Cases', () => {
       const css = gen.toCSS(false)
       expect(css).toContain('background-color: rgb(0 255 0 / 0.75);')
     })
+
+    it('should handle arbitrary bracket opacity on named colors: bg-white/[0.04]', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('bg-white/[0.04]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('background-color:')
+      expect(css).toContain('0.04')
+    })
+
+    it('should handle arbitrary bracket opacity on shade colors: text-white/[0.5]', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('text-white/[0.5]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('color:')
+      expect(css).toContain('0.5')
+    })
+
+    it('should handle arbitrary bracket opacity on border colors: border-white/[0.06]', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('border-white/[0.06]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('border-color:')
+      expect(css).toContain('0.06')
+    })
+
+    it('should reject arbitrary bracket opacity > 1', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('bg-white/[1.5]')
+      const css = gen.toCSS(false)
+      expect(css).not.toContain('background-color:')
+    })
   })
 
   describe('Color with variants', () => {

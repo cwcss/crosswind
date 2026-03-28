@@ -378,13 +378,24 @@ export const colorRule: UtilityRule = (parsed, config) => {
 
   if (slashIdx !== -1) {
     colorValue = value.slice(0, slashIdx)
-    const opacityValue = Number.parseInt(value.slice(slashIdx + 1), 10)
+    const opacityStr = value.slice(slashIdx + 1)
 
-    // Validate opacity is in 0-100 range
-    if (Number.isNaN(opacityValue) || opacityValue < 0 || opacityValue > 100) {
-      return undefined
+    // Handle arbitrary opacity: /[0.04], /[0.5], /[.15]
+    if (opacityStr.charCodeAt(0) === 91 && opacityStr.charCodeAt(opacityStr.length - 1) === 93) { // '[' and ']'
+      const arbitraryOpacity = Number.parseFloat(opacityStr.slice(1, -1))
+      if (Number.isNaN(arbitraryOpacity) || arbitraryOpacity < 0 || arbitraryOpacity > 1) {
+        return undefined
+      }
+      opacity = arbitraryOpacity
     }
-    opacity = opacityValue / 100
+    else {
+      // Standard integer opacity: /50, /75 (0-100 scale)
+      const opacityValue = Number.parseInt(opacityStr, 10)
+      if (Number.isNaN(opacityValue) || opacityValue < 0 || opacityValue > 100) {
+        return undefined
+      }
+      opacity = opacityValue / 100
+    }
 
     // Try flat cache with base color value
     const baseColor = flatColorCache!.get(colorValue)
@@ -485,10 +496,23 @@ export const placeholderColorRule: UtilityRule = (parsed, config) => {
   else {
     // With opacity modifier
     const colorValue = value.slice(0, slashIdx)
-    const opacityValue = Number.parseInt(value.slice(slashIdx + 1), 10)
-    if (Number.isNaN(opacityValue) || opacityValue < 0 || opacityValue > 100)
-      return undefined
-    const opacity = opacityValue / 100
+    const opacityStr = value.slice(slashIdx + 1)
+    let opacity: number
+
+    // Handle arbitrary opacity: /[0.04], /[0.5]
+    if (opacityStr.charCodeAt(0) === 91 && opacityStr.charCodeAt(opacityStr.length - 1) === 93) {
+      const arbitraryOpacity = Number.parseFloat(opacityStr.slice(1, -1))
+      if (Number.isNaN(arbitraryOpacity) || arbitraryOpacity < 0 || arbitraryOpacity > 1)
+        return undefined
+      opacity = arbitraryOpacity
+    }
+    else {
+      const opacityValue = Number.parseInt(opacityStr, 10)
+      if (Number.isNaN(opacityValue) || opacityValue < 0 || opacityValue > 100)
+        return undefined
+      opacity = opacityValue / 100
+    }
+
     const baseColor = flatColorCache.get(colorValue)
     if (baseColor) {
       return {
