@@ -71,6 +71,28 @@ function needsArbitraryBrackets(value: string): boolean {
 }
 
 /**
+ * Convert underscores to spaces in arbitrary values (Tailwind convention).
+ * e.g. grid-cols-[120px_1fr_200px] → "120px 1fr 200px"
+ * Preserves underscores inside url(), var(), and other CSS functions.
+ */
+function convertArbitraryUnderscores(value: string): string {
+  if (!value.includes('_')) return value
+  // If the value contains CSS functions, only replace underscores outside them
+  if (value.includes('(')) {
+    let result = ''
+    let depth = 0
+    for (let i = 0; i < value.length; i++) {
+      const ch = value[i]
+      if (ch === '(') depth++
+      else if (ch === ')') depth--
+      result += (ch === '_' && depth === 0) ? ' ' : ch
+    }
+    return result
+  }
+  return value.replace(/_/g, ' ')
+}
+
+/**
  * Handle min/max prefix patterns for sizing utilities
  * w[min 200px] -> min-w-[200px], h[max screen] -> max-h-screen
 */
@@ -997,7 +1019,7 @@ function parseClassImpl(className: string): ParsedClass {
   if (preArbitraryMatch) {
     const variantPart = preArbitraryMatch[1]
     const variants = variantPart ? variantPart.split(':').filter(Boolean) : []
-    let value = preArbitraryMatch[3]
+    let value = convertArbitraryUnderscores(preArbitraryMatch[3])
     let typeHint: string | undefined
 
     // Check for type hint in arbitrary value: text-[color:var(--muted)]
@@ -1059,7 +1081,7 @@ function parseClassImpl(className: string): ParsedClass {
   // Check for arbitrary values: w-[100px] or bg-[#ff0000] or text-[color:var(--muted)]
   const arbitraryMatch = utility.match(/^([a-z-]+?)-\[(.+?)\]$/)
   if (arbitraryMatch) {
-    let value = arbitraryMatch[2]
+    let value = convertArbitraryUnderscores(arbitraryMatch[2])
     let typeHint: string | undefined
 
     // Check for type hint in arbitrary value: text-[color:var(--muted)]
