@@ -264,20 +264,63 @@ export const divideRule: UtilityRule = (parsed, config) => {
   }
 
   if (parsed.utility === 'divide' && parsed.value) {
-    // divide-{color}-{shade}
-    const parts = parsed.value.split('-')
-    if (parts.length >= 2) {
-      const colorName = parts.slice(0, -1).join('-')
-      const shade = parts[parts.length - 1]
-      const colorValue = config.theme.colors[colorName]
-      if (typeof colorValue === 'object' && colorValue[shade]) {
-        return {
-          properties: {
-            'border-color': colorValue[shade],
-          } as Record<string, string>,
-          childSelector: '> :not([hidden]) ~ :not([hidden])',
+    // Handle opacity modifier: divide-white/10, divide-blue-500/50
+    const slashIdx = parsed.value.indexOf('/')
+    let colorKey = parsed.value
+    let opacity: number | undefined
+
+    if (slashIdx !== -1) {
+      colorKey = parsed.value.slice(0, slashIdx)
+      const opacityStr = parsed.value.slice(slashIdx + 1)
+      if (opacityStr.charCodeAt(0) === 91 && opacityStr.charCodeAt(opacityStr.length - 1) === 93) {
+        opacity = Number.parseFloat(opacityStr.slice(1, -1))
+        if (Number.isNaN(opacity) || opacity < 0 || opacity > 1) return undefined
+      }
+      else {
+        const opacityInt = Number.parseInt(opacityStr, 10)
+        if (Number.isNaN(opacityInt) || opacityInt < 0 || opacityInt > 100) return undefined
+        opacity = opacityInt / 100
+      }
+    }
+
+    const makeDivideColor = (color: string) => {
+      // Apply opacity if present
+      if (opacity !== undefined) {
+        // Hex color -> rgb with alpha
+        if (color.charCodeAt(0) === 35) {
+          let hex = color.slice(1)
+          if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
+          const r = Number.parseInt(hex.slice(0, 2), 16)
+          const g = Number.parseInt(hex.slice(2, 4), 16)
+          const b = Number.parseInt(hex.slice(4, 6), 16)
+          color = `rgb(${r} ${g} ${b} / ${opacity})`
+        }
+        // oklch -> add alpha
+        else if (color.startsWith('oklch(')) {
+          color = color.replace(')', ` / ${opacity})`)
         }
       }
+      return {
+        properties: { 'border-color': color } as Record<string, string>,
+        childSelector: '> :not([hidden]) ~ :not([hidden])',
+      }
+    }
+
+    // Special color keywords
+    const specialColors: Record<string, string> = { current: 'currentColor', transparent: 'transparent', inherit: 'inherit' }
+    if (specialColors[colorKey]) return makeDivideColor(specialColors[colorKey])
+
+    // Direct color name (white, black, etc.)
+    const directColor = config.theme.colors[colorKey]
+    if (typeof directColor === 'string') return makeDivideColor(directColor)
+
+    // divide-{color}-{shade}
+    const parts = colorKey.split('-')
+    if (parts.length >= 2) {
+      const shade = parts[parts.length - 1]
+      const colorName = parts.slice(0, -1).join('-')
+      const colorValue = config.theme.colors[colorName]
+      if (typeof colorValue === 'object' && colorValue[shade]) return makeDivideColor(colorValue[shade])
     }
   }
 }

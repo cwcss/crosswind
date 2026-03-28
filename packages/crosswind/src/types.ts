@@ -102,6 +102,7 @@ export interface VariantConfig {
   'active': boolean
   'disabled': boolean
   'dark': boolean
+  'light': boolean
   // Group/Peer
   'group': boolean
   'peer': boolean
@@ -139,8 +140,17 @@ export interface VariantConfig {
   'indeterminate': boolean
   'default': boolean
   'optional': boolean
+  // Dynamic variants (aria-*, data-*, has:, supports:, not-*)
+  'aria': boolean
+  'data': boolean
+  'has': boolean
+  'not': boolean
+  'supports': boolean
   // Media
   'print': boolean
+  'landscape': boolean
+  'portrait': boolean
+  'forced-colors': boolean
   // Direction
   'rtl': boolean
   'ltr': boolean

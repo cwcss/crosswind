@@ -156,9 +156,28 @@ export const appearanceRule: UtilityRule = (parsed) => {
 
 export const caretColorRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'caret' && parsed.value) {
+    // Special color keywords
+    const special: Record<string, string> = {
+      auto: 'auto',
+      current: 'currentColor',
+      transparent: 'transparent',
+      inherit: 'inherit',
+    }
+    if (special[parsed.value]) {
+      return { 'caret-color': special[parsed.value] }
+    }
+
+    // Direct color name (white, black, etc.)
+    const directColor = config.theme.colors[parsed.value]
+    if (typeof directColor === 'string') {
+      return { 'caret-color': directColor }
+    }
+
+    // Color with shade: caret-blue-500
     const parts = parsed.value.split('-')
-    if (parts.length === 2) {
-      const [colorName, shade] = parts
+    if (parts.length >= 2) {
+      const shade = parts[parts.length - 1]
+      const colorName = parts.slice(0, -1).join('-')
       const colorValue = config.theme.colors[colorName]
       if (typeof colorValue === 'object' && colorValue[shade]) {
         return { 'caret-color': colorValue[shade] }

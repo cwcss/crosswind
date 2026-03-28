@@ -63,4 +63,22 @@ describe('Group and Peer Variants', () => {
       expect(css).toContain('.peer:checked')
     })
   })
+
+  describe('Named group variants', () => {
+    it('should generate named group prefix: group/sidebar', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('group/sidebar:hover:text-white')
+      const css = gen.toCSS(false)
+      expect(css).toContain('group\\/sidebar')
+    })
+  })
+
+  describe('Named peer variants', () => {
+    it('should generate named peer prefix: peer/input', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('peer/input:invalid:text-red-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('peer\\/input')
+    })
+  })
 })
