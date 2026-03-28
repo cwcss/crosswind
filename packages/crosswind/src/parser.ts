@@ -1042,7 +1042,24 @@ function parseClassImpl(className: string): ParsedClass {
     }
   }
 
-  const parts = cleanClassName.split(':')
+  // Split on colons, but preserve colons inside brackets [...]
+  const parts: string[] = []
+  let current = ''
+  let bracketDepth = 0
+  for (let i = 0; i < cleanClassName.length; i++) {
+    const ch = cleanClassName[i]
+    if (ch === '[') bracketDepth++
+    else if (ch === ']') bracketDepth--
+    if (ch === ':' && bracketDepth === 0) {
+      parts.push(current)
+      current = ''
+    }
+    else {
+      current += ch
+    }
+  }
+  parts.push(current)
+
   const utility = parts[parts.length - 1]
   const variants = parts.slice(0, -1)
 

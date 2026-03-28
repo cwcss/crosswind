@@ -174,6 +174,20 @@ describe('CSSGenerator', () => {
       const css = gen.toCSS(false)
       expect(css).toContain('border-radius: 0.5rem;')
     })
+
+    it('should generate border-s (logical inline-start) with default 1px', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('border-s')
+      const css = gen.toCSS(false)
+      expect(css).toContain('border-inline-start-width: 1px')
+    })
+
+    it('should generate border-e (logical inline-end) with default 1px', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('border-e')
+      const css = gen.toCSS(false)
+      expect(css).toContain('border-inline-end-width: 1px')
+    })
   })
 
   describe('Pseudo-class variants', () => {

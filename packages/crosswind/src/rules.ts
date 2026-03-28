@@ -23,6 +23,30 @@ export const displayRule: UtilityRule = (parsed) => {
   }
 }
 
+// Scrollbar utilities
+export const scrollbarRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'scrollbar' && parsed.value) {
+    const widths: Record<string, string> = {
+      auto: 'auto',
+      thin: 'thin',
+      none: 'none',
+    }
+    const width = widths[parsed.value]
+    if (width) {
+      return { 'scrollbar-width': width }
+    }
+  }
+}
+
+// Content property for pseudo-elements: content-none, content-empty, content-['hello']
+export const contentPropertyRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'content') {
+    if (parsed.value === 'none') return { content: 'none' }
+    if (parsed.value === 'empty') return { content: '""' }
+    if (parsed.arbitrary && parsed.value) return { content: parsed.value }
+  }
+}
+
 // Container utilities (for container queries)
 export const containerRule: UtilityRule = (parsed) => {
   // @container -> container-type: inline-size (most common use case)
@@ -652,6 +676,8 @@ export const borderWidthRule: UtilityRule = (parsed) => {
       r: 'border-right-width',
       b: 'border-bottom-width',
       l: 'border-left-width',
+      s: 'border-inline-start-width',
+      e: 'border-inline-end-width',
     }
 
     // Handle border-x and border-y shortcuts
@@ -833,6 +859,12 @@ export const builtInRules: UtilityRule[] = [
 
   // Container query utilities (@container, @container-normal, @container/name)
   containerRule,
+
+  // Scrollbar utilities
+  scrollbarRule,
+
+  // Content property (CSS content for pseudo-elements)
+  contentPropertyRule,
 
   // Display rule last (most general - matches many utility names)
   displayRule,
