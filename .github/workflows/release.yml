@@ -24,16 +24,37 @@ jobs:
 
       - name: Setup Pantry
         uses: home-lang/pantry/packages/action@main
+        with:
+          token: ${{ secrets.PANTRY_TOKEN }}
 
       - name: Install Dependencies
         run: bun install
 
-      - name: Publish
+      - name: Build
+        run: cd packages/crosswind && bun run build
+
+      - name: Cross-compile Binaries
+        run: cd packages/crosswind && bun run compile:all
+
+      - name: Package Binaries
+        run: cd packages/crosswind && bun run zip:all
+
+      - name: Publish to npm
         run: pantry publish --npm --access public
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          PANTRY_REGISTRY_TOKEN: ${{ secrets.PANTRY_TOKEN }}
 
       - name: Create GitHub Release
-        uses: stacksjs/action-releaser@v1.2.9
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: home-lang/pantry/packages/action@main
+        with:
+          install: 'false'
+          release: 'true'
+          release-files: |
+            packages/crosswind/bin/crosswind-linux-x64.zip
+            packages/crosswind/bin/crosswind-linux-arm64.zip
+            packages/crosswind/bin/crosswind-windows-x64.zip
+            packages/crosswind/bin/crosswind-darwin-x64.zip
+            packages/crosswind/bin/crosswind-darwin-arm64.zip
+          release-changelog: CHANGELOG.md
+          release-token: ${{ secrets.GITHUB_TOKEN }}
