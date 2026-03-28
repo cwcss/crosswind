@@ -1321,7 +1321,7 @@ function parseClassImpl(className: string): ParsedClass {
   // Check for color opacity modifiers: bg-blue-500/50, text-red-500/75, bg-white/[0.04]
   // Must come before fractional values to avoid conflict
   const opacityMatch = utility.match(/^([a-z]+(?:-[a-z]+)*?)-(.+?)\/(\d+|\[\d*\.?\d+\])$/)
-  if (opacityMatch && ['bg', 'text', 'border', 'ring', 'placeholder', 'divide'].includes(opacityMatch[1])) {
+  if (opacityMatch && ['bg', 'text', 'border', 'ring', 'placeholder', 'divide', 'accent', 'caret', 'fill', 'stroke', 'outline', 'decoration', 'shadow', 'ring-offset'].includes(opacityMatch[1])) {
     return {
       raw: className,
       variants,

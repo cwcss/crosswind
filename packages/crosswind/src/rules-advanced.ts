@@ -1,4 +1,5 @@
 import type { UtilityRule } from './rules'
+import { resolveColorValue } from './rules'
 
 // Advanced utilities
 
@@ -53,20 +54,11 @@ export const ringRule: UtilityRule = (parsed, config) => {
       return { '--hw-ring-inset': 'inset' } as Record<string, string>
     }
 
-    // Check if this is a ring color (e.g., ring-sky-500)
+    // Check if this is a ring color (e.g., ring-sky-500, ring-white/50)
     if (parsed.value) {
-      const parts = parsed.value.split('-')
-      if (parts.length >= 2) {
-        const colorName = parts.slice(0, -1).join('-')
-        const shade = parts[parts.length - 1]
-        const colorValue = config.theme.colors[colorName]
-        if (typeof colorValue === 'object' && colorValue[shade]) {
-          return { '--hw-ring-color': colorValue[shade] } as Record<string, string>
-        }
-        // Also check if it's a direct color value (like custom colors)
-        if (config.theme.colors[parsed.value]) {
-          return { '--hw-ring-color': config.theme.colors[parsed.value] } as Record<string, string>
-        }
+      const color = resolveColorValue(parsed.value, config)
+      if (color) {
+        return { '--hw-ring-color': color } as Record<string, string>
       }
     }
 
@@ -100,20 +92,10 @@ export const ringRule: UtilityRule = (parsed, config) => {
       return { '--hw-ring-offset-width': widths[parsed.value] } as Record<string, string>
     }
 
-    // Otherwise, treat as a color (e.g., ring-offset-ocean-blue)
-    const parts = parsed.value.split('-')
-    if (parts.length >= 2) {
-      const colorName = parts.slice(0, -1).join('-')
-      const shade = parts[parts.length - 1]
-      const colorValue = config.theme.colors[colorName]
-      if (typeof colorValue === 'object' && colorValue[shade]) {
-        return { '--hw-ring-offset-color': colorValue[shade] } as Record<string, string>
-      }
-    }
-    // Check for direct color (e.g., ring-offset-black)
-    const directColor = config.theme.colors[parsed.value]
-    if (typeof directColor === 'string') {
-      return { '--hw-ring-offset-color': directColor } as Record<string, string>
+    // Otherwise, treat as a color (e.g., ring-offset-white, ring-offset-blue-500/50)
+    const color = resolveColorValue(parsed.value, config)
+    if (color) {
+      return { '--hw-ring-offset-color': color } as Record<string, string>
     }
   }
 
@@ -143,6 +125,14 @@ export const borderOpacityRule: UtilityRule = (parsed) => {
 // Space utilities (child spacing)
 export const spaceRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'space-x' && parsed.value) {
+    // space-x-reverse toggles the CSS variable
+    if (parsed.value === 'reverse') {
+      return {
+        properties: { '--hw-space-x-reverse': '1' } as Record<string, string>,
+        childSelector: '> :not([hidden]) ~ :not([hidden])',
+      }
+    }
+
     let spacing: string
     if (parsed.value.startsWith('-')) {
       const positiveValue = parsed.value.slice(1)
@@ -164,6 +154,14 @@ export const spaceRule: UtilityRule = (parsed, config) => {
   }
 
   if (parsed.utility === 'space-y' && parsed.value) {
+    // space-y-reverse toggles the CSS variable
+    if (parsed.value === 'reverse') {
+      return {
+        properties: { '--hw-space-y-reverse': '1' } as Record<string, string>,
+        childSelector: '> :not([hidden]) ~ :not([hidden])',
+      }
+    }
+
     let spacing: string
     if (parsed.value.startsWith('-')) {
       const positiveValue = parsed.value.slice(1)
@@ -224,6 +222,14 @@ export const divideRule: UtilityRule = (parsed, config) => {
   }
 
   if (parsed.utility === 'divide-x') {
+    // divide-x-reverse toggles the CSS variable
+    if (parsed.value === 'reverse') {
+      return {
+        properties: { '--hw-divide-x-reverse': '1' } as Record<string, string>,
+        childSelector: '> :not([hidden]) ~ :not([hidden])',
+      }
+    }
+
     const widths: Record<string, string> = {
       0: '0',
       2: '2px',
@@ -244,6 +250,14 @@ export const divideRule: UtilityRule = (parsed, config) => {
   }
 
   if (parsed.utility === 'divide-y') {
+    // divide-y-reverse toggles the CSS variable
+    if (parsed.value === 'reverse') {
+      return {
+        properties: { '--hw-divide-y-reverse': '1' } as Record<string, string>,
+        childSelector: '> :not([hidden]) ~ :not([hidden])',
+      }
+    }
+
     const widths: Record<string, string> = {
       0: '0',
       2: '2px',

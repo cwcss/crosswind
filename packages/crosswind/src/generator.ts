@@ -157,6 +157,25 @@ const ANIMATION_MAP: Record<string, Record<string, string>> = {
   'animate-bounce': { animation: 'bounce 1s infinite' },
 }
 
+// Keyframe definitions for built-in animations
+const KEYFRAMES: Record<string, string> = {
+  spin: `@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}`,
+  ping: `@keyframes ping {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}`,
+  pulse: `@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}`,
+  bounce: `@keyframes bounce {
+  0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
+  50% { transform: translateY(0); animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+}`,
+}
+
 // Transform origin - utility="origin", value lookup
 const TRANSFORM_ORIGIN_VALUES: Record<string, string> = {
   'center': 'center',
@@ -1116,16 +1135,16 @@ const BLUR_MAP: Record<string, Record<string, string>> = {
   'blur-3xl': { filter: 'blur(64px)' },
 }
 
-// Backdrop blur - direct raw class to CSS
+// Backdrop blur - direct raw class to CSS (with -webkit- prefix for Safari)
 const BACKDROP_BLUR_MAP: Record<string, Record<string, string>> = {
-  'backdrop-blur-none': { 'backdrop-filter': 'blur(0)' },
-  'backdrop-blur-sm': { 'backdrop-filter': 'blur(4px)' },
-  'backdrop-blur': { 'backdrop-filter': 'blur(8px)' },
-  'backdrop-blur-md': { 'backdrop-filter': 'blur(12px)' },
-  'backdrop-blur-lg': { 'backdrop-filter': 'blur(16px)' },
-  'backdrop-blur-xl': { 'backdrop-filter': 'blur(24px)' },
-  'backdrop-blur-2xl': { 'backdrop-filter': 'blur(40px)' },
-  'backdrop-blur-3xl': { 'backdrop-filter': 'blur(64px)' },
+  'backdrop-blur-none': { '-webkit-backdrop-filter': 'blur(0)', 'backdrop-filter': 'blur(0)' },
+  'backdrop-blur-sm': { '-webkit-backdrop-filter': 'blur(4px)', 'backdrop-filter': 'blur(4px)' },
+  'backdrop-blur': { '-webkit-backdrop-filter': 'blur(8px)', 'backdrop-filter': 'blur(8px)' },
+  'backdrop-blur-md': { '-webkit-backdrop-filter': 'blur(12px)', 'backdrop-filter': 'blur(12px)' },
+  'backdrop-blur-lg': { '-webkit-backdrop-filter': 'blur(16px)', 'backdrop-filter': 'blur(16px)' },
+  'backdrop-blur-xl': { '-webkit-backdrop-filter': 'blur(24px)', 'backdrop-filter': 'blur(24px)' },
+  'backdrop-blur-2xl': { '-webkit-backdrop-filter': 'blur(40px)', 'backdrop-filter': 'blur(40px)' },
+  'backdrop-blur-3xl': { '-webkit-backdrop-filter': 'blur(64px)', 'backdrop-filter': 'blur(64px)' },
 }
 
 // Grayscale/invert/sepia - direct raw class to CSS
@@ -1138,14 +1157,14 @@ const FILTER_TOGGLE_MAP: Record<string, Record<string, string>> = {
   'sepia': { filter: 'sepia(100%)' },
 }
 
-// Backdrop grayscale/invert/sepia - direct raw class to CSS
+// Backdrop grayscale/invert/sepia - direct raw class to CSS (with -webkit- prefix)
 const BACKDROP_FILTER_TOGGLE_MAP: Record<string, Record<string, string>> = {
-  'backdrop-grayscale-0': { 'backdrop-filter': 'grayscale(0)' },
-  'backdrop-grayscale': { 'backdrop-filter': 'grayscale(100%)' },
-  'backdrop-invert-0': { 'backdrop-filter': 'invert(0)' },
-  'backdrop-invert': { 'backdrop-filter': 'invert(100%)' },
-  'backdrop-sepia-0': { 'backdrop-filter': 'sepia(0)' },
-  'backdrop-sepia': { 'backdrop-filter': 'sepia(100%)' },
+  'backdrop-grayscale-0': { '-webkit-backdrop-filter': 'grayscale(0)', 'backdrop-filter': 'grayscale(0)' },
+  'backdrop-grayscale': { '-webkit-backdrop-filter': 'grayscale(100%)', 'backdrop-filter': 'grayscale(100%)' },
+  'backdrop-invert-0': { '-webkit-backdrop-filter': 'invert(0)', 'backdrop-filter': 'invert(0)' },
+  'backdrop-invert': { '-webkit-backdrop-filter': 'invert(100%)', 'backdrop-filter': 'invert(100%)' },
+  'backdrop-sepia-0': { '-webkit-backdrop-filter': 'sepia(0)', 'backdrop-filter': 'sepia(0)' },
+  'backdrop-sepia': { '-webkit-backdrop-filter': 'sepia(100%)', 'backdrop-filter': 'sepia(100%)' },
 }
 
 // Drop shadow - direct raw class to CSS
@@ -1369,6 +1388,8 @@ export class CSSGenerator {
   private screenBreakpoints: Map<string, string>
   // Cache for utility+value combinations that don't match any rule (negative cache)
   private noMatchCache: Set<string> = new Set()
+  // Track which animation keyframes are used (for @keyframes injection)
+  private usedKeyframes: Set<string> = new Set()
   // Preserve extend colors for CSS variable generation (only custom colors, not defaults)
   private extendColors: Record<string, string | Record<string, string>> | null = null
 
@@ -1472,6 +1493,13 @@ export class CSSGenerator {
     const staticResult = STATIC_UTILITY_MAP[parsed.raw]
     if (staticResult) {
       this.addRule(parsed, staticResult)
+      // Track animation keyframe usage
+      if (staticResult.animation) {
+        const animName = staticResult.animation.split(' ')[0]
+        if (animName && animName !== 'none') {
+          this.usedKeyframes.add(animName)
+        }
+      }
       return
     }
 
@@ -2245,8 +2273,10 @@ export class CSSGenerator {
       // Check for special CSS selector characters:
       // : (58), . (46), / (47), @ (64), space (32), [ (91), ] (93)
       // ( (40), ) (41), % (37), # (35), , (44), > (62), + (43), ~ (126)
+      // ! (33), ' (39), " (34), * (42), = (61)
       if (c === 58 || c === 46 || c === 47 || c === 64 || c === 32 || c === 91 || c === 93 ||
-          c === 40 || c === 41 || c === 37 || c === 35 || c === 44 || c === 62 || c === 43 || c === 126) {
+          c === 40 || c === 41 || c === 37 || c === 35 || c === 44 || c === 62 || c === 43 || c === 126 ||
+          c === 33 || c === 39 || c === 34 || c === 42 || c === 61) {
         needsEscape = true
         break
       }
@@ -2254,7 +2284,7 @@ export class CSSGenerator {
     if (!needsEscape) {
       return className
     }
-    return className.replace(/[:./@ \[\]()%#,>+~]/g, '\\$&')
+    return className.replace(/[:./@ \[\]()%#,>+~!'"*=]/g, '\\$&')
   }
 
   /**
@@ -2293,6 +2323,16 @@ export class CSSGenerator {
     const baseRules = this.rules.get('base') || []
     if (baseRules.length > 0) {
       parts.push(this.rulesToCSS(baseRules, minify))
+    }
+
+    // Inject @keyframes for used animations
+    if (this.usedKeyframes.size > 0) {
+      for (const name of this.usedKeyframes) {
+        const kf = KEYFRAMES[name]
+        if (kf) {
+          parts.push(minify ? kf.replace(/\s+/g, ' ').replace(/\s*\{\s*/g, '{').replace(/\s*\}\s*/g, '}').replace(/;\s*/g, ';').trim() : kf)
+        }
+      }
     }
 
     // Media query rules

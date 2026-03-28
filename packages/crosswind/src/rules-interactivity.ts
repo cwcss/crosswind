@@ -1,4 +1,5 @@
 import type { UtilityRule } from './rules'
+import { resolveColorValue } from './rules'
 
 // Filters, Tables, Interactivity, SVG, Accessibility utilities
 
@@ -62,25 +63,31 @@ export const backdropFilterRule: UtilityRule = (parsed) => {
     return { 'backdrop-filter': 'none' }
   }
   if (parsed.utility === 'backdrop-blur' && parsed.value) {
-    return { 'backdrop-filter': `blur(${parsed.value}px)` }
+    return { '-webkit-backdrop-filter': `blur(${parsed.value}px)`, 'backdrop-filter': `blur(${parsed.value}px)` }
   }
   if (parsed.utility === 'backdrop-brightness' && parsed.value) {
-    return { 'backdrop-filter': `brightness(${Number(parsed.value) / 100})` }
+    const v = `brightness(${Number(parsed.value) / 100})`
+    return { '-webkit-backdrop-filter': v, 'backdrop-filter': v }
   }
   if (parsed.utility === 'backdrop-contrast' && parsed.value) {
-    return { 'backdrop-filter': `contrast(${Number(parsed.value) / 100})` }
+    const v = `contrast(${Number(parsed.value) / 100})`
+    return { '-webkit-backdrop-filter': v, 'backdrop-filter': v }
   }
   if (parsed.utility === 'backdrop-grayscale' && parsed.value) {
-    return { 'backdrop-filter': `grayscale(${Number(parsed.value) / 100})` }
+    const v = `grayscale(${Number(parsed.value) / 100})`
+    return { '-webkit-backdrop-filter': v, 'backdrop-filter': v }
   }
   if (parsed.utility === 'backdrop-invert' && parsed.value) {
-    return { 'backdrop-filter': `invert(${Number(parsed.value) / 100})` }
+    const v = `invert(${Number(parsed.value) / 100})`
+    return { '-webkit-backdrop-filter': v, 'backdrop-filter': v }
   }
   if (parsed.utility === 'backdrop-saturate' && parsed.value) {
-    return { 'backdrop-filter': `saturate(${Number(parsed.value) / 100})` }
+    const v = `saturate(${Number(parsed.value) / 100})`
+    return { '-webkit-backdrop-filter': v, 'backdrop-filter': v }
   }
   if (parsed.utility === 'backdrop-sepia' && parsed.value) {
-    return { 'backdrop-filter': `sepia(${Number(parsed.value) / 100})` }
+    const v = `sepia(${Number(parsed.value) / 100})`
+    return { '-webkit-backdrop-filter': v, 'backdrop-filter': v }
   }
 }
 
@@ -130,33 +137,8 @@ export const captionSideRule: UtilityRule = (parsed) => {
 // Interactivity utilities
 export const accentColorRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'accent' && parsed.value) {
-    // Special keywords
-    const special: Record<string, string> = {
-      auto: 'auto',
-      current: 'currentColor',
-      transparent: 'transparent',
-      inherit: 'inherit',
-    }
-    if (special[parsed.value]) {
-      return { 'accent-color': special[parsed.value] }
-    }
-
-    // Direct color name (white, black, etc.)
-    const directColor = config.theme.colors[parsed.value]
-    if (typeof directColor === 'string') {
-      return { 'accent-color': directColor }
-    }
-
-    // Color with shade: accent-blue-500
-    const parts = parsed.value.split('-')
-    if (parts.length >= 2) {
-      const shade = parts[parts.length - 1]
-      const colorName = parts.slice(0, -1).join('-')
-      const colorValue = config.theme.colors[colorName]
-      if (typeof colorValue === 'object' && colorValue[shade]) {
-        return { 'accent-color': colorValue[shade] }
-      }
-    }
+    const color = resolveColorValue(parsed.value, config)
+    if (color) return { 'accent-color': color }
   }
 }
 
@@ -170,33 +152,8 @@ export const appearanceRule: UtilityRule = (parsed) => {
 
 export const caretColorRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'caret' && parsed.value) {
-    // Special color keywords
-    const special: Record<string, string> = {
-      auto: 'auto',
-      current: 'currentColor',
-      transparent: 'transparent',
-      inherit: 'inherit',
-    }
-    if (special[parsed.value]) {
-      return { 'caret-color': special[parsed.value] }
-    }
-
-    // Direct color name (white, black, etc.)
-    const directColor = config.theme.colors[parsed.value]
-    if (typeof directColor === 'string') {
-      return { 'caret-color': directColor }
-    }
-
-    // Color with shade: caret-blue-500
-    const parts = parsed.value.split('-')
-    if (parts.length >= 2) {
-      const shade = parts[parts.length - 1]
-      const colorName = parts.slice(0, -1).join('-')
-      const colorValue = config.theme.colors[colorName]
-      if (typeof colorValue === 'object' && colorValue[shade]) {
-        return { 'caret-color': colorValue[shade] }
-      }
-    }
+    const color = resolveColorValue(parsed.value, config)
+    if (color) return { 'caret-color': color }
   }
 }
 
@@ -405,39 +362,17 @@ export const willChangeRule: UtilityRule = (parsed) => {
 // SVG utilities
 export const fillRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'fill' && parsed.value) {
-    if (parsed.value === 'none') {
-      return { fill: 'none' }
-    }
-    if (parsed.value === 'current') {
-      return { fill: 'currentColor' }
-    }
-    const parts = parsed.value.split('-')
-    if (parts.length === 2) {
-      const [colorName, shade] = parts
-      const colorValue = config.theme.colors[colorName]
-      if (typeof colorValue === 'object' && colorValue[shade]) {
-        return { fill: colorValue[shade] }
-      }
-    }
+    if (parsed.value === 'none') return { fill: 'none' }
+    const color = resolveColorValue(parsed.value, config)
+    if (color) return { fill: color }
   }
 }
 
 export const strokeRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'stroke' && parsed.value) {
-    if (parsed.value === 'none') {
-      return { stroke: 'none' }
-    }
-    if (parsed.value === 'current') {
-      return { stroke: 'currentColor' }
-    }
-    const parts = parsed.value.split('-')
-    if (parts.length === 2) {
-      const [colorName, shade] = parts
-      const colorValue = config.theme.colors[colorName]
-      if (typeof colorValue === 'object' && colorValue[shade]) {
-        return { stroke: colorValue[shade] }
-      }
-    }
+    if (parsed.value === 'none') return { stroke: 'none' }
+    const color = resolveColorValue(parsed.value, config)
+    if (color) return { stroke: color }
   }
 }
 
