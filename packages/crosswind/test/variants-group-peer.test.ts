@@ -81,4 +81,37 @@ describe('Group and Peer Variants', () => {
       expect(css).toContain('peer\\/input')
     })
   })
+
+  describe('group-has-* variants', () => {
+    it('should generate group-has with arbitrary selector', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('group-has-[:checked]:bg-blue-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.group:has(:checked)')
+      expect(css).toContain('background-color')
+    })
+
+    it('should generate group-has with named pseudo', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('group-has-focus:text-white')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.group:has(:focus)')
+    })
+  })
+
+  describe('peer-has-* variants', () => {
+    it('should generate peer-has with arbitrary selector', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('peer-has-[:checked]:text-blue-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.peer:has(:checked) ~')
+    })
+
+    it('should generate peer-has with named pseudo', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('peer-has-focus:opacity-100')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.peer:has(:focus) ~')
+    })
+  })
 })
