@@ -391,6 +391,24 @@ describe('Edge Cases', () => {
       gen.generate('grid-cols-[100px]')
       expect(gen.toCSS(false)).toContain('grid-template-columns: 100px;')
     })
+
+    it('should convert underscores to spaces in arbitrary grid-cols values', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('grid-cols-[120px_1fr_200px]')
+      expect(gen.toCSS(false)).toContain('grid-template-columns: 120px 1fr 200px;')
+    })
+
+    it('should convert underscores to spaces in complex arbitrary grid-cols', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('grid-cols-[1fr_auto_1fr]')
+      expect(gen.toCSS(false)).toContain('grid-template-columns: 1fr auto 1fr;')
+    })
+
+    it('should convert underscores to spaces in arbitrary grid-rows values', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('grid-rows-[auto_1fr_auto]')
+      expect(gen.toCSS(false)).toContain('grid-template-rows: auto 1fr auto;')
+    })
   })
 
   describe('Grid flow combinations', () => {

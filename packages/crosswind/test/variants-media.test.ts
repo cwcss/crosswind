@@ -210,4 +210,118 @@ describe('Media Query and Feature Variants', () => {
       expect(css).toContain(':hover')
     })
   })
+
+  describe('Orientation variants', () => {
+    it('should generate landscape media query', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('landscape:flex-row')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@media (orientation: landscape)')
+    })
+
+    it('should generate landscape with sizing utility', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('landscape:w-full')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@media (orientation: landscape)')
+      expect(css).toContain('width: 100%')
+    })
+
+    it('should generate portrait media query', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('portrait:flex-col')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@media (orientation: portrait)')
+    })
+
+    it('should generate portrait with spacing utility', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('portrait:p-4')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@media (orientation: portrait)')
+      expect(css).toContain('padding')
+    })
+  })
+
+  describe('Forced colors variant', () => {
+    it('should generate forced-colors media query', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('forced-colors:hidden')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@media (forced-colors: active)')
+      expect(css).toContain('display: none')
+    })
+
+    it('should generate forced-colors with border utility', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('forced-colors:border')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@media (forced-colors: active)')
+    })
+  })
+
+  describe('Supports variant', () => {
+    it('should generate supports media query with arbitrary value', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('supports-[display:grid]:grid')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@supports (display: grid)')
+      expect(css).toContain('display: grid')
+    })
+
+    it('should generate supports with backdrop-filter', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('supports-[backdrop-filter:blur(0)]:backdrop-blur-sm')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@supports (backdrop-filter: blur(0))')
+    })
+
+    it('should generate supports with gap', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('supports-[gap:1px]:gap-4')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@supports (gap: 1px)')
+    })
+  })
+
+  describe('Light variant', () => {
+    it('should generate light prefix variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('light:bg-white')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.light ')
+    })
+
+    it('should generate light variant with text color', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('light:text-black')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.light ')
+      expect(css).toContain('color')
+    })
+  })
+
+  describe('Stacked media queries', () => {
+    it('should combine lg with landscape', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('lg:landscape:p-8')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@media (min-width: 1024px) and (orientation: landscape)')
+      expect(css).toContain('padding: 2rem')
+    })
+
+    it('should combine sm with portrait', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('sm:portrait:flex-col')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@media (min-width: 640px) and (orientation: portrait)')
+    })
+
+    it('should combine md with motion-reduce', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('md:motion-reduce:hidden')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@media (min-width: 768px) and (prefers-reduced-motion: reduce)')
+    })
+  })
 })

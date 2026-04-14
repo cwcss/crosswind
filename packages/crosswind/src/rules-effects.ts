@@ -1,4 +1,5 @@
 import type { UtilityRule } from './rules'
+import { resolveColorValue } from './rules'
 
 // =============================================================================
 // Shadow color helpers
@@ -190,20 +191,10 @@ export const outlineRule: UtilityRule = (parsed, config) => {
       return { 'outline-width': '1px' } as Record<string, string>
     }
 
-    // Check for colors first (e.g., outline-blue-500)
-    const parts = parsed.value.split('-')
-    if (parts.length === 2) {
-      const [colorName, shade] = parts
-      const colorValue = config.theme.colors[colorName]
-      if (typeof colorValue === 'object' && colorValue[shade]) {
-        return { 'outline-color': colorValue[shade] } as Record<string, string>
-      }
-    }
-
-    // Direct color (e.g., outline-black)
-    const directColor = config.theme.colors[parsed.value]
-    if (typeof directColor === 'string') {
-      return { 'outline-color': directColor } as Record<string, string>
+    // Check for colors (e.g., outline-blue-500, outline-white/50)
+    const color = resolveColorValue(parsed.value, config)
+    if (color) {
+      return { 'outline-color': color } as Record<string, string>
     }
 
     // Check for width values
@@ -272,10 +263,21 @@ export const shadowColorRule: UtilityRule = (parsed, config) => {
 
   if (slashIdx !== -1) {
     colorName = value.slice(0, slashIdx)
-    const opacityValue = Number.parseInt(value.slice(slashIdx + 1), 10)
-    if (Number.isNaN(opacityValue) || opacityValue < 0 || opacityValue > 100)
-      return undefined
-    opacity = opacityValue / 100
+    const opacityStr = value.slice(slashIdx + 1)
+
+    // Handle arbitrary opacity: /[0.04], /[0.5]
+    if (opacityStr.charCodeAt(0) === 91 && opacityStr.charCodeAt(opacityStr.length - 1) === 93) {
+      const arbitraryOpacity = Number.parseFloat(opacityStr.slice(1, -1))
+      if (Number.isNaN(arbitraryOpacity) || arbitraryOpacity < 0 || arbitraryOpacity > 1)
+        return undefined
+      opacity = arbitraryOpacity
+    }
+    else {
+      const opacityValue = Number.parseInt(opacityStr, 10)
+      if (Number.isNaN(opacityValue) || opacityValue < 0 || opacityValue > 100)
+        return undefined
+      opacity = opacityValue / 100
+    }
   }
   else {
     colorName = value

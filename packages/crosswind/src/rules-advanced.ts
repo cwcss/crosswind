@@ -1,4 +1,5 @@
 import type { UtilityRule } from './rules'
+import { resolveColorValue } from './rules'
 
 // Advanced utilities
 
@@ -53,20 +54,11 @@ export const ringRule: UtilityRule = (parsed, config) => {
       return { '--hw-ring-inset': 'inset' } as Record<string, string>
     }
 
-    // Check if this is a ring color (e.g., ring-sky-500)
+    // Check if this is a ring color (e.g., ring-sky-500, ring-white/50)
     if (parsed.value) {
-      const parts = parsed.value.split('-')
-      if (parts.length >= 2) {
-        const colorName = parts.slice(0, -1).join('-')
-        const shade = parts[parts.length - 1]
-        const colorValue = config.theme.colors[colorName]
-        if (typeof colorValue === 'object' && colorValue[shade]) {
-          return { '--hw-ring-color': colorValue[shade] } as Record<string, string>
-        }
-        // Also check if it's a direct color value (like custom colors)
-        if (config.theme.colors[parsed.value]) {
-          return { '--hw-ring-color': config.theme.colors[parsed.value] } as Record<string, string>
-        }
+      const color = resolveColorValue(parsed.value, config)
+      if (color) {
+        return { '--hw-ring-color': color } as Record<string, string>
       }
     }
 
@@ -100,20 +92,10 @@ export const ringRule: UtilityRule = (parsed, config) => {
       return { '--hw-ring-offset-width': widths[parsed.value] } as Record<string, string>
     }
 
-    // Otherwise, treat as a color (e.g., ring-offset-ocean-blue)
-    const parts = parsed.value.split('-')
-    if (parts.length >= 2) {
-      const colorName = parts.slice(0, -1).join('-')
-      const shade = parts[parts.length - 1]
-      const colorValue = config.theme.colors[colorName]
-      if (typeof colorValue === 'object' && colorValue[shade]) {
-        return { '--hw-ring-offset-color': colorValue[shade] } as Record<string, string>
-      }
-    }
-    // Check for direct color (e.g., ring-offset-black)
-    const directColor = config.theme.colors[parsed.value]
-    if (typeof directColor === 'string') {
-      return { '--hw-ring-offset-color': directColor } as Record<string, string>
+    // Otherwise, treat as a color (e.g., ring-offset-white, ring-offset-blue-500/50)
+    const color = resolveColorValue(parsed.value, config)
+    if (color) {
+      return { '--hw-ring-offset-color': color } as Record<string, string>
     }
   }
 
@@ -143,6 +125,14 @@ export const borderOpacityRule: UtilityRule = (parsed) => {
 // Space utilities (child spacing)
 export const spaceRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'space-x' && parsed.value) {
+    // space-x-reverse toggles the CSS variable
+    if (parsed.value === 'reverse') {
+      return {
+        properties: { '--hw-space-x-reverse': '1' } as Record<string, string>,
+        childSelector: '> :not([hidden]) ~ :not([hidden])',
+      }
+    }
+
     let spacing: string
     if (parsed.value.startsWith('-')) {
       const positiveValue = parsed.value.slice(1)
@@ -164,6 +154,14 @@ export const spaceRule: UtilityRule = (parsed, config) => {
   }
 
   if (parsed.utility === 'space-y' && parsed.value) {
+    // space-y-reverse toggles the CSS variable
+    if (parsed.value === 'reverse') {
+      return {
+        properties: { '--hw-space-y-reverse': '1' } as Record<string, string>,
+        childSelector: '> :not([hidden]) ~ :not([hidden])',
+      }
+    }
+
     let spacing: string
     if (parsed.value.startsWith('-')) {
       const positiveValue = parsed.value.slice(1)
@@ -224,6 +222,14 @@ export const divideRule: UtilityRule = (parsed, config) => {
   }
 
   if (parsed.utility === 'divide-x') {
+    // divide-x-reverse toggles the CSS variable
+    if (parsed.value === 'reverse') {
+      return {
+        properties: { '--hw-divide-x-reverse': '1' } as Record<string, string>,
+        childSelector: '> :not([hidden]) ~ :not([hidden])',
+      }
+    }
+
     const widths: Record<string, string> = {
       0: '0',
       2: '2px',
@@ -244,6 +250,14 @@ export const divideRule: UtilityRule = (parsed, config) => {
   }
 
   if (parsed.utility === 'divide-y') {
+    // divide-y-reverse toggles the CSS variable
+    if (parsed.value === 'reverse') {
+      return {
+        properties: { '--hw-divide-y-reverse': '1' } as Record<string, string>,
+        childSelector: '> :not([hidden]) ~ :not([hidden])',
+      }
+    }
+
     const widths: Record<string, string> = {
       0: '0',
       2: '2px',
@@ -264,20 +278,63 @@ export const divideRule: UtilityRule = (parsed, config) => {
   }
 
   if (parsed.utility === 'divide' && parsed.value) {
-    // divide-{color}-{shade}
-    const parts = parsed.value.split('-')
-    if (parts.length >= 2) {
-      const colorName = parts.slice(0, -1).join('-')
-      const shade = parts[parts.length - 1]
-      const colorValue = config.theme.colors[colorName]
-      if (typeof colorValue === 'object' && colorValue[shade]) {
-        return {
-          properties: {
-            'border-color': colorValue[shade],
-          } as Record<string, string>,
-          childSelector: '> :not([hidden]) ~ :not([hidden])',
+    // Handle opacity modifier: divide-white/10, divide-blue-500/50
+    const slashIdx = parsed.value.indexOf('/')
+    let colorKey = parsed.value
+    let opacity: number | undefined
+
+    if (slashIdx !== -1) {
+      colorKey = parsed.value.slice(0, slashIdx)
+      const opacityStr = parsed.value.slice(slashIdx + 1)
+      if (opacityStr.charCodeAt(0) === 91 && opacityStr.charCodeAt(opacityStr.length - 1) === 93) {
+        opacity = Number.parseFloat(opacityStr.slice(1, -1))
+        if (Number.isNaN(opacity) || opacity < 0 || opacity > 1) return undefined
+      }
+      else {
+        const opacityInt = Number.parseInt(opacityStr, 10)
+        if (Number.isNaN(opacityInt) || opacityInt < 0 || opacityInt > 100) return undefined
+        opacity = opacityInt / 100
+      }
+    }
+
+    const makeDivideColor = (color: string) => {
+      // Apply opacity if present
+      if (opacity !== undefined) {
+        // Hex color -> rgb with alpha
+        if (color.charCodeAt(0) === 35) {
+          let hex = color.slice(1)
+          if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
+          const r = Number.parseInt(hex.slice(0, 2), 16)
+          const g = Number.parseInt(hex.slice(2, 4), 16)
+          const b = Number.parseInt(hex.slice(4, 6), 16)
+          color = `rgb(${r} ${g} ${b} / ${opacity})`
+        }
+        // oklch -> add alpha
+        else if (color.startsWith('oklch(')) {
+          color = color.replace(')', ` / ${opacity})`)
         }
       }
+      return {
+        properties: { 'border-color': color } as Record<string, string>,
+        childSelector: '> :not([hidden]) ~ :not([hidden])',
+      }
+    }
+
+    // Special color keywords
+    const specialColors: Record<string, string> = { current: 'currentColor', transparent: 'transparent', inherit: 'inherit' }
+    if (specialColors[colorKey]) return makeDivideColor(specialColors[colorKey])
+
+    // Direct color name (white, black, etc.)
+    const directColor = config.theme.colors[colorKey]
+    if (typeof directColor === 'string') return makeDivideColor(directColor)
+
+    // divide-{color}-{shade}
+    const parts = colorKey.split('-')
+    if (parts.length >= 2) {
+      const shade = parts[parts.length - 1]
+      const colorName = parts.slice(0, -1).join('-')
+      const colorValue = config.theme.colors[colorName]
+      if (typeof colorValue === 'object' && colorValue[shade]) return makeDivideColor(colorValue[shade])
     }
   }
 }

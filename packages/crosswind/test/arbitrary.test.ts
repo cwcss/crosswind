@@ -115,7 +115,7 @@ describe('Arbitrary Values and Properties', () => {
 
       it('should handle CSS variables', () => {
         const gen = new CSSGenerator(defaultConfig)
-        gen.generate('text-[var(--font-size)]')
+        gen.generate('text-[length:var(--font-size)]')
         expect(gen.toCSS(false)).toContain('font-size: var(--font-size);')
       })
 

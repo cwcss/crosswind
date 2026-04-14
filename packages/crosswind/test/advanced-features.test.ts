@@ -300,6 +300,20 @@ describe('Advanced Features', () => {
       expect(css).toContain('caret-color')
     })
 
+    it('should handle caret-white and caret-black', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('caret-white')
+      const css = gen.toCSS(false)
+      expect(css).toContain('caret-color: #fff')
+    })
+
+    it('should handle caret-current', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('caret-current')
+      const css = gen.toCSS(false)
+      expect(css).toContain('caret-color: currentColor')
+    })
+
     it('should handle color-scheme', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('color-scheme-light')
@@ -467,6 +481,35 @@ describe('Advanced Features', () => {
       gen.generate('divide-gray-300')
       const css = gen.toCSS(false)
       expect(css).toContain('border-color')
+    })
+
+    it('should handle divide with named colors: divide-white, divide-current', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('divide-white')
+      const css = gen.toCSS(false)
+      expect(css).toContain('border-color: #fff')
+    })
+
+    it('should handle divide color with opacity: divide-white/10', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('divide-white/10')
+      const css = gen.toCSS(false)
+      expect(css).toContain('border-color: rgb(255 255 255 / 0.1)')
+    })
+
+    it('should handle divide color with shade and opacity: divide-blue-500/50', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('divide-blue-500/50')
+      const css = gen.toCSS(false)
+      expect(css).toContain('border-color')
+      expect(css).toContain('0.5')
+    })
+
+    it('should handle divide-current', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('divide-current')
+      const css = gen.toCSS(false)
+      expect(css).toContain('border-color: currentColor')
     })
   })
 
