@@ -1318,6 +1318,8 @@ export class CSSGenerator {
   private screenBreakpoints: Map<string, string>
   // Cache for utility+value combinations that don't match any rule (negative cache)
   private noMatchCache: Set<string> = new Set()
+  // When generating a shortcut, holds the shortcut name for selector building in addRule
+  private selectorAlias: string | null = null
   // Preserve extend colors for CSS variable generation (only custom colors, not defaults)
   private extendColors: Record<string, string | Record<string, string>> | null = null
 
@@ -1389,28 +1391,38 @@ export class CSSGenerator {
       this.classCache.add(className)
       const classes = Array.isArray(shortcut) ? shortcut : shortcut.split(/\s+/)
       for (const cls of classes) {
-        this.generate(cls)
+        const cacheKey = `shortcut::${className}::${cls}`
+        if (!this.classCache.has(cacheKey)) {
+          this.classCache.add(cacheKey)
+          this.selectorAlias = className
+          this.generateCore(parseClass(cls))
+          this.selectorAlias = null
+        }
       }
       return
     }
 
     this.classCache.add(className)
+    this.generateCore(parseClass(className))
+  }
 
+  /**
+   * Core CSS generation logic for a parsed utility class
+  */
+  private generateCore(parsed: ParsedClass): void {
     // Check exact match blocklist first (O(1) Set lookup)
-    if (this.blocklistExact.size > 0 && this.blocklistExact.has(className)) {
+    if (this.blocklistExact.size > 0 && this.blocklistExact.has(parsed.raw)) {
       return
     }
 
     // Check if class is blocklisted (use pre-compiled regexes)
     if (this.blocklistRegexCache.length > 0) {
       for (let i = 0; i < this.blocklistRegexCache.length; i++) {
-        if (this.blocklistRegexCache[i].test(className)) {
+        if (this.blocklistRegexCache[i].test(parsed.raw)) {
           return
         }
       }
     }
-
-    const parsed = parseClass(className)
 
     // ==========================================================================
     // FAST PATH: Static utility map lookup (O(1))
@@ -1826,7 +1838,7 @@ export class CSSGenerator {
     // Try custom rules from config first (allows overriding built-in rules)
     if (this.config.rules.length > 0) {
       for (const [pattern, handler] of this.config.rules) {
-        const match = className.match(pattern)
+        const match = parsed.raw.match(pattern)
         if (match) {
           const properties = handler(match)
           if (properties) {
@@ -1861,11 +1873,14 @@ export class CSSGenerator {
    * Add a CSS rule with variants applied
   */
   private addRule(parsed: ParsedClass, properties: Record<string, string>, childSelector?: string, pseudoElement?: string): void {
-    // Use cached selector if available
-    const cacheKey = `${parsed.raw}${childSelector || ''}${pseudoElement || ''}`
+    // When generating shortcuts, use the shortcut name for the CSS selector
+    const effectiveParsed = this.selectorAlias ? { ...parsed, raw: this.selectorAlias } : parsed
+    const cacheKey = this.selectorAlias
+      ? `shortcut:${parsed.raw}:${this.selectorAlias}${childSelector || ''}${pseudoElement || ''}`
+      : `${parsed.raw}${childSelector || ''}${pseudoElement || ''}`
     let selector = this.selectorCache.get(cacheKey)
     if (!selector) {
-      selector = this.buildSelector(parsed)
+      selector = this.buildSelector(effectiveParsed)
       // Append pseudo-element directly (no space)
       if (pseudoElement) {
         selector += pseudoElement
@@ -1877,10 +1892,10 @@ export class CSSGenerator {
       this.selectorCache.set(cacheKey, selector)
     }
 
-    const mediaQuery = this.getMediaQuery(parsed)
+    const mediaQuery = this.getMediaQuery(effectiveParsed)
 
     // Apply !important modifier
-    if (parsed.important) {
+    if (effectiveParsed.important) {
       for (const key in properties) {
         properties[key] += ' !important'
       }
