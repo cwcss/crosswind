@@ -23,6 +23,30 @@ export const displayRule: UtilityRule = (parsed) => {
   }
 }
 
+// Scrollbar utilities
+export const scrollbarRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'scrollbar' && parsed.value) {
+    const widths: Record<string, string> = {
+      auto: 'auto',
+      thin: 'thin',
+      none: 'none',
+    }
+    const width = widths[parsed.value]
+    if (width) {
+      return { 'scrollbar-width': width }
+    }
+  }
+}
+
+// Content property for pseudo-elements: content-none, content-empty, content-['hello']
+export const contentPropertyRule: UtilityRule = (parsed) => {
+  if (parsed.utility === 'content') {
+    if (parsed.value === 'none') return { content: 'none' }
+    if (parsed.value === 'empty') return { content: '""' }
+    if (parsed.arbitrary && parsed.value) return { content: parsed.value }
+  }
+}
+
 // Container utilities (for container queries)
 export const containerRule: UtilityRule = (parsed) => {
   // @container -> container-type: inline-size (most common use case)
@@ -378,13 +402,24 @@ export const colorRule: UtilityRule = (parsed, config) => {
 
   if (slashIdx !== -1) {
     colorValue = value.slice(0, slashIdx)
-    const opacityValue = Number.parseInt(value.slice(slashIdx + 1), 10)
+    const opacityStr = value.slice(slashIdx + 1)
 
-    // Validate opacity is in 0-100 range
-    if (Number.isNaN(opacityValue) || opacityValue < 0 || opacityValue > 100) {
-      return undefined
+    // Handle arbitrary opacity: /[0.04], /[0.5], /[.15]
+    if (opacityStr.charCodeAt(0) === 91 && opacityStr.charCodeAt(opacityStr.length - 1) === 93) { // '[' and ']'
+      const arbitraryOpacity = Number.parseFloat(opacityStr.slice(1, -1))
+      if (Number.isNaN(arbitraryOpacity) || arbitraryOpacity < 0 || arbitraryOpacity > 1) {
+        return undefined
+      }
+      opacity = arbitraryOpacity
     }
-    opacity = opacityValue / 100
+    else {
+      // Standard integer opacity: /50, /75 (0-100 scale)
+      const opacityValue = Number.parseInt(opacityStr, 10)
+      if (Number.isNaN(opacityValue) || opacityValue < 0 || opacityValue > 100) {
+        return undefined
+      }
+      opacity = opacityValue / 100
+    }
 
     // Try flat cache with base color value
     const baseColor = flatColorCache!.get(colorValue)
@@ -411,8 +446,8 @@ export const colorRule: UtilityRule = (parsed, config) => {
   return undefined
 }
 
-// Helper to apply opacity to color (moved outside to reduce function creation)
-function applyOpacity(color: string, opacity: number): string {
+// Helper to apply opacity to color
+export function applyOpacity(color: string, opacity: number): string {
   // Strip brackets from arbitrary values: [#ff0000] -> #ff0000
   let cleanColor = color
   if (color.charCodeAt(0) === 91 && color.charCodeAt(color.length - 1) === 93) { // '[' and ']'
@@ -458,6 +493,52 @@ function applyOpacity(color: string, opacity: number): string {
   return cleanColor
 }
 
+/**
+ * Shared helper: resolve a color value (with optional opacity) from theme config.
+ * Handles: special keywords, direct colors, color-shade, opacity modifiers (/50, /[0.04]).
+ * Returns the resolved CSS color string or undefined if not found.
+ */
+export function resolveColorValue(value: string, config: { theme: { colors: Record<string, any> } }): string | undefined {
+  const slashIdx = value.indexOf('/')
+  let colorKey = value
+  let opacity: number | undefined
+
+  if (slashIdx !== -1) {
+    colorKey = value.slice(0, slashIdx)
+    const opacityStr = value.slice(slashIdx + 1)
+    if (opacityStr.charCodeAt(0) === 91 && opacityStr.charCodeAt(opacityStr.length - 1) === 93) {
+      opacity = Number.parseFloat(opacityStr.slice(1, -1))
+      if (Number.isNaN(opacity) || opacity < 0 || opacity > 1) return undefined
+    }
+    else {
+      const opacityInt = Number.parseInt(opacityStr, 10)
+      if (Number.isNaN(opacityInt) || opacityInt < 0 || opacityInt > 100) return undefined
+      opacity = opacityInt / 100
+    }
+  }
+
+  // Special keywords
+  const special: Record<string, string> = { current: 'currentColor', transparent: 'transparent', inherit: 'inherit', auto: 'auto' }
+  if (special[colorKey]) return opacity !== undefined ? applyOpacity(special[colorKey], opacity) : special[colorKey]
+
+  // Direct color name (white, black, etc.)
+  const directColor = config.theme.colors[colorKey]
+  if (typeof directColor === 'string') return opacity !== undefined ? applyOpacity(directColor, opacity) : directColor
+
+  // Color with shade: blue-500, gray-300
+  const parts = colorKey.split('-')
+  if (parts.length >= 2) {
+    const shade = parts[parts.length - 1]
+    const colorName = parts.slice(0, -1).join('-')
+    const colorValue = config.theme.colors[colorName]
+    if (typeof colorValue === 'object' && colorValue[shade]) {
+      return opacity !== undefined ? applyOpacity(colorValue[shade], opacity) : colorValue[shade]
+    }
+  }
+
+  return undefined
+}
+
 // Placeholder color utilities (placeholder-{color})
 export const placeholderColorRule: UtilityRule = (parsed, config) => {
   if (parsed.utility !== 'placeholder' || !parsed.value)
@@ -485,10 +566,23 @@ export const placeholderColorRule: UtilityRule = (parsed, config) => {
   else {
     // With opacity modifier
     const colorValue = value.slice(0, slashIdx)
-    const opacityValue = Number.parseInt(value.slice(slashIdx + 1), 10)
-    if (Number.isNaN(opacityValue) || opacityValue < 0 || opacityValue > 100)
-      return undefined
-    const opacity = opacityValue / 100
+    const opacityStr = value.slice(slashIdx + 1)
+    let opacity: number
+
+    // Handle arbitrary opacity: /[0.04], /[0.5]
+    if (opacityStr.charCodeAt(0) === 91 && opacityStr.charCodeAt(opacityStr.length - 1) === 93) {
+      const arbitraryOpacity = Number.parseFloat(opacityStr.slice(1, -1))
+      if (Number.isNaN(arbitraryOpacity) || arbitraryOpacity < 0 || arbitraryOpacity > 1)
+        return undefined
+      opacity = arbitraryOpacity
+    }
+    else {
+      const opacityValue = Number.parseInt(opacityStr, 10)
+      if (Number.isNaN(opacityValue) || opacityValue < 0 || opacityValue > 100)
+        return undefined
+      opacity = opacityValue / 100
+    }
+
     const baseColor = flatColorCache.get(colorValue)
     if (baseColor) {
       return {
@@ -628,6 +722,8 @@ export const borderWidthRule: UtilityRule = (parsed) => {
       r: 'border-right-width',
       b: 'border-bottom-width',
       l: 'border-left-width',
+      s: 'border-inline-start-width',
+      e: 'border-inline-end-width',
     }
 
     // Handle border-x and border-y shortcuts
@@ -809,6 +905,12 @@ export const builtInRules: UtilityRule[] = [
 
   // Container query utilities (@container, @container-normal, @container/name)
   containerRule,
+
+  // Scrollbar utilities
+  scrollbarRule,
+
+  // Content property (CSS content for pseudo-elements)
+  contentPropertyRule,
 
   // Display rule last (most general - matches many utility names)
   displayRule,

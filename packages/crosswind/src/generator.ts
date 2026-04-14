@@ -157,6 +157,25 @@ const ANIMATION_MAP: Record<string, Record<string, string>> = {
   'animate-bounce': { animation: 'bounce 1s infinite' },
 }
 
+// Keyframe definitions for built-in animations
+const KEYFRAMES: Record<string, string> = {
+  spin: `@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}`,
+  ping: `@keyframes ping {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}`,
+  pulse: `@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}`,
+  bounce: `@keyframes bounce {
+  0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
+  50% { transform: translateY(0); animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+}`,
+}
+
 // Transform origin - utility="origin", value lookup
 const TRANSFORM_ORIGIN_VALUES: Record<string, string> = {
   'center': 'center',
@@ -856,6 +875,40 @@ const GRADIENT_MAP: Record<string, Record<string, string>> = {
   'bg-gradient-to-bl': { 'background-image': 'linear-gradient(to bottom left, var(--hw-gradient-stops))' },
   'bg-gradient-to-l': { 'background-image': 'linear-gradient(to left, var(--hw-gradient-stops))' },
   'bg-gradient-to-tl': { 'background-image': 'linear-gradient(to top left, var(--hw-gradient-stops))' },
+  // Radial gradients
+  'bg-radial': { 'background-image': 'radial-gradient(var(--hw-gradient-stops))' },
+  'bg-radial-at-t': { 'background-image': 'radial-gradient(at top, var(--hw-gradient-stops))' },
+  'bg-radial-at-tr': { 'background-image': 'radial-gradient(at top right, var(--hw-gradient-stops))' },
+  'bg-radial-at-r': { 'background-image': 'radial-gradient(at right, var(--hw-gradient-stops))' },
+  'bg-radial-at-br': { 'background-image': 'radial-gradient(at bottom right, var(--hw-gradient-stops))' },
+  'bg-radial-at-b': { 'background-image': 'radial-gradient(at bottom, var(--hw-gradient-stops))' },
+  'bg-radial-at-bl': { 'background-image': 'radial-gradient(at bottom left, var(--hw-gradient-stops))' },
+  'bg-radial-at-l': { 'background-image': 'radial-gradient(at left, var(--hw-gradient-stops))' },
+  'bg-radial-at-tl': { 'background-image': 'radial-gradient(at top left, var(--hw-gradient-stops))' },
+  'bg-radial-at-c': { 'background-image': 'radial-gradient(at center, var(--hw-gradient-stops))' },
+  // Conic gradients
+  'bg-conic': { 'background-image': 'conic-gradient(var(--hw-gradient-stops))' },
+  'bg-conic-from-t': { 'background-image': 'conic-gradient(from 0deg at center, var(--hw-gradient-stops))' },
+  'bg-conic-from-tr': { 'background-image': 'conic-gradient(from 45deg at center, var(--hw-gradient-stops))' },
+  'bg-conic-from-r': { 'background-image': 'conic-gradient(from 90deg at center, var(--hw-gradient-stops))' },
+  'bg-conic-from-br': { 'background-image': 'conic-gradient(from 135deg at center, var(--hw-gradient-stops))' },
+  'bg-conic-from-b': { 'background-image': 'conic-gradient(from 180deg at center, var(--hw-gradient-stops))' },
+  'bg-conic-from-bl': { 'background-image': 'conic-gradient(from 225deg at center, var(--hw-gradient-stops))' },
+  'bg-conic-from-l': { 'background-image': 'conic-gradient(from 270deg at center, var(--hw-gradient-stops))' },
+  'bg-conic-from-tl': { 'background-image': 'conic-gradient(from 315deg at center, var(--hw-gradient-stops))' },
+}
+
+// Content utility - direct raw class to CSS
+const CONTENT_MAP: Record<string, Record<string, string>> = {
+  'content-none': { content: 'none' },
+  'content-empty': { content: '""' },
+}
+
+// Scrollbar utilities - direct raw class to CSS
+const SCROLLBAR_MAP: Record<string, Record<string, string>> = {
+  'scrollbar-auto': { 'scrollbar-width': 'auto' },
+  'scrollbar-thin': { 'scrollbar-width': 'thin' },
+  'scrollbar-none': { 'scrollbar-width': 'none' },
 }
 
 // =============================================================================
@@ -1082,16 +1135,16 @@ const BLUR_MAP: Record<string, Record<string, string>> = {
   'blur-3xl': { filter: 'blur(64px)' },
 }
 
-// Backdrop blur - direct raw class to CSS
+// Backdrop blur - direct raw class to CSS (with -webkit- prefix for Safari)
 const BACKDROP_BLUR_MAP: Record<string, Record<string, string>> = {
-  'backdrop-blur-none': { 'backdrop-filter': 'blur(0)' },
-  'backdrop-blur-sm': { 'backdrop-filter': 'blur(4px)' },
-  'backdrop-blur': { 'backdrop-filter': 'blur(8px)' },
-  'backdrop-blur-md': { 'backdrop-filter': 'blur(12px)' },
-  'backdrop-blur-lg': { 'backdrop-filter': 'blur(16px)' },
-  'backdrop-blur-xl': { 'backdrop-filter': 'blur(24px)' },
-  'backdrop-blur-2xl': { 'backdrop-filter': 'blur(40px)' },
-  'backdrop-blur-3xl': { 'backdrop-filter': 'blur(64px)' },
+  'backdrop-blur-none': { '-webkit-backdrop-filter': 'blur(0)', 'backdrop-filter': 'blur(0)' },
+  'backdrop-blur-sm': { '-webkit-backdrop-filter': 'blur(4px)', 'backdrop-filter': 'blur(4px)' },
+  'backdrop-blur': { '-webkit-backdrop-filter': 'blur(8px)', 'backdrop-filter': 'blur(8px)' },
+  'backdrop-blur-md': { '-webkit-backdrop-filter': 'blur(12px)', 'backdrop-filter': 'blur(12px)' },
+  'backdrop-blur-lg': { '-webkit-backdrop-filter': 'blur(16px)', 'backdrop-filter': 'blur(16px)' },
+  'backdrop-blur-xl': { '-webkit-backdrop-filter': 'blur(24px)', 'backdrop-filter': 'blur(24px)' },
+  'backdrop-blur-2xl': { '-webkit-backdrop-filter': 'blur(40px)', 'backdrop-filter': 'blur(40px)' },
+  'backdrop-blur-3xl': { '-webkit-backdrop-filter': 'blur(64px)', 'backdrop-filter': 'blur(64px)' },
 }
 
 // Grayscale/invert/sepia - direct raw class to CSS
@@ -1104,14 +1157,14 @@ const FILTER_TOGGLE_MAP: Record<string, Record<string, string>> = {
   'sepia': { filter: 'sepia(100%)' },
 }
 
-// Backdrop grayscale/invert/sepia - direct raw class to CSS
+// Backdrop grayscale/invert/sepia - direct raw class to CSS (with -webkit- prefix)
 const BACKDROP_FILTER_TOGGLE_MAP: Record<string, Record<string, string>> = {
-  'backdrop-grayscale-0': { 'backdrop-filter': 'grayscale(0)' },
-  'backdrop-grayscale': { 'backdrop-filter': 'grayscale(100%)' },
-  'backdrop-invert-0': { 'backdrop-filter': 'invert(0)' },
-  'backdrop-invert': { 'backdrop-filter': 'invert(100%)' },
-  'backdrop-sepia-0': { 'backdrop-filter': 'sepia(0)' },
-  'backdrop-sepia': { 'backdrop-filter': 'sepia(100%)' },
+  'backdrop-grayscale-0': { '-webkit-backdrop-filter': 'grayscale(0)', 'backdrop-filter': 'grayscale(0)' },
+  'backdrop-grayscale': { '-webkit-backdrop-filter': 'grayscale(100%)', 'backdrop-filter': 'grayscale(100%)' },
+  'backdrop-invert-0': { '-webkit-backdrop-filter': 'invert(0)', 'backdrop-filter': 'invert(0)' },
+  'backdrop-invert': { '-webkit-backdrop-filter': 'invert(100%)', 'backdrop-filter': 'invert(100%)' },
+  'backdrop-sepia-0': { '-webkit-backdrop-filter': 'sepia(0)', 'backdrop-filter': 'sepia(0)' },
+  'backdrop-sepia': { '-webkit-backdrop-filter': 'sepia(100%)', 'backdrop-filter': 'sepia(100%)' },
 }
 
 // Drop shadow - direct raw class to CSS
@@ -1251,6 +1304,10 @@ const STATIC_UTILITY_MAP: Record<string, Record<string, string>> = {
   ...DROP_SHADOW_MAP,
   ...MIX_BLEND_MAP,
   ...BG_BLEND_MAP,
+  // Content
+  ...CONTENT_MAP,
+  // Scrollbar
+  ...SCROLLBAR_MAP,
 }
 
 // Pre-computed variant selector map for O(1) lookup (shared across all instances)
@@ -1296,9 +1353,22 @@ const VARIANT_SELECTORS: Record<string, string> = {
   'optional': ':optional',
 }
 
+// Not-* variants (negated pseudo-classes)
+const NOT_VARIANT_SELECTORS: Record<string, string> = {
+  'not-first': ':not(:first-child)',
+  'not-last': ':not(:last-child)',
+  'not-only': ':not(:only-child)',
+  'not-empty': ':not(:empty)',
+  'not-disabled': ':not(:disabled)',
+  'not-checked': ':not(:checked)',
+  'not-first-of-type': ':not(:first-of-type)',
+  'not-last-of-type': ':not(:last-of-type)',
+}
+
 // Pre-computed prefix variants (these modify the selector prefix, not suffix)
 const PREFIX_VARIANTS: Record<string, string> = {
   'dark': '.dark ',
+  'light': '.light ',
   'rtl': '[dir="rtl"] ',
   'ltr': '[dir="ltr"] ',
 }
@@ -1318,8 +1388,8 @@ export class CSSGenerator {
   private screenBreakpoints: Map<string, string>
   // Cache for utility+value combinations that don't match any rule (negative cache)
   private noMatchCache: Set<string> = new Set()
-  // When generating a shortcut, holds the shortcut name for selector building in addRule
-  private selectorAlias: string | null = null
+  // Track which animation keyframes are used (for @keyframes injection)
+  private usedKeyframes: Set<string> = new Set()
   // Preserve extend colors for CSS variable generation (only custom colors, not defaults)
   private extendColors: Record<string, string | Record<string, string>> | null = null
 
@@ -1391,38 +1461,28 @@ export class CSSGenerator {
       this.classCache.add(className)
       const classes = Array.isArray(shortcut) ? shortcut : shortcut.split(/\s+/)
       for (const cls of classes) {
-        const cacheKey = `shortcut::${className}::${cls}`
-        if (!this.classCache.has(cacheKey)) {
-          this.classCache.add(cacheKey)
-          this.selectorAlias = className
-          this.generateCore(parseClass(cls))
-          this.selectorAlias = null
-        }
+        this.generate(cls)
       }
       return
     }
 
     this.classCache.add(className)
-    this.generateCore(parseClass(className))
-  }
 
-  /**
-   * Core CSS generation logic for a parsed utility class
-  */
-  private generateCore(parsed: ParsedClass): void {
     // Check exact match blocklist first (O(1) Set lookup)
-    if (this.blocklistExact.size > 0 && this.blocklistExact.has(parsed.raw)) {
+    if (this.blocklistExact.size > 0 && this.blocklistExact.has(className)) {
       return
     }
 
     // Check if class is blocklisted (use pre-compiled regexes)
     if (this.blocklistRegexCache.length > 0) {
       for (let i = 0; i < this.blocklistRegexCache.length; i++) {
-        if (this.blocklistRegexCache[i].test(parsed.raw)) {
+        if (this.blocklistRegexCache[i].test(className)) {
           return
         }
       }
     }
+
+    const parsed = parseClass(className)
 
     // ==========================================================================
     // FAST PATH: Static utility map lookup (O(1))
@@ -1433,6 +1493,13 @@ export class CSSGenerator {
     const staticResult = STATIC_UTILITY_MAP[parsed.raw]
     if (staticResult) {
       this.addRule(parsed, staticResult)
+      // Track animation keyframe usage
+      if (staticResult.animation) {
+        const animName = staticResult.animation.split(' ')[0]
+        if (animName && animName !== 'none') {
+          this.usedKeyframes.add(animName)
+        }
+      }
       return
     }
 
@@ -1652,10 +1719,16 @@ export class CSSGenerator {
     }
 
     // Align content: content-{normal|center|start|end|between|around|evenly|baseline|stretch}
+    // Also handles CSS content property for arbitrary values: content-['hello'], content-[attr(data-label)]
     if (utility === 'content' && value) {
       const contentValue = ALIGN_CONTENT_VALUES[value]
       if (contentValue) {
         this.addRule(parsed, { 'align-content': contentValue })
+        return
+      }
+      // Arbitrary content property: content-['hello'], content-[attr(data-label)]
+      if (parsed.arbitrary) {
+        this.addRule(parsed, { content: value })
         return
       }
     }
@@ -1838,7 +1911,7 @@ export class CSSGenerator {
     // Try custom rules from config first (allows overriding built-in rules)
     if (this.config.rules.length > 0) {
       for (const [pattern, handler] of this.config.rules) {
-        const match = parsed.raw.match(pattern)
+        const match = className.match(pattern)
         if (match) {
           const properties = handler(match)
           if (properties) {
@@ -1873,14 +1946,11 @@ export class CSSGenerator {
    * Add a CSS rule with variants applied
   */
   private addRule(parsed: ParsedClass, properties: Record<string, string>, childSelector?: string, pseudoElement?: string): void {
-    // When generating shortcuts, use the shortcut name for the CSS selector
-    const effectiveParsed = this.selectorAlias ? { ...parsed, raw: this.selectorAlias } : parsed
-    const cacheKey = this.selectorAlias
-      ? `shortcut:${parsed.raw}:${this.selectorAlias}${childSelector || ''}${pseudoElement || ''}`
-      : `${parsed.raw}${childSelector || ''}${pseudoElement || ''}`
+    // Use cached selector if available
+    const cacheKey = `${parsed.raw}${childSelector || ''}${pseudoElement || ''}`
     let selector = this.selectorCache.get(cacheKey)
     if (!selector) {
-      selector = this.buildSelector(effectiveParsed)
+      selector = this.buildSelector(parsed)
       // Append pseudo-element directly (no space)
       if (pseudoElement) {
         selector += pseudoElement
@@ -1892,10 +1962,10 @@ export class CSSGenerator {
       this.selectorCache.set(cacheKey, selector)
     }
 
-    const mediaQuery = this.getMediaQuery(effectiveParsed)
+    const mediaQuery = this.getMediaQuery(parsed)
 
     // Apply !important modifier
-    if (effectiveParsed.important) {
+    if (parsed.important) {
       for (const key in properties) {
         properties[key] += ' !important'
       }
@@ -1953,21 +2023,124 @@ export class CSSGenerator {
         continue
       }
 
-      // Handle group-* variants
-      if (variant.charCodeAt(0) === 103 && variant.startsWith('group-')) { // 'g' = 103
-        if (this.variantEnabled.group) {
-          const groupVariant = variant.slice(6)
-          prefix = `.group:${groupVariant} `
+      // Handle not-* variants: not-first, not-last, etc.
+      if (variant.charCodeAt(0) === 110 && variant.startsWith('not-')) { // 'n' = 110
+        if (this.variantEnabled.not) {
+          const notSelector = NOT_VARIANT_SELECTORS[variant]
+          if (notSelector) {
+            selector += notSelector
+          }
         }
         continue
       }
 
-      // Handle peer-* variants
+      // Handle group-* variants (with optional named group: group/name-hover)
+      if (variant.charCodeAt(0) === 103 && variant.startsWith('group-')) { // 'g' = 103
+        if (this.variantEnabled.group) {
+          const groupVariant = variant.slice(6)
+          // group-has-* needs special handling: group-has-[:checked] -> .group:has(:checked)
+          if (groupVariant.startsWith('has-')) {
+            const hasValue = groupVariant.slice(4)
+            if (hasValue.charCodeAt(0) === 91 && hasValue.charCodeAt(hasValue.length - 1) === 93) {
+              prefix = `.group:has(${hasValue.slice(1, -1)}) `
+            }
+            else {
+              prefix = `.group:has(:${hasValue}) `
+            }
+          }
+          else {
+            prefix = `.group:${groupVariant} `
+          }
+        }
+        continue
+      }
+      // Named group: group/name (for nested groups)
+      if (variant.charCodeAt(0) === 103 && variant.startsWith('group/')) { // 'g' = 103
+        if (this.variantEnabled.group) {
+          const groupName = variant.slice(6)
+          prefix = `.group\\/${groupName} `
+        }
+        continue
+      }
+
+      // Handle peer-* variants (with optional named peer)
       if (variant.charCodeAt(0) === 112 && variant.startsWith('peer-')) { // 'p' = 112
         if (this.variantEnabled.peer) {
           const peerVariant = variant.slice(5)
-          prefix = `.peer:${peerVariant} ~ `
+          // peer-has-* needs special handling: peer-has-[:checked] -> .peer:has(:checked) ~
+          if (peerVariant.startsWith('has-')) {
+            const hasValue = peerVariant.slice(4)
+            if (hasValue.charCodeAt(0) === 91 && hasValue.charCodeAt(hasValue.length - 1) === 93) {
+              prefix = `.peer:has(${hasValue.slice(1, -1)}) ~ `
+            }
+            else {
+              prefix = `.peer:has(:${hasValue}) ~ `
+            }
+          }
+          else {
+            prefix = `.peer:${peerVariant} ~ `
+          }
         }
+        continue
+      }
+      // Named peer: peer/name
+      if (variant.charCodeAt(0) === 112 && variant.startsWith('peer/')) { // 'p' = 112
+        if (this.variantEnabled.peer) {
+          const peerName = variant.slice(5)
+          prefix = `.peer\\/${peerName} ~ `
+        }
+        continue
+      }
+
+      // Handle has-* variants: has-[input:checked], has-[:focus]
+      if (variant.charCodeAt(0) === 104 && variant.startsWith('has-')) { // 'h' = 104
+        if (this.variantEnabled.has) {
+          const hasValue = variant.slice(4)
+          // Arbitrary value: has-[selector]
+          if (hasValue.charCodeAt(0) === 91 && hasValue.charCodeAt(hasValue.length - 1) === 93) {
+            const inner = hasValue.slice(1, -1)
+            selector += `:has(${inner})`
+          }
+          else {
+            // Named pseudo: has-checked -> :has(:checked)
+            selector += `:has(:${hasValue})`
+          }
+        }
+        continue
+      }
+
+      // Handle aria-* variants: aria-disabled, aria-[sort=ascending]
+      if (variant.charCodeAt(0) === 97 && variant.startsWith('aria-')) { // 'a' = 97
+        if (this.variantEnabled.aria) {
+          const ariaValue = variant.slice(5)
+          // Arbitrary value: aria-[sort=ascending]
+          if (ariaValue.charCodeAt(0) === 91 && ariaValue.charCodeAt(ariaValue.length - 1) === 93) {
+            const inner = ariaValue.slice(1, -1)
+            selector += `[aria-${inner}]`
+          }
+          else {
+            // Boolean attribute: aria-disabled -> [aria-disabled="true"]
+            selector += `[aria-${ariaValue}="true"]`
+          }
+        }
+        continue
+      }
+
+      // Handle data-* variants: data-[state=active], data-loading
+      if (variant.charCodeAt(0) === 100 && variant.startsWith('data-')) { // 'd' = 100
+        if (this.variantEnabled.data) {
+          const dataValue = variant.slice(5)
+          // Arbitrary value: data-[state=active]
+          if (dataValue.charCodeAt(0) === 91 && dataValue.charCodeAt(dataValue.length - 1) === 93) {
+            const inner = dataValue.slice(1, -1)
+            selector += `[data-${inner}]`
+          }
+          else {
+            // Boolean attribute: data-loading -> [data-loading]
+            selector += `[data-${dataValue}]`
+          }
+        }
+        continue
       }
     }
 
@@ -1994,7 +2167,8 @@ export class CSSGenerator {
       return cached || undefined // Convert empty string to undefined
     }
 
-    let result: string | undefined
+    // Collect all media conditions — multiple media variants can stack
+    const mediaConditions: string[] = []
 
     for (let i = 0; i < variantsLen; i++) {
       const variant = variants[i]
@@ -2005,7 +2179,7 @@ export class CSSGenerator {
         const breakpointKey = variant.slice(1)
         const breakpoint = this.screenBreakpoints.get(breakpointKey)
         if (breakpoint) {
-          result = `@container (min-width: ${breakpoint})`
+          const result = `@container (min-width: ${breakpoint})`
           this.mediaQueryCache.set(cacheKey, result)
           return result
         }
@@ -2016,50 +2190,71 @@ export class CSSGenerator {
       if (this.variantEnabled.responsive) {
         const breakpoint = this.screenBreakpoints.get(variant)
         if (breakpoint) {
-          result = `@media (min-width: ${breakpoint})`
-          this.mediaQueryCache.set(cacheKey, result)
-          return result
+          mediaConditions.push(`(min-width: ${breakpoint})`)
+          continue
         }
       }
 
-      // Media preference variants - use switch for common cases
+      // Media preference variants
       switch (variant) {
         case 'print':
-          if (this.variantEnabled.print) {
-            result = '@media print'
-            this.mediaQueryCache.set(cacheKey, result)
-            return result
-          }
+          if (this.variantEnabled.print) mediaConditions.push('print')
           break
         case 'motion-safe':
-          if (this.variantEnabled['motion-safe']) {
-            result = '@media (prefers-reduced-motion: no-preference)'
-            this.mediaQueryCache.set(cacheKey, result)
-            return result
-          }
+          if (this.variantEnabled['motion-safe']) mediaConditions.push('(prefers-reduced-motion: no-preference)')
           break
         case 'motion-reduce':
-          if (this.variantEnabled['motion-reduce']) {
-            result = '@media (prefers-reduced-motion: reduce)'
-            this.mediaQueryCache.set(cacheKey, result)
-            return result
-          }
+          if (this.variantEnabled['motion-reduce']) mediaConditions.push('(prefers-reduced-motion: reduce)')
           break
         case 'contrast-more':
-          if (this.variantEnabled['contrast-more']) {
-            result = '@media (prefers-contrast: more)'
-            this.mediaQueryCache.set(cacheKey, result)
-            return result
-          }
+          if (this.variantEnabled['contrast-more']) mediaConditions.push('(prefers-contrast: more)')
           break
         case 'contrast-less':
-          if (this.variantEnabled['contrast-less']) {
-            result = '@media (prefers-contrast: less)'
-            this.mediaQueryCache.set(cacheKey, result)
-            return result
-          }
+          if (this.variantEnabled['contrast-less']) mediaConditions.push('(prefers-contrast: less)')
+          break
+        case 'landscape':
+          if (this.variantEnabled.landscape) mediaConditions.push('(orientation: landscape)')
+          break
+        case 'portrait':
+          if (this.variantEnabled.portrait) mediaConditions.push('(orientation: portrait)')
+          break
+        case 'forced-colors':
+          if (this.variantEnabled['forced-colors']) mediaConditions.push('(forced-colors: active)')
           break
       }
+
+      // Handle supports-* variant: supports-[display:grid] -> @supports (display: grid)
+      if (variant.charCodeAt(0) === 115 && variant.startsWith('supports-')) { // 's' = 115
+        if (this.variantEnabled.supports) {
+          const supportsValue = variant.slice(9)
+          let supportsQuery: string
+          if (supportsValue.charCodeAt(0) === 91 && supportsValue.charCodeAt(supportsValue.length - 1) === 93) {
+            const inner = supportsValue.slice(1, -1).replace(/_/g, ' ')
+            const colonIdx = inner.indexOf(':')
+            if (colonIdx !== -1) {
+              const prop = inner.slice(0, colonIdx).trim()
+              const val = inner.slice(colonIdx + 1).trim()
+              supportsQuery = `@supports (${prop}: ${val})`
+            }
+            else {
+              supportsQuery = `@supports (${inner})`
+            }
+          }
+          else {
+            supportsQuery = `@supports (${supportsValue})`
+          }
+          // Supports queries don't combine with @media — return directly
+          this.mediaQueryCache.set(cacheKey, supportsQuery)
+          return supportsQuery
+        }
+      }
+    }
+
+    if (mediaConditions.length > 0) {
+      // Combine conditions: @media (min-width: 1024px) and (orientation: landscape)
+      const result = `@media ${mediaConditions.join(' and ')}`
+      this.mediaQueryCache.set(cacheKey, result)
+      return result
     }
 
     this.mediaQueryCache.set(cacheKey, '')  // Use empty string as "no result" marker
@@ -2078,8 +2273,10 @@ export class CSSGenerator {
       // Check for special CSS selector characters:
       // : (58), . (46), / (47), @ (64), space (32), [ (91), ] (93)
       // ( (40), ) (41), % (37), # (35), , (44), > (62), + (43), ~ (126)
+      // ! (33), ' (39), " (34), * (42), = (61)
       if (c === 58 || c === 46 || c === 47 || c === 64 || c === 32 || c === 91 || c === 93 ||
-          c === 40 || c === 41 || c === 37 || c === 35 || c === 44 || c === 62 || c === 43 || c === 126) {
+          c === 40 || c === 41 || c === 37 || c === 35 || c === 44 || c === 62 || c === 43 || c === 126 ||
+          c === 33 || c === 39 || c === 34 || c === 42 || c === 61) {
         needsEscape = true
         break
       }
@@ -2087,7 +2284,7 @@ export class CSSGenerator {
     if (!needsEscape) {
       return className
     }
-    return className.replace(/[:./@ \[\]()%#,>+~]/g, '\\$&')
+    return className.replace(/[:./@ \[\]()%#,>+~!'"*=]/g, '\\$&')
   }
 
   /**
@@ -2126,6 +2323,16 @@ export class CSSGenerator {
     const baseRules = this.rules.get('base') || []
     if (baseRules.length > 0) {
       parts.push(this.rulesToCSS(baseRules, minify))
+    }
+
+    // Inject @keyframes for used animations
+    if (this.usedKeyframes.size > 0) {
+      for (const name of this.usedKeyframes) {
+        const kf = KEYFRAMES[name]
+        if (kf) {
+          parts.push(minify ? kf.replace(/\s+/g, ' ').replace(/\s*\{\s*/g, '{').replace(/\s*\}\s*/g, '}').replace(/;\s*/g, ';').trim() : kf)
+        }
+      }
     }
 
     // Media query rules

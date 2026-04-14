@@ -1,4 +1,5 @@
 import type { UtilityRule } from './rules'
+import { resolveColorValue } from './rules'
 
 // Typography utilities
 
@@ -157,23 +158,13 @@ export const textDecorationRule: UtilityRule = (parsed, config) => {
       return { 'text-decoration-thickness': parsed.value } as Record<string, string>
     }
 
-    // Otherwise treat it as a color: decoration-blue-500
-    const parts = parsed.value.split('-')
-    if (parts.length === 2) {
-      const [colorName, shade] = parts
-      const colorValue = config.theme.colors[colorName]
-      if (typeof colorValue === 'object' && colorValue[shade]) {
-        return { 'text-decoration-color': colorValue[shade] } as Record<string, string>
-      }
+    // Otherwise treat it as a color: decoration-blue-500, decoration-white/50
+    const color = resolveColorValue(parsed.value, config)
+    if (color) {
+      return { 'text-decoration-color': color } as Record<string, string>
     }
 
-    // Direct color
-    const directColor = config.theme.colors[parsed.value]
-    if (typeof directColor === 'string') {
-      return { 'text-decoration-color': directColor } as Record<string, string>
-    }
-
-    // Fallback
+    // Fallback for arbitrary values
     return { 'text-decoration-color': parsed.value } as Record<string, string>
   }
 

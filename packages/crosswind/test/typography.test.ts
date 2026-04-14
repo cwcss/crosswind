@@ -528,7 +528,7 @@ describe('Typography Utilities', () => {
     describe('Text with CSS variables', () => {
       it('should handle font size with CSS variable', () => {
         const gen = new CSSGenerator(defaultConfig)
-        gen.generate('text-[var(--font-size)]')
+        gen.generate('text-[length:var(--font-size)]')
         expect(gen.toCSS(false)).toContain('font-size: var(--font-size);')
       })
 
