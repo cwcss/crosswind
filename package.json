@@ -39,7 +39,9 @@
     "dev:docs": "bun --bun vitepress dev docs",
     "build:docs": "bun --bun vitepress build docs",
     "preview:docs": "bun --bun vitepress preview docs",
-    "typecheck": "bun --bun tsc --noEmit"
+    "typecheck": "bun --bun tsc --noEmit",
+    "benchmark": "bun run benchmark/framework-comparison.bench.ts",
+    "benchmark:binary": "bun run benchmark/binary-vs-api.ts"
   },
   "devDependencies": {
     "better-dx": "^0.2.7"

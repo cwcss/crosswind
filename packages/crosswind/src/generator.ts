@@ -1373,68 +1373,94 @@ const PREFIX_VARIANTS: Record<string, string> = {
   'ltr': '[dir="ltr"] ',
 }
 
+// Cache for pre-processed configs to avoid redundant merging
+const processedConfigCache = new WeakMap<CrosswindConfig, ProcessedConfig>()
+
+interface ProcessedConfig {
+  config: CrosswindConfig
+  variantEnabled: Record<string, boolean>
+  screenBreakpoints: Map<string, string>
+  blocklistRegexCache: RegExp[]
+  blocklistExact: Set<string>
+  extendColors: Record<string, string | Record<string, string>> | null
+  hasBlocklist: boolean
+  hasShortcuts: boolean
+}
+
+function processConfig(config: CrosswindConfig): ProcessedConfig {
+  const cached = processedConfigCache.get(config)
+  if (cached) return cached
+
+  // Merge preset themes
+  if (config.presets && config.presets.length > 0) {
+    for (const preset of config.presets) {
+      if (preset.theme) {
+        config.theme = deepMerge(config.theme, preset.theme)
+      }
+    }
+  }
+
+  // Save extend colors before merging
+  const extendColors = config.theme.extend?.colors
+    ? config.theme.extend.colors as Record<string, string | Record<string, string>>
+    : null
+
+  // Merge theme.extend into theme
+  if (config.theme.extend) {
+    const { extend, ...baseTheme } = config.theme
+    if (extend) {
+      config.theme = deepMerge(baseTheme, extend) as typeof config.theme
+    }
+  }
+
+  // Pre-compile blocklist patterns
+  const blocklistRegexCache: RegExp[] = []
+  const blocklistExact = new Set<string>()
+  for (const pattern of config.blocklist) {
+    if (pattern.includes('*')) {
+      blocklistRegexCache.push(new RegExp(`^${pattern.replace(/\*/g, '.*')}$`))
+    }
+    else {
+      blocklistExact.add(pattern)
+    }
+  }
+
+  const result: ProcessedConfig = {
+    config,
+    variantEnabled: config.variants as unknown as Record<string, boolean>,
+    screenBreakpoints: new Map(Object.entries(config.theme.screens)),
+    blocklistRegexCache,
+    blocklistExact,
+    extendColors,
+    hasBlocklist: blocklistRegexCache.length > 0 || blocklistExact.size > 0,
+    hasShortcuts: Object.keys(config.shortcuts).length > 0,
+  }
+
+  processedConfigCache.set(config, result)
+  return result
+}
+
 /**
  * Generates CSS rules from parsed utility classes
 */
 export class CSSGenerator {
   private rules: Map<string, CSSRule[]> = new Map()
   private classCache: Set<string> = new Set()
-  private blocklistRegexCache: RegExp[] = []
-  private blocklistExact: Set<string> = new Set()
   private selectorCache: Map<string, string> = new Map()
   private mediaQueryCache: Map<string, string | undefined> = new Map()
   private ruleCache: Map<string, UtilityRule[]> = new Map()
   private variantEnabled: Record<string, boolean>
   private screenBreakpoints: Map<string, string>
-  // Cache for utility+value combinations that don't match any rule (negative cache)
   private noMatchCache: Set<string> = new Set()
-  // Track which animation keyframes are used (for @keyframes injection)
   private usedKeyframes: Set<string> = new Set()
-  // Preserve extend colors for CSS variable generation (only custom colors, not defaults)
   private extendColors: Record<string, string | Record<string, string>> | null = null
+  private processed: ProcessedConfig
 
   constructor(private config: CrosswindConfig) {
-    // Merge preset themes into the main config theme
-    if (config.presets && config.presets.length > 0) {
-      for (const preset of config.presets) {
-        if (preset.theme) {
-          this.config.theme = deepMerge(this.config.theme, preset.theme)
-        }
-      }
-    }
-
-    // Save extend colors before merging (for CSS variable generation)
-    if (config.theme.extend?.colors) {
-      this.extendColors = config.theme.extend.colors as Record<string, string | Record<string, string>>
-    }
-
-    // Merge theme.extend into theme (allows users to add custom values without replacing defaults)
-    if (config.theme.extend) {
-      const { extend, ...baseTheme } = this.config.theme
-      if (extend) {
-        this.config.theme = deepMerge(baseTheme, extend) as typeof this.config.theme
-      }
-    }
-
-    // Pre-compile blocklist patterns for performance
-    for (const pattern of this.config.blocklist) {
-      if (pattern.includes('*')) {
-        const regexPattern = pattern.replace(/\*/g, '.*')
-        this.blocklistRegexCache.push(new RegExp(`^${regexPattern}$`))
-      }
-      else {
-        this.blocklistExact.add(pattern)
-      }
-    }
-
-    // Pre-cache variant enabled state for faster lookup
-    this.variantEnabled = this.config.variants as unknown as Record<string, boolean>
-
-    // Pre-cache screen breakpoints as Map for faster lookup
-    this.screenBreakpoints = new Map(Object.entries(this.config.theme.screens))
-
-    // Build rule lookup map for faster matching
-    this.buildRuleLookup()
+    this.processed = processConfig(config)
+    this.variantEnabled = this.processed.variantEnabled
+    this.screenBreakpoints = this.processed.screenBreakpoints
+    this.extendColors = this.processed.extendColors
   }
 
   /**
@@ -1449,34 +1475,46 @@ export class CSSGenerator {
   /**
    * Generate CSS for a utility class
   */
-  generate(className: string): void {
-    // Check cache for already processed classes
-    if (this.classCache.has(className)) {
-      return
+  /**
+   * Generate CSS for multiple classes at once (batch API).
+   * More efficient than calling generate() in a loop.
+   */
+  generateBatch(classNames: string[]): void {
+    for (let i = 0; i < classNames.length; i++) {
+      this.generate(classNames[i])
     }
+  }
 
-    // Check shortcuts first (before marking as cached)
-    const shortcut = this.config.shortcuts[className]
-    if (shortcut) {
-      this.classCache.add(className)
-      const classes = Array.isArray(shortcut) ? shortcut : shortcut.split(/\s+/)
-      for (const cls of classes) {
-        this.generate(cls)
-      }
+  /**
+   * Generate CSS for a utility class
+  */
+  generate(className: string): void {
+    // Check cache for already processed classes (fastest exit path)
+    if (this.classCache.has(className)) {
       return
     }
 
     this.classCache.add(className)
 
-    // Check exact match blocklist first (O(1) Set lookup)
-    if (this.blocklistExact.size > 0 && this.blocklistExact.has(className)) {
-      return
+    // Only check shortcuts/blocklist if the config has them (skip for most projects)
+    if (this.processed.hasShortcuts) {
+      const shortcut = this.config.shortcuts[className]
+      if (shortcut) {
+        const classes = Array.isArray(shortcut) ? shortcut : shortcut.split(/\s+/)
+        for (const cls of classes) {
+          this.generate(cls)
+        }
+        return
+      }
     }
 
-    // Check if class is blocklisted (use pre-compiled regexes)
-    if (this.blocklistRegexCache.length > 0) {
-      for (let i = 0; i < this.blocklistRegexCache.length; i++) {
-        if (this.blocklistRegexCache[i].test(className)) {
+    if (this.processed.hasBlocklist) {
+      if (this.processed.blocklistExact.has(className)) {
+        return
+      }
+      const regexes = this.processed.blocklistRegexCache
+      for (let i = 0; i < regexes.length; i++) {
+        if (regexes[i].test(className)) {
           return
         }
       }
@@ -2418,7 +2456,7 @@ export class CSSGenerator {
   }
 
   /**
-   * Reset the generator state
+   * Reset the generator state (clears all generated CSS and caches)
   */
   reset(): void {
     this.rules.clear()
@@ -2426,5 +2464,6 @@ export class CSSGenerator {
     this.selectorCache.clear()
     this.mediaQueryCache.clear()
     this.noMatchCache.clear()
+    this.usedKeyframes.clear()
   }
 }

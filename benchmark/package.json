@@ -7,5 +7,9 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^3",
     "tailwindcss-v4": "npm:tailwindcss@^4"
+  },
+  "dependencies": {
+    "@unocss/core": "^66.6.7",
+    "@unocss/preset-wind": "^66.6.7"
   }
 }
