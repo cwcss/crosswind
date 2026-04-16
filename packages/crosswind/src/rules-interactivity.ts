@@ -57,7 +57,7 @@ export const filterRule: UtilityRule = (parsed) => {
   }
 }
 
-export const backdropFilterRule: UtilityRule = (parsed) => {
+export const backdropFilterRule: UtilityRule = (parsed): Record<string, string> | undefined => {
   // Handle backdrop-filter-none
   if (parsed.raw === 'backdrop-filter-none') {
     return { 'backdrop-filter': 'none' }

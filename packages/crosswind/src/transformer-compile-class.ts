@@ -108,7 +108,7 @@ export function transformContent(
       const generatedClass = compiledClassMap.get(classKey)
 
       if (generatedClass) {
-        const attrName = match[0].startsWith('class='? )'class' : 'className'
+        const attrName = match[0].startsWith('class=') ? 'class' : 'className'
         const quote = match[0].includes('"') ? '"' : '\''
         const replacement = `${attrName}=${quote}${generatedClass}${quote}`
 
