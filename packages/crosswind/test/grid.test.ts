@@ -35,6 +35,50 @@ describe('Grid Utilities', () => {
       gen.generate('grid-cols-none')
       expect(gen.toCSS(false)).toContain('grid-template-columns: none;')
     })
+
+    // Regression: `grid-cols-[300px_1fr]` must emit a space-separated value.
+    // Tailwind's arbitrary-value underscore convention requires `_` → ` `,
+    // because CSS class names can't contain literal spaces. Previously
+    // crosswind preserved underscores inside any parentheses, which was fine
+    // for `grid-cols-[300px_1fr]` (no parens) but still mis-emitted because
+    // the grid-cols rule passed the value through verbatim.
+    it('should convert underscores to spaces in arbitrary multi-track columns', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('grid-cols-[300px_1fr]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('grid-template-columns: 300px 1fr;')
+      expect(css).not.toMatch(/grid-template-columns:\s*300px_1fr/)
+    })
+
+    it('should convert underscores in arbitrary columns with three tracks', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('grid-cols-[200px_1fr_auto]')
+      expect(gen.toCSS(false)).toContain('grid-template-columns: 200px 1fr auto;')
+    })
+
+    it('should convert underscores in arbitrary columns under lg: variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('lg:grid-cols-[300px_1fr]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('grid-template-columns: 300px 1fr;')
+      // The selector still contains the raw `_1fr]` in the escaped class name
+      expect(css).toContain('.lg\\:grid-cols-\\[300px_1fr\\]')
+    })
+
+    it('should convert underscores inside nested CSS functions (repeat/minmax)', () => {
+      // This exercises the inside-parens code path. Previously `_` inside
+      // parens stayed an underscore, producing `minmax(200px,_1fr)` — invalid.
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))]')
+      expect(gen.toCSS(false)).toContain('grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));')
+    })
+
+    it('should convert underscores in arbitrary rows the same way', () => {
+      // Mirror test for grid-rows so rule coverage stays symmetric.
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('grid-rows-[50px_1fr_40px]')
+      expect(gen.toCSS(false)).toContain('grid-template-rows: 50px 1fr 40px;')
+    })
   })
 
   describe('Grid Template Rows', () => {

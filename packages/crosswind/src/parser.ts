@@ -73,23 +73,48 @@ function needsArbitraryBrackets(value: string): boolean {
 /**
  * Convert underscores to spaces in arbitrary values (Tailwind convention).
  * e.g. grid-cols-[120px_1fr_200px] → "120px 1fr 200px"
- * Preserves underscores inside url(), var(), and other CSS functions.
+ *      max-h-[calc(100vh_-_120px)] → "calc(100vh - 120px)"
+ *
+ * Only `url(...)` preserves underscores — URLs legitimately contain them and
+ * auto-converting would corrupt paths. Every other CSS function (calc, clamp,
+ * min, max, var, linear-gradient, etc.) uses spaces around operators, so
+ * underscores there are always stand-ins for spaces.
+ *
+ * To emit a literal underscore in a non-url value, escape it as `\_`.
  */
 function convertArbitraryUnderscores(value: string): string {
   if (!value.includes('_')) return value
-  // If the value contains CSS functions, only replace underscores outside them
-  if (value.includes('(')) {
-    let result = ''
-    let depth = 0
-    for (let i = 0; i < value.length; i++) {
-      const ch = value[i]
-      if (ch === '(') depth++
-      else if (ch === ')') depth--
-      result += (ch === '_' && depth === 0) ? ' ' : ch
+
+  let result = ''
+  let i = 0
+  while (i < value.length) {
+    const ch = value[i]
+
+    // Escaped underscore → literal underscore, skip the backslash.
+    if (ch === '\\' && value[i + 1] === '_') {
+      result += '_'
+      i += 2
+      continue
     }
-    return result
+
+    // Detect url(...) and copy its contents verbatim, preserving underscores.
+    if (ch === 'u' && value.slice(i, i + 4) === 'url(') {
+      const start = i
+      let depth = 1
+      i += 4
+      while (i < value.length && depth > 0) {
+        if (value[i] === '(') depth++
+        else if (value[i] === ')') depth--
+        i++
+      }
+      result += value.slice(start, i)
+      continue
+    }
+
+    result += ch === '_' ? ' ' : ch
+    i++
   }
-  return value.replace(/_/g, ' ')
+  return result
 }
 
 /**
@@ -1006,7 +1031,10 @@ function parseClassImpl(className: string): ParsedClass {
       raw: className,
       variants: [],
       utility: arbitraryPropMatch[1],
-      value: arbitraryPropMatch[2],
+      // Arbitrary properties follow the same underscore-as-space convention
+      // as arbitrary values: `[background:center_/_cover]` needs to emit
+      // `center / cover`. url() content is preserved by the helper.
+      value: convertArbitraryUnderscores(arbitraryPropMatch[2]),
       important,
       arbitrary: true,
     }

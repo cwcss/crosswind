@@ -3,24 +3,31 @@ import { resolveColorValue } from './rules'
 
 // Filters, Tables, Interactivity, SVG, Accessibility utilities
 
+// Shared named-size map for `blur-*` and `backdrop-blur-*` (Tailwind parity).
+// Callers fall back to `<value>px` when the value isn't a named key.
+const BLUR_SIZES: Record<string, string> = {
+  'none': '0',
+  'sm': '4px',
+  'DEFAULT': '8px',
+  'md': '12px',
+  'lg': '16px',
+  'xl': '24px',
+  '2xl': '40px',
+  '3xl': '64px',
+}
+
 // Filter utilities
 export const filterRule: UtilityRule = (parsed) => {
   // Handle filter-none
   if (parsed.raw === 'filter-none') {
     return { filter: 'none' }
   }
-  if (parsed.utility === 'blur' && parsed.value) {
-    const blurMap: Record<string, string> = {
-      'none': '0',
-      'sm': '4px',
-      'DEFAULT': '8px',
-      'md': '12px',
-      'lg': '16px',
-      'xl': '24px',
-      '2xl': '40px',
-      '3xl': '64px',
-    }
-    return { filter: `blur(${blurMap[parsed.value] || parsed.value})` }
+  // `blur` (no value) → DEFAULT; `blur-sm` etc. use named sizes;
+  // `blur-12` → `blur(12px)`; `blur-[10px]` / `blur-[5em]` passes raw.
+  if (parsed.utility === 'blur') {
+    const key = parsed.value || 'DEFAULT'
+    const size = BLUR_SIZES[key] ?? (parsed.value ? (/^\d/.test(parsed.value) ? `${parsed.value}px` : parsed.value) : BLUR_SIZES.DEFAULT)
+    return { filter: `blur(${size})` }
   }
   if (parsed.utility === 'brightness' && parsed.value) {
     return { filter: `brightness(${Number(parsed.value) / 100})` }
@@ -62,8 +69,12 @@ export const backdropFilterRule: UtilityRule = (parsed): Record<string, string> 
   if (parsed.raw === 'backdrop-filter-none') {
     return { 'backdrop-filter': 'none' }
   }
-  if (parsed.utility === 'backdrop-blur' && parsed.value) {
-    return { '-webkit-backdrop-filter': `blur(${parsed.value}px)`, 'backdrop-filter': `blur(${parsed.value}px)` }
+  // `backdrop-blur` (no value) → DEFAULT; `backdrop-blur-sm` etc. use named sizes;
+  // `backdrop-blur-12` or `backdrop-blur-[10px]` use raw value.
+  if (parsed.utility === 'backdrop-blur') {
+    const key = parsed.value || 'DEFAULT'
+    const size = BLUR_SIZES[key] ?? (parsed.value ? (/^\d/.test(parsed.value) ? `${parsed.value}px` : parsed.value) : BLUR_SIZES.DEFAULT)
+    return { '-webkit-backdrop-filter': `blur(${size})`, 'backdrop-filter': `blur(${size})` }
   }
   if (parsed.utility === 'backdrop-brightness' && parsed.value) {
     const v = `brightness(${Number(parsed.value) / 100})`
