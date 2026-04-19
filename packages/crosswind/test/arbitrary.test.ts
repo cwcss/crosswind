@@ -559,5 +559,143 @@ describe('Arbitrary Values and Properties', () => {
         expect(css).toContain('.\\[content\\:a\\>b\\]')
       })
     })
+
+    // =========================================================================
+    // Regression: Tailwind-style underscore → space conversion in arbitrary
+    // values. CSS class names can't contain spaces, so Tailwind's convention
+    // is to write `_` and have the engine convert it to ` ` when emitting the
+    // property value. The ONLY exception is `url(...)` — URLs legitimately
+    // contain underscores in paths, so those must be preserved verbatim.
+    //
+    // These tests were added after stx/drivly hit a `grid-cols-[300px_1fr]`
+    // bug where the value stayed as `300px_1fr` in the output (invalid CSS),
+    // and `max-h-[calc(100vh_-_120px)]` collapsed to `calc(100vh_-_120px)`
+    // (invalid operator) because the old parser preserved underscores inside
+    // ANY parentheses. See `convertArbitraryUnderscores` in parser.ts.
+    // =========================================================================
+    describe('Underscore-to-space conversion (regression)', () => {
+      it('converts underscores to spaces in multi-track grid columns', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('grid-cols-[300px_1fr]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('grid-template-columns: 300px 1fr;')
+        expect(css).not.toContain('grid-template-columns: 300px_1fr')
+      })
+
+      it('converts underscores to spaces with lg: variant', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('lg:grid-cols-[300px_1fr]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('grid-template-columns: 300px 1fr;')
+        expect(css).not.toContain('grid-template-columns: 300px_1fr')
+      })
+
+      it('converts underscores to spaces inside calc()', () => {
+        // Spaces around the `-` operator are required for valid CSS calc().
+        // Users write `_-_` in the class name; the output must have real spaces.
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('max-h-[calc(100vh_-_120px)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('max-height: calc(100vh - 120px);')
+      })
+
+      it('converts underscores to spaces inside clamp()', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-[clamp(200px,_50%,_800px)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('width: clamp(200px, 50%, 800px);')
+      })
+
+      it('converts underscores to spaces inside min()/max()', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('w-[min(100%,_500px)]')
+        gen.generate('h-[max(50vh,_300px)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('width: min(100%, 500px);')
+        expect(css).toContain('height: max(50vh, 300px);')
+      })
+
+      it('converts underscores to spaces in multi-value shadow (via arbitrary property)', () => {
+        // `0_4px_16px_rgba(...)` → `0 4px 16px rgba(...)` — nested parens
+        // around the color must not prevent the top-level underscores from
+        // becoming spaces. Tested via arbitrary property form since shadow-
+        // utility may not emit for complex rgba-containing values.
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('[box-shadow:0_4px_16px_rgba(0,0,0,0.06)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('box-shadow: 0 4px 16px rgba(0,0,0,0.06);')
+      })
+
+      it('converts underscores to spaces in linear-gradient argument list', () => {
+        // Tested via arbitrary property form since bg- doesn't emit
+        // background-image for gradient values.
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('[background-image:linear-gradient(135deg,_#fff,_#000)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('background-image: linear-gradient(135deg, #fff, #000);')
+      })
+
+      it('converts underscores inside nested CSS functions (repeat(auto-fit, minmax(...)))', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));')
+      })
+
+      it('PRESERVES underscores inside url() (URLs are path-bearing)', () => {
+        // The whole point of the url() exception — it's the one CSS function
+        // where underscores are meaningful rather than space stand-ins.
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('[background-image:url(https://example.com/foo_bar_baz.png)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('url(https://example.com/foo_bar_baz.png)')
+        expect(css).not.toContain('foo bar baz.png')
+      })
+
+      it('PRESERVES underscores in data-URL paths', () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('[background:url(data:image/svg+xml;base64,my_encoded_data)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('url(data:image/svg+xml;base64,my_encoded_data)')
+      })
+
+      it('converts underscores outside url() while preserving them inside', () => {
+        // Mixed case — top-level underscores between shorthand parts become
+        // spaces, the underscores INSIDE the url() stay put.
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('[background:center_/_cover_url(/assets/cover_image.png)]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('background: center / cover url(/assets/cover_image.png);')
+      })
+
+      it('treats escaped underscores (\\_) as literal underscores', () => {
+        // Escape hatch: if you truly need a literal `_` in a non-url context,
+        // write `\_`. Used rarely but must work.
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('content-[my\\_literal\\_text]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('my_literal_text')
+      })
+
+      it('works with font-family type hint and underscores', () => {
+        // `font-[family-name:Inter_Tight]` → `font-family: Inter Tight`
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate('font-[family-name:Inter_Tight]')
+        const css = gen.toCSS(false)
+        expect(css).toContain('font-family: Inter Tight;')
+      })
+
+      it('parseClass exposes the space-converted value', () => {
+        // End-to-end: the parsed form should already carry the converted value.
+        const parsed = parseClass('grid-cols-[120px_1fr_200px]')
+        expect(parsed.value).toBe('120px 1fr 200px')
+
+        const parsedCalc = parseClass('max-h-[calc(100vh_-_120px)]')
+        expect(parsedCalc.value).toBe('calc(100vh - 120px)')
+
+        const parsedUrl = parseClass('bg-[url(/foo_bar.png)]')
+        expect(parsedUrl.value).toBe('url(/foo_bar.png)')
+      })
+    })
   })
 })

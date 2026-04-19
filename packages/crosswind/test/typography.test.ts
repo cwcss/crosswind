@@ -38,6 +38,37 @@ describe('Typography Utilities', () => {
       gen.generate('font-semibold')
       expect(gen.toCSS(false)).toContain('font-weight: 600;')
     })
+
+    // Regression: arbitrary font values default to font-weight, but a
+    // type hint of `family-name` (or `string`) must route to font-family
+    // instead. Previously every `font-[...]` dumped into font-weight —
+    // so `font-[family-name:Inter_Tight]` emitted
+    //   font-weight: Inter Tight;   ← wrong property!
+    it('routes font-[number:...] to font-weight', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('font-[750]')
+      expect(gen.toCSS(false)).toContain('font-weight: 750;')
+    })
+
+    it('routes font-[family-name:...] to font-family (with underscore→space)', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('font-[family-name:Inter_Tight]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('font-family: Inter Tight;')
+      expect(css).not.toContain('font-weight: Inter Tight')
+    })
+
+    it('routes font-[family-name:...] with quoted family to font-family', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('font-[family-name:\'Press_Start_2P\']')
+      expect(gen.toCSS(false)).toContain("font-family: 'Press Start 2P';")
+    })
+
+    it('routes font-[string:...] to font-family', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('font-[string:IBM_Plex_Mono]')
+      expect(gen.toCSS(false)).toContain('font-family: IBM Plex Mono;')
+    })
   })
 
   describe('Text align', () => {

@@ -562,3 +562,93 @@ describe('extractClasses - Arbitrary Values', () => {
     expect(result).toEqual(new Set(['flex', 'p-4', 'z-[1]', 'w-[100px]', 'bg-blue-500', 'hover:z-[999]']))
   })
 })
+
+// =============================================================================
+// Regression tests for arbitrary-value underscore → space conversion.
+//
+// Tailwind convention: CSS class names can't contain spaces, so you write `_`
+// where you mean a space. The engine converts them when emitting the value.
+// The ONE exception is `url(...)` — URLs legitimately contain underscores.
+//
+// History: an earlier implementation preserved underscores inside ANY
+// parentheses (so `calc(100vh_-_120px)` stayed `calc(100vh_-_120px)` — invalid
+// CSS because the minus needs spaces). The current implementation only shields
+// url() content; every other function gets underscores converted.
+//
+// Also: `[prop:value]` arbitrary-property syntax previously bypassed the
+// conversion entirely. Both arbitrary-value (`w-[100px]`) and
+// arbitrary-property (`[width:100px]`) paths must convert underscores.
+// =============================================================================
+describe('parseClass - Arbitrary underscore conversion', () => {
+  it('converts underscores to spaces in arbitrary values (single-level)', () => {
+    const r = parseClass('grid-cols-[120px_1fr_200px]')
+    expect(r.value).toBe('120px 1fr 200px')
+  })
+
+  it('converts underscores inside calc()', () => {
+    const r = parseClass('max-h-[calc(100vh_-_120px)]')
+    expect(r.value).toBe('calc(100vh - 120px)')
+  })
+
+  it('converts underscores inside nested function calls (repeat + minmax)', () => {
+    const r = parseClass('grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))]')
+    expect(r.value).toBe('repeat(auto-fit, minmax(200px, 1fr))')
+  })
+
+  it('converts underscores in a comma-separated linear-gradient', () => {
+    const r = parseClass('bg-[linear-gradient(135deg,_#fff_0%,_#000_100%)]')
+    expect(r.value).toBe('linear-gradient(135deg, #fff 0%, #000 100%)')
+  })
+
+  it('preserves underscores inside url() (path characters)', () => {
+    const r = parseClass('bg-[url(/img/foo_bar_baz.png)]')
+    expect(r.value).toBe('url(/img/foo_bar_baz.png)')
+  })
+
+  it('preserves underscores in data-URL base64', () => {
+    const r = parseClass('bg-[url(data:image/png;base64,a_b_c_d)]')
+    expect(r.value).toBe('url(data:image/png;base64,a_b_c_d)')
+  })
+
+  it('mixes url() preservation with outer-scope conversion', () => {
+    // `center_/_cover` → `center / cover` (outside url)
+    // `cover_image.png` inside url() → preserved
+    const r = parseClass('[background:center_/_cover_url(/img/cover_image.png)]')
+    expect(r.value).toBe('center / cover url(/img/cover_image.png)')
+  })
+
+  it('treats `\\_` as a literal underscore escape', () => {
+    // Escape hatch for the rare case where you actually need an underscore
+    // in a non-url arbitrary value. Both escaped forms collapse to `_`.
+    const r = parseClass('content-[a\\_b\\_c]')
+    expect(r.value).toBe('a_b_c')
+  })
+
+  it('preserves arbitrary values that contain no underscores', () => {
+    // Fast path — function must return value unchanged when `_` is absent.
+    const r = parseClass('w-[100px]')
+    expect(r.value).toBe('100px')
+  })
+
+  it('applies conversion to arbitrary-property syntax too', () => {
+    // Regression: `[prop:val]` originally skipped convertArbitraryUnderscores
+    // entirely, so `[grid-template-columns:300px_1fr]` stayed underscored.
+    const r = parseClass('[grid-template-columns:300px_1fr]')
+    expect(r.utility).toBe('grid-template-columns')
+    expect(r.value).toBe('300px 1fr')
+  })
+
+  it('arbitrary-property syntax also preserves url() underscores', () => {
+    const r = parseClass('[background-image:url(/img/hero_bg.png)]')
+    expect(r.value).toBe('url(/img/hero_bg.png)')
+  })
+
+  it('extracts and preserves type hints after conversion', () => {
+    // Type hints are stripped from `value` AFTER underscore conversion,
+    // so the family-name hint routes correctly and the family itself has
+    // real spaces.
+    const r = parseClass('font-[family-name:Inter_Tight]')
+    expect(r.typeHint).toBe('family-name')
+    expect(r.value).toBe('Inter Tight')
+  })
+})

@@ -636,8 +636,16 @@ export const fontSizeRule: UtilityRule = (parsed, config) => {
 
 export const fontWeightRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'font' && parsed.value) {
-    // Handle arbitrary values first
+    // Handle arbitrary values. Type hints disambiguate the CSS property:
+    //   font-[family-name:Inter_Tight] → font-family
+    //   font-[string:"Press Start"]    → font-family (same vibe)
+    //   font-[600]                     → font-weight (default)
+    //   font-[number:800]              → font-weight
     if (parsed.arbitrary) {
+      const hint = parsed.typeHint
+      if (hint === 'family-name' || hint === 'string') {
+        return { 'font-family': parsed.value }
+      }
       return { 'font-weight': parsed.value }
     }
     const weights: Record<string, string> = {
