@@ -526,4 +526,52 @@ describe('Edge Cases', () => {
       expect(css).toContain('-')
     })
   })
+
+  // ============================================================================
+  // Regression: Tailwind-style cascade ordering. Shorthand utilities (`m-0`,
+  // `p-0`, etc.) MUST emit before directional counterparts (`mx-auto`) so that
+  // a combination like `class="m-0 mx-auto"` keeps the auto margins — the
+  // shorthand coming last would otherwise reset them and silently break
+  // horizontal centering.
+  // ============================================================================
+  describe('Cascade order — shorthand vs directional', () => {
+    it('emits m-0 BEFORE mx-auto regardless of generate() order', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      // Authoring order: mx-auto first, m-0 second — the buggy case
+      gen.generate('mx-auto')
+      gen.generate('m-0')
+      const css = gen.toCSS(false)
+      const mPos = css.indexOf('.m-0')
+      const mxPos = css.indexOf('.mx-auto')
+      expect(mPos).toBeGreaterThan(-1)
+      expect(mxPos).toBeGreaterThan(-1)
+      // mx-auto must appear AFTER m-0 in the output
+      expect(mxPos).toBeGreaterThan(mPos)
+    })
+
+    it('emits p-2 BEFORE py-4 so py overrides shorthand on equal specificity', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('py-4')
+      gen.generate('p-2')
+      const css = gen.toCSS(false)
+      expect(css.indexOf('.py-4')).toBeGreaterThan(css.indexOf('.p-2'))
+    })
+
+    it('emits mx-auto BEFORE mt-4 (axis before single-side)', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('mt-4')
+      gen.generate('mx-auto')
+      const css = gen.toCSS(false)
+      expect(css.indexOf('.mt-4')).toBeGreaterThan(css.indexOf('.mx-auto'))
+    })
+
+    it('stably preserves order within the same rank', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('p-2')
+      gen.generate('m-0')
+      const css = gen.toCSS(false)
+      // Both rank 0; p-2 was emitted first, so it stays first
+      expect(css.indexOf('.p-2')).toBeLessThan(css.indexOf('.m-0'))
+    })
+  })
 })
