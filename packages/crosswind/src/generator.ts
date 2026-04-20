@@ -1893,20 +1893,28 @@ export class CSSGenerator {
       return
     }
 
-    // Gap: gap-{spacing}
+    // Gap: gap-{spacing}. Uses the same v4-style decimal fallback as the
+    // shared spacing resolver — `gap-4.5` → `1.125rem` instead of
+    // the invalid `gap: 4.5;` the pre-fix path emitted.
+    const resolveGap = (v: string): string => {
+      const hit = this.config.theme.spacing[v]
+      if (hit !== undefined) return hit
+      if (/^\d+(?:\.\d+)?$/.test(v)) {
+        const n = Number.parseFloat(v)
+        if (Number.isFinite(n)) return `${n * 0.25}rem`
+      }
+      return v
+    }
     if (utility === 'gap' && value) {
-      const gapValue = this.config.theme.spacing[value] || value
-      this.addRule(parsed, { gap: gapValue })
+      this.addRule(parsed, { gap: resolveGap(value) })
       return
     }
     if (utility === 'gap-x' && value) {
-      const gapValue = this.config.theme.spacing[value] || value
-      this.addRule(parsed, { 'column-gap': gapValue })
+      this.addRule(parsed, { 'column-gap': resolveGap(value) })
       return
     }
     if (utility === 'gap-y' && value) {
-      const gapValue = this.config.theme.spacing[value] || value
-      this.addRule(parsed, { 'row-gap': gapValue })
+      this.addRule(parsed, { 'row-gap': resolveGap(value) })
       return
     }
 

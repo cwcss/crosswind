@@ -84,6 +84,58 @@ describe('Layout Utilities', () => {
       expect(css).toContain('left: 0;')
     })
 
+    // Regression: `inset-x-*` and `inset-y-*` are axis-scoped versions.
+    // Previously the parser parsed `inset-x-0` as `utility: inset, value: x-0`
+    // and the inset rule blindly interpolated `x-0` into all four sides,
+    // emitting `top: x-0; right: x-0; bottom: x-0; left: x-0` — invalid CSS
+    // on every side. Fixed by adding `inset-x` and `inset-y` to the compound
+    // prefix list so the parser produces `utility: inset-x, value: 0`.
+    it('inset-x-0 only sets left + right', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('inset-x-0')
+      const css = gen.toCSS(false)
+      expect(css).toContain('left: 0;')
+      expect(css).toContain('right: 0;')
+      expect(css).not.toContain('top: 0')
+      expect(css).not.toContain('bottom: 0')
+      // Guard against the pre-fix bogus output
+      expect(css).not.toContain('left: x-0')
+    })
+
+    it('inset-x-4 resolves spacing on horizontal axis only', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('inset-x-4')
+      const css = gen.toCSS(false)
+      expect(css).toContain('left: 1rem;')
+      expect(css).toContain('right: 1rem;')
+    })
+
+    it('inset-y-auto only sets top + bottom to auto', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('inset-y-auto')
+      const css = gen.toCSS(false)
+      expect(css).toContain('top: auto;')
+      expect(css).toContain('bottom: auto;')
+      expect(css).not.toContain('left: auto')
+      expect(css).not.toContain('right: auto')
+    })
+
+    it('inset-x-[10px] accepts arbitrary values', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('inset-x-[10px]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('left: 10px;')
+      expect(css).toContain('right: 10px;')
+    })
+
+    it('-inset-x-4 applies negative on both horizontal sides', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('-inset-x-4')
+      const css = gen.toCSS(false)
+      expect(css).toContain('left: -1rem;')
+      expect(css).toContain('right: -1rem;')
+    })
+
     it('should generate negative top', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('-top-4')

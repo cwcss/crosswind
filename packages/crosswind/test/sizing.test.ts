@@ -68,6 +68,56 @@ describe('Sizing Utilities', () => {
     })
   })
 
+  // Regression: modern dynamic-viewport units. Mobile browsers expose
+  // three height variants — `svh` (smallest, with address bar), `lvh`
+  // (largest, address bar hidden), and `dvh` (dynamic, currently visible).
+  // Previously `h-dvh` parsed correctly but fell through to the raw-value
+  // path, emitting `height: dvh;` (invalid CSS) instead of `height: 100dvh`.
+  describe('Modern viewport units (svh/lvh/dvh, regression)', () => {
+    it('h-dvh emits 100dvh', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('h-dvh')
+      expect(gen.toCSS(false)).toContain('height: 100dvh;')
+    })
+
+    it('h-svh emits 100svh', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('h-svh')
+      expect(gen.toCSS(false)).toContain('height: 100svh;')
+    })
+
+    it('h-lvh emits 100lvh', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('h-lvh')
+      expect(gen.toCSS(false)).toContain('height: 100lvh;')
+    })
+
+    it('w-dvw emits 100dvw', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('w-dvw')
+      expect(gen.toCSS(false)).toContain('width: 100dvw;')
+    })
+
+    it('w-svw emits 100svw', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('w-svw')
+      expect(gen.toCSS(false)).toContain('width: 100svw;')
+    })
+
+    it('w-lvw emits 100lvw', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('w-lvw')
+      expect(gen.toCSS(false)).toContain('width: 100lvw;')
+    })
+
+    // Guardrail — the existing `h-screen` keyword must keep working.
+    it('h-screen still emits 100vh after the change', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('h-screen')
+      expect(gen.toCSS(false)).toContain('height: 100vh;')
+    })
+  })
+
   describe('Fractional values', () => {
     it('should parse fractional width', () => {
       const result = parseClass('w-1/2')

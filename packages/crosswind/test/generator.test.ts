@@ -188,6 +188,105 @@ describe('CSSGenerator', () => {
       const css = gen.toCSS(false)
       expect(css).toContain('border-inline-end-width: 1px')
     })
+
+    // Regression: directional border widths accept arbitrary values AND
+    // color values. Previously `border-t-[2px]`, `border-x-[3px]`, etc. got
+    // skipped because the width map was hardcoded to {0, 2, 4, 8}; and
+    // `border-r-red-500` emitted nothing because the rule didn't route
+    // palette names to border-*-color.
+    it('border-t-[2px] accepts arbitrary widths', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('border-t-[2px]')
+      expect(gen.toCSS(false)).toContain('border-top-width: 2px;')
+    })
+
+    it('border-x-[3px] sets both horizontal edges', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('border-x-[3px]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('border-left-width: 3px;')
+      expect(css).toContain('border-right-width: 3px;')
+    })
+
+    it('border-b-[0.5rem] handles rem arbitrary values', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('border-b-[0.5rem]')
+      expect(gen.toCSS(false)).toContain('border-bottom-width: 0.5rem;')
+    })
+
+    it('border-r-red-500 emits border-right-color from palette', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('border-r-red-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('border-right-color:')
+      // Guard — must NOT emit border-right-width for a color value
+      expect(css).not.toContain('border-right-width:')
+    })
+
+    it('border-t-gray-800 resolves deeper-shade palette', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('border-t-gray-800')
+      expect(gen.toCSS(false)).toContain('border-top-color:')
+    })
+
+    it('border-t-[#FF3E54] accepts arbitrary hex colors', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('border-t-[#FF3E54]')
+      expect(gen.toCSS(false)).toContain('border-top-color: #FF3E54;')
+    })
+
+    it('border-t-transparent emits border-top-color: transparent', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('border-t-transparent')
+      expect(gen.toCSS(false)).toContain('border-top-color: transparent;')
+    })
+
+    // Regression: physical rounded corners (`rounded-tl`, `rounded-tr`,
+    // `rounded-bl`, `rounded-br`) and physical sides (`rounded-t`,
+    // `rounded-r`, `rounded-b`, `rounded-l`) previously only resolved for
+    // a handful of hardcoded size keywords (`-lg`, `-sm`, `-none`).
+    // Arbitrary values and theme-extension sizes were silently dropped.
+    it('rounded-tr-2xl resolves via the rule (not the fast-path table)', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('rounded-tr-2xl')
+      expect(gen.toCSS(false)).toContain('border-top-right-radius: 1rem;')
+    })
+
+    it('rounded-bl-[6px] accepts arbitrary corner radii', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('rounded-bl-[6px]')
+      expect(gen.toCSS(false)).toContain('border-bottom-left-radius: 6px;')
+    })
+
+    it('rounded-br-full uses full keyword', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('rounded-br-full')
+      expect(gen.toCSS(false)).toContain('border-bottom-right-radius: 9999px;')
+    })
+
+    it('rounded-t-xl sets both top corners', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('rounded-t-xl')
+      const css = gen.toCSS(false)
+      expect(css).toContain('border-top-left-radius: 0.75rem;')
+      expect(css).toContain('border-top-right-radius: 0.75rem;')
+    })
+
+    it('rounded-b-[8px] sets both bottom corners with arbitrary radius', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('rounded-b-[8px]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('border-bottom-left-radius: 8px;')
+      expect(css).toContain('border-bottom-right-radius: 8px;')
+    })
+
+    it('rounded-l-none zeroes left corners', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('rounded-l-none')
+      const css = gen.toCSS(false)
+      expect(css).toContain('border-top-left-radius: 0;')
+      expect(css).toContain('border-bottom-left-radius: 0;')
+    })
   })
 
   describe('Pseudo-class variants', () => {

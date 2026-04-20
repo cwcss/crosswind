@@ -230,21 +230,39 @@ export const spacingRule: UtilityRule = (parsed, config) => {
   if (!properties || !parsed.value)
     return undefined
 
+  // Resolve a raw token to a concrete CSS length.
+  // 1) Theme scale lookup (`4` → `1rem`, `2.5` → `0.625rem`, …).
+  // 2) Off-scale positive numbers — Tailwind v4 behavior: any decimal multiple
+  //    of 0.25rem is valid (`4.5` → `1.125rem`, `9.5` → `2.375rem`). This
+  //    replaces the pre-fix output which emitted the raw number verbatim
+  //    (`padding: 4.5;`) — invalid CSS that silently dropped the declaration.
+  // 3) Anything else (keywords, units) passes through unchanged so arbitrary
+  //    values like `p-[calc(...)]` and scale aliases like `p-px` still work.
+  const resolve = (token: string): string => {
+    const hit = config.theme.spacing[token]
+    if (hit !== undefined) return hit
+    if (/^\d+(?:\.\d+)?$/.test(token)) {
+      const n = Number.parseFloat(token)
+      if (Number.isFinite(n)) return `${n * 0.25}rem`
+    }
+    return token
+  }
+
   // Handle negative values
   let value: string
   if (parsed.value.startsWith('-')) {
     const positiveValue = parsed.value.slice(1)
-    const spacing = config.theme.spacing[positiveValue]
     // Special case: -0 should just be 0
     if (positiveValue === '0') {
-      value = spacing || '0'
+      value = config.theme.spacing[positiveValue] || '0'
     }
     else {
-      value = spacing ? `-${spacing}` : parsed.value
+      const resolved = resolve(positiveValue)
+      value = resolved === positiveValue ? parsed.value : `-${resolved}`
     }
   }
   else {
-    value = config.theme.spacing[parsed.value] || parsed.value
+    value = resolve(parsed.value)
   }
 
   const result: Record<string, string> = {}
@@ -260,6 +278,12 @@ export const sizingRule: UtilityRule = (parsed, config) => {
     const sizeMap: Record<string, string> = {
       full: '100%',
       screen: '100vw',
+      // Modern viewport units — dynamic / small / large. These track the
+      // browser UI state (toolbars, etc.). Without these entries, `w-dvw`
+      // fell through to the raw-value path and emitted `width: dvw;`.
+      svw: '100svw',
+      lvw: '100lvw',
+      dvw: '100dvw',
       auto: 'auto',
       min: 'min-content',
       max: 'max-content',
@@ -283,6 +307,10 @@ export const sizingRule: UtilityRule = (parsed, config) => {
     const sizeMap: Record<string, string> = {
       full: '100%',
       screen: '100vh',
+      // Modern viewport units for mobile-aware layouts.
+      svh: '100svh',
+      lvh: '100lvh',
+      dvh: '100dvh',
       auto: 'auto',
       min: 'min-content',
       max: 'max-content',
@@ -607,6 +635,48 @@ export const placeholderColorRule: UtilityRule = (parsed, config) => {
 // Typography utilities
 export const fontSizeRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'text' && parsed.value) {
+    // Split off an optional line-height modifier: `text-xs/tight`,
+    // `text-[14px]/[1.5]`, `text-lg/6`. The font-size rule resolves the
+    // size; the line-height comes from theme.lineHeight or is used verbatim.
+    let sizeValue = parsed.value
+    let lineHeightOverride: string | undefined
+    const slashIdx = sizeValue.lastIndexOf('/')
+    if (slashIdx !== -1 && !parsed.value.startsWith('[') && !sizeValue.slice(slashIdx + 1).includes(']')) {
+      // Slash form: font-size / line-height. Skip if the slash is inside
+      // a bracketed arbitrary value (handled by the pre-bracket splitter
+      // in the parser, which encodes both halves verbatim).
+    }
+    if (slashIdx !== -1) {
+      const beforeSlash = sizeValue.slice(0, slashIdx)
+      const afterSlash = sizeValue.slice(slashIdx + 1)
+      // Only treat as size/line-height if the left side is a size keyword or
+      // an arbitrary bracket value (already stripped by the parser branch
+      // above — leaving us a bare length like `14px`).
+      if (afterSlash && (config.theme.fontSize[beforeSlash] || parsed.arbitrary)) {
+        sizeValue = beforeSlash
+        // Named line-height keywords — mirror the map in leadingRule so
+        // `text-xs/tight` produces `line-height: 1.25` not `line-height: tight`.
+        const NAMED_LH: Record<string, string> = {
+          none: '1',
+          tight: '1.25',
+          snug: '1.375',
+          normal: '1.5',
+          relaxed: '1.625',
+          loose: '2',
+          3: '0.75rem',
+          4: '1rem',
+          5: '1.25rem',
+          6: '1.5rem',
+          7: '1.75rem',
+          8: '2rem',
+          9: '2.25rem',
+          10: '2.5rem',
+        }
+        const themeLh = config.theme.lineHeight?.[afterSlash]
+        lineHeightOverride = themeLh ?? NAMED_LH[afterSlash] ?? afterSlash
+      }
+    }
+
     // Handle arbitrary values first
     if (parsed.arbitrary) {
       // If there's a type hint, only handle font-size if it's a length-related type
@@ -615,20 +685,23 @@ export const fontSizeRule: UtilityRule = (parsed, config) => {
         if (parsed.typeHint === 'color') {
           return undefined // Let colorRule handle it
         }
-        // 'length' type hint or other size-related types -> font-size
-        return { 'font-size': parsed.value } as Record<string, string>
+        const out: Record<string, string> = { 'font-size': sizeValue }
+        if (lineHeightOverride) out['line-height'] = lineHeightOverride
+        return out
       }
       // No type hint - detect if the value looks like a color and let colorRule handle it
-      if (/^#|^rgb|^hsl|^hwb|^lab|^lch|^oklch|^oklab|^color\(|^var\(--/.test(parsed.value)) {
+      if (/^#|^rgb|^hsl|^hwb|^lab|^lch|^oklch|^oklab|^color\(|^var\(--/.test(sizeValue)) {
         return undefined
       }
-      return { 'font-size': parsed.value } as Record<string, string>
+      const out: Record<string, string> = { 'font-size': sizeValue }
+      if (lineHeightOverride) out['line-height'] = lineHeightOverride
+      return out
     }
-    const fontSize = config.theme.fontSize[parsed.value]
+    const fontSize = config.theme.fontSize[sizeValue]
     if (fontSize) {
       return {
         'font-size': fontSize[0],
-        'line-height': fontSize[1].lineHeight,
+        'line-height': lineHeightOverride ?? fontSize[1].lineHeight,
       } as Record<string, string>
     }
   }
@@ -757,8 +830,8 @@ export const borderWidthRule: UtilityRule = (parsed) => {
 }
 
 // Border side width utilities (border-t-0, border-r-2, border-x-4, etc.)
-export const borderSideWidthRule: UtilityRule = (parsed) => {
-  const sideUtilities: Record<string, string | string[]> = {
+export const borderSideWidthRule: UtilityRule = (parsed, config) => {
+  const sideWidthProps: Record<string, string | string[]> = {
     'border-t': 'border-top-width',
     'border-r': 'border-right-width',
     'border-b': 'border-bottom-width',
@@ -769,9 +842,19 @@ export const borderSideWidthRule: UtilityRule = (parsed) => {
     'border-s': 'border-inline-start-width',
     'border-e': 'border-inline-end-width',
   }
+  const sideColorProps: Record<string, string | string[]> = {
+    'border-t': 'border-top-color',
+    'border-r': 'border-right-color',
+    'border-b': 'border-bottom-color',
+    'border-l': 'border-left-color',
+    'border-x': ['border-left-color', 'border-right-color'],
+    'border-y': ['border-top-color', 'border-bottom-color'],
+    'border-s': 'border-inline-start-color',
+    'border-e': 'border-inline-end-color',
+  }
 
-  const prop = sideUtilities[parsed.utility]
-  if (!prop)
+  const widthProp = sideWidthProps[parsed.utility]
+  if (!widthProp)
     return undefined
 
   // Width values: 0, 2, 4, 8 (or default to 1px if no value)
@@ -782,15 +865,74 @@ export const borderSideWidthRule: UtilityRule = (parsed) => {
     8: '8px',
   }
 
-  const width = parsed.value ? widthMap[parsed.value] : '1px'
-  if (!width)
-    return undefined
-
-  if (Array.isArray(prop)) {
-    return prop.reduce((acc, p) => ({ ...acc, [p]: width }), {} as Record<string, string>)
+  // No value → default 1px width
+  if (!parsed.value) {
+    const prop = widthProp
+    if (Array.isArray(prop)) {
+      return prop.reduce((acc, p) => ({ ...acc, [p]: '1px' }), {} as Record<string, string>)
+    }
+    return { [prop]: '1px' }
   }
 
-  return { [prop]: width }
+  // Arbitrary values route to width when they look like a length
+  // (`[2px]`, `[0.5rem]`, etc.) or to color when they look like a color
+  // (`[#ff0000]`, `[rgb(...)]`).
+  if (parsed.arbitrary) {
+    const val = parsed.value
+    const looksLikeColor = /^#|^(?:rgb|rgba|hsl|hsla|oklch|oklab|lab|lch)\(|^(?:currentColor|transparent|inherit)$/i.test(val)
+    const target = looksLikeColor ? sideColorProps[parsed.utility] : widthProp
+    const prop = target ?? widthProp
+    if (Array.isArray(prop)) {
+      return prop.reduce((acc, p) => ({ ...acc, [p]: val }), {} as Record<string, string>)
+    }
+    return { [prop]: val }
+  }
+
+  // Named width from the simple map
+  if (widthMap[parsed.value]) {
+    const prop = widthProp
+    if (Array.isArray(prop)) {
+      return prop.reduce((acc, p) => ({ ...acc, [p]: widthMap[parsed.value!] }), {} as Record<string, string>)
+    }
+    return { [prop]: widthMap[parsed.value] }
+  }
+
+  // Color palette lookup for `border-r-red-500`, `border-t-gray-800`, etc.
+  const colorProp = sideColorProps[parsed.utility]
+  if (colorProp && config) {
+    const colorParts = parsed.value.split('-')
+    if (colorParts.length >= 2) {
+      const shade = colorParts[colorParts.length - 1]
+      const colorName = colorParts.slice(0, -1).join('-')
+      const entry = config.theme.colors[colorName]
+      if (entry && typeof entry === 'object' && entry[shade]) {
+        const prop = colorProp
+        if (Array.isArray(prop)) {
+          return prop.reduce((acc, p) => ({ ...acc, [p]: entry[shade] }), {} as Record<string, string>)
+        }
+        return { [prop]: entry[shade] }
+      }
+    }
+    // Direct color keyword (white, black, transparent, currentColor)
+    const direct = config.theme.colors[parsed.value]
+    if (typeof direct === 'string') {
+      const prop = colorProp
+      if (Array.isArray(prop)) {
+        return prop.reduce((acc, p) => ({ ...acc, [p]: direct }), {} as Record<string, string>)
+      }
+      return { [prop]: direct }
+    }
+    if (parsed.value === 'transparent' || parsed.value === 'current' || parsed.value === 'inherit') {
+      const val = parsed.value === 'current' ? 'currentColor' : parsed.value
+      const prop = colorProp
+      if (Array.isArray(prop)) {
+        return prop.reduce((acc, p) => ({ ...acc, [p]: val }), {} as Record<string, string>)
+      }
+      return { [prop]: val }
+    }
+  }
+
+  return undefined
 }
 
 export const borderRadiusRule: UtilityRule = (parsed, config) => {
@@ -838,6 +980,30 @@ export const borderRadiusRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'rounded-ee' && parsed.value) {
     const value = config.theme.borderRadius[parsed.value] || parsed.value
     return { 'border-end-end-radius': value } as Record<string, string>
+  }
+
+  // Physical side + corner variants: rounded-t-*, rounded-r-*, rounded-b-*,
+  // rounded-l-*, rounded-tl-*, rounded-tr-*, rounded-bl-*, rounded-br-*.
+  // Mirror the size-keyword fast path so `rounded-tr-2xl`, `rounded-bl-[6px]`,
+  // and theme-extension values all resolve. The fast-path lookup table in
+  // generator.ts only covers the `-lg`/`-sm`/`-none` triplet, so without
+  // this, every other size (including all arbitrary values) dropped.
+  const physicalMap: Record<string, string[]> = {
+    'rounded-t': ['border-top-left-radius', 'border-top-right-radius'],
+    'rounded-r': ['border-top-right-radius', 'border-bottom-right-radius'],
+    'rounded-b': ['border-bottom-left-radius', 'border-bottom-right-radius'],
+    'rounded-l': ['border-top-left-radius', 'border-bottom-left-radius'],
+    'rounded-tl': ['border-top-left-radius'],
+    'rounded-tr': ['border-top-right-radius'],
+    'rounded-bl': ['border-bottom-left-radius'],
+    'rounded-br': ['border-bottom-right-radius'],
+  }
+  const props = physicalMap[parsed.utility]
+  if (props && parsed.value) {
+    const value = config.theme.borderRadius[parsed.value] || parsed.value
+    const out: Record<string, string> = {}
+    for (const p of props) out[p] = value
+    return out
   }
 }
 

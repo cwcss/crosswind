@@ -132,9 +132,13 @@ describe('Spacing Utilities', () => {
     })
 
     it('should handle very large negative margin', () => {
+      // Tailwind v4 scaling behavior — any numeric token (even off-scale)
+      // resolves to `<n> * 0.25rem`. Pre-fix behavior emitted the raw
+      // number verbatim (`margin: -999;`), which browsers reject as
+      // invalid. Now we emit a valid length: 999 * 0.25 = 249.75rem.
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('-m-999')
-      expect(gen.toCSS(false)).toContain('margin: -999;')
+      expect(gen.toCSS(false)).toContain('margin: -249.75rem;')
     })
 
     it('should handle negative arbitrary values', () => {
@@ -156,6 +160,137 @@ describe('Spacing Utilities', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('m-[15px]')
       expect(gen.toCSS(false)).toContain('margin: 15px;')
+    })
+  })
+
+  // Regression: negative arbitrary values. `-mt-[20px]`, `-translate-x-[50%]`,
+  // etc. Previously the preArbitraryMatch regex only matched utilities that
+  // started with a letter, so the dash-prefixed variants fell through to
+  // the name-based negative-handling code — which then couldn't unwrap the
+  // brackets. Result: utility=`-mt`, no rule matched, zero CSS emitted. The
+  // fix peels the leading dash off the utility during parse and prefixes
+  // the value with `-`, so the existing rule code sees `utility: mt,
+  // value: -20px`.
+  describe('Negative arbitrary spacing (regression)', () => {
+    it('-mt-[20px] emits negative margin-top', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('-mt-[20px]')
+      expect(gen.toCSS(false)).toContain('margin-top: -20px;')
+    })
+
+    it('-mt-[1.5rem] handles rem units', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('-mt-[1.5rem]')
+      expect(gen.toCSS(false)).toContain('margin-top: -1.5rem;')
+    })
+
+    it('-mx-[10px] covers left + right with negative', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('-mx-[10px]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('margin-left: -10px;')
+      expect(css).toContain('margin-right: -10px;')
+    })
+
+    it('-translate-x-[50%] generates negative translate', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('-translate-x-[50%]')
+      expect(gen.toCSS(false)).toContain('translateX(-50%)')
+    })
+
+    it('-top-[5rem] emits negative position offset', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('-top-[5rem]')
+      expect(gen.toCSS(false)).toContain('top: -5rem;')
+    })
+
+    it('-z-[5] emits negative z-index', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('-z-[5]')
+      expect(gen.toCSS(false)).toContain('z-index: -5;')
+    })
+
+    it('hover:-mt-[20px] works through variants', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('hover:-mt-[20px]')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':hover')
+      expect(css).toContain('margin-top: -20px;')
+    })
+  })
+
+  // Regression: decimal / off-scale numeric tokens. The Tailwind v3 spacing
+  // table is fixed (`0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, ...`), so
+  // `p-4.5` falls off the table. Previously crosswind emitted the raw
+  // number as the CSS value (`padding: 4.5;` — invalid CSS, silently
+  // dropped by browsers). Tailwind v4's scaling behavior handles this by
+  // multiplying by `0.25rem`, and we now mirror that so drivly-style
+  // `px-4.5`, `mt-9.5`, etc. produce correct CSS lengths.
+  describe('Off-scale decimal spacing (Tailwind v4 scaling, regression)', () => {
+    it('p-4.5 emits 1.125rem (4.5 × 0.25rem)', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('p-4.5')
+      expect(gen.toCSS(false)).toContain('padding: 1.125rem;')
+      // Pre-fix output was `padding: 4.5;` — guard against it
+      expect(gen.toCSS(false)).not.toMatch(/padding:\s*4\.5;/)
+    })
+
+    it('px-4.5 applies to both horizontal sides', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('px-4.5')
+      const css = gen.toCSS(false)
+      expect(css).toContain('padding-left: 1.125rem;')
+      expect(css).toContain('padding-right: 1.125rem;')
+    })
+
+    it('mt-9.5 scales to 2.375rem', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('mt-9.5')
+      expect(gen.toCSS(false)).toContain('margin-top: 2.375rem;')
+    })
+
+    it('gap-4.5 uses the same resolver (rule lives in rules-grid)', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('gap-4.5')
+      expect(gen.toCSS(false)).toContain('gap: 1.125rem;')
+      expect(gen.toCSS(false)).not.toMatch(/gap:\s*4\.5;/)
+    })
+
+    it('gap-x-4.5 / gap-y-4.5 resolve column/row gap', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('gap-x-4.5')
+      gen.generate('gap-y-4.5')
+      const css = gen.toCSS(false)
+      expect(css).toContain('column-gap: 1.125rem;')
+      expect(css).toContain('row-gap: 1.125rem;')
+    })
+
+    it('integer tokens off the scale still scale (p-13 → 3.25rem)', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('p-13')
+      expect(gen.toCSS(false)).toContain('padding: 3.25rem;')
+    })
+
+    it('negative off-scale tokens scale with sign flipped', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('-mt-4.5')
+      expect(gen.toCSS(false)).toContain('margin-top: -1.125rem;')
+    })
+
+    it('keywords / arbitrary values are NOT accidentally scaled', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('p-px')          // p-px resolves from theme, not scaling
+      gen.generate('p-[calc(1rem+5px)]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('padding: 1px;')
+      expect(css).toContain('padding: calc(1rem+5px);')
+    })
+
+    // Guardrail — the existing theme-scale lookups must keep winning.
+    it('p-4 still resolves from the theme scale (1rem, not 1rem-via-scaling)', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('p-4')
+      expect(gen.toCSS(false)).toContain('padding: 1rem;')
     })
   })
 })
