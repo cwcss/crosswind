@@ -342,23 +342,78 @@ export const divideRule: UtilityRule = (parsed, config) => {
 // Gradient color stops
 export const gradientStopsRule: UtilityRule = (parsed, config) => {
   const getColor = (value: string) => {
+    // Support the opacity-modifier shorthand: `red-500/50`, `red-500/[0.33]`.
+    // The parser hands us the raw `color/alpha` string when the utility is
+    // a gradient stop; we split it back out here and feed the base color
+    // through the same lookup table used without an alpha.
+    let alpha: string | null = null
+    let lookup = value
+    const slashIdx = value.indexOf('/')
+    if (slashIdx !== -1) {
+      lookup = value.slice(0, slashIdx)
+      const rawAlpha = value.slice(slashIdx + 1)
+      if (rawAlpha.startsWith('[') && rawAlpha.endsWith(']')) {
+        alpha = rawAlpha.slice(1, -1)
+      }
+      else {
+        const pct = Number.parseInt(rawAlpha, 10)
+        if (!Number.isNaN(pct)) alpha = (pct / 100).toString()
+      }
+    }
+
+    const applyAlpha = (base: string): string => {
+      if (!alpha) return base
+      // oklch / rgb / hsl with slash syntax: inject alpha before the closing `)`.
+      const mSpace = base.match(/^(oklch|rgb|hsl|oklab|lab|lch)\(([^)]+)\)$/i)
+      if (mSpace) {
+        const fn = mSpace[1]
+        // Existing alpha (if any) is everything after `/`
+        const inner = mSpace[2].split('/')[0].trim()
+        return `${fn}(${inner} / ${alpha})`
+      }
+      // Hex or named color → use rgb() with calc-alpha via color-mix? Cheapest
+      // path: keep base and let consumers rely on rgb(r g b / a) for OKLCH.
+      // For hex, convert to rgb() fallback.
+      if (/^#[0-9a-f]{3,8}$/i.test(base)) {
+        const hex = base.replace('#', '')
+        const parse = (h: string) => Number.parseInt(h.length === 1 ? h + h : h, 16)
+        const r = parse(hex.slice(0, hex.length === 3 ? 1 : 2))
+        const g = parse(hex.slice(hex.length === 3 ? 1 : 2, hex.length === 3 ? 2 : 4))
+        const b = parse(hex.slice(hex.length === 3 ? 2 : 4, hex.length === 3 ? 3 : 6))
+        return `rgb(${r} ${g} ${b} / ${alpha})`
+      }
+      // Fallback: let color-mix carry the alpha (modern-browser-safe).
+      return `color-mix(in srgb, ${base} ${Math.round(Number.parseFloat(alpha) * 100)}%, transparent)`
+    }
+
+    // Arbitrary color like `[#FF3E54]` — strip the square brackets before
+    // alpha handling. Without this the CSS variable picks up the raw
+    // bracketed token, producing invalid `var(--hw-gradient-from: [#...]`.
+    if (lookup.startsWith('[') && lookup.endsWith(']')) {
+      lookup = lookup.slice(1, -1)
+    }
+
     // First check if it's a direct color value (e.g., ocean-blue, black, white)
-    const directColor = config.theme.colors[value]
+    const directColor = config.theme.colors[lookup]
     if (typeof directColor === 'string') {
-      return directColor
+      return applyAlpha(directColor)
     }
 
     // Then check if it's a color-shade combination (e.g., sky-500, blue-gray-200)
-    const parts = value.split('-')
+    const parts = lookup.split('-')
     if (parts.length >= 2) {
       const colorName = parts.slice(0, -1).join('-')
       const shade = parts[parts.length - 1]
       const colorValue = config.theme.colors[colorName]
       if (typeof colorValue === 'object' && colorValue[shade]) {
-        return colorValue[shade]
+        return applyAlpha(colorValue[shade])
       }
     }
-    return value
+
+    // Arbitrary color like `#FF3E54` — apply alpha via the hex path.
+    if (lookup.startsWith('#')) return applyAlpha(lookup)
+
+    return applyAlpha(lookup)
   }
 
   if (parsed.utility === 'from' && parsed.value) {

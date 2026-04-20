@@ -1016,12 +1016,19 @@ export function parseClass(className: string): ParsedClass {
  * Internal implementation of parseClass
 */
 function parseClassImpl(className: string): ParsedClass {
-  // Check for important modifier
+  // Check for important modifier. Supports both Tailwind v3 prefix form
+  // (`!p-4`) and v4 suffix form (`p-4!`). Suffix form is checked BEFORE
+  // rejecting arbitrary-value brackets so `p-4!` peels the bang off cleanly
+  // while `p-[4]!` and `[color:red]!` still work.
   let important = false
   let cleanClassName = className
   if (className.startsWith('!')) {
     important = true
     cleanClassName = className.slice(1)
+  }
+  else if (className.endsWith('!') && className.length > 1) {
+    important = true
+    cleanClassName = className.slice(0, -1)
   }
 
   // Check for arbitrary properties BEFORE splitting on colons: [color:red], [mask-type:luminance]
@@ -1040,13 +1047,50 @@ function parseClassImpl(className: string): ParsedClass {
     }
   }
 
+  // Check for arbitrary-value + arbitrary-modifier shape:
+  //   text-[14px]/[1.5]       font-size with line-height
+  //   bg-[#FF3E54]/[0.33]     background color with arbitrary alpha
+  // The main preArbitraryMatch regex below ends on the last `]`, so when
+  // there are two bracket pairs it would swallow the slash into the value.
+  // Detect the shape first and split it cleanly.
+  const preArbitraryWithModifierMatch = cleanClassName.match(
+    /^((?:[a-z-]+:)*)(-?[a-z-]+?)-\[([^\]]+)\]\/\[([^\]]+)\]$/,
+  )
+  if (preArbitraryWithModifierMatch) {
+    const [, variantPart, utilityRaw, bracketValue, modifier] = preArbitraryWithModifierMatch
+    const variants = variantPart ? variantPart.split(':').filter(Boolean) : []
+    const isNegative = utilityRaw.startsWith('-')
+    const utilityName = isNegative ? utilityRaw.slice(1) : utilityRaw
+    let value = convertArbitraryUnderscores(bracketValue)
+    if (isNegative) value = value.startsWith('-') ? value : `-${value}`
+    return {
+      raw: className,
+      variants,
+      utility: utilityName,
+      // Encode the modifier as `value/modifier` — rules that care (fontSizeRule
+      // for line-height, colorRule for alpha) split on the first slash.
+      value: `${value}/${modifier}`,
+      important,
+      arbitrary: true,
+    }
+  }
+
   // Check for arbitrary values with brackets BEFORE splitting on colons
   // This handles cases like bg-[url(https://...)] where the URL contains colons
   // Also handles type hints like text-[color:var(--muted)]
-  const preArbitraryMatch = cleanClassName.match(/^((?:[a-z-]+:)*)([a-z-]+?)-\[(.+)\]$/)
+  const preArbitraryMatch = cleanClassName.match(/^((?:[a-z-]+:)*)(-?[a-z-]+?)-\[(.+)\]$/)
   if (preArbitraryMatch) {
     const variantPart = preArbitraryMatch[1]
     const variants = variantPart ? variantPart.split(':').filter(Boolean) : []
+
+    // Detect a leading `-` on the utility — Tailwind-style negative arbitrary
+    // values like `-mt-[20px]` or `-translate-x-[50%]`. Strip the sign from
+    // the utility name and fold it onto the value so rules that match
+    // `utility === 'mt'` still fire.
+    let utilityName = preArbitraryMatch[2]
+    const isNegative = utilityName.startsWith('-')
+    if (isNegative) utilityName = utilityName.slice(1)
+
     let value = convertArbitraryUnderscores(preArbitraryMatch[3])
     let typeHint: string | undefined
 
@@ -1059,10 +1103,12 @@ function parseClassImpl(className: string): ParsedClass {
       value = typeHintMatch[2]
     }
 
+    if (isNegative) value = value.startsWith('-') ? value : `-${value}`
+
     return {
       raw: className,
       variants,
-      utility: preArbitraryMatch[2],
+      utility: utilityName,
       value,
       important,
       arbitrary: true,
@@ -1088,8 +1134,33 @@ function parseClassImpl(className: string): ParsedClass {
   }
   parts.push(current)
 
-  const utility = parts[parts.length - 1]
+  let utility = parts[parts.length - 1]
   const variants = parts.slice(0, -1)
+
+  // Handle `!` placed between the last variant and the utility
+  // (`hover:!bg-red-500`). After splitting on `:`, the bang sits at the
+  // start of the utility token. Strip it and flag important. Mirror the
+  // trailing form too (`hover:p-4!`) for consistency with the top-of-file
+  // bang handling that covered the no-variant case.
+  if (utility.startsWith('!') && utility.length > 1) {
+    important = true
+    utility = utility.slice(1)
+  }
+  else if (utility.endsWith('!') && utility.length > 1) {
+    important = true
+    utility = utility.slice(0, -1)
+  }
+
+  // cleanClassName is used below for the subsequent arbitrary-value /
+  // negative-value branches that rebuild the parsed shape from scratch.
+  // Keep it in sync with the stripped utility so those branches see the
+  // same token.
+  if (variants.length > 0) {
+    cleanClassName = `${variants.join(':')}:${utility}`
+  }
+  else {
+    cleanClassName = utility
+  }
 
   // Check for full utility names that should not be split
   const fullUtilityNames = [
@@ -1151,6 +1222,9 @@ function parseClassImpl(className: string): ParsedClass {
   // Handle compound utilities with specific prefixes
   // grid-cols-3, grid-rows-2, translate-x-4, etc.
   const compoundPrefixes = [
+    // Position utilities
+    'inset-x',
+    'inset-y',
     // Border side utilities (border-t-0, border-r-2, etc.)
     'border-t',
     'border-r',
@@ -1250,6 +1324,18 @@ function parseClassImpl(className: string): ParsedClass {
     'rounded-se',
     'rounded-es',
     'rounded-ee',
+    // Physical rounded sides + corners (rounded-t-lg, rounded-tr-[6px], etc.).
+    // The generator has fast-path lookups for specific size keywords, but
+    // these prefixes are needed so arbitrary values and custom sizes fall
+    // through to the rule handlers that accept any value.
+    'rounded-t',
+    'rounded-r',
+    'rounded-b',
+    'rounded-l',
+    'rounded-tl',
+    'rounded-tr',
+    'rounded-bl',
+    'rounded-br',
     'border-opacity',
     'ring-opacity',
     'stroke-dasharray',
@@ -1347,9 +1433,10 @@ function parseClassImpl(className: string): ParsedClass {
   }
 
   // Check for color opacity modifiers: bg-blue-500/50, text-red-500/75, bg-white/[0.04]
-  // Must come before fractional values to avoid conflict
+  // Must come before fractional values to avoid conflict.
+  // Gradient stops (from/via/to) accept opacity too — `from-red-500/50`.
   const opacityMatch = utility.match(/^([a-z]+(?:-[a-z]+)*?)-(.+?)\/(\d+|\[\d*\.?\d+\])$/)
-  if (opacityMatch && ['bg', 'text', 'border', 'ring', 'placeholder', 'divide', 'accent', 'caret', 'fill', 'stroke', 'outline', 'decoration', 'shadow', 'ring-offset'].includes(opacityMatch[1])) {
+  if (opacityMatch && ['bg', 'text', 'border', 'ring', 'placeholder', 'divide', 'accent', 'caret', 'fill', 'stroke', 'outline', 'decoration', 'shadow', 'ring-offset', 'from', 'via', 'to'].includes(opacityMatch[1])) {
     return {
       raw: className,
       variants,

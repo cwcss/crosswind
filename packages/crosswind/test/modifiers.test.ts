@@ -414,4 +414,70 @@ describe('Modifiers', () => {
       })
     })
   })
+
+  // Regression: Tailwind v4 trailing-bang form and bang BETWEEN a variant
+  // and a utility.
+  //   `p-4!`               → trailing bang (v4 syntax, same as `!p-4`)
+  //   `hover:!bg-red-500`  → bang between the last variant and the utility
+  // Previously the parser only stripped a leading `!` from the full class
+  // name. The trailing form produced nonsense like `padding: 4!;`, and the
+  // `hover:!bg-red-500` form left `utility: '!bg-red-500'` which matched no
+  // rule at all (silent failure — the most dangerous kind).
+  describe('Important modifier variations (regression)', () => {
+    it('p-4! (trailing bang) emits !important and resolves spacing', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('p-4!')
+      const css = gen.toCSS(false)
+      expect(css).toContain('padding: 1rem !important;')
+      // Guard against the pre-fix bogus output `padding: 4!;`
+      expect(css).not.toContain('padding: 4!')
+    })
+
+    it('trailing bang works for arbitrary values', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('p-[13px]!')
+      expect(gen.toCSS(false)).toContain('padding: 13px !important;')
+    })
+
+    it('trailing bang works for utility-only classes', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('flex!')
+      expect(gen.toCSS(false)).toContain('display: flex !important;')
+    })
+
+    it('hover:!bg-red-500 strips the bang from utility and adds !important', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('hover:!bg-red-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':hover')
+      expect(css).toContain('background-color:')
+      expect(css).toContain('!important')
+    })
+
+    it('md:!p-4 wraps in @media + applies !important', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('md:!p-4')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@media (min-width: 768px)')
+      expect(css).toContain('padding: 1rem !important;')
+    })
+
+    it('stacked variants with inner bang (md:hover:!text-red-500)', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('md:hover:!text-red-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@media (min-width: 768px)')
+      expect(css).toContain(':hover')
+      expect(css).toContain('color:')
+      expect(css).toContain('!important')
+    })
+
+    it('dark:!text-white routes through dark variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('dark:!text-white')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.dark ')
+      expect(css).toContain('color: #fff !important;')
+    })
+  })
 })

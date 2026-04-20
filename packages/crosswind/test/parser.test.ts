@@ -652,3 +652,177 @@ describe('parseClass - Arbitrary underscore conversion', () => {
     expect(r.value).toBe('Inter Tight')
   })
 })
+
+// =============================================================================
+// Regression: negative arbitrary values. `-mt-[20px]`, `-translate-x-[50%]`,
+// etc. Previously the preArbitraryMatch regex didn't accept a leading dash on
+// the utility, so these fell through to the name-based negative-handling code
+// AFTER the arbitrary-value branch — and that path doesn't know about
+// brackets. Result: utility ended up as `-mt` and no rule matched, emitting
+// nothing. Now the arbitrary branch peels off the leading `-` and folds it
+// onto the value, matching Tailwind's behavior.
+// =============================================================================
+describe('parseClass - negative arbitrary values (regression)', () => {
+  it('strips the leading `-` from utility and prefixes value', () => {
+    const r = parseClass('-mt-[20px]')
+    expect(r.utility).toBe('mt')
+    expect(r.value).toBe('-20px')
+    expect(r.arbitrary).toBe(true)
+  })
+
+  it('handles negative arbitrary for translate-*', () => {
+    const r = parseClass('-translate-x-[50%]')
+    expect(r.utility).toBe('translate-x')
+    expect(r.value).toBe('-50%')
+  })
+
+  it('handles negative arbitrary for position utilities', () => {
+    const r = parseClass('-top-[5rem]')
+    expect(r.utility).toBe('top')
+    expect(r.value).toBe('-5rem')
+  })
+
+  it('handles negative arbitrary for z-index', () => {
+    const r = parseClass('-z-[5]')
+    expect(r.utility).toBe('z')
+    expect(r.value).toBe('-5')
+  })
+
+  it('preserves negative sign through variants', () => {
+    const r = parseClass('hover:-mt-[20px]')
+    expect(r.variants).toEqual(['hover'])
+    expect(r.utility).toBe('mt')
+    expect(r.value).toBe('-20px')
+  })
+})
+
+// =============================================================================
+// Regression: trailing-bang important modifier (Tailwind v4 syntax).
+// Both prefix (`!p-4`) and suffix (`p-4!`) forms must flag important.
+// Additionally, bang BETWEEN a variant and the utility (`hover:!bg-red-500`,
+// `md:!p-4`) must be stripped from the utility token and raise the important
+// flag — previously that form produced `utility: "!bg-red-500"` and no CSS.
+// =============================================================================
+describe('parseClass - important modifier variants (regression)', () => {
+  it('accepts the trailing-bang form', () => {
+    const r = parseClass('p-4!')
+    expect(r.important).toBe(true)
+    expect(r.utility).toBe('p')
+    expect(r.value).toBe('4')
+  })
+
+  it('trailing-bang works on arbitrary values', () => {
+    const r = parseClass('p-[13px]!')
+    expect(r.important).toBe(true)
+    expect(r.utility).toBe('p')
+    expect(r.value).toBe('13px')
+  })
+
+  it('trailing-bang works on arbitrary properties', () => {
+    const r = parseClass('[color:red]!')
+    expect(r.important).toBe(true)
+    expect(r.utility).toBe('color')
+    expect(r.value).toBe('red')
+  })
+
+  it('leading-bang between variant and utility', () => {
+    // The most common v3 form for variant+important: `hover:!bg-red-500`.
+    const r = parseClass('hover:!bg-red-500')
+    expect(r.variants).toEqual(['hover'])
+    expect(r.utility).toBe('bg')
+    expect(r.value).toBe('red-500')
+    expect(r.important).toBe(true)
+  })
+
+  it('trailing-bang between variant and utility', () => {
+    const r = parseClass('md:p-4!')
+    expect(r.variants).toEqual(['md'])
+    expect(r.utility).toBe('p')
+    expect(r.value).toBe('4')
+    expect(r.important).toBe(true)
+  })
+
+  it('stacked variants with leading-bang', () => {
+    const r = parseClass('md:hover:!text-red-500')
+    expect(r.variants).toEqual(['md', 'hover'])
+    expect(r.utility).toBe('text')
+    expect(r.value).toBe('red-500')
+    expect(r.important).toBe(true)
+  })
+
+  it('utility-only class with trailing bang', () => {
+    const r = parseClass('flex!')
+    expect(r.utility).toBe('flex')
+    expect(r.important).toBe(true)
+  })
+})
+
+// =============================================================================
+// Regression: gradient stops accept the `/alpha` opacity modifier.
+// Previously the parser's opacity-modifier whitelist only included
+// `bg/text/border/ring/placeholder/divide/accent/caret/fill/stroke/outline/
+// decoration/shadow/ring-offset`. `from`, `via`, `to` were missing so
+// `from-red-500/50` fell through to generic parsing and produced nothing.
+// =============================================================================
+describe('parseClass - gradient stop opacity (regression)', () => {
+  it('parses from-<color>/<alpha>', () => {
+    const r = parseClass('from-red-500/50')
+    expect(r.utility).toBe('from')
+    expect(r.value).toBe('red-500/50')
+  })
+
+  it('parses via-<color>/<alpha>', () => {
+    const r = parseClass('via-purple-500/75')
+    expect(r.utility).toBe('via')
+    expect(r.value).toBe('purple-500/75')
+  })
+
+  it('parses to-<color>/<alpha>', () => {
+    const r = parseClass('to-blue-500/25')
+    expect(r.utility).toBe('to')
+    expect(r.value).toBe('blue-500/25')
+  })
+
+  it('parses from-<arbitrary-color>/<alpha>', () => {
+    const r = parseClass('from-[#FF3E54]/60')
+    expect(r.utility).toBe('from')
+    expect(r.value).toBe('[#FF3E54]/60')
+  })
+})
+
+// =============================================================================
+// Regression: arbitrary-value + arbitrary-modifier shape.
+// `text-[14px]/[1.5]` combines an arbitrary font-size with an arbitrary
+// line-height. `bg-[#fff]/[0.33]` is the same shape for color alpha.
+// The general preArbitraryMatch regex ends on the last `]`, which is the
+// wrong `]` here (there are two brackets in a row with a `/` between).
+// The parser now short-circuits this shape and encodes both halves.
+// =============================================================================
+describe('parseClass - arbitrary value with arbitrary modifier (regression)', () => {
+  it('parses text-[size]/[line-height]', () => {
+    const r = parseClass('text-[14px]/[1.5]')
+    expect(r.utility).toBe('text')
+    expect(r.value).toBe('14px/1.5')
+    expect(r.arbitrary).toBe(true)
+  })
+
+  it('parses bg-[color]/[alpha]', () => {
+    // The color-rule accepts `value/alpha` format — `0.33` is the alpha.
+    const r = parseClass('bg-[#FF3E54]/[0.33]')
+    expect(r.utility).toBe('bg')
+    expect(r.value).toBe('#FF3E54/0.33')
+  })
+
+  it('parses text-[size]/[lh] through variants', () => {
+    const r = parseClass('md:text-[14px]/[1.5]')
+    expect(r.variants).toEqual(['md'])
+    expect(r.utility).toBe('text')
+    expect(r.value).toBe('14px/1.5')
+  })
+
+  it('parses negative arbitrary-with-modifier', () => {
+    const r = parseClass('-top-[10px]/[2]')
+    expect(r.utility).toBe('top')
+    expect(r.value).toBe('-10px/2')
+  })
+})

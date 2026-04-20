@@ -71,6 +71,59 @@ describe('Typography Utilities', () => {
     })
   })
 
+  // Regression: the slash syntax `text-{size}/{line-height}` combines two
+  // CSS properties in a single class. Three valid shapes:
+  //   text-xs/tight         → size from theme, named line-height
+  //   text-base/6           → size from theme, numeric line-height
+  //   text-[14px]/[1.5]     → fully arbitrary both sides
+  // Previously only the first branch of the fontSizeRule handled the split;
+  // arbitrary+arbitrary (the third form) crashed because the parser's
+  // preArbitraryMatch regex greedily swallowed `]/[1.5]` into the value,
+  // producing `font-size: 14px]/[1.5;` — invalid CSS.
+  describe('Font size with line-height modifier (regression)', () => {
+    it('text-xs/tight applies size from theme AND named line-height', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('text-xs/tight')
+      const css = gen.toCSS(false)
+      expect(css).toContain('font-size: 0.75rem;')
+      expect(css).toContain('line-height: 1.25;')
+    })
+
+    it('text-lg/relaxed resolves both halves from theme', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('text-lg/relaxed')
+      const css = gen.toCSS(false)
+      expect(css).toContain('font-size: 1.125rem;')
+      expect(css).toContain('line-height: 1.625;')
+    })
+
+    it('text-base/6 resolves numeric rem-based line-height keyword', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('text-base/6')
+      const css = gen.toCSS(false)
+      expect(css).toContain('font-size: 1rem;')
+      expect(css).toContain('line-height: 1.5rem;')
+    })
+
+    it('text-[14px]/[1.5] uses arbitrary size + arbitrary line-height', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('text-[14px]/[1.5]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('font-size: 14px;')
+      expect(css).toContain('line-height: 1.5;')
+      // Guard against the pre-fix output that left brackets in the rule
+      expect(css).not.toContain('14px]/[1.5')
+    })
+
+    it('text-[1rem]/[1.6] preserves rem size', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('text-[1rem]/[1.6]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('font-size: 1rem;')
+      expect(css).toContain('line-height: 1.6;')
+    })
+  })
+
   describe('Text align', () => {
     it('should generate text-center', () => {
       const gen = new CSSGenerator(defaultConfig)

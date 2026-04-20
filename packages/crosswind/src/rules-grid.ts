@@ -168,15 +168,28 @@ export const gridAutoRowsRule: UtilityRule = (parsed) => {
   }
 }
 
+// Resolve a token against the spacing theme, falling back to Tailwind v4
+// behavior for off-scale numbers (`gap-4.5` → `1.125rem`). Keeps keywords
+// and arbitrary values (with units, functions) passing through unchanged.
+function resolveSpacing(config: any, token: string): string {
+  const hit = config.theme.spacing?.[token]
+  if (hit !== undefined) return hit
+  if (/^\d+(?:\.\d+)?$/.test(token)) {
+    const n = Number.parseFloat(token)
+    if (Number.isFinite(n)) return `${n * 0.25}rem`
+  }
+  return token
+}
+
 export const gapRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'gap' && parsed.value) {
-    return { gap: config.theme.spacing[parsed.value] || parsed.value } as Record<string, string>
+    return { gap: resolveSpacing(config, parsed.value) } as Record<string, string>
   }
   if (parsed.utility === 'gap-x' && parsed.value) {
-    return { 'column-gap': config.theme.spacing[parsed.value] || parsed.value } as Record<string, string>
+    return { 'column-gap': resolveSpacing(config, parsed.value) } as Record<string, string>
   }
   if (parsed.utility === 'gap-y' && parsed.value) {
-    return { 'row-gap': config.theme.spacing[parsed.value] || parsed.value } as Record<string, string>
+    return { 'row-gap': resolveSpacing(config, parsed.value) } as Record<string, string>
   }
 }
 
