@@ -2394,10 +2394,41 @@ export class CSSGenerator {
   }
 
   /**
+   * Rank a rule by utility specificity so shorthands emit BEFORE directional
+   * utilities. Without this, class authoring order decides the cascade and
+   * combinations like `m-0 mx-auto` silently break (the shorthand resets
+   * the auto margins). Matches Tailwind's own stylesheet ordering.
+   *
+   * 0 — shorthand (`m-*`, `p-*`, `border`, `rounded`, `inset-*`)
+   * 1 — axis     (`mx-*`, `my-*`, `px-*`, `py-*`, `inset-x-*`, corner radii)
+   * 2 — side     (`mt-*`, `mr-*`, `pt-*`, `top-*`, `border-t-*`, …)
+   */
+  private getUtilityRank(selector: string): number {
+    const m = selector.match(/\.(?:[a-zA-Z0-9_-]*\\?:)*([a-zA-Z0-9_-]+)/)
+    if (!m) return 0
+    const cls = m[1]
+    if (/^(?:mx|my|px|py|inset-x|inset-y|border-x|border-y|scroll-mx|scroll-my|scroll-px|scroll-py|space-x|space-y)-/.test(cls)
+      || /^rounded-(?:[tlbr]|tl|tr|bl|br)(?:-|$)/.test(cls)) {
+      return 1
+    }
+    if (/^(?:mt|mr|mb|ml|pt|pr|pb|pl|top|right|bottom|left|border-t|border-r|border-b|border-l|scroll-mt|scroll-mr|scroll-mb|scroll-ml|scroll-pt|scroll-pr|scroll-pb|scroll-pl)-/.test(cls)) {
+      return 2
+    }
+    return 0
+  }
+
+  /**
    * Convert rules to CSS string
   */
   private rulesToCSS(rules: CSSRule[], minify: boolean): string {
-    const grouped = this.groupRulesBySelector(rules)
+    // Stable sort by utility rank so shorthand utilities emit before their
+    // axis/side counterparts. Stable so that within the same rank, original
+    // insertion order (which drives other cascade semantics) is preserved.
+    const ranked = rules.map((r, i) => ({ r, i, rank: this.getUtilityRank(r.selector) }))
+    ranked.sort((a, b) => a.rank - b.rank || a.i - b.i)
+    const sorted = ranked.map(x => x.r)
+
+    const grouped = this.groupRulesBySelector(sorted)
     const parts: string[] = []
 
     for (const [selector, properties] of grouped.entries()) {
