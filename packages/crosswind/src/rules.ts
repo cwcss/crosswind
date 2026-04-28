@@ -3,6 +3,7 @@ import { advancedRules } from './rules-advanced'
 import { effectsRules } from './rules-effects'
 import { formsRules } from './rules-forms'
 import { gridRules } from './rules-grid'
+import { iconRule } from './rules-icons'
 import { interactivityRules } from './rules-interactivity'
 import { layoutRules } from './rules-layout'
 import { transformsRules } from './rules-transforms'
@@ -1011,6 +1012,12 @@ export const borderRadiusRule: UtilityRule = (parsed, config) => {
 export const builtInRules: UtilityRule[] = [
   // CRITICAL: Most common utilities first for O(1) lookup performance
   // Rule order matters! More specific rules must come before more general ones.
+
+  // Iconify-style `i-{collection}-{name}` icons. Must be first because the
+  // pattern is unambiguous and skipping the rest of the chain on match keeps
+  // pages with lots of icons fast. Returns undefined when @iconify-json/<X>
+  // isn't installed, so the lookup is silently no-op for unknown collections.
+  iconRule,
 
   // Spacing and sizing rules (w, h, p, m are extremely common)
   spacingRule,
