@@ -1,3 +1,76 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.0...v0.2.1)
+
+### 🚀 Features
+
+- add `css` alias ([bcc203d](https://github.com/cwcss/crosswind/commit/bcc203d))
+- **rules**: pure-CSS iconify rule for any @iconify-json/* collection ([d57a427](https://github.com/cwcss/crosswind/commit/d57a427))
+
+### 🐛 Bug Fixes
+
+- add setup-bun to publish-commit job ([1a02e04](https://github.com/cwcss/crosswind/commit/1a02e04))
+- resolve typecheck errors ([e6caa08](https://github.com/cwcss/crosswind/commit/e6caa08))
+
+### 🤖 Continuous Integration
+
+- drop redundant setup-bun (pantry installs bun via deps.yaml) ([b506af1](https://github.com/cwcss/crosswind/commit/b506af1))
+
+### 🧹 Chores
+
+- release v0.2.1 ([fb65a3d](https://github.com/cwcss/crosswind/commit/fb65a3d))
+- remove headwind refs ([2290f5e](https://github.com/cwcss/crosswind/commit/2290f5e))
+- fresh install to pick up dtsx 0.9.14 and bunfig 0.15.9 ([074e1fa](https://github.com/cwcss/crosswind/commit/074e1fa))
+- fresh install to pick up pickier 0.1.21 ([c7d15c0](https://github.com/cwcss/crosswind/commit/c7d15c0))
+- cascade order improvements ([126617c](https://github.com/cwcss/crosswind/commit/126617c))
+- several minor improvements ([04caac1](https://github.com/cwcss/crosswind/commit/04caac1))
+- improve arbitrary values ([36d341d](https://github.com/cwcss/crosswind/commit/36d341d))
+- wip ([38d57fd](https://github.com/cwcss/crosswind/commit/38d57fd))
+- merge and resolve conflict ([1e00cce](https://github.com/cwcss/crosswind/commit/1e00cce))
+- fix lint errors ([12526b8](https://github.com/cwcss/crosswind/commit/12526b8))
+- minor improvements ([0a2924a](https://github.com/cwcss/crosswind/commit/0a2924a))
+- improve `group-has-*` and `peer-has-*` ([7de7dc3](https://github.com/cwcss/crosswind/commit/7de7dc3))
+- several minor improvements ([cc6ffe4](https://github.com/cwcss/crosswind/commit/cc6ffe4))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+- glennmichael123 <gtorregosa@gmail.com>
+
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.0...HEAD)
+
+### 🚀 Features
+
+- add `css` alias ([bcc203d](https://github.com/cwcss/crosswind/commit/bcc203d))
+- **rules**: pure-CSS iconify rule for any @iconify-json/* collection ([d57a427](https://github.com/cwcss/crosswind/commit/d57a427))
+
+### 🐛 Bug Fixes
+
+- add setup-bun to publish-commit job ([1a02e04](https://github.com/cwcss/crosswind/commit/1a02e04))
+- resolve typecheck errors ([e6caa08](https://github.com/cwcss/crosswind/commit/e6caa08))
+
+### 🤖 Continuous Integration
+
+- drop redundant setup-bun (pantry installs bun via deps.yaml) ([b506af1](https://github.com/cwcss/crosswind/commit/b506af1))
+
+### 🧹 Chores
+
+- remove headwind refs ([2290f5e](https://github.com/cwcss/crosswind/commit/2290f5e))
+- fresh install to pick up dtsx 0.9.14 and bunfig 0.15.9 ([074e1fa](https://github.com/cwcss/crosswind/commit/074e1fa))
+- fresh install to pick up pickier 0.1.21 ([c7d15c0](https://github.com/cwcss/crosswind/commit/c7d15c0))
+- cascade order improvements ([126617c](https://github.com/cwcss/crosswind/commit/126617c))
+- several minor improvements ([04caac1](https://github.com/cwcss/crosswind/commit/04caac1))
+- improve arbitrary values ([36d341d](https://github.com/cwcss/crosswind/commit/36d341d))
+- wip ([38d57fd](https://github.com/cwcss/crosswind/commit/38d57fd))
+- merge and resolve conflict ([1e00cce](https://github.com/cwcss/crosswind/commit/1e00cce))
+- fix lint errors ([12526b8](https://github.com/cwcss/crosswind/commit/12526b8))
+- minor improvements ([0a2924a](https://github.com/cwcss/crosswind/commit/0a2924a))
+- improve `group-has-*` and `peer-has-*` ([7de7dc3](https://github.com/cwcss/crosswind/commit/7de7dc3))
+- several minor improvements ([cc6ffe4](https://github.com/cwcss/crosswind/commit/cc6ffe4))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+- glennmichael123 <gtorregosa@gmail.com>
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.1.6...v0.2.0)
 
 ### 🚀 Features
