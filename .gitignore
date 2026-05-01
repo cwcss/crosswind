@@ -10,6 +10,6 @@ logs
 node_modules
 temp
 docs/.vitepress/cache
-packages/headwind/bin/headwind
+packages/crosswind/bin/crosswind
 packages/crosswind/bin/crosswind
 pantry
