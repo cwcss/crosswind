@@ -1,3 +1,27 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.3...v0.2.4)
+
+### 🚀 Features
+
+- **rules**: table display family, flow-root/list-item/contents, arbitrary accent/caret ([f31d55c](https://github.com/cwcss/crosswind/commit/f31d55c))
+
+### 🧹 Chores
+
+- release v0.2.4 ([09382bd](https://github.com/cwcss/crosswind/commit/09382bd))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.3...HEAD)
+
+### 🚀 Features
+
+- **rules**: table display family, flow-root/list-item/contents, arbitrary accent/caret ([f31d55c](https://github.com/cwcss/crosswind/commit/f31d55c))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.2...v0.2.3)
 
 ### 🧹 Chores
