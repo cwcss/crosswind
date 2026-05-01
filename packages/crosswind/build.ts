@@ -13,17 +13,10 @@ await rm('./dist', { recursive: true, force: true })
 // without `root` Bun preserves the entrypoint's relative path and produces
 // dist/src/index.js + dist/bin/cli.js, breaking both consumers and the CLI.
 await Bun.build({
-  entrypoints: ['src/index.ts'],
+  entrypoints: ['src/index.ts', 'bin/cli.ts'],
   outdir: './dist',
-  root: './src',
-  target: 'bun',
-  plugins: [dts()],
-})
-
-await Bun.build({
-  entrypoints: ['bin/cli.ts'],
-  outdir: './dist',
-  root: './bin',
+  splitting: true,
+  minify: true,
   target: 'bun',
   plugins: [dts()],
 })
