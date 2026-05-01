@@ -1,3 +1,27 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.1...v0.2.2)
+
+### 🐛 Bug Fixes
+
+- **build**: emit dist/index.js + dist/cli.js to match exports/bin paths ([1544b47](https://github.com/cwcss/crosswind/commit/1544b47))
+
+### 🧹 Chores
+
+- release v0.2.2 ([a0ceda7](https://github.com/cwcss/crosswind/commit/a0ceda7))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.1...HEAD)
+
+### 🐛 Bug Fixes
+
+- **build**: emit dist/index.js + dist/cli.js to match exports/bin paths ([1544b47](https://github.com/cwcss/crosswind/commit/1544b47))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.0...v0.2.1)
 
 ### 🚀 Features
