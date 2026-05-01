@@ -104,14 +104,18 @@ export const listStylePositionRule: UtilityRule = (parsed) => {
 }
 
 export const listStyleTypeRule: UtilityRule = (parsed) => {
-  if (parsed.utility === 'list') {
-    const types: Record<string, string> = {
-      none: 'none',
-      disc: 'disc',
-      decimal: 'decimal',
-    }
-    return parsed.value ? { 'list-style-type': types[parsed.value] || parsed.value } : undefined
+  if (parsed.utility !== 'list' || !parsed.value)
+    return undefined
+  const types: Record<string, string> = {
+    none: 'none',
+    disc: 'disc',
+    decimal: 'decimal',
   }
+  // Only match recognized list-style-type values. Returning the raw value as
+  // a fallback turned `list-item` (which is `display: list-item`, handled by
+  // displayRule) into an invalid `list-style-type: item` rule and shadowed
+  // the display utility entirely.
+  return types[parsed.value] ? { 'list-style-type': types[parsed.value] } : undefined
 }
 
 export const textDecorationRule: UtilityRule = (parsed, config) => {

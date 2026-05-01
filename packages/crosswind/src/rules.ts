@@ -18,10 +18,30 @@ export type UtilityRule = (_parsed: ParsedClass, _config: CrosswindConfig) => Re
 
 // Display utilities
 export const displayRule: UtilityRule = (parsed) => {
-  const displays = ['block', 'inline-block', 'inline', 'flex', 'inline-flex', 'grid', 'inline-grid', 'hidden', 'none']
-  if (displays.includes(parsed.utility)) {
+  // Single-token displays: .block, .flex, .grid, .hidden, .contents, etc.
+  const singleToken = ['block', 'inline-block', 'inline', 'flex', 'inline-flex', 'grid', 'inline-grid', 'hidden', 'none', 'contents', 'flow-root', 'list-item']
+  if (singleToken.includes(parsed.utility) && !parsed.value) {
     return { display: parsed.utility === 'hidden' ? 'none' : parsed.utility }
   }
+
+  // Table family (Tailwind parity): .table, .table-cell, .table-row,
+  // .table-row-group, .table-column, .table-column-group, .table-header-group,
+  // .table-footer-group, .table-caption — all map to display: table-*.
+  // Skip `auto`/`fixed` which are handled by tableLayoutRule (table-layout css
+  // property) and `inline` which is handled below as `inline-table`.
+  if (parsed.utility === 'table') {
+    if (!parsed.value) return { display: 'table' }
+    const tableDisplays = new Set(['cell', 'row', 'row-group', 'column', 'column-group', 'header-group', 'footer-group', 'caption'])
+    if (tableDisplays.has(parsed.value)) return { display: `table-${parsed.value}` }
+  }
+
+  // Two-token displays the parser splits at the first `-` boundary:
+  //   `inline-table` → utility=`inline`,  value=`table`
+  //   `flow-root`    → utility=`flow`,    value=`root`
+  //   `list-item`    → utility=`list`,    value=`item`
+  if (parsed.utility === 'inline' && parsed.value === 'table') return { display: 'inline-table' }
+  if (parsed.utility === 'flow' && parsed.value === 'root') return { display: 'flow-root' }
+  if (parsed.utility === 'list' && parsed.value === 'item') return { display: 'list-item' }
 }
 
 // Scrollbar utilities
@@ -563,6 +583,31 @@ export function resolveColorValue(value: string, config: { theme: { colors: Reco
     if (typeof colorValue === 'object' && colorValue[shade]) {
       return opacity !== undefined ? applyOpacity(colorValue[shade], opacity) : colorValue[shade]
     }
+  }
+
+  // Arbitrary CSS color expression: var(--name), #rgb, #rrggbb[aa], rgb(...),
+  // rgba(...), hsl(...), hsla(...), oklch(...), color-mix(...), color(...).
+  // The bg/text/border (colorRule) path already handles `parsed.arbitrary`
+  // before reaching the resolver, but `accent-[var(--accent)]` and
+  // `caret-[var(--accent)]` route through here — without this branch they
+  // would silently drop and the form-control's accent-color stays browser
+  // default. Passing through verbatim keeps the resolver permissive without
+  // losing the theme-color path above.
+  if (
+    colorKey.startsWith('var(')
+    || colorKey.startsWith('#')
+    || colorKey.startsWith('rgb(')
+    || colorKey.startsWith('rgba(')
+    || colorKey.startsWith('hsl(')
+    || colorKey.startsWith('hsla(')
+    || colorKey.startsWith('oklch(')
+    || colorKey.startsWith('oklab(')
+    || colorKey.startsWith('lab(')
+    || colorKey.startsWith('lch(')
+    || colorKey.startsWith('color(')
+    || colorKey.startsWith('color-mix(')
+  ) {
+    return opacity !== undefined ? applyOpacity(colorKey, opacity) : colorKey
   }
 
   return undefined

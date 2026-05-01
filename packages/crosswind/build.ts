@@ -18,5 +18,12 @@ await Bun.build({
   splitting: true,
   minify: true,
   target: 'bun',
+  // Flatten entries so both land at dist/index.js + dist/cli.js — matches the
+  // package.json `exports` (./dist/index.js) and `bin` (./dist/cli.js) maps.
+  // Without this, Bun preserves the entrypoint's relative path under outdir
+  // and we get dist/src/index.js + dist/bin/cli.js, which silently breaks
+  // dynamic imports of the package and the CLI binary (the whole reason
+  // 0.2.0 / 0.2.1 shipped broken). Shared chunks keep their hashed names.
+  naming: { entry: '[name].[ext]' },
   plugins: [dts()],
 })
