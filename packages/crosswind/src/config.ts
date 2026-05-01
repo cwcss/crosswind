@@ -527,10 +527,12 @@ let _config: CrosswindConfig | null = null
 export async function getConfig(): Promise<CrosswindConfig> {
   if (!_config) {
     _config = await loadConfig({
-  name: 'crosswind',
-  defaultConfig,
-})
+      name: 'crosswind',
+      alias: 'css',
+      defaultConfig,
+    })
   }
+
   return _config
 }
 
