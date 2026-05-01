@@ -1,3 +1,24 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.2...v0.2.3)
+
+### 🧹 Chores
+
+- release v0.2.3 ([0af1adb](https://github.com/cwcss/crosswind/commit/0af1adb))
+- split and minify dist ([23aef98](https://github.com/cwcss/crosswind/commit/23aef98))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.2...HEAD)
+
+### 🧹 Chores
+
+- split and minify dist ([23aef98](https://github.com/cwcss/crosswind/commit/23aef98))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.1...v0.2.2)
 
 ### 🐛 Bug Fixes
