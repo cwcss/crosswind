@@ -45,7 +45,7 @@
     "benchmark:binary": "bun run benchmark/binary-vs-api.ts"
   },
   "devDependencies": {
-    "better-dx": "^0.2.7"
+    "better-dx": "^0.2.15"
   },
   "git-hooks": {
     "pre-commit": {
