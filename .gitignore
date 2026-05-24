@@ -9,7 +9,6 @@ lib-cov
 logs
 node_modules
 temp
-docs/.vitepress/cache
 packages/crosswind/bin/crosswind
 packages/crosswind/bin/crosswind
 pantry
