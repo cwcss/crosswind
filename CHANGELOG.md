@@ -1,3 +1,26 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.4...v0.2.5)
+
+### 🚀 Features
+
+- load web fonts via a `fonts` config ([4d881d7](https://github.com/cwcss/crosswind/commit/4d881d7)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+### 🐛 Bug Fixes
+
+- **scripts**: stop double-generating CHANGELOG on release ([525a512](https://github.com/cwcss/crosswind/commit/525a512)) _(by Glenn Michael Torregosa <gtorregosa@gmail.com>)_
+
+### 🧹 Chores
+
+- release v0.2.5 ([7fa5e3f](https://github.com/cwcss/crosswind/commit/7fa5e3f)) _(by Chris <chrisbreuer93@gmail.com>)_
+- wip ([47efff3](https://github.com/cwcss/crosswind/commit/47efff3)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: bump better-dx to ^0.2.15 ([1affc1c](https://github.com/cwcss/crosswind/commit/1affc1c)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **ci**: bump actions/checkout to v6, actions/cache to v5 ([acd6fc4](https://github.com/cwcss/crosswind/commit/acd6fc4)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+
+### Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+- _Glenn Michael Torregosa <gtorregosa@gmail.com>_
+- _glennmichael123 <gtorregosa@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.3...v0.2.4)
 
 ### 🚀 Features
