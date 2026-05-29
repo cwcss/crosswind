@@ -62,6 +62,27 @@ export interface BracketSyntaxConfig {
   aliases?: Record<string, string>
 }
 
+/**
+ * Web-font loading. Crosswind maps `font-*` utilities to family stacks, but it
+ * never loaded the actual font files — declare them here and crosswind emits the
+ * `@import` / `@font-face` so the fonts render with zero extra wiring.
+ */
+export interface FontConfig {
+  /**
+   * Google Fonts families, in css2 syntax. Spaces become `+` automatically.
+   * e.g. `['Inter:wght@400;500;600;700', 'JetBrains Mono:wght@400;600;700']`
+   */
+  google?: string[]
+  /**
+   * `font-display` strategy applied to the Google `@import` (default `swap`).
+   */
+  display?: 'auto' | 'block' | 'swap' | 'fallback' | 'optional'
+  /**
+   * Raw `@font-face { … }` blocks emitted verbatim, for self-hosted fonts.
+   */
+  faces?: string[]
+}
+
 export interface CrosswindConfig {
   content: string[]
   output: string
@@ -69,6 +90,8 @@ export interface CrosswindConfig {
   watch: boolean
   verbose?: boolean
   theme: Theme
+  /** Web fonts to load (Google Fonts `@import` and/or raw `@font-face`). */
+  fonts?: FontConfig
   shortcuts: Record<string, string | string[]>
   rules: CustomRule[]
   variants: VariantConfig

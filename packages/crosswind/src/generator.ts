@@ -2334,10 +2334,41 @@ export class CSSGenerator {
   }
 
   /**
+   * Build web-font CSS (Google `@import` + raw `@font-face`) from `config.fonts`.
+   * Returns an empty string when no fonts are configured.
+   */
+  private buildFontCSS(): string {
+    const fonts = this.config.fonts
+    if (!fonts)
+      return ''
+
+    const lines: string[] = []
+    const google = fonts.google?.filter(Boolean) ?? []
+    if (google.length > 0) {
+      const families = google
+        .map(family => `family=${family.trim().replace(/\s+/g, '+')}`)
+        .join('&')
+      const display = fonts.display ?? 'swap'
+      lines.push(`@import url('https://fonts.googleapis.com/css2?${families}&display=${display}');`)
+    }
+    if (fonts.faces?.length)
+      lines.push(...fonts.faces.map(face => face.trim()).filter(Boolean))
+
+    return lines.join('\n')
+  }
+
+  /**
    * Generate final CSS output
   */
   toCSS(includePreflight = true, minify = false): string {
     const parts: string[] = []
+
+    // Web fonts first — an @import must precede every other rule in the
+    // stylesheet, so this has to be the very first thing we emit.
+    const fontCSS = this.buildFontCSS()
+    if (fontCSS) {
+      parts.push(minify ? fontCSS.replace(/\s*\n\s*/g, '') : fontCSS)
+    }
 
     // Add preflight CSS first (if requested)
     if (includePreflight) {
