@@ -1343,8 +1343,11 @@ function parseClassImpl(className: string): ParsedClass {
     'animate-iteration',
     'animate-duration',
     'animate-delay',
-    'text-emphasis',
+    // `text-emphasis-color` must precede `text-emphasis`: the loop returns on
+    // the first `startsWith` match, so the more specific prefix has to win or
+    // `text-emphasis-color-red-500` parses as `text-emphasis` / `color-red-500`.
     'text-emphasis-color',
+    'text-emphasis',
     'word-spacing',
     'column-gap',
     'column-rule',

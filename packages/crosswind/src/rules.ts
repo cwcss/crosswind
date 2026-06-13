@@ -406,7 +406,10 @@ function buildFlatColorCache(colors: Record<string, any>): Map<string, string> {
     else if (typeof colorValue === 'object' && colorValue !== null) {
       for (const [shade, shadeValue] of Object.entries(colorValue)) {
         if (typeof shadeValue === 'string') {
-          cache.set(`${colorName}-${shade}`, shadeValue)
+          // The `DEFAULT` shade maps to the bare color name (Tailwind convention),
+          // so `brand: { DEFAULT: ... }` makes `bg-brand` resolve to that value
+          // rather than silently dropping.
+          cache.set(shade === 'DEFAULT' ? colorName : `${colorName}-${shade}`, shadeValue)
         }
       }
     }
@@ -573,6 +576,13 @@ export function resolveColorValue(value: string, config: { theme: { colors: Reco
   // Direct color name (white, black, etc.)
   const directColor = config.theme.colors[colorKey]
   if (typeof directColor === 'string') return opacity !== undefined ? applyOpacity(directColor, opacity) : directColor
+
+  // Nested color object referenced by its bare name resolves to its `DEFAULT`
+  // shade (Tailwind convention): `brand: { DEFAULT: ... }` makes `ring-brand`,
+  // `accent-brand`, etc. resolve to that value.
+  if (typeof directColor === 'object' && directColor !== null && typeof directColor.DEFAULT === 'string') {
+    return opacity !== undefined ? applyOpacity(directColor.DEFAULT, opacity) : directColor.DEFAULT
+  }
 
   // Color with shade: blue-500, gray-300
   const parts = colorKey.split('-')
@@ -967,6 +977,14 @@ export const borderSideWidthRule: UtilityRule = (parsed, config) => {
         return prop.reduce((acc, p) => ({ ...acc, [p]: direct }), {} as Record<string, string>)
       }
       return { [prop]: direct }
+    }
+    // Nested color object referenced by its bare name → `DEFAULT` shade.
+    if (direct && typeof direct === 'object' && typeof direct.DEFAULT === 'string') {
+      const prop = colorProp
+      if (Array.isArray(prop)) {
+        return prop.reduce((acc, p) => ({ ...acc, [p]: direct.DEFAULT }), {} as Record<string, string>)
+      }
+      return { [prop]: direct.DEFAULT }
     }
     if (parsed.value === 'transparent' || parsed.value === 'current' || parsed.value === 'inherit') {
       const val = parsed.value === 'current' ? 'currentColor' : parsed.value

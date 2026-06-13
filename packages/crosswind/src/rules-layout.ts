@@ -117,6 +117,11 @@ export const columnRuleRule: UtilityRule = (parsed, config) => {
       return { 'column-rule-color': directColor } as Record<string, string>
     }
 
+    // Nested color object referenced by its bare name → `DEFAULT` shade.
+    if (typeof directColor === 'object' && directColor !== null && typeof directColor.DEFAULT === 'string') {
+      return { 'column-rule-color': directColor.DEFAULT } as Record<string, string>
+    }
+
     // Style
     const styles: Record<string, string> = {
       solid: 'solid',

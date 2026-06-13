@@ -397,6 +397,11 @@ export const textEmphasisColorRule: UtilityRule = (parsed, config) => {
     if (typeof directColor === 'string') {
       return { 'text-emphasis-color': directColor }
     }
+
+    // Nested color object referenced by its bare name → `DEFAULT` shade.
+    if (typeof directColor === 'object' && directColor !== null && typeof directColor.DEFAULT === 'string') {
+      return { 'text-emphasis-color': directColor.DEFAULT }
+    }
   }
 }
 

@@ -18,7 +18,8 @@ function buildShadowColorCache(colors: Record<string, any>): Map<string, string>
     else if (typeof value === 'object' && value !== null) {
       for (const [shade, shadeValue] of Object.entries(value)) {
         if (typeof shadeValue === 'string') {
-          cache.set(`${name}-${shade}`, shadeValue)
+          // The `DEFAULT` shade maps to the bare color name (Tailwind convention).
+          cache.set(shade === 'DEFAULT' ? name : `${name}-${shade}`, shadeValue)
         }
       }
     }
