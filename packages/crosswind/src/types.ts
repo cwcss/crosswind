@@ -111,6 +111,8 @@ export interface Theme {
   spacing: Record<string, string>
   fontSize: Record<string, [string, { lineHeight: string }]>
   fontFamily: Record<string, string[]>
+  /** Named line-heights for the `text-{size}/{leading}` slash syntax (e.g. `text-base/loose`). */
+  lineHeight?: Record<string, string>
   screens: Record<string, string>
   borderRadius: Record<string, string>
   boxShadow: Record<string, string>

@@ -772,10 +772,10 @@ export const fontWeightRule: UtilityRule = (parsed) => {
     //   font-[number:800]              → font-weight
     if (parsed.arbitrary) {
       const hint = parsed.typeHint
-      if (hint === 'family-name' || hint === 'string') {
-        return { 'font-family': parsed.value }
-      }
-      return { 'font-weight': parsed.value }
+      const out: Record<string, string> = hint === 'family-name' || hint === 'string'
+        ? { 'font-family': parsed.value }
+        : { 'font-weight': parsed.value }
+      return out
     }
     const weights: Record<string, string> = {
       thin: '100',
