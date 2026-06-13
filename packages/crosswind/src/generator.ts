@@ -2515,7 +2515,9 @@ export class CSSGenerator {
       else if (typeof value === 'object' && value !== null) {
         for (const [shade, shadeValue] of Object.entries(value)) {
           if (typeof shadeValue === 'string') {
-            vars.push(`  --${name}-${shade}: ${shadeValue};`)
+            // The `DEFAULT` shade maps to the bare color name (Tailwind convention),
+            // emitting `--brand` rather than `--brand-DEFAULT`.
+            vars.push(shade === 'DEFAULT' ? `  --${name}: ${shadeValue};` : `  --${name}-${shade}: ${shadeValue};`)
           }
         }
       }

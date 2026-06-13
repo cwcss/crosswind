@@ -963,3 +963,139 @@ describe('Edge Cases', () => {
     })
   })
 })
+
+describe('Nested color DEFAULT key (issue #17)', () => {
+  // A nested color object with a `DEFAULT` key should resolve its bare name to
+  // the DEFAULT value (Tailwind convention), while numbered/named sub-keys keep
+  // working. Previously `bg-brand` etc. silently generated nothing.
+  const makeGen = () => new CSSGenerator({
+    ...defaultConfig,
+    theme: {
+      ...defaultConfig.theme,
+      extend: {
+        colors: {
+          brand: { DEFAULT: 'var(--brand)', 2: 'var(--brand-2)' },
+        },
+      },
+    },
+  })
+
+  it('resolves bg-{color} to the DEFAULT value', () => {
+    const gen = makeGen()
+    gen.generate('bg-brand')
+    expect(gen.toCSS(false)).toContain('background-color: var(--brand);')
+  })
+
+  it('resolves text-{color} to the DEFAULT value', () => {
+    const gen = makeGen()
+    gen.generate('text-brand')
+    expect(gen.toCSS(false)).toContain('color: var(--brand);')
+  })
+
+  it('resolves border-{color} to the DEFAULT value', () => {
+    const gen = makeGen()
+    gen.generate('border-brand')
+    expect(gen.toCSS(false)).toContain('border-color: var(--brand);')
+  })
+
+  it('still resolves numbered sub-keys alongside DEFAULT', () => {
+    const gen = makeGen()
+    gen.generate('bg-brand-2')
+    expect(gen.toCSS(false)).toContain('background-color: var(--brand-2);')
+  })
+
+  it('resolves the DEFAULT value under variants (hover)', () => {
+    const gen = makeGen()
+    gen.generate('hover:bg-brand')
+    const css = gen.toCSS(false)
+    expect(css).toContain('.hover\\:bg-brand:hover')
+    expect(css).toContain('background-color: var(--brand);')
+  })
+
+  it('applies opacity modifiers through the DEFAULT path', () => {
+    const gen = new CSSGenerator({
+      ...defaultConfig,
+      theme: {
+        ...defaultConfig.theme,
+        extend: { colors: { brand: { DEFAULT: '#ff0000' } } },
+      },
+    })
+    gen.generate('bg-brand/50')
+    expect(gen.toCSS(false)).toContain('background-color: rgb(255 0 0 / 0.5);')
+  })
+
+  it('resolves ring-{color} to the DEFAULT value', () => {
+    const gen = makeGen()
+    gen.generate('ring-brand')
+    expect(gen.toCSS(false)).toContain('--hw-ring-color: var(--brand);')
+  })
+
+  it('resolves gradient from-{color} to the DEFAULT value', () => {
+    const gen = makeGen()
+    gen.generate('from-brand')
+    expect(gen.toCSS(false)).toContain('--hw-gradient-from: var(--brand);')
+  })
+
+  it('resolves divide-{color} to the DEFAULT value', () => {
+    const gen = makeGen()
+    gen.generate('divide-brand')
+    expect(gen.toCSS(false)).toContain('border-color: var(--brand);')
+  })
+
+  it('resolves placeholder-{color} to the DEFAULT value', () => {
+    const gen = makeGen()
+    gen.generate('placeholder-brand')
+    expect(gen.toCSS(false)).toContain('color: var(--brand);')
+  })
+
+  it('resolves side border color (border-t-{color}) to the DEFAULT value', () => {
+    const gen = makeGen()
+    gen.generate('border-t-brand')
+    expect(gen.toCSS(false)).toContain('border-top-color: var(--brand);')
+  })
+
+  it('resolves shadow-{color} to the DEFAULT value', () => {
+    const gen = new CSSGenerator({
+      ...defaultConfig,
+      theme: {
+        ...defaultConfig.theme,
+        extend: { colors: { brand: { DEFAULT: '#ff0000' } } },
+      },
+    })
+    gen.generate('shadow-brand')
+    expect(gen.toCSS(false)).toContain('--hw-shadow-color: #ff0000;')
+  })
+
+  it('resolves text-emphasis-color-{color} to the DEFAULT value', () => {
+    const gen = new CSSGenerator({
+      ...defaultConfig,
+      theme: {
+        ...defaultConfig.theme,
+        colors: { ...defaultConfig.theme.colors, brand: { DEFAULT: '#ff0000', 2: '#00ff00' } },
+      },
+    })
+    gen.generateBatch(['text-emphasis-color-brand', 'text-emphasis-color-brand-2', 'text-emphasis-color-red-500'])
+    const css = gen.toCSS(false)
+    // Regression: the `text-emphasis-color` prefix must win over `text-emphasis`
+    // in the parser, otherwise this resolves to `text-emphasis: color-brand`.
+    expect(css).toContain('text-emphasis-color: #ff0000;')
+    expect(css).toContain('text-emphasis-color: #00ff00;')
+    expect(css).not.toContain('text-emphasis: color-')
+  })
+
+  it('emits a bare CSS variable for the DEFAULT shade when cssVariables is on', () => {
+    const gen = new CSSGenerator({
+      ...defaultConfig,
+      cssVariables: true,
+      theme: {
+        ...defaultConfig.theme,
+        extend: { colors: { brand: { DEFAULT: '#ff0000', 2: '#00ff00' } } },
+      },
+    })
+    gen.generate('bg-brand')
+    const css = gen.toCSS(false)
+    expect(css).toContain('--brand: #ff0000;')
+    expect(css).toContain('--brand-2: #00ff00;')
+    expect(css).not.toContain('--brand-DEFAULT')
+  })
+})

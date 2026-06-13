@@ -328,6 +328,11 @@ export const divideRule: UtilityRule = (parsed, config) => {
     const directColor = config.theme.colors[colorKey]
     if (typeof directColor === 'string') return makeDivideColor(directColor)
 
+    // Nested color object referenced by its bare name → `DEFAULT` shade.
+    if (typeof directColor === 'object' && directColor !== null && typeof directColor.DEFAULT === 'string') {
+      return makeDivideColor(directColor.DEFAULT)
+    }
+
     // divide-{color}-{shade}
     const parts = colorKey.split('-')
     if (parts.length >= 2) {
@@ -397,6 +402,11 @@ export const gradientStopsRule: UtilityRule = (parsed, config) => {
     const directColor = config.theme.colors[lookup]
     if (typeof directColor === 'string') {
       return applyAlpha(directColor)
+    }
+
+    // Nested color object referenced by its bare name → `DEFAULT` shade.
+    if (typeof directColor === 'object' && directColor !== null && typeof directColor.DEFAULT === 'string') {
+      return applyAlpha(directColor.DEFAULT)
     }
 
     // Then check if it's a color-shade combination (e.g., sky-500, blue-gray-200)
