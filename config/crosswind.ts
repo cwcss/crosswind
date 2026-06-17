@@ -1,4 +1,4 @@
-import type { CrosswindOptions } from './packages/crosswind/src/types'
+import type { CrosswindOptions } from '../packages/crosswind/src/types'
 
 const config = {
   verbose: true,

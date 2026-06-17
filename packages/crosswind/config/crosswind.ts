@@ -1,4 +1,4 @@
-import type { CrosswindOptions } from './src/types'
+import type { CrosswindOptions } from '../src/types'
 
 const config: CrosswindOptions = {
   content: ['./example/**/*.html'],
