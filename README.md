@@ -201,10 +201,10 @@ Optimize your HTML by compiling utility groups into single class names:
 
 ```html
 <!-- Before -->
-<div class=":hw: flex items-center justify-between px-4 py-2 bg-white rounded-lg shadow-md">
+<div class=":cw: flex items-center justify-between px-4 py-2 bg-white rounded-lg shadow-md">
 
 <!-- After build -->
-<div class="hw-2k9d3a">
+<div class="cw-2k9d3a">
 ```
 
 ## Performance

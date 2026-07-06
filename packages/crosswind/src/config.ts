@@ -389,7 +389,7 @@ export const defaultConfig: CrosswindConfig = {
   rules: [],
   attributify: {
     enabled: false,
-    prefix: 'hw-',
+    prefix: 'cw-',
     ignoreAttributes: [
       'class',
       'className',

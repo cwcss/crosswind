@@ -33,7 +33,7 @@ select {
   padding-left: 0.75rem;
   font-size: 1rem;
   line-height: 1.5rem;
-  --hw-shadow: 0 0 #0000;
+  --cw-shadow: 0 0 #0000;
 }
 
 [type='text']:focus,
@@ -52,13 +52,13 @@ textarea:focus,
 select:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
-  --hw-ring-inset: var(--hw-empty,/*!*/ /*!*/);
-  --hw-ring-offset-width: 0px;
-  --hw-ring-offset-color: #fff;
-  --hw-ring-color: #2563eb;
-  --hw-ring-offset-shadow: var(--hw-ring-inset) 0 0 0 var(--hw-ring-offset-width) var(--hw-ring-offset-color);
-  --hw-ring-shadow: var(--hw-ring-inset) 0 0 0 calc(1px + var(--hw-ring-offset-width)) var(--hw-ring-color);
-  box-shadow: var(--hw-ring-offset-shadow), var(--hw-ring-shadow), var(--hw-shadow);
+  --cw-ring-inset: var(--cw-empty,/*!*/ /*!*/);
+  --cw-ring-offset-width: 0px;
+  --cw-ring-offset-color: #fff;
+  --cw-ring-color: #2563eb;
+  --cw-ring-offset-shadow: var(--cw-ring-inset) 0 0 0 var(--cw-ring-offset-width) var(--cw-ring-offset-color);
+  --cw-ring-shadow: var(--cw-ring-inset) 0 0 0 calc(1px + var(--cw-ring-offset-width)) var(--cw-ring-color);
+  box-shadow: var(--cw-ring-offset-shadow), var(--cw-ring-shadow), var(--cw-shadow);
   border-color: #2563eb;
 }
 
@@ -129,7 +129,7 @@ select[size]:where([size]:not([size="1"])) {
   background-color: #fff;
   border-color: #6b7280;
   border-width: 1px;
-  --hw-shadow: 0 0 #0000;
+  --cw-shadow: 0 0 #0000;
 }
 
 [type='checkbox'] {
@@ -144,13 +144,13 @@ select[size]:where([size]:not([size="1"])) {
 [type='radio']:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
-  --hw-ring-inset: var(--hw-empty,/*!*/ /*!*/);
-  --hw-ring-offset-width: 2px;
-  --hw-ring-offset-color: #fff;
-  --hw-ring-color: #2563eb;
-  --hw-ring-offset-shadow: var(--hw-ring-inset) 0 0 0 var(--hw-ring-offset-width) var(--hw-ring-offset-color);
-  --hw-ring-shadow: var(--hw-ring-inset) 0 0 0 calc(2px + var(--hw-ring-offset-width)) var(--hw-ring-color);
-  box-shadow: var(--hw-ring-offset-shadow), var(--hw-ring-shadow), var(--hw-shadow);
+  --cw-ring-inset: var(--cw-empty,/*!*/ /*!*/);
+  --cw-ring-offset-width: 2px;
+  --cw-ring-offset-color: #fff;
+  --cw-ring-color: #2563eb;
+  --cw-ring-offset-shadow: var(--cw-ring-inset) 0 0 0 var(--cw-ring-offset-width) var(--cw-ring-offset-color);
+  --cw-ring-shadow: var(--cw-ring-inset) 0 0 0 calc(2px + var(--cw-ring-offset-width)) var(--cw-ring-color);
+  box-shadow: var(--cw-ring-offset-shadow), var(--cw-ring-shadow), var(--cw-shadow);
 }
 
 [type='checkbox']:checked,

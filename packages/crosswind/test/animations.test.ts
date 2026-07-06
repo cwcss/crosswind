@@ -127,7 +127,7 @@ describe('Color Opacity on All Utilities', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('ring-blue-500/50')
     const css = gen.toCSS(false)
-    expect(css).toContain('--hw-ring-color')
+    expect(css).toContain('--cw-ring-color')
     expect(css).toContain('0.5')
   })
 
@@ -143,7 +143,7 @@ describe('Color Opacity on All Utilities', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('ring-offset-blue-500/50')
     const css = gen.toCSS(false)
-    expect(css).toContain('--hw-ring-offset-color')
+    expect(css).toContain('--cw-ring-offset-color')
     expect(css).toContain('0.5')
   })
 
@@ -161,27 +161,27 @@ describe('Reverse Utilities', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('space-x-reverse')
     const css = gen.toCSS(false)
-    expect(css).toContain('--hw-space-x-reverse: 1')
+    expect(css).toContain('--cw-space-x-reverse: 1')
   })
 
   it('should generate space-y-reverse', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('space-y-reverse')
     const css = gen.toCSS(false)
-    expect(css).toContain('--hw-space-y-reverse: 1')
+    expect(css).toContain('--cw-space-y-reverse: 1')
   })
 
   it('should generate divide-x-reverse', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('divide-x-reverse')
     const css = gen.toCSS(false)
-    expect(css).toContain('--hw-divide-x-reverse: 1')
+    expect(css).toContain('--cw-divide-x-reverse: 1')
   })
 
   it('should generate divide-y-reverse', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('divide-y-reverse')
     const css = gen.toCSS(false)
-    expect(css).toContain('--hw-divide-y-reverse: 1')
+    expect(css).toContain('--cw-divide-y-reverse: 1')
   })
 })

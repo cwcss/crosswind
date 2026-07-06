@@ -123,9 +123,9 @@ const BORDER_STYLE_MAP: Record<string, Record<string, string>> = {
 
 // Transform utilities - direct raw class to CSS
 const TRANSFORM_MAP: Record<string, Record<string, string>> = {
-  'transform': { transform: 'translate(var(--hw-translate-x), var(--hw-translate-y)) rotate(var(--hw-rotate)) skewX(var(--hw-skew-x)) skewY(var(--hw-skew-y)) scaleX(var(--hw-scale-x)) scaleY(var(--hw-scale-y))' },
-  'transform-cpu': { transform: 'translate(var(--hw-translate-x), var(--hw-translate-y)) rotate(var(--hw-rotate)) skewX(var(--hw-skew-x)) skewY(var(--hw-skew-y)) scaleX(var(--hw-scale-x)) scaleY(var(--hw-scale-y))' },
-  'transform-gpu': { transform: 'translate3d(var(--hw-translate-x), var(--hw-translate-y), 0) rotate(var(--hw-rotate)) skewX(var(--hw-skew-x)) skewY(var(--hw-skew-y)) scaleX(var(--hw-scale-x)) scaleY(var(--hw-scale-y))' },
+  'transform': { transform: 'translate(var(--cw-translate-x), var(--cw-translate-y)) rotate(var(--cw-rotate)) skewX(var(--cw-skew-x)) skewY(var(--cw-skew-y)) scaleX(var(--cw-scale-x)) scaleY(var(--cw-scale-y))' },
+  'transform-cpu': { transform: 'translate(var(--cw-translate-x), var(--cw-translate-y)) rotate(var(--cw-rotate)) skewX(var(--cw-skew-x)) skewY(var(--cw-skew-y)) scaleX(var(--cw-scale-x)) scaleY(var(--cw-scale-y))' },
+  'transform-gpu': { transform: 'translate3d(var(--cw-translate-x), var(--cw-translate-y), 0) rotate(var(--cw-rotate)) skewX(var(--cw-skew-x)) skewY(var(--cw-skew-y)) scaleX(var(--cw-scale-x)) scaleY(var(--cw-scale-y))' },
   'transform-none': { transform: 'none' },
 }
 
@@ -279,57 +279,57 @@ const PLACE_CONTENT_VALUES: Record<string, string> = {
 
 // Ring utilities - direct raw class to CSS
 const RING_MAP: Record<string, Record<string, string>> = {
-  'ring': { 'box-shadow': '0 0 0 3px var(--hw-ring-color, rgba(59, 130, 246, 0.5))' },
-  'ring-0': { 'box-shadow': '0 0 0 0px var(--hw-ring-color, rgba(59, 130, 246, 0.5))' },
-  'ring-1': { 'box-shadow': '0 0 0 1px var(--hw-ring-color, rgba(59, 130, 246, 0.5))' },
-  'ring-2': { 'box-shadow': '0 0 0 2px var(--hw-ring-color, rgba(59, 130, 246, 0.5))' },
-  'ring-4': { 'box-shadow': '0 0 0 4px var(--hw-ring-color, rgba(59, 130, 246, 0.5))' },
-  'ring-8': { 'box-shadow': '0 0 0 8px var(--hw-ring-color, rgba(59, 130, 246, 0.5))' },
-  'ring-inset': { '--hw-ring-inset': 'inset' },
+  'ring': { 'box-shadow': '0 0 0 3px var(--cw-ring-color, rgba(59, 130, 246, 0.5))' },
+  'ring-0': { 'box-shadow': '0 0 0 0px var(--cw-ring-color, rgba(59, 130, 246, 0.5))' },
+  'ring-1': { 'box-shadow': '0 0 0 1px var(--cw-ring-color, rgba(59, 130, 246, 0.5))' },
+  'ring-2': { 'box-shadow': '0 0 0 2px var(--cw-ring-color, rgba(59, 130, 246, 0.5))' },
+  'ring-4': { 'box-shadow': '0 0 0 4px var(--cw-ring-color, rgba(59, 130, 246, 0.5))' },
+  'ring-8': { 'box-shadow': '0 0 0 8px var(--cw-ring-color, rgba(59, 130, 246, 0.5))' },
+  'ring-inset': { '--cw-ring-inset': 'inset' },
 }
 
 // Shadow utilities - use CSS variable system for shadow color support
-// --hw-shadow holds the default shadow, --hw-shadow-colored replaces colors with var(--hw-shadow-color)
-// box-shadow references --hw-shadow which can be swapped to --hw-shadow-colored by a shadow-{color} utility
+// --cw-shadow holds the default shadow, --cw-shadow-colored replaces colors with var(--cw-shadow-color)
+// box-shadow references --cw-shadow which can be swapped to --cw-shadow-colored by a shadow-{color} utility
 const SHADOW_MAP: Record<string, Record<string, string>> = {
   'shadow-sm': {
-    '--hw-shadow': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-    '--hw-shadow-colored': '0 1px 2px 0 var(--hw-shadow-color)',
-    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+    '--cw-shadow': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+    '--cw-shadow-colored': '0 1px 2px 0 var(--cw-shadow-color)',
+    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
   },
   'shadow': {
-    '--hw-shadow': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-    '--hw-shadow-colored': '0 1px 3px 0 var(--hw-shadow-color), 0 1px 2px -1px var(--hw-shadow-color)',
-    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+    '--cw-shadow': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+    '--cw-shadow-colored': '0 1px 3px 0 var(--cw-shadow-color), 0 1px 2px -1px var(--cw-shadow-color)',
+    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
   },
   'shadow-md': {
-    '--hw-shadow': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-    '--hw-shadow-colored': '0 4px 6px -1px var(--hw-shadow-color), 0 2px 4px -2px var(--hw-shadow-color)',
-    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+    '--cw-shadow': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+    '--cw-shadow-colored': '0 4px 6px -1px var(--cw-shadow-color), 0 2px 4px -2px var(--cw-shadow-color)',
+    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
   },
   'shadow-lg': {
-    '--hw-shadow': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-    '--hw-shadow-colored': '0 10px 15px -3px var(--hw-shadow-color), 0 4px 6px -4px var(--hw-shadow-color)',
-    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+    '--cw-shadow': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+    '--cw-shadow-colored': '0 10px 15px -3px var(--cw-shadow-color), 0 4px 6px -4px var(--cw-shadow-color)',
+    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
   },
   'shadow-xl': {
-    '--hw-shadow': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-    '--hw-shadow-colored': '0 20px 25px -5px var(--hw-shadow-color), 0 8px 10px -6px var(--hw-shadow-color)',
-    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+    '--cw-shadow': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+    '--cw-shadow-colored': '0 20px 25px -5px var(--cw-shadow-color), 0 8px 10px -6px var(--cw-shadow-color)',
+    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
   },
   'shadow-2xl': {
-    '--hw-shadow': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
-    '--hw-shadow-colored': '0 25px 50px -12px var(--hw-shadow-color)',
-    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+    '--cw-shadow': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
+    '--cw-shadow-colored': '0 25px 50px -12px var(--cw-shadow-color)',
+    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
   },
   'shadow-inner': {
-    '--hw-shadow': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
-    '--hw-shadow-colored': 'inset 0 2px 4px 0 var(--hw-shadow-color)',
-    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+    '--cw-shadow': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
+    '--cw-shadow-colored': 'inset 0 2px 4px 0 var(--cw-shadow-color)',
+    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
   },
   'shadow-none': {
-    '--hw-shadow': '0 0 #0000',
-    'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+    '--cw-shadow': '0 0 #0000',
+    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
   },
 }
 
@@ -391,11 +391,11 @@ const BORDER_WIDTH_MAP: Record<string, Record<string, string>> = {
 
 // Ring offset - direct raw class to CSS
 const RING_OFFSET_MAP: Record<string, Record<string, string>> = {
-  'ring-offset-0': { '--hw-ring-offset-width': '0px' },
-  'ring-offset-1': { '--hw-ring-offset-width': '1px' },
-  'ring-offset-2': { '--hw-ring-offset-width': '2px' },
-  'ring-offset-4': { '--hw-ring-offset-width': '4px' },
-  'ring-offset-8': { '--hw-ring-offset-width': '8px' },
+  'ring-offset-0': { '--cw-ring-offset-width': '0px' },
+  'ring-offset-1': { '--cw-ring-offset-width': '1px' },
+  'ring-offset-2': { '--cw-ring-offset-width': '2px' },
+  'ring-offset-4': { '--cw-ring-offset-width': '4px' },
+  'ring-offset-8': { '--cw-ring-offset-width': '8px' },
 }
 
 // Opacity utilities - direct raw class to CSS
@@ -867,35 +867,35 @@ const BG_SIZE_MAP: Record<string, Record<string, string>> = {
 // Gradient direction - direct raw class to CSS
 const GRADIENT_MAP: Record<string, Record<string, string>> = {
   'bg-none': { 'background-image': 'none' },
-  'bg-gradient-to-t': { 'background-image': 'linear-gradient(to top, var(--hw-gradient-stops))' },
-  'bg-gradient-to-tr': { 'background-image': 'linear-gradient(to top right, var(--hw-gradient-stops))' },
-  'bg-gradient-to-r': { 'background-image': 'linear-gradient(to right, var(--hw-gradient-stops))' },
-  'bg-gradient-to-br': { 'background-image': 'linear-gradient(to bottom right, var(--hw-gradient-stops))' },
-  'bg-gradient-to-b': { 'background-image': 'linear-gradient(to bottom, var(--hw-gradient-stops))' },
-  'bg-gradient-to-bl': { 'background-image': 'linear-gradient(to bottom left, var(--hw-gradient-stops))' },
-  'bg-gradient-to-l': { 'background-image': 'linear-gradient(to left, var(--hw-gradient-stops))' },
-  'bg-gradient-to-tl': { 'background-image': 'linear-gradient(to top left, var(--hw-gradient-stops))' },
+  'bg-gradient-to-t': { 'background-image': 'linear-gradient(to top, var(--cw-gradient-stops))' },
+  'bg-gradient-to-tr': { 'background-image': 'linear-gradient(to top right, var(--cw-gradient-stops))' },
+  'bg-gradient-to-r': { 'background-image': 'linear-gradient(to right, var(--cw-gradient-stops))' },
+  'bg-gradient-to-br': { 'background-image': 'linear-gradient(to bottom right, var(--cw-gradient-stops))' },
+  'bg-gradient-to-b': { 'background-image': 'linear-gradient(to bottom, var(--cw-gradient-stops))' },
+  'bg-gradient-to-bl': { 'background-image': 'linear-gradient(to bottom left, var(--cw-gradient-stops))' },
+  'bg-gradient-to-l': { 'background-image': 'linear-gradient(to left, var(--cw-gradient-stops))' },
+  'bg-gradient-to-tl': { 'background-image': 'linear-gradient(to top left, var(--cw-gradient-stops))' },
   // Radial gradients
-  'bg-radial': { 'background-image': 'radial-gradient(var(--hw-gradient-stops))' },
-  'bg-radial-at-t': { 'background-image': 'radial-gradient(at top, var(--hw-gradient-stops))' },
-  'bg-radial-at-tr': { 'background-image': 'radial-gradient(at top right, var(--hw-gradient-stops))' },
-  'bg-radial-at-r': { 'background-image': 'radial-gradient(at right, var(--hw-gradient-stops))' },
-  'bg-radial-at-br': { 'background-image': 'radial-gradient(at bottom right, var(--hw-gradient-stops))' },
-  'bg-radial-at-b': { 'background-image': 'radial-gradient(at bottom, var(--hw-gradient-stops))' },
-  'bg-radial-at-bl': { 'background-image': 'radial-gradient(at bottom left, var(--hw-gradient-stops))' },
-  'bg-radial-at-l': { 'background-image': 'radial-gradient(at left, var(--hw-gradient-stops))' },
-  'bg-radial-at-tl': { 'background-image': 'radial-gradient(at top left, var(--hw-gradient-stops))' },
-  'bg-radial-at-c': { 'background-image': 'radial-gradient(at center, var(--hw-gradient-stops))' },
+  'bg-radial': { 'background-image': 'radial-gradient(var(--cw-gradient-stops))' },
+  'bg-radial-at-t': { 'background-image': 'radial-gradient(at top, var(--cw-gradient-stops))' },
+  'bg-radial-at-tr': { 'background-image': 'radial-gradient(at top right, var(--cw-gradient-stops))' },
+  'bg-radial-at-r': { 'background-image': 'radial-gradient(at right, var(--cw-gradient-stops))' },
+  'bg-radial-at-br': { 'background-image': 'radial-gradient(at bottom right, var(--cw-gradient-stops))' },
+  'bg-radial-at-b': { 'background-image': 'radial-gradient(at bottom, var(--cw-gradient-stops))' },
+  'bg-radial-at-bl': { 'background-image': 'radial-gradient(at bottom left, var(--cw-gradient-stops))' },
+  'bg-radial-at-l': { 'background-image': 'radial-gradient(at left, var(--cw-gradient-stops))' },
+  'bg-radial-at-tl': { 'background-image': 'radial-gradient(at top left, var(--cw-gradient-stops))' },
+  'bg-radial-at-c': { 'background-image': 'radial-gradient(at center, var(--cw-gradient-stops))' },
   // Conic gradients
-  'bg-conic': { 'background-image': 'conic-gradient(var(--hw-gradient-stops))' },
-  'bg-conic-from-t': { 'background-image': 'conic-gradient(from 0deg at center, var(--hw-gradient-stops))' },
-  'bg-conic-from-tr': { 'background-image': 'conic-gradient(from 45deg at center, var(--hw-gradient-stops))' },
-  'bg-conic-from-r': { 'background-image': 'conic-gradient(from 90deg at center, var(--hw-gradient-stops))' },
-  'bg-conic-from-br': { 'background-image': 'conic-gradient(from 135deg at center, var(--hw-gradient-stops))' },
-  'bg-conic-from-b': { 'background-image': 'conic-gradient(from 180deg at center, var(--hw-gradient-stops))' },
-  'bg-conic-from-bl': { 'background-image': 'conic-gradient(from 225deg at center, var(--hw-gradient-stops))' },
-  'bg-conic-from-l': { 'background-image': 'conic-gradient(from 270deg at center, var(--hw-gradient-stops))' },
-  'bg-conic-from-tl': { 'background-image': 'conic-gradient(from 315deg at center, var(--hw-gradient-stops))' },
+  'bg-conic': { 'background-image': 'conic-gradient(var(--cw-gradient-stops))' },
+  'bg-conic-from-t': { 'background-image': 'conic-gradient(from 0deg at center, var(--cw-gradient-stops))' },
+  'bg-conic-from-tr': { 'background-image': 'conic-gradient(from 45deg at center, var(--cw-gradient-stops))' },
+  'bg-conic-from-r': { 'background-image': 'conic-gradient(from 90deg at center, var(--cw-gradient-stops))' },
+  'bg-conic-from-br': { 'background-image': 'conic-gradient(from 135deg at center, var(--cw-gradient-stops))' },
+  'bg-conic-from-b': { 'background-image': 'conic-gradient(from 180deg at center, var(--cw-gradient-stops))' },
+  'bg-conic-from-bl': { 'background-image': 'conic-gradient(from 225deg at center, var(--cw-gradient-stops))' },
+  'bg-conic-from-l': { 'background-image': 'conic-gradient(from 270deg at center, var(--cw-gradient-stops))' },
+  'bg-conic-from-tl': { 'background-image': 'conic-gradient(from 315deg at center, var(--cw-gradient-stops))' },
 }
 
 // Content utility - direct raw class to CSS
@@ -986,11 +986,11 @@ const SCROLL_BEHAVIOR_MAP: Record<string, Record<string, string>> = {
 // Scroll snap type - direct raw class to CSS
 const SCROLL_SNAP_MAP: Record<string, Record<string, string>> = {
   'snap-none': { 'scroll-snap-type': 'none' },
-  'snap-x': { 'scroll-snap-type': 'x var(--hw-scroll-snap-strictness)' },
-  'snap-y': { 'scroll-snap-type': 'y var(--hw-scroll-snap-strictness)' },
-  'snap-both': { 'scroll-snap-type': 'both var(--hw-scroll-snap-strictness)' },
-  'snap-mandatory': { '--hw-scroll-snap-strictness': 'mandatory' },
-  'snap-proximity': { '--hw-scroll-snap-strictness': 'proximity' },
+  'snap-x': { 'scroll-snap-type': 'x var(--cw-scroll-snap-strictness)' },
+  'snap-y': { 'scroll-snap-type': 'y var(--cw-scroll-snap-strictness)' },
+  'snap-both': { 'scroll-snap-type': 'both var(--cw-scroll-snap-strictness)' },
+  'snap-mandatory': { '--cw-scroll-snap-strictness': 'mandatory' },
+  'snap-proximity': { '--cw-scroll-snap-strictness': 'proximity' },
   'snap-start': { 'scroll-snap-align': 'start' },
   'snap-end': { 'scroll-snap-align': 'end' },
   'snap-center': { 'scroll-snap-align': 'center' },
@@ -2392,7 +2392,7 @@ export class CSSGenerator {
         // silently overrode author styles (form inputs lost their padding —
         // placeholders sitting flush against the border). Utilities stay
         // unlayered, so they still win over author styles as before.
-        const layered = `@layer hw-base {\n${preflightCSS}\n}`
+        const layered = `@layer cw-base {\n${preflightCSS}\n}`
         parts.push(minify ? layered.replace(/\s+/g, ' ').trim() : layered)
       }
     }
