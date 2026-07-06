@@ -2384,7 +2384,16 @@ export class CSSGenerator {
             `font-family: ${fontFamilyValue};`,
           )
         }
-        parts.push(minify ? preflightCSS.replace(/\s+/g, ' ').trim() : preflightCSS)
+        // Emit preflight inside a cascade layer so it is always the LOWEST
+        // priority: an unlayered rule beats any layered rule regardless of
+        // source order, so a page author's own `input { padding: … }` wins over
+        // the reset's `input { padding: 0 }` even though this generated CSS is
+        // injected after the author's <style>. Without the layer the reset
+        // silently overrode author styles (form inputs lost their padding —
+        // placeholders sitting flush against the border). Utilities stay
+        // unlayered, so they still win over author styles as before.
+        const layered = `@layer hw-base {\n${preflightCSS}\n}`
+        parts.push(minify ? layered.replace(/\s+/g, ' ').trim() : layered)
       }
     }
 
