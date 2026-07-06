@@ -146,23 +146,23 @@ When enabled, the output CSS is minified by removing:
 const config = {
   compileClass: {
     enabled: true, // Enable the transformer
-    trigger: ':hw:', // Trigger string (default)
-    classPrefix: 'hw-', // Prefix for generated names (default)
+    trigger: ':cw:', // Trigger string (default)
+    classPrefix: 'cw-', // Prefix for generated names (default)
     layer: 'shortcuts', // Layer name (default)
   },
 } satisfies CrosswindOptions
 
 ```**Options:**-**enabled**- Enable or disable the transformer
--**trigger**- String to mark classes for compilation (e.g., `:hw:`)
--**classPrefix**- Prefix for generated class names (e.g., `hw-`)
+-**trigger**- String to mark classes for compilation (e.g., `:cw:`)
+-**classPrefix**- Prefix for generated class names (e.g., `cw-`)
 -**layer**- CSS layer name for future CSS layers support**Usage:**```html
 <!-- Before compilation -->
-<div class=":hw: flex items-center justify-between px-4 py-2">
+<div class=":cw: flex items-center justify-between px-4 py-2">
   Content
 </div>
 
 <!-- After compilation -->
-<div class="hw-abc123">
+<div class="cw-abc123">
   Content
 </div>
 ```
@@ -281,8 +281,8 @@ const config = {
   // Compile class transformer
   compileClass: {
     enabled: true,
-    trigger: ':hw:',
-    classPrefix: 'hw-',
+    trigger: ':cw:',
+    classPrefix: 'cw-',
   },
 
   // Shortcuts

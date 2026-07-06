@@ -8,7 +8,7 @@ describe('Gradient Utilities', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('bg-radial')
       const css = gen.toCSS(false)
-      expect(css).toContain('background-image: radial-gradient(var(--hw-gradient-stops))')
+      expect(css).toContain('background-image: radial-gradient(var(--cw-gradient-stops))')
     })
 
     it('should generate bg-radial-at-t', () => {
@@ -39,7 +39,7 @@ describe('Gradient Utilities', () => {
       gen.generate('to-purple-500')
       const css = gen.toCSS(false)
       expect(css).toContain('radial-gradient')
-      expect(css).toContain('--hw-gradient-from')
+      expect(css).toContain('--cw-gradient-from')
     })
   })
 
@@ -48,7 +48,7 @@ describe('Gradient Utilities', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('bg-conic')
       const css = gen.toCSS(false)
-      expect(css).toContain('background-image: conic-gradient(var(--hw-gradient-stops))')
+      expect(css).toContain('background-image: conic-gradient(var(--cw-gradient-stops))')
     })
 
     it('should generate bg-conic-from-t', () => {
@@ -86,11 +86,11 @@ describe('Gradient Utilities', () => {
   // generic parsing and produced no CSS at all — every Tailwind-style
   // translucent gradient was silently broken.
   describe('Gradient stops with opacity modifier (regression)', () => {
-    it('from-<color>/<alpha> emits --hw-gradient-from with alpha', () => {
+    it('from-<color>/<alpha> emits --cw-gradient-from with alpha', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('from-red-500/50')
       const css = gen.toCSS(false)
-      expect(css).toContain('--hw-gradient-from:')
+      expect(css).toContain('--cw-gradient-from:')
       expect(css).toContain('/ 0.5')
     })
 
@@ -98,7 +98,7 @@ describe('Gradient Utilities', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('via-purple-500/75')
       const css = gen.toCSS(false)
-      expect(css).toContain('--hw-gradient-stops:')
+      expect(css).toContain('--cw-gradient-stops:')
       expect(css).toContain('/ 0.75')
     })
 
@@ -106,7 +106,7 @@ describe('Gradient Utilities', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('to-blue-500/25')
       const css = gen.toCSS(false)
-      expect(css).toContain('--hw-gradient-to:')
+      expect(css).toContain('--cw-gradient-to:')
       expect(css).toContain('/ 0.25')
     })
 
@@ -118,7 +118,7 @@ describe('Gradient Utilities', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('from-[#FF3E54]/60')
       const css = gen.toCSS(false)
-      expect(css).toContain('--hw-gradient-from:')
+      expect(css).toContain('--cw-gradient-from:')
       expect(css).toContain('rgb(255 62 84 / 0.6)')
       expect(css).not.toContain('[#FF3E54]')
     })
@@ -127,7 +127,7 @@ describe('Gradient Utilities', () => {
       // Guardrail — the regression fix must not break the simple form.
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('from-red-500')
-      expect(gen.toCSS(false)).toContain('--hw-gradient-from: oklch(')
+      expect(gen.toCSS(false)).toContain('--cw-gradient-from: oklch(')
     })
   })
 })

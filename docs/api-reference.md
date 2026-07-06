@@ -211,8 +211,8 @@ Get all compiled classes.**Example:**```typescript
 import { CompileClassTransformer } from 'crosswind'
 
 const transformer = new CompileClassTransformer({
-  trigger: ':hw:',
-  classPrefix: 'hw-',
+  trigger: ':cw:',
+  classPrefix: 'cw-',
 })
 
 // Use with scanner

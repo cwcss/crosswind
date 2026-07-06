@@ -14,7 +14,7 @@ Instead of writing long lists of utility classes in your HTML:
 ```You can compile them into a single class:```html
 
 <!-- After: ~20 characters -->
-<div class="hw-2k9d3a">
+<div class="cw-2k9d3a">
   Content
 </div>
 
@@ -22,8 +22,8 @@ Instead of writing long lists of utility classes in your HTML:
 
 ### 1. Mark Classes for Compilation
 
-Add the`:hw:`trigger to mark utility groups for compilation:```html
-<div class=":hw: flex items-center justify-between px-4 py-2 bg-white rounded-lg shadow-md">
+Add the`:cw:`trigger to mark utility groups for compilation:```html
+<div class=":cw: flex items-center justify-between px-4 py-2 bg-white rounded-lg shadow-md">
   Content
 </div>
 ```### 2. Build with Compile Class Enabled
@@ -38,8 +38,8 @@ const config = {
 
   compileClass: {
     enabled: true, // Enable the transformer
-    trigger: ':hw:', // Trigger string (default)
-    classPrefix: 'hw-', // Prefix for generated names (default)
+    trigger: ':cw:', // Trigger string (default)
+    classPrefix: 'cw-', // Prefix for generated names (default)
   },
 } satisfies CrosswindOptions
 
@@ -51,7 +51,7 @@ Run the build command:```bash
 crosswind build
 ```The transformer will:
 
-1.**Scan Files**- Find all classes marked with`:hw:`2.**Generate Names**- Create deterministic hashed class names
+1.**Scan Files**- Find all classes marked with`:cw:`2.**Generate Names**- Create deterministic hashed class names
 3.**Transform Files**- Replace original classes with compiled names
 4.**Generate CSS**- Output CSS for both compiled and original utilities
 
@@ -59,12 +59,12 @@ crosswind build
 
 Your HTML is automatically transformed:```html
 <!-- Your source file is updated automatically -->
-<div class="hw-2k9d3a">
+<div class="cw-2k9d3a">
   Content
 </div>
 
 ```And CSS is generated for the compiled class:```css
-.hw-2k9d3a {
+.cw-2k9d3a {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -105,7 +105,7 @@ Customize the generated class name prefix:```typescript
 const config = {
   compileClass: {
     enabled: true,
-    classPrefix: 'c-', // Use 'c-' prefix instead of 'hw-'
+    classPrefix: 'c-', // Use 'c-' prefix instead of 'cw-'
   },
 } satisfies CrosswindOptions
 ```Generated classes:`c-abc123`, `c-def456`, etc.
@@ -132,7 +132,7 @@ const config = {
 </button>
 
 ```**Character count:**285 characters**After:**```html
-<button class="hw-8k2j9s">
+<button class="cw-8k2j9s">
   Click Me
 </button>
 ```**Character count:**49 characters**Savings:**~82% reduction
@@ -143,9 +143,9 @@ Compiled class names are deterministic - the same utilities always generate the 
 
 ```typescript
 // These all generate the same compiled class name
-<div class=":hw: flex items-center p-4">
-<div class=":hw: p-4 flex items-center"> // Order doesn't matter
-<div class=":hw: flex items-center p-4">  // Same hash
+<div class=":cw: flex items-center p-4">
+<div class=":cw: p-4 flex items-center"> // Order doesn't matter
+<div class=":cw: flex items-center p-4">  // Same hash
 ```Benefits:
 
 - Browser cache reuses compiled classes across pages
@@ -155,12 +155,12 @@ Compiled class names are deterministic - the same utilities always generate the 
 ### 3. Automatic Deduplication
 
 Identical utility groups share the same compiled class:```html
-<!-- These both use hw-abc123 -->
-<div class="hw-abc123">Card 1</div>
-<div class="hw-abc123">Card 2</div>
+<!-- These both use cw-abc123 -->
+<div class="cw-abc123">Card 1</div>
+<div class="cw-abc123">Card 2</div>
 
 ```Only one CSS rule is generated:```css
-.hw-abc123 {
+.cw-abc123 {
   /*utilities*/
 }
 ```## Framework Integration
@@ -170,7 +170,7 @@ Identical utility groups share the same compiled class:```html
 // Component.tsx
 export function Button({ children }: { children: React.ReactNode }) {
   return (
-    <button className=":hw: bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition">
+    <button className=":cw: bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition">
       {children}
     </button>
   )
@@ -180,7 +180,7 @@ export function Button({ children }: { children: React.ReactNode }) {
 // Component.tsx (automatically transformed)
 export function Button({ children }: { children: React.ReactNode }) {
   return (
-    <button className="hw-7k3m2p">
+    <button className="cw-7k3m2p">
       {children}
     </button>
   )
@@ -189,14 +189,14 @@ export function Button({ children }: { children: React.ReactNode }) {
 
 <!-- Button.vue -->
 <template>
-  <button class=":hw: bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+  <button class=":cw: bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
     <slot />
   </button>
 </template>
 
 ```### Svelte```svelte
 <!-- Button.svelte -->
-<button class=":hw: bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+<button class=":cw: bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
   <slot />
 </button>
 ```## Build Output
@@ -212,9 +212,9 @@ $ crosswind build
 📦 File size: 24.35 KB
 
 📦 Compiled classes:
-  hw-2k9d3a ← flex items-center justify-between px-4 py-2 bg-white rounded-lg shadow-md
-  hw-8k2j9s ← inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md
-  hw-7k3m2p ← bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded
+  cw-2k9d3a ← flex items-center justify-between px-4 py-2 bg-white rounded-lg shadow-md
+  cw-8k2j9s ← inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md
+  cw-7k3m2p ← bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded
   ...
 
 ```## Advanced Usage
@@ -223,10 +223,10 @@ $ crosswind build
 
 Works with dynamic classes:```tsx
 // React
-<div className={`:hw: flex ${isActive ? 'bg-blue-500' : 'bg-gray-500'} p-4`}>
+<div className={`:cw: flex ${isActive ? 'bg-blue-500' : 'bg-gray-500'} p-4`}>
   Content
 </div>
-```**Note:**Only the static parts (`:hw: flex p-4`) will be compiled. Dynamic parts remain as-is.
+```**Note:**Only the static parts (`:cw: flex p-4`) will be compiled. Dynamic parts remain as-is.
 
 ### With Shortcuts
 
@@ -245,24 +245,24 @@ const config = {
 }
 ```Usage:```html
 
-<button class=":hw: btn-primary">Click Me</button>
+<button class=":cw: btn-primary">Click Me</button>
 <!-- Compiles to -->
-<button class="hw-k7m3n2">Click Me</button>
+<button class="cw-k7m3n2">Click Me</button>
 
 ```### Component Libraries
 
 Create a compiled component library:```typescript
 // components/Button.tsx
 export const buttonClasses = {
-  primary: ':hw: bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded',
-  secondary: ':hw: bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded',
-  danger: ':hw: bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded',
+  primary: ':cw: bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded',
+  secondary: ':cw: bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded',
+  danger: ':cw: bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded',
 }
 
 // After build, these become:
-// primary: 'hw-abc123'
-// secondary: 'hw-def456'
-// danger: 'hw-ghi789'
+// primary: 'cw-abc123'
+// secondary: 'cw-def456'
+// danger: 'cw-ghi789'
 ```
 
 ## Best Practices
@@ -271,28 +271,28 @@ export const buttonClasses = {
 
 ✅**Good:**```html
 <!-- Card pattern used multiple times -->
-<div class=":hw: rounded-lg shadow-md p-6 bg-white">Card 1</div>
-<div class=":hw: rounded-lg shadow-md p-6 bg-white">Card 2</div>
-<div class=":hw: rounded-lg shadow-md p-6 bg-white">Card 3</div>
+<div class=":cw: rounded-lg shadow-md p-6 bg-white">Card 1</div>
+<div class=":cw: rounded-lg shadow-md p-6 bg-white">Card 2</div>
+<div class=":cw: rounded-lg shadow-md p-6 bg-white">Card 3</div>
 
 ```
 
 ❌**Avoid:**```html
 <!-- One-off utility combinations -->
-<div class=":hw: mt-4">Unique element</div>
+<div class=":cw: mt-4">Unique element</div>
 ```
 
 ### 2. Group Related Utilities
 
 ✅**Good:**```html
-<div class=":hw: flex items-center justify-between">
-  <span class=":hw: text-lg font-bold text-gray-900">Title</span>
+<div class=":cw: flex items-center justify-between">
+  <span class=":cw: text-lg font-bold text-gray-900">Title</span>
 </div>
 
 ```
 
 ❌**Avoid:**```html
-<div class=":hw: flex :hw: items-center :hw: justify-between">
+<div class=":cw: flex :cw: items-center :cw: justify-between">
   Separate compilations
 </div>
 ```
@@ -303,7 +303,7 @@ export const buttonClasses = {
 // Define component styles once
 function Card({ children }) {
   return (
-    <div class=":hw: rounded-lg shadow-md p-6 bg-white hover:shadow-lg transition-shadow">
+    <div class=":cw: rounded-lg shadow-md p-6 bg-white hover:shadow-lg transition-shadow">
       {children}
     </div>
   )
@@ -314,13 +314,13 @@ function Card({ children }) {
 ### 4. Keep Dynamic Values Separate
 
 ✅**Good:**```tsx
-<div className={`:hw: flex items-center p-4 ${className}`}>
+<div className={`:cw: flex items-center p-4 ${className}`}>
   Static compiled + dynamic
 </div>
 ```
 
 ❌**Avoid:**```tsx
-<div className={`:hw: flex items-center p-4 ${dynamicPadding} ${dynamicBg}`}>
+<div className={`:cw: flex items-center p-4 ${dynamicPadding} ${dynamicBg}`}>
   Too much dynamic content
 </div>
 
@@ -349,14 +349,14 @@ Compile class adds minimal overhead:
 
    compileClass: { enabled: true }
    ```2. Trigger is correct:```html
-   <div class=":hw: flex items-center">  <!-- ✅ -->
-   <div class="hw: flex items-center">   <!-- ❌ Wrong trigger -->
+   <div class=":cw: flex items-center">  <!-- ✅ -->
+   <div class="cw: flex items-center">   <!-- ❌ Wrong trigger -->
    ```3. Files are in content patterns:```typescript
    content: ['./src/**/*.tsx'] // Must match your files
    ```### Wrong Hash Generated**Cause:**Different utility order generates different hashes.**Solution:**Utilities are automatically sorted before hashing:```html
 <!-- Both generate the same hash -->
-<div class=":hw: flex items-center p-4">
-<div class=":hw: p-4 flex items-center">
+<div class=":cw: flex items-center p-4">
+<div class=":cw: p-4 flex items-center">
 ```### Source Files Not Transformed**Check:**1. Build completed successfully
 
 2. Files have write permissions
@@ -367,19 +367,19 @@ Compile class adds minimal overhead:
 ### From Regular Classes```diff
 
 - <div class="flex items-center justify-between p-4 bg-white rounded shadow">
-- <div class=":hw: flex items-center justify-between p-4 bg-white rounded shadow">
+- <div class=":cw: flex items-center justify-between p-4 bg-white rounded shadow">
 
 ```Run build:```bash
 crosswind build
 ```Result:```html
 
-<div class="hw-abc123">
+<div class="cw-abc123">
 
 ```### Gradual Adoption
 
 You can mix compiled and regular classes:```html
 <!-- Compile repeated patterns -->
-<div class=":hw: flex items-center p-4 bg-white rounded">
+<div class=":cw: flex items-center p-4 bg-white rounded">
   <!-- Use regular classes for one-offs -->
   <span class="text-red-500">Error</span>
 </div>

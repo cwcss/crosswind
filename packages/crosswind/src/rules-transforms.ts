@@ -4,9 +4,9 @@ import type { UtilityRule } from './rules'
 
 export const transformRule: UtilityRule = (parsed) => {
   const values: Record<string, string> = {
-    'transform': 'translate(var(--hw-translate-x), var(--hw-translate-y)) rotate(var(--hw-rotate)) skewX(var(--hw-skew-x)) skewY(var(--hw-skew-y)) scaleX(var(--hw-scale-x)) scaleY(var(--hw-scale-y))',
-    'transform-cpu': 'translate(var(--hw-translate-x), var(--hw-translate-y)) rotate(var(--hw-rotate)) skewX(var(--hw-skew-x)) skewY(var(--hw-skew-y)) scaleX(var(--hw-scale-x)) scaleY(var(--hw-scale-y))',
-    'transform-gpu': 'translate3d(var(--hw-translate-x), var(--hw-translate-y), 0) rotate(var(--hw-rotate)) skewX(var(--hw-skew-x)) skewY(var(--hw-skew-y)) scaleX(var(--hw-scale-x)) scaleY(var(--hw-scale-y))',
+    'transform': 'translate(var(--cw-translate-x), var(--cw-translate-y)) rotate(var(--cw-rotate)) skewX(var(--cw-skew-x)) skewY(var(--cw-skew-y)) scaleX(var(--cw-scale-x)) scaleY(var(--cw-scale-y))',
+    'transform-cpu': 'translate(var(--cw-translate-x), var(--cw-translate-y)) rotate(var(--cw-rotate)) skewX(var(--cw-skew-x)) skewY(var(--cw-skew-y)) scaleX(var(--cw-scale-x)) scaleY(var(--cw-scale-y))',
+    'transform-gpu': 'translate3d(var(--cw-translate-x), var(--cw-translate-y), 0) rotate(var(--cw-rotate)) skewX(var(--cw-skew-x)) skewY(var(--cw-skew-y)) scaleX(var(--cw-scale-x)) scaleY(var(--cw-scale-y))',
     'transform-none': 'none',
   }
   return values[parsed.raw] ? { transform: values[parsed.raw] } : undefined

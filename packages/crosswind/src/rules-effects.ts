@@ -43,11 +43,11 @@ function applyShadowOpacity(color: string, opacity: number): string {
 }
 
 /**
- * Replace color values in a shadow string with var(--hw-shadow-color)
- * e.g., '0 10px 15px -3px rgb(0 0 0 / 0.1)' -> '0 10px 15px -3px var(--hw-shadow-color)'
+ * Replace color values in a shadow string with var(--cw-shadow-color)
+ * e.g., '0 10px 15px -3px rgb(0 0 0 / 0.1)' -> '0 10px 15px -3px var(--cw-shadow-color)'
 */
 function createColoredShadow(shadow: string): string {
-  return shadow.replace(/rgba?\([^)]+\)/g, 'var(--hw-shadow-color)')
+  return shadow.replace(/rgba?\([^)]+\)/g, 'var(--cw-shadow-color)')
 }
 
 // =============================================================================
@@ -84,14 +84,14 @@ export const backgroundClipRule: UtilityRule = (parsed) => {
 export const backgroundImageRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'bg' && parsed.value) {
     const gradients: Record<string, string> = {
-      'gradient-to-t': 'linear-gradient(to top, var(--hw-gradient-stops))',
-      'gradient-to-tr': 'linear-gradient(to top right, var(--hw-gradient-stops))',
-      'gradient-to-r': 'linear-gradient(to right, var(--hw-gradient-stops))',
-      'gradient-to-br': 'linear-gradient(to bottom right, var(--hw-gradient-stops))',
-      'gradient-to-b': 'linear-gradient(to bottom, var(--hw-gradient-stops))',
-      'gradient-to-bl': 'linear-gradient(to bottom left, var(--hw-gradient-stops))',
-      'gradient-to-l': 'linear-gradient(to left, var(--hw-gradient-stops))',
-      'gradient-to-tl': 'linear-gradient(to top left, var(--hw-gradient-stops))',
+      'gradient-to-t': 'linear-gradient(to top, var(--cw-gradient-stops))',
+      'gradient-to-tr': 'linear-gradient(to top right, var(--cw-gradient-stops))',
+      'gradient-to-r': 'linear-gradient(to right, var(--cw-gradient-stops))',
+      'gradient-to-br': 'linear-gradient(to bottom right, var(--cw-gradient-stops))',
+      'gradient-to-b': 'linear-gradient(to bottom, var(--cw-gradient-stops))',
+      'gradient-to-bl': 'linear-gradient(to bottom left, var(--cw-gradient-stops))',
+      'gradient-to-l': 'linear-gradient(to left, var(--cw-gradient-stops))',
+      'gradient-to-tl': 'linear-gradient(to top left, var(--cw-gradient-stops))',
     }
     if (gradients[parsed.value]) {
       return { 'background-image': gradients[parsed.value] } as Record<string, string>
@@ -226,17 +226,17 @@ export const boxShadowThemeRule: UtilityRule = (parsed, config) => {
     // shadow-none is a simple reset — no CSS variables needed
     if (shadow === 'none') {
       return {
-        '--hw-shadow': '0 0 #0000',
-        'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+        '--cw-shadow': '0 0 #0000',
+        'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
       } as Record<string, string>
     }
 
     // Generate CSS variable-based shadow for color support
     const colored = createColoredShadow(shadow)
     return {
-      '--hw-shadow': shadow,
-      '--hw-shadow-colored': colored,
-      'box-shadow': 'var(--hw-ring-offset-shadow, 0 0 #0000), var(--hw-ring-shadow, 0 0 #0000), var(--hw-shadow)',
+      '--cw-shadow': shadow,
+      '--cw-shadow-colored': colored,
+      'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
     } as Record<string, string>
   }
 }
@@ -292,8 +292,8 @@ export const shadowColorRule: UtilityRule = (parsed, config) => {
     : resolvedColor
 
   return {
-    '--hw-shadow-color': finalColor,
-    '--hw-shadow': 'var(--hw-shadow-colored)',
+    '--cw-shadow-color': finalColor,
+    '--cw-shadow': 'var(--cw-shadow-colored)',
   } as Record<string, string>
 }
 

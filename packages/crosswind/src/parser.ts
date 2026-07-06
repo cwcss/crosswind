@@ -831,11 +831,11 @@ else {
 
 /**
  * Extract classes from attributify syntax
- * e.g., <div hw-flex hw-items-center hw-bg="blue-500" hw-p="4">
+ * e.g., <div cw-flex cw-items-center cw-bg="blue-500" cw-p="4">
  * Returns classes like: flex, items-center, bg-blue-500, p-4
  *
  * Also supports variant attributes:
- * e.g., <div hw-hover:bg="blue-600" hw-dark:text="white">
+ * e.g., <div cw-hover:bg="blue-600" cw-dark:text="white">
  * Returns classes like: hover:bg-blue-600, dark:text-white
 */
 export function extractAttributifyClasses(content: string, config?: AttributifyConfig): Set<string> {
@@ -845,7 +845,7 @@ export function extractAttributifyClasses(content: string, config?: AttributifyC
     return classes
   }
 
-  const prefix = config.prefix ?? 'hw-'
+  const prefix = config.prefix ?? 'cw-'
   const defaultIgnoreList = [
     'class',
     'className',
@@ -921,7 +921,7 @@ else if (baseAttr === pattern) {
 
     // Parse attributes from this tag
     // Match both value attributes and boolean attributes
-    // Updated pattern to support colons in attribute names for variants: hw-hover:bg="blue-500"
+    // Updated pattern to support colons in attribute names for variants: cw-hover:bg="blue-500"
     // Use greedy match for attribute name to capture full dark:hover:bg style names
     const attrPattern = /([a-z][a-z0-9-:]*)(?:=["']([^"']*)["'])?(?=\s|$|\/?>)/gi
     let attrMatch
