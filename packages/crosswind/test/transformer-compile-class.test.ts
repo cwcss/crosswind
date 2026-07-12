@@ -285,3 +285,38 @@ describe('Compile Class Transformer', () => {
     })
   })
 })
+
+describe('compiled classes generate real CSS (build integration)', () => {
+  it('emits a rule for the hashed class with the group declarations', async () => {
+    const { build } = await import('../src/build')
+    const { defaultConfig } = await import('../src/config')
+    const dir = `${import.meta.dir}/.compile-css-test`
+    await Bun.write(`${dir}/index.html`, '<div class=":cw: flex items-center gap-2 hover:underline">hi</div>')
+    try {
+      const result = await build({
+        ...defaultConfig,
+        content: [`${dir}/*.html`],
+        minify: false,
+        compileClass: { enabled: true },
+      } as any)
+      const compiled = [...result.compiledClasses!.values()][0]
+      expect(compiled.className).toMatch(/^cw-/)
+      // The hashed selector carries the group's declarations
+      expect(result.css).toContain(`.${compiled.className} {`)
+      expect(result.css).toContain('display: flex;')
+      expect(result.css).toContain('align-items: center;')
+      // Variant utilities inside the group expand onto the compiled selector
+      expect(result.css).toContain(`.${compiled.className}:hover`)
+      // The raw utilities are NOT emitted under their own selectors — the
+      // markup no longer contains them
+      expect(result.css).not.toContain('.items-center {')
+      // And the transformed markup references the hashed class
+      const transformed = [...result.transformedFiles!.values()][0]
+      expect(transformed).toContain(`class="${compiled.className}"`)
+    }
+    finally {
+      const { rm } = await import('node:fs/promises')
+      await rm(dir, { recursive: true, force: true })
+    }
+  })
+})
