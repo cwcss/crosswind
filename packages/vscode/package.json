@@ -1,4 +1,11 @@
 {
   "name": "crosswind-vscode",
-  "version": "0.2.7"
+  "version": "0.2.7",
+  "description": "VS Code extension for Crosswind (placeholder package)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cwcss/crosswind.git",
+    "directory": "packages/vscode"
+  }
 }
