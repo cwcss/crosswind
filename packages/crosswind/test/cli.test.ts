@@ -109,3 +109,15 @@ describe('CLI analyze', () => {
     expect(stats.outputSize).toBeGreaterThan(0)
   })
 })
+
+describe('CLI diagnostics', () => {
+  it('warns when a content pattern matches no files', async () => {
+    await writeFile(
+      join(TEST_DIR, 'typo.config.ts'),
+      `export default { content: ['./nonexistent/**/*.html'], output: './out/t.css', minify: false }\n`,
+    )
+    const { exitCode, out } = await runCli(['build', '--config', './typo.config.ts'], TEST_DIR)
+    expect(exitCode).toBe(0)
+    expect(out).toContain('Content pattern matched no files')
+  })
+})

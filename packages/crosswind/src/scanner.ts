@@ -6,6 +6,8 @@ import { extractClasses } from './parser'
 export interface ScanResult {
   classes: Set<string>
   transformedFiles: Map<string, string>
+  /** Content patterns that matched no files (likely config typos). */
+  unmatchedPatterns: string[]
 }
 
 /**
@@ -28,13 +30,17 @@ export class Scanner {
     // once per pattern — wasted I/O and duplicate transformer passes.
     const seenFiles = new Set<string>()
 
+    const unmatchedPatterns: string[] = []
+
     // Use Promise.all to scan all patterns concurrently for better performance
     await Promise.all(
       this.patterns.map(async (pattern) => {
         const glob = new Glob(pattern)
+        let matched = 0
 
         // Bun's glob.scan() returns an async iterable
         for await (const file of glob.scan('.')) {
+          matched++
           if (seenFiles.has(file)) {
             continue
           }
@@ -64,10 +70,13 @@ export class Scanner {
             continue
           }
         }
+        if (matched === 0) {
+          unmatchedPatterns.push(pattern)
+        }
       }),
     )
 
-    return { classes: allClasses, transformedFiles }
+    return { classes: allClasses, transformedFiles, unmatchedPatterns }
   }
 
   /**

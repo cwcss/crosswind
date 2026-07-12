@@ -86,17 +86,26 @@ function mergeConfig(baseConfig: CrosswindConfig, options: BuildOptions): Crossw
  * Run the build process
 */
 async function runBuild(buildConfig: CrosswindConfig, options: BuildOptions): Promise<void> {
+  // Honor verbose from the config file too — the field was typed and
+  // merged but only the CLI flag was ever read.
+  const verbose = options.verbose ?? buildConfig.verbose ?? false
   try {
-    const startMsg = options.verbose ? '🚀 Building CSS (verbose mode)...' : '🚀 Building CSS...'
+    const startMsg = verbose ? '🚀 Building CSS (verbose mode)...' : '🚀 Building CSS...'
     console.log(startMsg)
 
-    if (options.verbose) {
+    if (verbose) {
       console.log(`📂 Content patterns: ${buildConfig.content.join(', ')}`)
       console.log(`📝 Output: ${buildConfig.output}`)
       console.log(`🗜️  Minify: ${buildConfig.minify ? 'Yes' : 'No'}`)
     }
 
     const result = await buildAndWrite(buildConfig)
+
+    if (result.unmatchedPatterns && result.unmatchedPatterns.length > 0) {
+      for (const pattern of result.unmatchedPatterns) {
+        console.warn(`⚠️  Content pattern matched no files: ${pattern}`)
+      }
+    }
 
     console.log(`✅ Built ${result.classes.size} classes in ${result.duration.toFixed(2)}ms`)
     console.log(`📝 Output: ${buildConfig.output}`)
@@ -108,7 +117,7 @@ async function runBuild(buildConfig: CrosswindConfig, options: BuildOptions): Pr
         console.log(`📝 Transformed ${result.transformedFiles.size} files`)
       }
 
-      if (options.verbose) {
+      if (verbose) {
         console.log(`\n📦 Compiled classes:`)
         for (const [, { className, utilities }] of result.compiledClasses) {
           console.log(`  ${className} ← ${utilities.join(' ')}`)
@@ -116,7 +125,7 @@ async function runBuild(buildConfig: CrosswindConfig, options: BuildOptions): Pr
       }
     }
 
-    if (options.verbose && result.classes.size > 0) {
+    if (verbose && result.classes.size > 0) {
       const classesArray = Array.from(result.classes).sort()
       console.log(`\n📋 Classes found (${result.classes.size}):`)
       classesArray.forEach(cls => console.log(`  - ${cls}`))
@@ -131,7 +140,7 @@ async function runBuild(buildConfig: CrosswindConfig, options: BuildOptions): Pr
   }
   catch (error) {
     console.error('❌ Build failed:', error)
-    if (options.verbose && error instanceof Error) {
+    if (verbose && error instanceof Error) {
       console.error(error.stack)
     }
     process.exit(1)
@@ -220,7 +229,9 @@ cli
 
     await runBuild(buildConfig, options)
 
-    if (options.watch) {
+    // watch: true from the config file works like --watch (the field was
+    // typed and scaffolded by init but never read).
+    if (options.watch || buildConfig.watch) {
       setupWatch(buildConfig, options)
     }
   })

@@ -9,6 +9,8 @@ export interface BuildResult {
   duration: number
   compiledClasses?: Map<string, { className: string, utilities: string[] }>
   transformedFiles?: Map<string, string>
+  /** Content patterns that matched no files (likely config typos). */
+  unmatchedPatterns?: string[]
 }
 
 /**
@@ -31,7 +33,7 @@ export async function build(config: CrosswindConfig): Promise<BuildResult> {
     attributify: config.attributify,
     bracketSyntax: config.bracketSyntax,
   })
-  const { classes, transformedFiles } = await scanner.scan()
+  const { classes, transformedFiles, unmatchedPatterns } = await scanner.scan()
 
   // Add safelist classes. Only strings are supported — a Tailwind-style
   // { pattern: /.../ } entry previously reached parseClass and crashed the
@@ -74,6 +76,7 @@ export async function build(config: CrosswindConfig): Promise<BuildResult> {
     duration,
     compiledClasses: transformer?.getCompiledClasses(),
     transformedFiles,
+    unmatchedPatterns,
   }
 }
 
