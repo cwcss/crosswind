@@ -1125,3 +1125,30 @@ describe('utility cascade ranking', () => {
     expect(g).toBeLessThan(gx)
   })
 })
+
+describe('cssVariables scope', () => {
+  it('does not dump the stock palette into :root', () => {
+    const gen = new CSSGenerator({ ...defaultConfig, cssVariables: true })
+    gen.generate('p-4')
+    const out = gen.toCSS(false)
+    expect(out).not.toContain('--slate-50')
+    expect(out).not.toContain(':root')
+  })
+
+  it('emits only custom/overridden colors', () => {
+    const gen = new CSSGenerator({
+      ...defaultConfig,
+      cssVariables: true,
+      theme: {
+        ...defaultConfig.theme,
+        colors: { ...defaultConfig.theme.colors, brand: 'var(--x)', blue: { ...(defaultConfig.theme.colors.blue as Record<string, string>), 500: '#123456' } },
+      },
+    })
+    gen.generate('p-4')
+    const out = gen.toCSS(false)
+    expect(out).toContain('--brand: var(--x);')
+    expect(out).toContain('--blue-500: #123456;')
+    expect(out).not.toContain('--blue-400')
+    expect(out).not.toContain('--slate-50')
+  })
+})
