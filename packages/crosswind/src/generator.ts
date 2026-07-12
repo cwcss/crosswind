@@ -1,6 +1,7 @@
 import type { CSSRule, CrosswindConfig, ParsedClass } from './types'
 import type { UtilityRule } from './rules'
 import { parseClass } from './parser'
+import { defaultConfig } from './config'
 import { builtInRules } from './rules'
 
 /**
@@ -2821,8 +2822,36 @@ export class CSSGenerator {
    * Flattens nested color objects: { monokai: { bg: '#2d2a2e' } } -> --monokai-bg: #2d2a2e
   */
   private generateCSSVariables(): string | null {
-    // Prefer extend colors (user's custom colors only), fall back to all theme colors
-    const colors = this.extendColors || this.config.theme.colors
+    // Prefer extend colors (user's custom colors only). Otherwise emit only
+    // colors that differ from the stock palette — falling back to ALL theme
+    // colors dumped the full ~300-variable default palette into :root.
+    let colors = this.extendColors as Record<string, string | Record<string, string>> | null
+    if (!colors) {
+      const stock = defaultConfig.theme.colors as Record<string, string | Record<string, string>>
+      const custom: Record<string, string | Record<string, string>> = {}
+      for (const [name, value] of Object.entries(this.config.theme.colors)) {
+        const base = stock[name]
+        if (typeof value === 'string') {
+          if (base !== value)
+            custom[name] = value
+        }
+        else if (value && typeof value === 'object') {
+          if (!base || typeof base !== 'object') {
+            custom[name] = value as Record<string, string>
+          }
+          else {
+            const diff: Record<string, string> = {}
+            for (const [shade, shadeValue] of Object.entries(value)) {
+              if (typeof shadeValue === 'string' && (base as Record<string, string>)[shade] !== shadeValue)
+                diff[shade] = shadeValue
+            }
+            if (Object.keys(diff).length > 0)
+              custom[name] = diff
+          }
+        }
+      }
+      colors = custom
+    }
     if (!colors || Object.keys(colors).length === 0) return null
 
     const vars: string[] = []
