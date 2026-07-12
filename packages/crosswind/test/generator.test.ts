@@ -1055,3 +1055,49 @@ describe('reset', () => {
     expect(gen.toCSS(false)).toContain('.cw-x1 {')
   })
 })
+
+describe('theme overrides reach the fast paths', () => {
+  it('honors theme.spacing overrides for p-4', () => {
+    const gen = new CSSGenerator({
+      ...defaultConfig,
+      theme: { ...defaultConfig.theme, spacing: { ...defaultConfig.theme.spacing, 4: '2rem' } },
+    })
+    gen.generate('p-4')
+    expect(gen.toCSS(false)).toContain('padding: 2rem;')
+  })
+
+  it('honors theme.colors overrides for bg-blue-500', () => {
+    const gen = new CSSGenerator({
+      ...defaultConfig,
+      theme: {
+        ...defaultConfig.theme,
+        colors: { ...defaultConfig.theme.colors, blue: { ...(defaultConfig.theme.colors.blue as Record<string, string>), 500: '#123456' } },
+      },
+    })
+    gen.generate('bg-blue-500')
+    expect(gen.toCSS(false)).toContain('background-color: #123456;')
+  })
+
+  it('honors theme.borderRadius and theme.boxShadow overrides', () => {
+    const gen = new CSSGenerator({
+      ...defaultConfig,
+      theme: {
+        ...defaultConfig.theme,
+        borderRadius: { ...defaultConfig.theme.borderRadius, sm: '9rem' },
+        boxShadow: { ...defaultConfig.theme.boxShadow, sm: '0 0 9px red' },
+      },
+    })
+    gen.generateBatch(['rounded-sm', 'shadow-sm'])
+    const out = gen.toCSS(false)
+    expect(out).toContain('border-radius: 9rem;')
+    expect(out).toContain('0 0 9px red')
+  })
+
+  it('fast-path color copies match the theme (indigo-950, pink-300)', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generateBatch(['bg-indigo-950', 'text-pink-300'])
+    const out = gen.toCSS(false)
+    expect(out).toContain('oklch(25.7% 0.09 281.288)')
+    expect(out).toContain('oklch(82.3% 0.12 346.018)')
+  })
+})

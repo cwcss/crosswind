@@ -549,7 +549,7 @@ const COMMON_COLORS: Record<string, string> = {
   'purple-950': 'oklch(29.1% 0.149 302.717)',
   // Pink
   'pink-50': 'oklch(97.1% 0.014 343.198)', 'pink-100': 'oklch(94.8% 0.028 342.258)',
-  'pink-200': 'oklch(89.9% 0.061 343.231)', 'pink-300': 'oklch(82.3% 0.116 346.018)',
+  'pink-200': 'oklch(89.9% 0.061 343.231)', 'pink-300': 'oklch(82.3% 0.12 346.018)',
   'pink-400': 'oklch(71.8% 0.202 349.761)', 'pink-500': 'oklch(65.6% 0.241 354.308)',
   'pink-600': 'oklch(59.2% 0.249 0.584)', 'pink-700': 'oklch(52.5% 0.223 3.958)',
   'pink-800': 'oklch(45.9% 0.187 3.815)', 'pink-900': 'oklch(40.8% 0.153 2.432)',
@@ -560,7 +560,7 @@ const COMMON_COLORS: Record<string, string> = {
   'indigo-400': 'oklch(67.3% 0.182 276.935)', 'indigo-500': 'oklch(58.5% 0.233 277.117)',
   'indigo-600': 'oklch(51.1% 0.262 276.966)', 'indigo-700': 'oklch(45.7% 0.24 277.023)',
   'indigo-800': 'oklch(39.8% 0.195 277.366)', 'indigo-900': 'oklch(35.9% 0.144 278.697)',
-  'indigo-950': 'oklch(26.9% 0.096 280.79)',
+  'indigo-950': 'oklch(25.7% 0.09 281.288)',
   // Cyan
   'cyan-50': 'oklch(98.4% 0.019 200.873)', 'cyan-100': 'oklch(95.6% 0.045 203.388)',
   'cyan-200': 'oklch(91.7% 0.08 205.041)', 'cyan-300': 'oklch(86.5% 0.127 207.078)',
@@ -1402,6 +1402,10 @@ const processedConfigCache = new WeakMap<CrosswindConfig, ProcessedConfig>()
 interface ProcessedConfig {
   config: CrosswindConfig
   variantEnabled: Record<string, boolean>
+  spacingValues: Record<string, string>
+  commonColors: Record<string, string>
+  skipStaticRadius: boolean
+  skipStaticShadow: boolean
   screenBreakpoints: Map<string, string>
   blocklistRegexCache: RegExp[]
   blocklistExact: Set<string>
@@ -1463,9 +1467,59 @@ function processConfig(config: CrosswindConfig): ProcessedConfig {
     }
   }
 
+  // Re-base the fast-path lookup tables on the user's theme when it
+  // diverges from the built-in copies (which previously shadowed theme
+  // overrides). Computed here — cached per config object — so generator
+  // construction stays O(1).
+  let spacingCustom = false
+  for (const [k, v] of Object.entries(config.theme.spacing)) {
+    if (SPACING_VALUES[k] !== v) {
+      spacingCustom = true
+      break
+    }
+  }
+  const spacingValues = spacingCustom ? { ...SPACING_VALUES, ...config.theme.spacing } : SPACING_VALUES
+
+  let colorsOverlay: Record<string, string> | null = null
+  for (const [name, value] of Object.entries(config.theme.colors)) {
+    if (typeof value === 'string') {
+      if (COMMON_COLORS[name] !== undefined && COMMON_COLORS[name] !== value) {
+        colorsOverlay ??= { ...COMMON_COLORS }
+        colorsOverlay[name] = value
+      }
+    }
+    else if (value && typeof value === 'object') {
+      for (const [shade, shadeValue] of Object.entries(value)) {
+        if (typeof shadeValue !== 'string')
+          continue
+        const key = shade === 'DEFAULT' ? name : `${name}-${shade}`
+        if (COMMON_COLORS[key] !== undefined && COMMON_COLORS[key] !== shadeValue) {
+          colorsOverlay ??= { ...COMMON_COLORS }
+          colorsOverlay[key] = shadeValue
+        }
+      }
+    }
+  }
+
+  // Radius/shadow static entries can't be patched cheaply (multi-property
+  // outputs), so a customized theme skips the static map and lets the
+  // theme-driven rule handlers resolve those classes.
+  const skipStaticRadius = Object.entries(config.theme.borderRadius).some(([k, v]) => {
+    const cls = k === 'DEFAULT' ? 'rounded' : `rounded-${k}`
+    return BORDER_RADIUS_MAP[cls]?.['border-radius'] !== v
+  })
+  const skipStaticShadow = Object.entries(config.theme.boxShadow).some(([k, v]) => {
+    const cls = k === 'DEFAULT' ? 'shadow' : `shadow-${k}`
+    return SHADOW_MAP[cls] !== undefined && SHADOW_MAP[cls]['--cw-shadow'] !== v
+  })
+
   const result: ProcessedConfig = {
     config,
     variantEnabled: config.variants as unknown as Record<string, boolean>,
+    spacingValues,
+    commonColors: colorsOverlay ?? COMMON_COLORS,
+    skipStaticRadius,
+    skipStaticShadow,
     screenBreakpoints: new Map(Object.entries(config.theme.screens)),
     blocklistRegexCache,
     blocklistExact,
@@ -1494,6 +1548,12 @@ export class CSSGenerator {
   private variantHandledCache: Map<string, boolean> = new Map()
   private compiledGenerated: Set<string> = new Set()
   private darkStrategy: 'class' | 'media'
+  // Fast-path lookup tables, re-based on the user's theme when it diverges
+  // from the built-in copies (which previously shadowed theme overrides).
+  private spacingValues: Record<string, string>
+  private commonColors: Record<string, string>
+  private skipStaticRadius: boolean
+  private skipStaticShadow: boolean
   // While expanding a shortcut, rules emit under the shortcut's own class
   // name (with variants applied to it: `.btn:hover`) instead of the
   // sub-utility's selector, which the markup never carries.
@@ -1507,6 +1567,10 @@ export class CSSGenerator {
     this.screenBreakpoints = this.processed.screenBreakpoints
     this.extendColors = this.processed.extendColors
     this.darkStrategy = config.darkMode === 'media' ? 'media' : 'class'
+    this.spacingValues = this.processed.spacingValues
+    this.commonColors = this.processed.commonColors
+    this.skipStaticRadius = this.processed.skipStaticRadius
+    this.skipStaticShadow = this.processed.skipStaticShadow
   }
 
   /**
@@ -1640,7 +1704,13 @@ export class CSSGenerator {
       else if (baseRaw.charCodeAt(baseRaw.length - 1) === 33)
         baseRaw = baseRaw.slice(0, -1)
     }
-    const staticResult = STATIC_UTILITY_MAP[baseRaw]
+    let staticResult = STATIC_UTILITY_MAP[baseRaw]
+    if (staticResult && (
+      (this.skipStaticRadius && baseRaw.startsWith('rounded'))
+      || (this.skipStaticShadow && (baseRaw === 'shadow' || baseRaw.startsWith('shadow-')))
+    )) {
+      staticResult = undefined as unknown as Record<string, string>
+    }
     if (staticResult) {
       this.addRule(parsed, staticResult)
       // Track animation keyframe usage
@@ -1713,7 +1783,7 @@ export class CSSGenerator {
 
     // Padding: p-{size}
     if (utility === 'p' && value) {
-      const spacingVal = SPACING_VALUES[value]
+      const spacingVal = this.spacingValues[value]
       if (spacingVal) {
         this.addRule(parsed, { padding: spacingVal })
         return
@@ -1722,7 +1792,7 @@ export class CSSGenerator {
 
     // Padding X: px-{size}
     if (utility === 'px' && value) {
-      const spacingVal = SPACING_VALUES[value]
+      const spacingVal = this.spacingValues[value]
       if (spacingVal) {
         this.addRule(parsed, { 'padding-left': spacingVal, 'padding-right': spacingVal })
         return
@@ -1731,7 +1801,7 @@ export class CSSGenerator {
 
     // Padding Y: py-{size}
     if (utility === 'py' && value) {
-      const spacingVal = SPACING_VALUES[value]
+      const spacingVal = this.spacingValues[value]
       if (spacingVal) {
         this.addRule(parsed, { 'padding-top': spacingVal, 'padding-bottom': spacingVal })
         return
@@ -1740,7 +1810,7 @@ export class CSSGenerator {
 
     // Padding sides: pt, pr, pb, pl
     if ((utility === 'pt' || utility === 'pr' || utility === 'pb' || utility === 'pl') && value) {
-      const spacingVal = SPACING_VALUES[value]
+      const spacingVal = this.spacingValues[value]
       if (spacingVal) {
         const propMap: Record<string, string> = { pt: 'padding-top', pr: 'padding-right', pb: 'padding-bottom', pl: 'padding-left' }
         this.addRule(parsed, { [propMap[utility]]: spacingVal })
@@ -1750,7 +1820,7 @@ export class CSSGenerator {
 
     // Margin: m-{size}
     if (utility === 'm' && value) {
-      const spacingVal = SPACING_VALUES[value]
+      const spacingVal = this.spacingValues[value]
       if (spacingVal) {
         this.addRule(parsed, { margin: spacingVal })
         return
@@ -1759,7 +1829,7 @@ export class CSSGenerator {
 
     // Margin X: mx-{size}
     if (utility === 'mx' && value) {
-      const spacingVal = SPACING_VALUES[value]
+      const spacingVal = this.spacingValues[value]
       if (spacingVal) {
         this.addRule(parsed, { 'margin-left': spacingVal, 'margin-right': spacingVal })
         return
@@ -1768,7 +1838,7 @@ export class CSSGenerator {
 
     // Margin Y: my-{size}
     if (utility === 'my' && value) {
-      const spacingVal = SPACING_VALUES[value]
+      const spacingVal = this.spacingValues[value]
       if (spacingVal) {
         this.addRule(parsed, { 'margin-top': spacingVal, 'margin-bottom': spacingVal })
         return
@@ -1777,7 +1847,7 @@ export class CSSGenerator {
 
     // Margin sides: mt, mr, mb, ml
     if ((utility === 'mt' || utility === 'mr' || utility === 'mb' || utility === 'ml') && value) {
-      const spacingVal = SPACING_VALUES[value]
+      const spacingVal = this.spacingValues[value]
       if (spacingVal) {
         const propMap: Record<string, string> = { mt: 'margin-top', mr: 'margin-right', mb: 'margin-bottom', ml: 'margin-left' }
         this.addRule(parsed, { [propMap[utility]]: spacingVal })
@@ -1787,7 +1857,7 @@ export class CSSGenerator {
 
     // Position: top, right, bottom, left
     if ((utility === 'top' || utility === 'right' || utility === 'bottom' || utility === 'left') && value) {
-      const spacingVal = SPACING_VALUES[value]
+      const spacingVal = this.spacingValues[value]
       if (spacingVal) {
         this.addRule(parsed, { [utility]: spacingVal })
         return
@@ -1796,7 +1866,7 @@ export class CSSGenerator {
 
     // Inset: inset-{size}
     if (utility === 'inset' && value) {
-      const spacingVal = SPACING_VALUES[value]
+      const spacingVal = this.spacingValues[value]
       if (spacingVal) {
         this.addRule(parsed, { top: spacingVal, right: spacingVal, bottom: spacingVal, left: spacingVal })
         return
@@ -1805,14 +1875,14 @@ export class CSSGenerator {
 
     // Inset X/Y: inset-x-{size}, inset-y-{size}
     if (utility === 'inset-x' && value) {
-      const spacingVal = SPACING_VALUES[value]
+      const spacingVal = this.spacingValues[value]
       if (spacingVal) {
         this.addRule(parsed, { left: spacingVal, right: spacingVal })
         return
       }
     }
     if (utility === 'inset-y' && value) {
-      const spacingVal = SPACING_VALUES[value]
+      const spacingVal = this.spacingValues[value]
       if (spacingVal) {
         this.addRule(parsed, { top: spacingVal, bottom: spacingVal })
         return
@@ -1825,7 +1895,7 @@ export class CSSGenerator {
 
     // Background color: bg-{color}-{shade}
     if (utility === 'bg' && value) {
-      const colorVal = COMMON_COLORS[value]
+      const colorVal = this.commonColors[value]
       if (colorVal) {
         this.addRule(parsed, { 'background-color': colorVal })
         return
@@ -1834,7 +1904,7 @@ export class CSSGenerator {
 
     // Text color: text-{color}-{shade}
     if (utility === 'text' && value) {
-      const colorVal = COMMON_COLORS[value]
+      const colorVal = this.commonColors[value]
       if (colorVal) {
         this.addRule(parsed, { color: colorVal })
         return
@@ -1843,7 +1913,7 @@ export class CSSGenerator {
 
     // Border color: border-{color}-{shade}
     if (utility === 'border' && value) {
-      const colorVal = COMMON_COLORS[value]
+      const colorVal = this.commonColors[value]
       if (colorVal) {
         this.addRule(parsed, { 'border-color': colorVal })
         return
