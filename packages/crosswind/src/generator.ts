@@ -2031,7 +2031,7 @@ export class CSSGenerator {
     // selector for the same parsed class, so it needs its own cache slot.
     const cacheKey = this.shortcutSelectorRaw === null
       ? `${parsed.raw}${childSelector || ''}${pseudoElement || ''}`
-      : `${this.shortcutSelectorRaw} ${parsed.raw}${childSelector || ''}${pseudoElement || ''}`
+      : `${this.shortcutSelectorRaw}>${parsed.raw}${childSelector || ''}${pseudoElement || ''}`
     let selector = this.selectorCache.get(cacheKey)
     if (!selector) {
       selector = this.buildSelector(parsed)
