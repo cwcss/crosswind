@@ -84,3 +84,36 @@ describe('transition/animation time value validation', () => {
     expect(css('duration-[var(--speed)]')).toContain('transition-duration: var(--speed);')
   })
 })
+
+describe('transform value validation', () => {
+  it('rejects unknown words for scale/rotate/skew/translate', () => {
+    expect(css('scale-foo')).toBe('')
+    expect(css('scale-x-foo')).toBe('')
+    expect(css('rotate-foo')).toBe('')
+    expect(css('rotate-x-foo')).toBe('')
+    expect(css('skew-x-foo')).toBe('')
+    expect(css('skew-y-foo')).toBe('')
+    expect(css('translate-x-foo')).toBe('')
+    expect(css('-translate-y-foo')).toBe('')
+  })
+
+  it('keeps numeric and unit forms', () => {
+    expect(css('scale-150')).toContain('transform: scale(1.5);')
+    expect(css('scale-x-50')).toContain('transform: scaleX(0.5);')
+    expect(css('rotate-45')).toContain('transform: rotate(45deg);')
+    expect(css('-rotate-90')).toContain('transform: rotate(-90deg);')
+    expect(css('rotate-x-30')).toContain('transform: rotateX(30deg);')
+    expect(css('skew-x-12')).toContain('transform: skewX(12deg);')
+    expect(css('translate-x-4')).toContain('transform: translateX(1rem);')
+    expect(css('-translate-y-1/2')).toContain('transform: translateY(-50%);')
+    expect(css('translate-x-full')).toContain('transform: translateX(100%);')
+  })
+
+  it('keeps arbitrary transform values', () => {
+    expect(css('scale-[1.7]')).toContain('transform: scale(1.7);')
+    expect(css('rotate-[17deg]')).toContain('transform: rotate(17deg);')
+    expect(css('rotate-[0.5turn]')).toContain('transform: rotate(0.5turn);')
+    expect(css('translate-x-[10px]')).toContain('transform: translateX(10px);')
+    expect(css('skew-y-[3deg]')).toContain('transform: skewY(3deg);')
+  })
+})
