@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
 import type { CrosswindConfig } from '../src/types'
-import { existsSync, watch } from 'node:fs'
+import { existsSync, statSync, watch } from 'node:fs'
 import { unlink } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
 import process from 'node:process'
 import { CLI } from '@stacksjs/clapp'
 import { version } from '../package.json'
@@ -143,20 +143,56 @@ async function runBuild(buildConfig: CrosswindConfig, options: BuildOptions): Pr
 function setupWatch(buildConfig: CrosswindConfig, options: BuildOptions): void {
   console.log('👀 Watching for changes...')
 
-  // Watch content directories
+  // Derive a real directory per content pattern. Splitting on '**' alone
+  // handed fs.watch glob strings ('src/*.html') or file paths, which throw
+  // ENOENT and killed the whole watcher on the first non-** pattern.
   const watchDirs = new Set<string>()
   for (const pattern of buildConfig.content) {
-    const dir = pattern.split('**')[0] || '.'
-    watchDirs.add(dir)
+    // Cut at the first glob metacharacter, then drop any filename remainder
+    const metaIdx = pattern.search(/[*?[{]/)
+    let dir = metaIdx === -1 ? pattern : pattern.slice(0, metaIdx)
+    if (metaIdx !== -1 || !existsSync(dir) || !statSync(dir).isDirectory()) {
+      dir = dir.slice(0, dir.lastIndexOf('/') + 1) || '.'
+    }
+    // Walk up to the nearest existing directory
+    while (dir !== '.' && dir !== '/' && !existsSync(dir)) {
+      const parent = dirname(dir)
+      if (parent === dir)
+        break
+      dir = parent
+    }
+    if (existsSync(dir)) {
+      watchDirs.add(dir)
+    }
+    else {
+      console.warn(`⚠️  Skipping watch for missing path: ${pattern}`)
+    }
+  }
+
+  // Debounce: one save fires multiple fs events (rename + change); without
+  // coalescing each triggered its own concurrent rebuild.
+  let rebuildTimer: ReturnType<typeof setTimeout> | null = null
+  const scheduleRebuild = (filename: string): void => {
+    if (rebuildTimer)
+      clearTimeout(rebuildTimer)
+    rebuildTimer = setTimeout(async () => {
+      rebuildTimer = null
+      console.log(`\n📝 ${filename} changed, rebuilding...`)
+      await runBuild(buildConfig, options)
+    }, 50)
   }
 
   for (const dir of watchDirs) {
-    watch(dir, { recursive: true }, async (_eventType, filename) => {
-      if (filename && /\.(?:html|js|ts|jsx|tsx|stx)$/.test(filename)) {
-        console.log(`\n📝 ${filename} changed, rebuilding...`)
-        await runBuild(buildConfig, options)
-      }
-    })
+    try {
+      watch(dir, { recursive: true }, (_eventType, filename) => {
+        if (filename && /\.(?:html|js|ts|jsx|tsx|stx)$/.test(filename)) {
+          scheduleRebuild(filename)
+        }
+      })
+    }
+    catch (error) {
+      console.warn(`⚠️  Could not watch ${dir}:`, error instanceof Error ? error.message : error)
+    }
   }
 
   console.log(`\n👀 Watching: ${Array.from(watchDirs).join(', ')}`)
