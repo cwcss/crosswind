@@ -2762,5 +2762,8 @@ export class CSSGenerator {
     this.mediaQueryCache.clear()
     this.noMatchCache.clear()
     this.usedKeyframes.clear()
+    this.compiledGenerated.clear()
+    // variantHandledCache is config-derived, not generation state — it
+    // stays valid across resets.
   }
 }
