@@ -1486,12 +1486,11 @@ function processConfig(config: CrosswindConfig): ProcessedConfig {
   }
   const spacingValues = spacingCustom ? { ...SPACING_VALUES, ...config.theme.spacing } : SPACING_VALUES
 
-  let colorsOverlay: Record<string, string> | null = null
+  const colorDiffs: Record<string, string> = {}
   for (const [name, value] of Object.entries(config.theme.colors)) {
     if (typeof value === 'string') {
       if (COMMON_COLORS[name] !== undefined && COMMON_COLORS[name] !== value) {
-        colorsOverlay ??= { ...COMMON_COLORS }
-        colorsOverlay[name] = value
+        colorDiffs[name] = value
       }
     }
     else if (value && typeof value === 'object') {
@@ -1500,12 +1499,12 @@ function processConfig(config: CrosswindConfig): ProcessedConfig {
           continue
         const key = shade === 'DEFAULT' ? name : `${name}-${shade}`
         if (COMMON_COLORS[key] !== undefined && COMMON_COLORS[key] !== shadeValue) {
-          colorsOverlay ??= { ...COMMON_COLORS }
-          colorsOverlay[key] = shadeValue
+          colorDiffs[key] = shadeValue
         }
       }
     }
   }
+  const commonColors = Object.keys(colorDiffs).length > 0 ? { ...COMMON_COLORS, ...colorDiffs } : COMMON_COLORS
 
   // Radius/shadow static entries can't be patched cheaply (multi-property
   // outputs), so a customized theme skips the static map and lets the
@@ -1523,7 +1522,7 @@ function processConfig(config: CrosswindConfig): ProcessedConfig {
     config,
     variantEnabled: config.variants as unknown as Record<string, boolean>,
     spacingValues,
-    commonColors: colorsOverlay ?? COMMON_COLORS,
+    commonColors,
     skipStaticRadius,
     skipStaticShadow,
     screenBreakpoints: new Map(Object.entries(config.theme.screens)),
