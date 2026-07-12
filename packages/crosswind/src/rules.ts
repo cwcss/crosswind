@@ -511,12 +511,15 @@ export function applyOpacity(color: string, opacity: number): string {
     cleanColor = color.slice(1, -1)
   }
 
-  // If color is hex (#rgb or #rrggbb), convert to rgb with alpha
+  // If color is hex (#rgb, #rgba, #rrggbb, #rrggbbaa), convert to rgb with
+  // alpha. The opacity modifier replaces any alpha already in the hex
+  // (Tailwind semantics). Short forms expand per-digit — slicing #f00a as
+  // if it were six digits produced rgb(240 10 NaN / ...).
   if (cleanColor.charCodeAt(0) === 35) { // '#' char code for faster check
     let hex = cleanColor.slice(1)
-    // Expand 3-char hex (#rgb) to 6-char (#rrggbb)
-    if (hex.length === 3) {
-      hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
+    // Expand short hex (#rgb / #rgba) to per-channel pairs
+    if (hex.length === 3 || hex.length === 4) {
+      hex = hex.split('').map(c => c + c).join('')
     }
     const r = Number.parseInt(hex.slice(0, 2), 16)
     const g = Number.parseInt(hex.slice(2, 4), 16)
