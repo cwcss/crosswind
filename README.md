@@ -10,6 +10,8 @@
 
 A blazingly fast, utility-first CSS framework built with Bun. Crosswind generates only the CSS you need by scanning your files for utility classes, providing Tailwind CSS-compatible utilities with exceptional performance.
 
+> **Semantics:** Crosswind targets **Tailwind v4** semantics — utility names, value scales, and validation match Tailwind v4 unless documented otherwise. Bracket syntax, colon syntax, attributify mode, and the `text-shadow-*` / `word-spacing-*` utilities are deliberate extensions.
+
 ## Features
 
 - **Blazingly Fast** - Built with Bun for exceptional performance (1000+ utilities in <10ms)
