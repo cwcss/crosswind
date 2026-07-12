@@ -834,3 +834,32 @@ describe('important modifier isolation', () => {
     expect(genC.toCSS(false)).not.toContain('!important')
   })
 })
+
+describe('selector escaping completeness', () => {
+  // The escape set previously missed & ? { } ; < $ | — selector-significant
+  // characters that appear in arbitrary values (URL query strings, content
+  // strings). An unescaped & is the CSS nesting selector.
+  it('escapes ? and & in arbitrary content values', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate("content-['a?b&c']")
+    const css = gen.toCSS(false)
+    expect(css).toContain('.content-\\[\\\'a\\?b\\&c\\\'\\]')
+    expect(css).not.toMatch(/\.content-\\\[\\'a\?b&c/)
+  })
+
+  it('escapes $ and ; in arbitrary property selectors', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('[mask:url(a?b=1&c=2)]')
+    const css = gen.toCSS(false)
+    if (css.trim()) {
+      expect(css).toContain('\\?')
+      expect(css).toContain('\\&')
+    }
+  })
+
+  it('leaves plain and variant selectors untouched', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('hover:bg-blue-500')
+    expect(gen.toCSS(false)).toContain('.hover\\:bg-blue-500:hover')
+  })
+})
