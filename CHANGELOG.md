@@ -1,3 +1,28 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.6...v0.2.7)
+
+## 🐛 Bug Fixes
+
+- restrict grid template and auto track values to counts, keywords, and arbitrary ([9258172](https://github.com/cwcss/crosswind/commit/9258172)) _(by Chris <chrisbreuer93@gmail.com>)_
+- restrict col/row span, start, and end values to numbers, auto, and arbitrary ([ee32313](https://github.com/cwcss/crosswind/commit/ee32313)) _(by Chris <chrisbreuer93@gmail.com>)_
+- stop bare row-/col-<word> classes emitting named grid lines ([09cad29](https://github.com/cwcss/crosswind/commit/09cad29)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **preflight**: emit reset in an @layer so author styles win ([086871e](https://github.com/cwcss/crosswind/commit/086871e)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## ♻️ Code Refactoring
+
+- rename Headwind/hw to Crosswind/cw ([fc6280c](https://github.com/cwcss/crosswind/commit/fc6280c)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.2.7 ([e9d38fe](https://github.com/cwcss/crosswind/commit/e9d38fe)) _(by Chris <chrisbreuer93@gmail.com>)_
+- upgrade to TypeScript 7 ([65d8e26](https://github.com/cwcss/crosswind/commit/65d8e26)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: refresh bun.lock to pick up pickier 0.1.37 ([035ca9b](https://github.com/cwcss/crosswind/commit/035ca9b)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **config**: move crosswind.config.ts to config/crosswind.ts ([5316196](https://github.com/cwcss/crosswind/commit/5316196)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+- _glennmichael123 <gtorregosa@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.4...v0.2.5)
 
 ### 🚀 Features
