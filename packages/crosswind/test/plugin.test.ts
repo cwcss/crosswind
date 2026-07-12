@@ -158,3 +158,36 @@ export default html
     expect(output).toContain('box-sizing: border-box')
   })
 })
+
+describe('plugin config merging and injection', () => {
+  it('deep-merges partial theme color overrides with the default palette', async () => {
+    const { plugin } = await import('../src/plugin')
+    // Exercise the merge logic through the plugin factory: a partial colors
+    // override must not wipe the default palette.
+    const p = plugin({ config: { theme: { colors: { brand: '#f00' } } as any } })
+    let onLoadCb: any
+    await p.setup({
+      onLoad: (_filter: any, cb: any) => { onLoadCb = cb },
+    } as any)
+    const dir = '/tmp/cw-plugin-test'
+    await Bun.write(`${dir}/index.html`, '<html><head></head><body><div class="bg-brand text-red-500 p-2"></div></body></html>')
+    const result = await onLoadCb({ path: `${dir}/index.html` })
+    expect(result.contents).toContain('background-color:#f00')
+    // default palette still resolves
+    expect(result.contents).toContain('.text-red-500')
+  })
+
+  it('injects CSS even when the HTML has no </head>', async () => {
+    const { plugin } = await import('../src/plugin')
+    const p = plugin()
+    let onLoadCb: any
+    await p.setup({
+      onLoad: (_filter: any, cb: any) => { onLoadCb = cb },
+    } as any)
+    const dir = '/tmp/cw-plugin-test'
+    await Bun.write(`${dir}/fragment.html`, '<div class="p-4"></div>')
+    const result = await onLoadCb({ path: `${dir}/fragment.html` })
+    expect(result.contents).toContain('<style>')
+    expect(result.contents).toContain('padding:1rem')
+  })
+})
