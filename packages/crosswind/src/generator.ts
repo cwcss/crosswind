@@ -1020,16 +1020,21 @@ const SCROLL_SNAP_MAP: Record<string, Record<string, string>> = {
 }
 
 // Touch action - direct raw class to CSS
+// Pan/pinch utilities compose through variables (like Tailwind): each sets
+// its own axis variable and rebuilds touch-action from all three, so
+// `touch-pan-x touch-pan-y` yields `pan-x pan-y` instead of the last class
+// clobbering the first. Empty fallbacks keep unused slots blank.
+const TOUCH_COMPOSED = 'var(--cw-pan-x,) var(--cw-pan-y,) var(--cw-pinch-zoom,)'
 const TOUCH_ACTION_MAP: Record<string, Record<string, string>> = {
   'touch-auto': { 'touch-action': 'auto' },
   'touch-none': { 'touch-action': 'none' },
-  'touch-pan-x': { 'touch-action': 'pan-x' },
-  'touch-pan-left': { 'touch-action': 'pan-left' },
-  'touch-pan-right': { 'touch-action': 'pan-right' },
-  'touch-pan-y': { 'touch-action': 'pan-y' },
-  'touch-pan-up': { 'touch-action': 'pan-up' },
-  'touch-pan-down': { 'touch-action': 'pan-down' },
-  'touch-pinch-zoom': { 'touch-action': 'pinch-zoom' },
+  'touch-pan-x': { '--cw-pan-x': 'pan-x', 'touch-action': TOUCH_COMPOSED },
+  'touch-pan-left': { '--cw-pan-x': 'pan-left', 'touch-action': TOUCH_COMPOSED },
+  'touch-pan-right': { '--cw-pan-x': 'pan-right', 'touch-action': TOUCH_COMPOSED },
+  'touch-pan-y': { '--cw-pan-y': 'pan-y', 'touch-action': TOUCH_COMPOSED },
+  'touch-pan-up': { '--cw-pan-y': 'pan-up', 'touch-action': TOUCH_COMPOSED },
+  'touch-pan-down': { '--cw-pan-y': 'pan-down', 'touch-action': TOUCH_COMPOSED },
+  'touch-pinch-zoom': { '--cw-pinch-zoom': 'pinch-zoom', 'touch-action': TOUCH_COMPOSED },
   'touch-manipulation': { 'touch-action': 'manipulation' },
 }
 

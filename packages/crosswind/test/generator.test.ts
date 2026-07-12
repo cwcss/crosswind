@@ -1152,3 +1152,20 @@ describe('cssVariables scope', () => {
     expect(out).not.toContain('--slate-50')
   })
 })
+
+describe('touch-action composition', () => {
+  it('touch-pan-x and touch-pan-y compose instead of clobbering', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generateBatch(['touch-pan-x', 'touch-pan-y'])
+    const out = gen.toCSS(false)
+    expect(out).toContain('--cw-pan-x: pan-x;')
+    expect(out).toContain('--cw-pan-y: pan-y;')
+    expect(out).toContain('touch-action: var(--cw-pan-x,) var(--cw-pan-y,) var(--cw-pinch-zoom,);')
+  })
+
+  it('touch-none stays a direct value', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('touch-none')
+    expect(gen.toCSS(false)).toContain('touch-action: none;')
+  })
+})
