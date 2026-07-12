@@ -1015,10 +1015,53 @@ export const borderSideWidthRule: UtilityRule = (parsed, config) => {
   return undefined
 }
 
+// Radius token for side/corner variants: bare form takes the DEFAULT theme
+// radius (`rounded-t` = 0.25rem like Tailwind), then theme keys and
+// arbitrary values. Unknown words previously leaked verbatim
+// (`rounded-t-foo` emitted border-top-*-radius: foo).
+function resolveRadiusToken(
+  parsed: { value?: string, arbitrary: boolean },
+  config: { theme: { borderRadius: Record<string, string> } },
+): string | undefined {
+  if (!parsed.value)
+    return config.theme.borderRadius.DEFAULT
+  if (config.theme.borderRadius[parsed.value] !== undefined)
+    return config.theme.borderRadius[parsed.value]
+  if (parsed.arbitrary)
+    return parsed.value
+  return undefined
+}
+
+// Bare side/corner forms (`rounded-t`, `rounded-ss`) parse as utility
+// `rounded` + value `t`, so the side handlers below never see them. Map the
+// side key to its properties here so they take the DEFAULT radius.
+const RADIUS_SIDE_PROPS: Record<string, string[]> = {
+  t: ['border-top-left-radius', 'border-top-right-radius'],
+  r: ['border-top-right-radius', 'border-bottom-right-radius'],
+  b: ['border-bottom-left-radius', 'border-bottom-right-radius'],
+  l: ['border-top-left-radius', 'border-bottom-left-radius'],
+  tl: ['border-top-left-radius'],
+  tr: ['border-top-right-radius'],
+  bl: ['border-bottom-left-radius'],
+  br: ['border-bottom-right-radius'],
+  s: ['border-start-start-radius', 'border-end-start-radius'],
+  e: ['border-start-end-radius', 'border-end-end-radius'],
+  ss: ['border-start-start-radius'],
+  se: ['border-start-end-radius'],
+  es: ['border-end-start-radius'],
+  ee: ['border-end-end-radius'],
+}
+
 export const borderRadiusRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'rounded') {
     if (parsed.arbitrary && parsed.value) {
       return { 'border-radius': parsed.value } as Record<string, string>
+    }
+    if (parsed.value && RADIUS_SIDE_PROPS[parsed.value]) {
+      const radius = config.theme.borderRadius.DEFAULT
+      const out: Record<string, string> = {}
+      for (const p of RADIUS_SIDE_PROPS[parsed.value]) out[p] = radius
+      return out
     }
     const value = parsed.value ? config.theme.borderRadius[parsed.value] : config.theme.borderRadius.DEFAULT
     return value ? { 'border-radius': value } : undefined
@@ -1026,39 +1069,51 @@ export const borderRadiusRule: UtilityRule = (parsed, config) => {
 
   // Logical border-radius utilities (for RTL/LTR support)
   // rounded-s-* (start) - applies to start corners
-  if (parsed.utility === 'rounded-s' && parsed.value) {
-    const value = config.theme.borderRadius[parsed.value] || parsed.value
+  if (parsed.utility === 'rounded-s') {
+    const value = resolveRadiusToken(parsed, config)
+    if (value === undefined)
+      return undefined
     return {
       'border-start-start-radius': value,
       'border-end-start-radius': value,
     } as Record<string, string>
   }
   // rounded-e-* (end) - applies to end corners
-  if (parsed.utility === 'rounded-e' && parsed.value) {
-    const value = config.theme.borderRadius[parsed.value] || parsed.value
+  if (parsed.utility === 'rounded-e') {
+    const value = resolveRadiusToken(parsed, config)
+    if (value === undefined)
+      return undefined
     return {
       'border-start-end-radius': value,
       'border-end-end-radius': value,
     } as Record<string, string>
   }
   // rounded-ss-* (start-start corner)
-  if (parsed.utility === 'rounded-ss' && parsed.value) {
-    const value = config.theme.borderRadius[parsed.value] || parsed.value
+  if (parsed.utility === 'rounded-ss') {
+    const value = resolveRadiusToken(parsed, config)
+    if (value === undefined)
+      return undefined
     return { 'border-start-start-radius': value } as Record<string, string>
   }
   // rounded-se-* (start-end corner)
-  if (parsed.utility === 'rounded-se' && parsed.value) {
-    const value = config.theme.borderRadius[parsed.value] || parsed.value
+  if (parsed.utility === 'rounded-se') {
+    const value = resolveRadiusToken(parsed, config)
+    if (value === undefined)
+      return undefined
     return { 'border-start-end-radius': value } as Record<string, string>
   }
   // rounded-es-* (end-start corner)
-  if (parsed.utility === 'rounded-es' && parsed.value) {
-    const value = config.theme.borderRadius[parsed.value] || parsed.value
+  if (parsed.utility === 'rounded-es') {
+    const value = resolveRadiusToken(parsed, config)
+    if (value === undefined)
+      return undefined
     return { 'border-end-start-radius': value } as Record<string, string>
   }
   // rounded-ee-* (end-end corner)
-  if (parsed.utility === 'rounded-ee' && parsed.value) {
-    const value = config.theme.borderRadius[parsed.value] || parsed.value
+  if (parsed.utility === 'rounded-ee') {
+    const value = resolveRadiusToken(parsed, config)
+    if (value === undefined)
+      return undefined
     return { 'border-end-end-radius': value } as Record<string, string>
   }
 
@@ -1079,8 +1134,10 @@ export const borderRadiusRule: UtilityRule = (parsed, config) => {
     'rounded-br': ['border-bottom-right-radius'],
   }
   const props = physicalMap[parsed.utility]
-  if (props && parsed.value) {
-    const value = config.theme.borderRadius[parsed.value] || parsed.value
+  if (props) {
+    const value = resolveRadiusToken(parsed, config)
+    if (value === undefined)
+      return undefined
     const out: Record<string, string> = {}
     for (const p of props) out[p] = value
     return out
