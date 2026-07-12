@@ -1603,6 +1603,33 @@ export function extractClasses(content: string, options?: ExtractClassesOptions)
     }
   }
 
+  // Expression-valued class attributes: className={clsx('a', cond && 'b')},
+  // className={['a', 'b']}, Astro's class:list={[...]}, Vue's :class="[...]".
+  // None of these start with a quote right after `={`, so the patterns above
+  // miss them entirely and their classes silently never generate. Only
+  // quoted string literals inside the expression are extracted — bare
+  // identifiers there are code (clsx, cond, &&), not class names.
+  const expressionPatterns = [
+    /class(?:Name|:list)?=\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g,
+    /:class="([^"]*)"/g,
+    /:class='([^']*)'/g,
+  ]
+  for (const pattern of expressionPatterns) {
+    let match
+    // eslint-disable-next-line no-cond-assign
+    while ((match = pattern.exec(content)) !== null) {
+      const quotedStrings = match[1].match(/["'`]([^"'`]+)["'`]/g)
+      if (quotedStrings) {
+        for (const quoted of quotedStrings) {
+          const cleaned = quoted.replace(/["'`]/g, '').replace(/\$\{[^}]+\}/g, ' ')
+          for (const className of splitClassString(cleaned)) {
+            addClassWithExpansion(classes, className, options)
+          }
+        }
+      }
+    }
+  }
+
   // Extract attributify classes if enabled
   if (options?.attributify?.enabled) {
     const attributifyClasses = extractAttributifyClasses(content, options.attributify)

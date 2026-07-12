@@ -826,3 +826,47 @@ describe('parseClass - arbitrary value with arbitrary modifier (regression)', ()
     expect(r.value).toBe('-10px/2')
   })
 })
+
+describe('extractClasses expression attributes', () => {
+  // className={clsx(...)}, className={[...]}, Astro class:list, and Vue
+  // :class previously extracted nothing — the classes silently never
+  // generated CSS.
+  it('extracts from clsx/cn call expressions', () => {
+    const result = extractClasses(`<div className={clsx('flex', cond && 'p-4')} />`)
+    expect(result.has('flex')).toBe(true)
+    expect(result.has('p-4')).toBe(true)
+    expect(result.has('clsx')).toBe(false)
+    expect(result.has('cond')).toBe(false)
+  })
+
+  it('extracts from array expressions', () => {
+    const result = extractClasses(`<div className={['flex', 'm-2']} />`)
+    expect(result.has('flex')).toBe(true)
+    expect(result.has('m-2')).toBe(true)
+  })
+
+  it('extracts from object-literal keys one level deep', () => {
+    const result = extractClasses(`<div className={cn({ 'hidden': isHidden }, 'block')} />`)
+    expect(result.has('hidden')).toBe(true)
+    expect(result.has('block')).toBe(true)
+  })
+
+  it('extracts from Astro class:list', () => {
+    const result = extractClasses(`<div class:list={['flex', 'gap-2']} />`)
+    expect(result.has('flex')).toBe(true)
+    expect(result.has('gap-2')).toBe(true)
+  })
+
+  it('extracts from Vue :class bindings', () => {
+    const result = extractClasses(`<div :class="['flex', active ? 'p-4' : 'm-2']" />`)
+    expect(result.has('flex')).toBe(true)
+    expect(result.has('p-4')).toBe(true)
+    expect(result.has('m-2')).toBe(true)
+    expect(result.has('active')).toBe(false)
+  })
+
+  it('still extracts plain and template-literal attributes', () => {
+    expect(extractClasses('<div class="flex p-4" />').has('flex')).toBe(true)
+    expect(extractClasses('<div className={`flex ${x} p-4`} />').has('p-4')).toBe(true)
+  })
+})
