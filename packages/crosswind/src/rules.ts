@@ -272,9 +272,12 @@ export const spacingRule: UtilityRule = (parsed, config) => {
     return undefined
   }
 
-  // Handle negative values
+  // Handle negative values. Negative padding is invalid CSS (Tailwind has
+  // no -p-* utilities); only margins may go negative.
   let value: string | undefined
   if (parsed.value.startsWith('-')) {
+    if (parsed.utility.charCodeAt(0) === 112) // 'p'
+      return undefined
     const positiveValue = parsed.value.slice(1)
     // Special case: -0 should just be 0
     if (positiveValue === '0') {

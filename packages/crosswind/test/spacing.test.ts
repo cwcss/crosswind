@@ -375,20 +375,11 @@ describe('Edge Cases', () => {
   })
 
   describe('Negative values comprehensive', () => {
-    it('should handle negative px', () => {
+    it('should reject negative padding (invalid CSS, no Tailwind equivalent)', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('-px-4')
-      const css = gen.toCSS(false)
-      expect(css).toContain('padding-left: -1rem;')
-      expect(css).toContain('padding-right: -1rem;')
-    })
-
-    it('should handle negative py', () => {
-      const gen = new CSSGenerator(defaultConfig)
       gen.generate('-py-4')
-      const css = gen.toCSS(false)
-      expect(css).toContain('padding-top: -1rem;')
-      expect(css).toContain('padding-bottom: -1rem;')
+      expect(gen.toCSS(false).trim()).toBe('')
     })
 
     it('should handle negative mx', () => {
