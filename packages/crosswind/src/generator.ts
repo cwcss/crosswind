@@ -1453,6 +1453,7 @@ export class CSSGenerator {
   private screenBreakpoints: Map<string, string>
   private noMatchCache: Set<string> = new Set()
   private usedKeyframes: Set<string> = new Set()
+  private variantHandledCache: Map<string, boolean> = new Map()
   // While expanding a shortcut, rules emit under the shortcut's own class
   // name (with variants applied to it: `.btn:hover`) instead of the
   // sub-utility's selector, which the markup never carries.
@@ -2051,7 +2052,38 @@ export class CSSGenerator {
   /**
    * Add a CSS rule with variants applied
   */
+  /**
+   * A variant the generator has no handler for must drop the whole rule.
+   * Previously an unknown variant was silently ignored, so a typo like
+   * `hoveer:flex` emitted `.hoveer\:flex { display: flex; }` — an
+   * always-on rule instead of nothing.
+  */
+  private isVariantHandled(variant: string): boolean {
+    const cached = this.variantHandledCache.get(variant)
+    if (cached !== undefined)
+      return cached
+    const known
+      = VARIANT_SELECTORS[variant] !== undefined
+        || PREFIX_VARIANTS[variant] !== undefined
+        || NOT_VARIANT_SELECTORS[variant] !== undefined
+        || this.screenBreakpoints.has(variant)
+        || (variant.startsWith('max-') && this.screenBreakpoints.has(variant.slice(4)))
+        || (variant.startsWith('@') && this.screenBreakpoints.has(variant.slice(1)))
+        || variant.startsWith('group-') || variant.startsWith('group/')
+        || variant.startsWith('peer-') || variant.startsWith('peer/')
+        || variant.startsWith('has-') || variant.startsWith('aria-') || variant.startsWith('data-')
+        || variant.startsWith('supports-')
+        || (variant.startsWith('[') && variant.endsWith(']'))
+        || ['print', 'motion-safe', 'motion-reduce', 'contrast-more', 'contrast-less', 'landscape', 'portrait', 'forced-colors'].includes(variant)
+    this.variantHandledCache.set(variant, known)
+    return known
+  }
+
   private addRule(parsed: ParsedClass, properties: Record<string, string>, childSelector?: string, pseudoElement?: string): void {
+    for (let i = 0; i < parsed.variants.length; i++) {
+      if (!this.isVariantHandled(parsed.variants[i]))
+        return
+    }
     // Use cached selector if available. Shortcut expansion changes the base
     // selector for the same parsed class, so it needs its own cache slot.
     const cacheKey = this.shortcutSelectorRaw === null
@@ -2117,6 +2149,17 @@ export class CSSGenerator {
     // Apply variants using pre-computed maps
     for (let i = 0; i < variantsLen; i++) {
       const variant = variants[i]
+
+      // Arbitrary selector variants: [&>li]:, [&_p]:, [&:hover]: — the &
+      // stands for the selector built so far. Underscores become spaces
+      // (descendant combinators). [@media...] is handled by getMediaQuery.
+      if (variant.charCodeAt(0) === 91 && variant.charCodeAt(variant.length - 1) === 93) {
+        const inner = variant.slice(1, -1).replace(/_/g, ' ')
+        if (inner.includes('&')) {
+          selector = inner.replace(/&/g, selector)
+        }
+        continue
+      }
 
       // Try suffix selector lookup first (most common case)
       const suffixSelector = VARIANT_SELECTORS[variant]
@@ -2287,6 +2330,15 @@ export class CSSGenerator {
     for (let i = 0; i < variantsLen; i++) {
       const variant = variants[i]
       const firstChar = variant.charCodeAt(0)
+
+      // Arbitrary media variants: [@media(min-width:900px)]: — the inner
+      // @media condition joins the collected media conditions.
+      if (firstChar === 91 && variant.startsWith('[@media') && variant.endsWith(']')) {
+        const condition = variant.slice(1, -1).replace(/_/g, ' ').slice('@media'.length).trim()
+        if (condition)
+          mediaConditions.push(condition)
+        continue
+      }
 
       // Container queries (@sm, @md, @lg, etc.) - '@' = 64
       if (firstChar === 64) {
