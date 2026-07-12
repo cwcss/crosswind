@@ -312,9 +312,19 @@ const RING_MAP: Record<string, Record<string, string>> = {
 // --cw-shadow holds the default shadow, --cw-shadow-colored replaces colors with var(--cw-shadow-color)
 // box-shadow references --cw-shadow which can be swapped to --cw-shadow-colored by a shadow-{color} utility
 const SHADOW_MAP: Record<string, Record<string, string>> = {
-  'shadow-sm': {
+  'shadow-2xs': {
+    '--cw-shadow': '0 1px rgb(0 0 0 / 0.05)',
+    '--cw-shadow-colored': '0 1px var(--cw-shadow-color)',
+    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
+  },
+  'shadow-xs': {
     '--cw-shadow': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
     '--cw-shadow-colored': '0 1px 2px 0 var(--cw-shadow-color)',
+    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
+  },
+  'shadow-sm': {
+    '--cw-shadow': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+    '--cw-shadow-colored': '0 1px 3px 0 var(--cw-shadow-color), 0 1px 2px -1px var(--cw-shadow-color)',
     'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
   },
   'shadow': {
@@ -356,17 +366,19 @@ const SHADOW_MAP: Record<string, Record<string, string>> = {
 // Border radius - direct raw class to CSS
 const BORDER_RADIUS_MAP: Record<string, Record<string, string>> = {
   'rounded-none': { 'border-radius': '0px' },
-  'rounded-sm': { 'border-radius': '0.125rem' },
+  'rounded-xs': { 'border-radius': '0.125rem' },
+  'rounded-sm': { 'border-radius': '0.25rem' },
   'rounded': { 'border-radius': '0.25rem' },
   'rounded-md': { 'border-radius': '0.375rem' },
   'rounded-lg': { 'border-radius': '0.5rem' },
   'rounded-xl': { 'border-radius': '0.75rem' },
   'rounded-2xl': { 'border-radius': '1rem' },
   'rounded-3xl': { 'border-radius': '1.5rem' },
+  'rounded-4xl': { 'border-radius': '2rem' },
   'rounded-full': { 'border-radius': '9999px' },
   // Corner-specific rounded utilities
   'rounded-t-none': { 'border-top-left-radius': '0px', 'border-top-right-radius': '0px' },
-  'rounded-t-sm': { 'border-top-left-radius': '0.125rem', 'border-top-right-radius': '0.125rem' },
+  'rounded-t-sm': { 'border-top-left-radius': '0.25rem', 'border-top-right-radius': '0.25rem' },
   'rounded-t-lg': { 'border-top-left-radius': '0.5rem', 'border-top-right-radius': '0.5rem' },
   'rounded-r-lg': { 'border-top-right-radius': '0.5rem', 'border-bottom-right-radius': '0.5rem' },
   'rounded-b-lg': { 'border-bottom-left-radius': '0.5rem', 'border-bottom-right-radius': '0.5rem' },

@@ -461,3 +461,17 @@ describe('ring composition', () => {
     expect(out).toContain('--cw-ring-offset-width: 2px;')
   })
 })
+
+describe('Tailwind v4 radius and shadow scales', () => {
+  it('supports the full v4 radius scale', () => {
+    expect(css('rounded-xs')).toContain('border-radius: 0.125rem;')
+    expect(css('rounded-sm')).toContain('border-radius: 0.25rem;')
+    expect(css('rounded-4xl')).toContain('border-radius: 2rem;')
+  })
+
+  it('supports the full v4 shadow scale', () => {
+    expect(css('shadow-2xs')).toContain('--cw-shadow: 0 1px rgb(0 0 0 / 0.05);')
+    expect(css('shadow-xs')).toContain('--cw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);')
+    expect(css('shadow-sm')).toContain('--cw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);')
+  })
+})
