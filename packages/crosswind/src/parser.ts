@@ -205,10 +205,16 @@ const bracketUtilityMappings: Record<string, {
       }
       // text[arial] -> font-[arial] (font family)
       if (/^[a-z-]+$/i.test(aliased) && !['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl', '8xl', '9xl'].includes(aliased)) {
-        // Check if it's a color name
-        const colorNames = ['white', 'black', 'red', 'blue', 'green', 'yellow', 'purple', 'pink', 'gray', 'slate', 'zinc', 'neutral', 'stone', 'orange', 'amber', 'lime', 'emerald', 'teal', 'cyan', 'sky', 'indigo', 'violet', 'fuchsia', 'rose', 'inherit', 'current', 'transparent']
-        if (colorNames.includes(aliased.toLowerCase())) {
+        // Check if it's a color name. Single-token colors map directly;
+        // multi-shade families take their 500 shade — bare `text-red` has
+        // no value in the palette and silently generated nothing.
+        const singleColors = ['white', 'black', 'inherit', 'current', 'transparent']
+        if (singleColors.includes(aliased.toLowerCase())) {
           return `text-${aliased}`
+        }
+        const colorFamilies = ['red', 'blue', 'green', 'yellow', 'purple', 'pink', 'gray', 'slate', 'zinc', 'neutral', 'stone', 'orange', 'amber', 'lime', 'emerald', 'teal', 'cyan', 'sky', 'indigo', 'violet', 'fuchsia', 'rose']
+        if (colorFamilies.includes(aliased.toLowerCase())) {
+          return `text-${aliased}-500`
         }
         // Otherwise treat as font family
         return `font-[${aliased}]`
@@ -686,7 +692,11 @@ export function expandBracketSyntax(className: string, config?: BracketSyntaxCon
           bracketExpansionCache.set(cacheKey, result)
           return result
         }
-        const result = [`${prefix}-${value}`]
+        // Negative values move the sign to the canonical prefix position:
+        // m:-2 -> -m-2 (previously produced the double-dash token m--2).
+        const result = value.startsWith('-')
+          ? [`-${prefix}-${value.slice(1)}`]
+          : [`${prefix}-${value}`]
         bracketExpansionCache.set(cacheKey, result)
         return result
       }

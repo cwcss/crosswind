@@ -870,3 +870,19 @@ describe('extractClasses expression attributes', () => {
     expect(extractClasses('<div className={`flex ${x} p-4`} />').has('p-4')).toBe(true)
   })
 })
+
+describe('bracket and colon syntax edge cases', () => {
+  it('colon-syntax negatives produce the canonical negative form', () => {
+    const { expandBracketSyntax } = require('../src/parser')
+    expect(expandBracketSyntax('m:-2', { colonSyntax: true })).toEqual(['-m-2'])
+    expect(expandBracketSyntax('mt:-4', { colonSyntax: true })).toEqual(['-mt-4'])
+    expect(expandBracketSyntax('bg:black', { colonSyntax: true })).toEqual(['bg-black'])
+  })
+
+  it('text[<colorFamily>] maps to the 500 shade instead of an invalid bare family', () => {
+    const { expandBracketSyntax } = require('../src/parser')
+    expect(expandBracketSyntax('text[red]', {})).toEqual(['text-red-500'])
+    expect(expandBracketSyntax('text[white]', {})).toEqual(['text-white'])
+    expect(expandBracketSyntax('text[arial]', {})).toEqual(['font-[arial]'])
+  })
+})
