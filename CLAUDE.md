@@ -2,7 +2,11 @@
 
 ## About
 
-A blazingly fast, on-demand utility-first CSS framework built with Bun that generates only the CSS classes actually used in your files. It provides Tailwind CSS-compatible utility classes with full variant support (responsive, state, dark mode, pseudo-elements), arbitrary values, shortcut aliases, compile-class HTML optimization, and both CLI and programmatic APIs. Zero runtime dependencies, with 1300+ tests and benchmarks showing it outperforms UnoCSS and Tailwind in all 20 benchmark scenarios.
+A blazingly fast, on-demand utility-first CSS framework built with Bun that generates only the CSS classes actually used in your files. It provides Tailwind CSS-compatible utility classes with full variant support (responsive, state, dark mode, pseudo-elements), arbitrary values, shortcut aliases, compile-class HTML optimization, and both CLI and programmatic APIs. Zero runtime dependencies, with 1700+ tests and benchmarks showing it outperforms UnoCSS and Tailwind in all 20 benchmark scenarios.
+
+## Semantics compass
+
+**Crosswind targets Tailwind v4 semantics.** When a utility's behavior, value scale, or validity is in question, Tailwind v4 is the reference: a class Tailwind rejects should generate nothing (never pass raw words through to CSS), and a class Tailwind accepts should produce the same declarations. Bracket syntax (`flex[col jc-center]`), colon syntax (`bg:black`), attributify mode, the compile-class transformer, and the `text-shadow-*` / `word-spacing-*` utilities are deliberate extensions beyond Tailwind — keep them working, but design them to be consistent with the same validation rules (numbers/keywords/theme values/arbitrary `[...]` only).
 
 ## Linting
 
