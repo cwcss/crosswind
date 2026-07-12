@@ -945,3 +945,30 @@ describe('max-* variants and media type ordering', () => {
     expect(gen.toCSS(false)).toContain('@media print and (min-width: 768px)')
   })
 })
+
+describe('unknown and arbitrary variants', () => {
+  it('drops rules with unknown variants instead of applying unconditionally', () => {
+    for (const cls of ['foo:flex', 'hoveer:underline', 'xxl:p-4']) {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate(cls)
+      expect(gen.toCSS(false).trim()).toBe('')
+    }
+  })
+
+  it('supports arbitrary selector variants with &', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generateBatch(['[&>li]:flex', '[&_p]:underline', '[&:hover]:italic'])
+    const out = gen.toCSS(false)
+    expect(out).toContain('.\\[\\&\\>li\\]\\:flex>li {')
+    expect(out).toContain('.\\[\\&_p\\]\\:underline p {')
+    expect(out).toContain('.\\[\\&\\:hover\\]\\:italic:hover {')
+  })
+
+  it('supports arbitrary media variants', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('[@media(min-width:900px)]:flex')
+    const out = gen.toCSS(false)
+    expect(out).toContain('@media (min-width:900px)')
+    expect(out).toContain('display: flex;')
+  })
+})

@@ -479,14 +479,19 @@ describe('Performance Tests', () => {
       }
 
       const start = performance.now()
+      // Split like the scanner does — generate() receives single class
+      // names, never whitespace-joined strings.
       for (const util of utilities) {
-        gen.generate(util)
+        for (const cls of util.split(/\s+/)) {
+          gen.generate(cls)
+        }
       }
       const css = gen.toCSS(false)
       const elapsed = performance.now() - start
 
       expect(elapsed).toBeLessThan(300)
       expect(css.length).toBeGreaterThan(0)
+      expect(css).toContain('.hover\\:scale-105:hover')
     })
 
     it('should handle progressive enhancement patterns efficiently', () => {
