@@ -473,18 +473,15 @@ export const flexOrderRule: UtilityRule = (parsed) => {
 // Flex basis
 export const flexBasisRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'basis' && parsed.value) {
-    // Handle fractions
-    if (parsed.value.includes('/')) {
-      const [num, denom] = parsed.value.split('/').map(Number)
-      return { 'flex-basis': `${(num / denom) * 100}%` }
-    }
-
     const bases: Record<string, string> = {
       auto: 'auto',
       full: '100%',
       0: '0',
     }
-    return { 'flex-basis': bases[parsed.value] || config.theme.spacing[parsed.value] || parsed.value }
+    if (bases[parsed.value])
+      return { 'flex-basis': bases[parsed.value] }
+    const value = resolveSizeToken(parsed, config, {})
+    return value !== undefined ? { 'flex-basis': value } : undefined
   }
 }
 

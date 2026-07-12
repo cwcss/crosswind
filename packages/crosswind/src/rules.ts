@@ -254,23 +254,26 @@ export const spacingRule: UtilityRule = (parsed, config) => {
   // Resolve a raw token to a concrete CSS length.
   // 1) Theme scale lookup (`4` → `1rem`, `2.5` → `0.625rem`, …).
   // 2) Off-scale positive numbers — Tailwind v4 behavior: any decimal multiple
-  //    of 0.25rem is valid (`4.5` → `1.125rem`, `9.5` → `2.375rem`). This
-  //    replaces the pre-fix output which emitted the raw number verbatim
-  //    (`padding: 4.5;`) — invalid CSS that silently dropped the declaration.
-  // 3) Anything else (keywords, units) passes through unchanged so arbitrary
-  //    values like `p-[calc(...)]` and scale aliases like `p-px` still work.
-  const resolve = (token: string): string => {
+  //    of 0.25rem is valid (`4.5` → `1.125rem`, `9.5` → `2.375rem`).
+  // 3) Arbitrary values (`p-[calc(...)]`) pass through verbatim.
+  // 4) Unknown words are rejected — they previously leaked verbatim
+  //    (`m-header` emitted `margin: header;`).
+  const resolve = (token: string): string | undefined => {
+    // `auto` is valid for margins (m-auto, mx-auto); padding has no auto
+    if (token === 'auto')
+      return parsed.utility.charCodeAt(0) === 109 ? 'auto' : undefined // 'm'
     const hit = config.theme.spacing[token]
     if (hit !== undefined) return hit
+    if (parsed.arbitrary) return token
     if (/^\d+(?:\.\d+)?$/.test(token)) {
       const n = Number.parseFloat(token)
       if (Number.isFinite(n)) return `${n * 0.25}rem`
     }
-    return token
+    return undefined
   }
 
   // Handle negative values
-  let value: string
+  let value: string | undefined
   if (parsed.value.startsWith('-')) {
     const positiveValue = parsed.value.slice(1)
     // Special case: -0 should just be 0
@@ -279,12 +282,15 @@ export const spacingRule: UtilityRule = (parsed, config) => {
     }
     else {
       const resolved = resolve(positiveValue)
-      value = resolved === positiveValue ? parsed.value : `-${resolved}`
+      value = resolved === undefined ? undefined : `-${resolved}`
     }
   }
   else {
     value = resolve(parsed.value)
   }
+
+  if (value === undefined)
+    return undefined
 
   const result: Record<string, string> = {}
   for (const prop of properties) {

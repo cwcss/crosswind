@@ -1935,26 +1935,31 @@ export class CSSGenerator {
 
     // Gap: gap-{spacing}. Uses the same v4-style decimal fallback as the
     // shared spacing resolver — `gap-4.5` → `1.125rem` instead of
-    // the invalid `gap: 4.5;` the pre-fix path emitted.
-    const resolveGap = (v: string): string => {
+    // the invalid `gap: 4.5;` the pre-fix path emitted. Arbitrary values
+    // pass through; unknown words emit nothing (`gap-foo` leaked verbatim).
+    const resolveGap = (v: string): string | undefined => {
       const hit = this.config.theme.spacing[v]
       if (hit !== undefined) return hit
+      if (parsed.arbitrary) return v
       if (/^\d+(?:\.\d+)?$/.test(v)) {
         const n = Number.parseFloat(v)
         if (Number.isFinite(n)) return `${n * 0.25}rem`
       }
-      return v
+      return undefined
     }
     if (utility === 'gap' && value) {
-      this.addRule(parsed, { gap: resolveGap(value) })
+      const gap = resolveGap(value)
+      if (gap !== undefined) this.addRule(parsed, { gap })
       return
     }
     if (utility === 'gap-x' && value) {
-      this.addRule(parsed, { 'column-gap': resolveGap(value) })
+      const gap = resolveGap(value)
+      if (gap !== undefined) this.addRule(parsed, { 'column-gap': gap })
       return
     }
     if (utility === 'gap-y' && value) {
-      this.addRule(parsed, { 'row-gap': resolveGap(value) })
+      const gap = resolveGap(value)
+      if (gap !== undefined) this.addRule(parsed, { 'row-gap': gap })
       return
     }
 

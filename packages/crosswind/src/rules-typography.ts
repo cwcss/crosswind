@@ -200,7 +200,14 @@ export const underlineOffsetRule: UtilityRule = (parsed) => {
       4: '4px',
       8: '8px',
     }
-    return { 'text-underline-offset': offsets[parsed.value] || parsed.value }
+    if (offsets[parsed.value])
+      return { 'text-underline-offset': offsets[parsed.value] }
+    if (parsed.arbitrary)
+      return { 'text-underline-offset': parsed.value }
+    // Off-scale numbers keep the px scale; unknown words are rejected
+    if (/^\d+(?:\.\d+)?$/.test(parsed.value))
+      return { 'text-underline-offset': `${parsed.value}px` }
+    return undefined
   }
 }
 
