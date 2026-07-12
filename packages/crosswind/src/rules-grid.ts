@@ -51,33 +51,27 @@ export const gridColumnRule: UtilityRule = (parsed) => {
     return undefined
   }
   if (parsed.utility === 'col-span' && parsed.value) {
-    const spans: Record<string, string> = {
-      auto: 'auto',
-      1: 'span 1 / span 1',
-      2: 'span 2 / span 2',
-      3: 'span 3 / span 3',
-      4: 'span 4 / span 4',
-      5: 'span 5 / span 5',
-      6: 'span 6 / span 6',
-      7: 'span 7 / span 7',
-      8: 'span 8 / span 8',
-      9: 'span 9 / span 9',
-      10: 'span 10 / span 10',
-      11: 'span 11 / span 11',
-      12: 'span 12 / span 12',
-      full: '1 / -1',
-    }
     // Handle arbitrary values: col-span-[15] -> span 15 / span 15
     if (parsed.arbitrary) {
       return { 'grid-column': `span ${parsed.value} / span ${parsed.value}` } as Record<string, string>
     }
-    return { 'grid-column': spans[parsed.value] || parsed.value } as Record<string, string>
+    if (parsed.value === 'auto')
+      return { 'grid-column': 'auto' } as Record<string, string>
+    if (parsed.value === 'full')
+      return { 'grid-column': '1 / -1' } as Record<string, string>
+    if (/^\d+$/.test(parsed.value))
+      return { 'grid-column': `span ${parsed.value} / span ${parsed.value}` } as Record<string, string>
+    return undefined
   }
   if (parsed.utility === 'col-start' && parsed.value) {
-    return { 'grid-column-start': parsed.value } as Record<string, string>
+    if (parsed.arbitrary || parsed.value === 'auto' || GRID_LINE_INTEGER_RE.test(parsed.value))
+      return { 'grid-column-start': parsed.value } as Record<string, string>
+    return undefined
   }
   if (parsed.utility === 'col-end' && parsed.value) {
-    return { 'grid-column-end': parsed.value } as Record<string, string>
+    if (parsed.arbitrary || parsed.value === 'auto' || GRID_LINE_INTEGER_RE.test(parsed.value))
+      return { 'grid-column-end': parsed.value } as Record<string, string>
+    return undefined
   }
 }
 
@@ -115,27 +109,27 @@ export const gridRowRule: UtilityRule = (parsed) => {
     return undefined
   }
   if (parsed.utility === 'row-span' && parsed.value) {
-    const spans: Record<string, string> = {
-      auto: 'auto',
-      1: 'span 1 / span 1',
-      2: 'span 2 / span 2',
-      3: 'span 3 / span 3',
-      4: 'span 4 / span 4',
-      5: 'span 5 / span 5',
-      6: 'span 6 / span 6',
-      full: '1 / -1',
-    }
     // Handle arbitrary values: row-span-[15] -> span 15 / span 15
     if (parsed.arbitrary) {
       return { 'grid-row': `span ${parsed.value} / span ${parsed.value}` } as Record<string, string>
     }
-    return { 'grid-row': spans[parsed.value] || parsed.value } as Record<string, string>
+    if (parsed.value === 'auto')
+      return { 'grid-row': 'auto' } as Record<string, string>
+    if (parsed.value === 'full')
+      return { 'grid-row': '1 / -1' } as Record<string, string>
+    if (/^\d+$/.test(parsed.value))
+      return { 'grid-row': `span ${parsed.value} / span ${parsed.value}` } as Record<string, string>
+    return undefined
   }
   if (parsed.utility === 'row-start' && parsed.value) {
-    return { 'grid-row-start': parsed.value } as Record<string, string>
+    if (parsed.arbitrary || parsed.value === 'auto' || GRID_LINE_INTEGER_RE.test(parsed.value))
+      return { 'grid-row-start': parsed.value } as Record<string, string>
+    return undefined
   }
   if (parsed.utility === 'row-end' && parsed.value) {
-    return { 'grid-row-end': parsed.value } as Record<string, string>
+    if (parsed.arbitrary || parsed.value === 'auto' || GRID_LINE_INTEGER_RE.test(parsed.value))
+      return { 'grid-row-end': parsed.value } as Record<string, string>
+    return undefined
   }
 }
 
