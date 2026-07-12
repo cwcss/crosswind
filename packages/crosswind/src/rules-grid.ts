@@ -2,6 +2,15 @@ import type { UtilityRule } from './rules'
 
 // Grid utilities
 
+// Grid placement values a class token may resolve to without brackets:
+// `auto`, integers (including negatives for *-start/*-end), `span-<n>`, and
+// `span-full`. Anything else must come through an arbitrary value
+// (`row-[header]`). Passing unknown words through verbatim would turn
+// unrelated semantic class names like `row-list` or `col-header` into
+// named-grid-line placements that silently break grid layouts.
+const GRID_LINE_INTEGER_RE = /^-?\d+$/
+const GRID_SPAN_RE = /^span-(\d+)$/
+
 export const gridTemplateColumnsRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'grid-cols') {
     const cols: Record<string, string> = {
@@ -26,23 +35,20 @@ export const gridTemplateColumnsRule: UtilityRule = (parsed) => {
 
 export const gridColumnRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'col') {
-    const spans: Record<string, string> = {
-      'auto': 'auto',
-      'span-1': 'span 1 / span 1',
-      'span-2': 'span 2 / span 2',
-      'span-3': 'span 3 / span 3',
-      'span-4': 'span 4 / span 4',
-      'span-5': 'span 5 / span 5',
-      'span-6': 'span 6 / span 6',
-      'span-7': 'span 7 / span 7',
-      'span-8': 'span 8 / span 8',
-      'span-9': 'span 9 / span 9',
-      'span-10': 'span 10 / span 10',
-      'span-11': 'span 11 / span 11',
-      'span-12': 'span 12 / span 12',
-      'span-full': '1 / -1',
-    }
-    return parsed.value ? { 'grid-column': spans[parsed.value] || parsed.value } : undefined
+    if (!parsed.value)
+      return undefined
+    if (parsed.arbitrary)
+      return { 'grid-column': parsed.value } as Record<string, string>
+    if (parsed.value === 'auto')
+      return { 'grid-column': 'auto' } as Record<string, string>
+    if (parsed.value === 'span-full')
+      return { 'grid-column': '1 / -1' } as Record<string, string>
+    const span = parsed.value.match(GRID_SPAN_RE)
+    if (span)
+      return { 'grid-column': `span ${span[1]} / span ${span[1]}` } as Record<string, string>
+    if (GRID_LINE_INTEGER_RE.test(parsed.value))
+      return { 'grid-column': parsed.value } as Record<string, string>
+    return undefined
   }
   if (parsed.utility === 'col-span' && parsed.value) {
     const spans: Record<string, string> = {
@@ -93,17 +99,20 @@ export const gridTemplateRowsRule: UtilityRule = (parsed) => {
 
 export const gridRowRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'row') {
-    const spans: Record<string, string> = {
-      'auto': 'auto',
-      'span-1': 'span 1 / span 1',
-      'span-2': 'span 2 / span 2',
-      'span-3': 'span 3 / span 3',
-      'span-4': 'span 4 / span 4',
-      'span-5': 'span 5 / span 5',
-      'span-6': 'span 6 / span 6',
-      'span-full': '1 / -1',
-    }
-    return parsed.value ? { 'grid-row': spans[parsed.value] || parsed.value } : undefined
+    if (!parsed.value)
+      return undefined
+    if (parsed.arbitrary)
+      return { 'grid-row': parsed.value } as Record<string, string>
+    if (parsed.value === 'auto')
+      return { 'grid-row': 'auto' } as Record<string, string>
+    if (parsed.value === 'span-full')
+      return { 'grid-row': '1 / -1' } as Record<string, string>
+    const span = parsed.value.match(GRID_SPAN_RE)
+    if (span)
+      return { 'grid-row': `span ${span[1]} / span ${span[1]}` } as Record<string, string>
+    if (GRID_LINE_INTEGER_RE.test(parsed.value))
+      return { 'grid-row': parsed.value } as Record<string, string>
+    return undefined
   }
   if (parsed.utility === 'row-span' && parsed.value) {
     const spans: Record<string, string> = {

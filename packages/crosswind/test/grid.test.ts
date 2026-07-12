@@ -226,6 +226,63 @@ describe('Grid Utilities', () => {
       expect(gen.toCSS(false)).toContain('grid-row: 1 / -1;')
     })
   })
+
+  // Regression: semantic class names sharing the `row-` / `col-` prefix
+  // (e.g. `row-list` on a list wrapper) must not emit `grid-row: list` —
+  // an unknown word is not a utility value, and the named-grid-line
+  // placement it produced silently broke real grid layouts.
+  describe('Bare grid placement rejection', () => {
+    it('should not emit CSS for row-list', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('row-list')
+      const css = gen.toCSS(false)
+      expect(css).not.toContain('grid-row')
+      expect(css).not.toContain('.row-list')
+    })
+
+    it('should not emit CSS for other semantic row-* names', () => {
+      for (const cls of ['row-name', 'row-desc', 'row-meta']) {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate(cls)
+        expect(gen.toCSS(false)).not.toContain('grid-row')
+      }
+    })
+
+    it('should not emit CSS for col-header', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('col-header')
+      const css = gen.toCSS(false)
+      expect(css).not.toContain('grid-column')
+      expect(css).not.toContain('.col-header')
+    })
+
+    it('should still generate row-auto and col-auto', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('row-auto')
+      gen.generate('col-auto')
+      const css = gen.toCSS(false)
+      expect(css).toContain('grid-row: auto;')
+      expect(css).toContain('grid-column: auto;')
+    })
+
+    it('should still generate bare integer placements (col-7, row-2)', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('col-7')
+      gen.generate('row-2')
+      const css = gen.toCSS(false)
+      expect(css).toContain('grid-column: 7;')
+      expect(css).toContain('grid-row: 2;')
+    })
+
+    it('should still pass arbitrary values through (row-[span_16_/_span_16], col-[my-line])', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('row-[span_16_/_span_16]')
+      gen.generate('col-[my-line]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('grid-row: span 16 / span 16;')
+      expect(css).toContain('grid-column: my-line;')
+    })
+  })
 })
 
 describe('Edge Cases', () => {
