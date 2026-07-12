@@ -117,9 +117,9 @@ describe('Bracket Syntax', () => {
         expect(result).toEqual(['text-black'])
       })
 
-      it('should expand text[red] to text-red', () => {
+      it('should expand text[red] to the 500 shade (bare text-red resolves to nothing)', () => {
         const result = expandBracketSyntax('text[red]', { enabled: true })
-        expect(result).toEqual(['text-red'])
+        expect(result).toEqual(['text-red-500'])
       })
 
       it('should expand text[2rem] to text-[2rem]', () => {
