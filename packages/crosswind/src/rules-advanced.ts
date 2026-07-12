@@ -105,9 +105,12 @@ export const ringRule: UtilityRule = (parsed, config) => {
       width = `${parsed.value}px`
     if (width === undefined)
       return undefined
+    // Fallbacks are required: no preflight defines the ring variables, and a
+    // var() without fallback that resolves to nothing invalidates the whole
+    // box-shadow at computed-value time.
     return {
-      '--cw-ring-offset-shadow': 'var(--cw-ring-inset) 0 0 0 var(--cw-ring-offset-width) var(--cw-ring-offset-color)',
-      '--cw-ring-shadow': `var(--cw-ring-inset) 0 0 0 calc(${width} + var(--cw-ring-offset-width)) var(--cw-ring-color)`,
+      '--cw-ring-offset-shadow': 'var(--cw-ring-inset,) 0 0 0 var(--cw-ring-offset-width, 0px) var(--cw-ring-offset-color, #fff)',
+      '--cw-ring-shadow': `var(--cw-ring-inset,) 0 0 0 calc(${width} + var(--cw-ring-offset-width, 0px)) var(--cw-ring-color, rgba(59, 130, 246, 0.5))`,
       'box-shadow': 'var(--cw-ring-offset-shadow), var(--cw-ring-shadow), var(--cw-shadow, 0 0 #0000)',
     } as Record<string, string>
   }

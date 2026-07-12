@@ -285,13 +285,25 @@ const PLACE_CONTENT_VALUES: Record<string, string> = {
 }
 
 // Ring utilities - direct raw class to CSS
+// Ring utilities compose through the CSS variable system (like shadows do):
+// the previous flat `box-shadow: 0 0 0 Npx ...` ignored --cw-ring-inset and
+// --cw-ring-offset-width entirely (ring-inset / ring-offset-* were no-ops)
+// and clobbered shadow-* instead of layering with it. Every var carries a
+// fallback because no preflight defines the ring variables.
+function ringWidth(width: string): Record<string, string> {
+  return {
+    '--cw-ring-offset-shadow': 'var(--cw-ring-inset,) 0 0 0 var(--cw-ring-offset-width, 0px) var(--cw-ring-offset-color, #fff)',
+    '--cw-ring-shadow': `var(--cw-ring-inset,) 0 0 0 calc(${width} + var(--cw-ring-offset-width, 0px)) var(--cw-ring-color, rgba(59, 130, 246, 0.5))`,
+    'box-shadow': 'var(--cw-ring-offset-shadow), var(--cw-ring-shadow), var(--cw-shadow, 0 0 #0000)',
+  }
+}
 const RING_MAP: Record<string, Record<string, string>> = {
-  'ring': { 'box-shadow': '0 0 0 3px var(--cw-ring-color, rgba(59, 130, 246, 0.5))' },
-  'ring-0': { 'box-shadow': '0 0 0 0px var(--cw-ring-color, rgba(59, 130, 246, 0.5))' },
-  'ring-1': { 'box-shadow': '0 0 0 1px var(--cw-ring-color, rgba(59, 130, 246, 0.5))' },
-  'ring-2': { 'box-shadow': '0 0 0 2px var(--cw-ring-color, rgba(59, 130, 246, 0.5))' },
-  'ring-4': { 'box-shadow': '0 0 0 4px var(--cw-ring-color, rgba(59, 130, 246, 0.5))' },
-  'ring-8': { 'box-shadow': '0 0 0 8px var(--cw-ring-color, rgba(59, 130, 246, 0.5))' },
+  'ring': ringWidth('3px'),
+  'ring-0': ringWidth('0px'),
+  'ring-1': ringWidth('1px'),
+  'ring-2': ringWidth('2px'),
+  'ring-4': ringWidth('4px'),
+  'ring-8': ringWidth('8px'),
   'ring-inset': { '--cw-ring-inset': 'inset' },
 }
 

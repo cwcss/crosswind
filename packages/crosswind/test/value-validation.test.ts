@@ -254,8 +254,8 @@ describe('visual utilities value validation', () => {
     expect(css('aspect-16/9')).toContain('aspect-ratio: 16 / 9;')
     expect(css('aspect-[4/3]')).toContain('aspect-ratio: 4/3;')
     expect(css('self-center')).toContain('align-self: center;')
-    expect(css('ring-2')).toContain('box-shadow: 0 0 0 2px')
-    expect(css('ring-[6px]')).toContain('calc(6px + var(--cw-ring-offset-width))')
+    expect(css('ring-2')).toContain('calc(2px + var(--cw-ring-offset-width, 0px))')
+    expect(css('ring-[6px]')).toContain('calc(6px + var(--cw-ring-offset-width, 0px))')
     expect(css('border-spacing-2')).toContain('border-spacing: 0.5rem 0.5rem;')
   })
 })
@@ -445,5 +445,19 @@ describe('transition defaults', () => {
     const out = css('transition-none')
     expect(out).toContain('transition-property: none;')
     expect(out).not.toContain('transition-duration')
+  })
+})
+
+describe('ring composition', () => {
+  it('rings layer with shadows and honor inset/offset variables', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generateBatch(['ring-2', 'ring-inset', 'ring-offset-2', 'shadow-md'])
+    const out = gen.toCSS(false)
+    // ring sets the ring var and composes with the shadow slot
+    expect(out).toContain('--cw-ring-shadow: var(--cw-ring-inset,) 0 0 0 calc(2px + var(--cw-ring-offset-width, 0px))')
+    expect(out).toContain('box-shadow: var(--cw-ring-offset-shadow), var(--cw-ring-shadow), var(--cw-shadow, 0 0 #0000);')
+    // ring-inset and ring-offset feed the same variables
+    expect(out).toContain('--cw-ring-inset: inset;')
+    expect(out).toContain('--cw-ring-offset-width: 2px;')
   })
 })
