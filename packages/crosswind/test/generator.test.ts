@@ -1016,3 +1016,30 @@ describe('stacked at-rule variants and dark mode strategy', () => {
     expect(gen.toCSS(false)).toContain('.dark .dark\\:bg-blue-500')
   })
 })
+
+describe('presets', () => {
+  it('applies preset shortcuts, rules, and theme (user config wins)', () => {
+    const gen = new CSSGenerator({
+      ...defaultConfig,
+      shortcuts: { btn: 'p-2' },
+      presets: [{
+        name: 'test-preset',
+        theme: { extend: { colors: { brand: '#123456' } } } as any,
+        shortcuts: { 'btn': 'p-8', 'card': 'p-4 rounded' },
+        rules: [[/^glow$/, () => ({ 'box-shadow': '0 0 8px gold' })]] as any,
+      }],
+    })
+    gen.generateBatch(['btn', 'card', 'glow', 'bg-brand'])
+    const css = gen.toCSS(false)
+    // preset shortcut works
+    expect(css).toContain('.card {')
+    expect(css).toContain('border-radius: 0.25rem;')
+    // user shortcut overrides the preset's btn
+    expect(css).toContain('padding: 0.5rem;')
+    expect(css).not.toContain('padding: 2rem;')
+    // preset custom rule works
+    expect(css).toContain('box-shadow: 0 0 8px gold;')
+    // preset theme works
+    expect(css).toContain('background-color: #123456;')
+  })
+})

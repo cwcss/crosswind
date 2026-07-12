@@ -1395,11 +1395,26 @@ function processConfig(config: CrosswindConfig): ProcessedConfig {
   const cached = processedConfigCache.get(config)
   if (cached) return cached
 
-  // Merge preset themes
+  // Fold presets into the config. Only preset.theme was applied before —
+  // rules, shortcuts, variants, and preflights were typed and documented
+  // but silently ignored. Presets apply BEFORE user config so user values
+  // win on conflict.
   if (config.presets && config.presets.length > 0) {
     for (const preset of config.presets) {
       if (preset.theme) {
         config.theme = deepMerge(config.theme, preset.theme)
+      }
+      if (preset.rules && preset.rules.length > 0) {
+        config.rules = [...preset.rules, ...config.rules]
+      }
+      if (preset.shortcuts) {
+        config.shortcuts = { ...preset.shortcuts, ...config.shortcuts }
+      }
+      if (preset.variants) {
+        config.variants = { ...preset.variants, ...config.variants }
+      }
+      if (preset.preflights && preset.preflights.length > 0) {
+        config.preflights = [...preset.preflights, ...config.preflights]
       }
     }
   }
