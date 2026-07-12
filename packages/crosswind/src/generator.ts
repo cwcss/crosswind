@@ -1454,6 +1454,7 @@ export class CSSGenerator {
   private noMatchCache: Set<string> = new Set()
   private usedKeyframes: Set<string> = new Set()
   private variantHandledCache: Map<string, boolean> = new Map()
+  private compiledGenerated: Set<string> = new Set()
   // While expanding a shortcut, rules emit under the shortcut's own class
   // name (with variants applied to it: `.btn:hover`) instead of the
   // sub-utility's selector, which the markup never carries.
@@ -1538,6 +1539,26 @@ export class CSSGenerator {
       this.generateUtility(cls)
     }
     this.shortcutSelectorRaw = prev
+  }
+
+  /**
+   * Generate rules for a compiled class group (compile-class transformer):
+   * every utility in the group emits under the compiled class's own
+   * selector, exactly like a shortcut. Without this the transformer
+   * rewrote markup to `class="cw-<hash>"` while the CSS only contained the
+   * original utility selectors — the compiled class had no styles at all.
+  */
+  generateCompiledClass(className: string, utilities: string[]): void {
+    // Own idempotency guard: the hashed class name usually ALSO reaches the
+    // regular generate() path (the scanner extracts it from the transformed
+    // markup), which emits nothing but claims the classCache slot — an
+    // early-return on classCache here would skip the real expansion.
+    if (this.compiledGenerated.has(className)) {
+      return
+    }
+    this.compiledGenerated.add(className)
+    this.classCache.add(className)
+    this.expandShortcut(className, utilities, new Set([className]))
   }
 
   /**

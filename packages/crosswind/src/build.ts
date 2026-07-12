@@ -38,21 +38,23 @@ export async function build(config: CrosswindConfig): Promise<BuildResult> {
     classes.add(cls)
   }
 
-  // If using compile class transformer, also add compiled utilities
-  if (transformer) {
-    const compiledClasses = transformer.getCompiledClasses()
-    for (const [, { utilities }] of compiledClasses) {
-      for (const utility of utilities) {
-        classes.add(utility)
-      }
-    }
-  }
-
   // Generate CSS
   const generator = new CSSGenerator(config)
 
   for (const className of classes) {
     generator.generate(className)
+  }
+
+  // Compiled class groups (:cw: markers) emit under their own hashed
+  // selector. Previously the group's utilities were dumped into the main
+  // class set instead — but the transformer had just REMOVED those class
+  // names from the markup, so the rewritten `class="cw-<hash>"` matched
+  // nothing and elements rendered unstyled.
+  if (transformer) {
+    const compiledClasses = transformer.getCompiledClasses()
+    for (const [, { className, utilities }] of compiledClasses) {
+      generator.generateCompiledClass(className, utilities)
+    }
   }
 
   // Preflight CSS is now added by generator.toCSS()
