@@ -3,6 +3,26 @@ import { resolveColorValue, resolveSizeToken } from './rules'
 
 // Advanced utilities
 
+// Opacity token: scale keys, any 0-100 integer (n/100), or arbitrary values.
+// Unknown words previously leaked into the CSS variable verbatim.
+function resolveOpacityToken(
+  parsed: { value?: string, arbitrary: boolean },
+  opacityMap: Record<string, string>,
+  prop: string,
+): Record<string, string> | undefined {
+  const value = parsed.value!
+  if (opacityMap[value])
+    return { [prop]: opacityMap[value] }
+  if (parsed.arbitrary)
+    return { [prop]: value }
+  if (/^\d+$/.test(value)) {
+    const n = Number.parseInt(value, 10)
+    if (n >= 0 && n <= 100)
+      return { [prop]: `${n / 100}` }
+  }
+  return undefined
+}
+
 // Min/Max sizing
 export const minMaxSizingRule: UtilityRule = (parsed, config) => {
   const minMaxMap: Record<string, string> = {
@@ -119,7 +139,7 @@ export const ringRule: UtilityRule = (parsed, config) => {
       30: '0.3', 40: '0.4', 50: '0.5', 60: '0.6', 70: '0.7',
       75: '0.75', 80: '0.8', 90: '0.9', 95: '0.95', 100: '1',
     }
-    return { '--cw-ring-opacity': opacityMap[parsed.value] || parsed.value } as Record<string, string>
+    return resolveOpacityToken(parsed, opacityMap, '--cw-ring-opacity')
   }
 }
 
@@ -131,8 +151,28 @@ export const borderOpacityRule: UtilityRule = (parsed) => {
       30: '0.3', 40: '0.4', 50: '0.5', 60: '0.6', 70: '0.7',
       75: '0.75', 80: '0.8', 90: '0.9', 95: '0.95', 100: '1',
     }
-    return { '--cw-border-opacity': opacityMap[parsed.value] || parsed.value } as Record<string, string>
+    return resolveOpacityToken(parsed, opacityMap, '--cw-border-opacity')
   }
+}
+
+// Between-element spacing token: theme scale, off-scale numbers (0.25rem
+// steps), negatives of both, or arbitrary values. Unknown words previously
+// leaked into calc() expressions (`space-x-foo` -> margin: calc(foo * ...)).
+function resolveSpaceToken(
+  parsed: { value?: string, arbitrary: boolean },
+  config: { theme: { spacing: Record<string, string> } },
+): string | undefined {
+  const value = parsed.value!
+  if (parsed.arbitrary)
+    return value
+  const negative = value.startsWith('-')
+  const token = negative ? value.slice(1) : value
+  let resolved: string | undefined = config.theme.spacing[token]
+  if (resolved === undefined && /^\d+(?:\.\d+)?$/.test(token))
+    resolved = `${Number.parseFloat(token) * 0.25}rem`
+  if (resolved === undefined)
+    return undefined
+  return negative ? `-${resolved}` : resolved
 }
 
 // Space utilities (child spacing)
@@ -146,15 +186,9 @@ export const spaceRule: UtilityRule = (parsed, config) => {
       }
     }
 
-    let spacing: string
-    if (parsed.value.startsWith('-')) {
-      const positiveValue = parsed.value.slice(1)
-      const baseSpacing = config.theme.spacing[positiveValue]
-      spacing = baseSpacing ? `-${baseSpacing}` : parsed.value
-    }
-    else {
-      spacing = config.theme.spacing[parsed.value] || parsed.value
-    }
+    const spacing = resolveSpaceToken(parsed, config)
+    if (spacing === undefined)
+      return undefined
 
     return {
       properties: {
@@ -175,15 +209,9 @@ export const spaceRule: UtilityRule = (parsed, config) => {
       }
     }
 
-    let spacing: string
-    if (parsed.value.startsWith('-')) {
-      const positiveValue = parsed.value.slice(1)
-      const baseSpacing = config.theme.spacing[positiveValue]
-      spacing = baseSpacing ? `-${baseSpacing}` : parsed.value
-    }
-    else {
-      spacing = config.theme.spacing[parsed.value] || parsed.value
-    }
+    const spacing = resolveSpaceToken(parsed, config)
+    if (spacing === undefined)
+      return undefined
 
     return {
       properties: {
@@ -211,6 +239,21 @@ export const borderStyleRule: UtilityRule = (parsed) => {
       return { 'border-style': styles[parsed.value] }
     }
   }
+}
+
+// Divide border width: scale keys, bare numbers (px implied), or arbitrary.
+// Unknown words previously leaked into calc() border widths.
+function resolveDivideWidth(parsed: { value?: string, arbitrary: boolean }): string | undefined {
+  if (!parsed.value)
+    return '1px'
+  const widths: Record<string, string> = { 0: '0', 2: '2px', 4: '4px', 8: '8px' }
+  if (widths[parsed.value])
+    return widths[parsed.value]
+  if (parsed.arbitrary)
+    return parsed.value
+  if (/^\d+(?:\.\d+)?$/.test(parsed.value))
+    return `${parsed.value}px`
+  return undefined
 }
 
 // Divide utilities (borders between children)
@@ -243,14 +286,9 @@ export const divideRule: UtilityRule = (parsed, config) => {
       }
     }
 
-    const widths: Record<string, string> = {
-      0: '0',
-      2: '2px',
-      4: '4px',
-      8: '8px',
-      DEFAULT: '1px',
-    }
-    const width = parsed.value ? (widths[parsed.value] || parsed.value) : widths.DEFAULT
+    const width = resolveDivideWidth(parsed)
+    if (width === undefined)
+      return undefined
 
     return {
       properties: {
@@ -271,14 +309,9 @@ export const divideRule: UtilityRule = (parsed, config) => {
       }
     }
 
-    const widths: Record<string, string> = {
-      0: '0',
-      2: '2px',
-      4: '4px',
-      8: '8px',
-      DEFAULT: '1px',
-    }
-    const width = parsed.value ? (widths[parsed.value] || parsed.value) : widths.DEFAULT
+    const width = resolveDivideWidth(parsed)
+    if (width === undefined)
+      return undefined
 
     return {
       properties: {

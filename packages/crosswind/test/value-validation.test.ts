@@ -259,3 +259,29 @@ describe('visual utilities value validation', () => {
     expect(css('border-spacing-2')).toContain('border-spacing: 0.5rem 0.5rem;')
   })
 })
+
+describe('between-element utilities value validation', () => {
+  it('rejects unknown words', () => {
+    expect(css('space-x-foo')).toBe('')
+    expect(css('space-y-foo')).toBe('')
+    expect(css('divide-x-foo')).toBe('')
+    expect(css('divide-y-foo')).toBe('')
+    expect(css('ring-opacity-foo')).toBe('')
+    expect(css('border-opacity-foo')).toBe('')
+  })
+
+  it('keeps scale values, numbers, negatives, reverse, and arbitrary', () => {
+    expect(css('space-x-2')).toContain('calc(0.5rem * var(--cw-space-x-reverse))')
+    expect(css('space-y-4.5')).toContain('calc(1.125rem * ')
+    expect(css('-space-x-2')).toContain('calc(-0.5rem * ')
+    expect(css('space-x-reverse')).toContain('--cw-space-x-reverse: 1;')
+    expect(css('space-x-[3ch]')).toContain('calc(3ch * ')
+    expect(css('divide-y-2')).toContain('calc(2px * ')
+    expect(css('divide-x-3')).toContain('calc(3px * ')
+    expect(css('divide-x-[1.5px]')).toContain('calc(1.5px * ')
+    expect(css('divide-y')).toContain('calc(1px * ')
+    expect(css('ring-opacity-50')).toContain('--cw-ring-opacity: 0.5;')
+    expect(css('ring-opacity-33')).toContain('--cw-ring-opacity: 0.33;')
+    expect(css('border-opacity-75')).toContain('--cw-border-opacity: 0.75;')
+  })
+})
