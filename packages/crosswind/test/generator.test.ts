@@ -367,6 +367,101 @@ describe('CSSGenerator', () => {
       expect(css).toContain('padding-top: 0.5rem;')
       expect(css).toContain('border-radius: 0.25rem;')
     })
+
+    // Issue #18: shortcut rules must target the shortcut's own class name —
+    // markup carries `btn`, not `bg-blue-500` — and variant utilities inside
+    // a definition must become pseudo-class / prefix / media rules on that
+    // selector instead of being silently dropped.
+    it('should emit rules under the shortcut selector', () => {
+      const gen = new CSSGenerator({
+        ...defaultConfig,
+        shortcuts: { btn: 'bg-blue-500 text-white' },
+      })
+      gen.generate('btn')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.btn {')
+      expect(css).not.toContain('.bg-blue-500')
+      expect(css).not.toContain('.text-white')
+    })
+
+    it('should expand hover:/focus: variants onto the shortcut selector', () => {
+      const gen = new CSSGenerator({
+        ...defaultConfig,
+        shortcuts: { 'btn-primary': 'bg-blue-500 hover:bg-blue-700 focus:ring-2' },
+      })
+      gen.generate('btn-primary')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.btn-primary:hover {')
+      expect(css).toContain('.btn-primary:focus {')
+      expect(css).not.toContain('.hover\\:bg-blue-700')
+    })
+
+    it('should expand dark: and responsive variants onto the shortcut selector', () => {
+      const gen = new CSSGenerator({
+        ...defaultConfig,
+        shortcuts: { btn: 'px-4 dark:bg-blue-900 md:px-8' },
+      })
+      gen.generate('btn')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.dark .btn {')
+      expect(css).toContain('@media (min-width: 768px)')
+      expect(css.slice(css.indexOf('@media'))).toContain('.btn {')
+    })
+
+    it('should flatten nested shortcuts onto the outer selector', () => {
+      const gen = new CSSGenerator({
+        ...defaultConfig,
+        shortcuts: {
+          'btn': 'px-4 hover:bg-blue-700',
+          'btn-lg': 'btn py-3',
+        },
+      })
+      gen.generate('btn-lg')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.btn-lg {')
+      expect(css).toContain('.btn-lg:hover {')
+      expect(css).toContain('padding-top: 0.75rem;')
+    })
+
+    it('should survive shortcut cycles without hanging', () => {
+      const gen = new CSSGenerator({
+        ...defaultConfig,
+        shortcuts: { a: 'b px-4', b: 'a py-2' },
+      })
+      gen.generate('a')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.a {')
+      expect(css).toContain('padding-left: 1rem;')
+      expect(css).toContain('padding-top: 0.5rem;')
+    })
+
+    it('should keep standalone utilities working alongside shortcut expansion', () => {
+      const gen = new CSSGenerator({
+        ...defaultConfig,
+        shortcuts: { btn: 'bg-blue-500 hover:bg-blue-700' },
+      })
+      // Standalone first, then shortcut, to prove neither direction is
+      // swallowed by the class cache.
+      gen.generate('bg-blue-500')
+      gen.generate('btn')
+      gen.generate('hover:bg-blue-700')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.bg-blue-500 {')
+      expect(css).toContain('.btn {')
+      expect(css).toContain('.btn:hover {')
+      expect(css).toContain('.hover\\:bg-blue-700:hover {')
+    })
+
+    it('should support array-form shortcut definitions', () => {
+      const gen = new CSSGenerator({
+        ...defaultConfig,
+        shortcuts: { card: ['p-4', 'rounded', 'hover:shadow-lg'] },
+      })
+      gen.generate('card')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.card {')
+      expect(css).toContain('.card:hover {')
+    })
   })
 
   describe('Blocklist', () => {

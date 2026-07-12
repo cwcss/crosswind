@@ -1453,6 +1453,10 @@ export class CSSGenerator {
   private screenBreakpoints: Map<string, string>
   private noMatchCache: Set<string> = new Set()
   private usedKeyframes: Set<string> = new Set()
+  // While expanding a shortcut, rules emit under the shortcut's own class
+  // name (with variants applied to it: `.btn:hover`) instead of the
+  // sub-utility's selector, which the markup never carries.
+  private shortcutSelectorRaw: string | null = null
   private extendColors: Record<string, string | Record<string, string>> | null = null
   private processed: ProcessedConfig
 
@@ -1500,14 +1504,45 @@ export class CSSGenerator {
     if (this.processed.hasShortcuts) {
       const shortcut = this.config.shortcuts[className]
       if (shortcut) {
-        const classes = Array.isArray(shortcut) ? shortcut : shortcut.split(/\s+/)
-        for (const cls of classes) {
-          this.generate(cls)
-        }
+        this.expandShortcut(className, shortcut, new Set([className]))
         return
       }
     }
 
+    this.generateUtility(className)
+  }
+
+  /**
+   * Expand a shortcut into rules on the shortcut's own selector. Variant
+   * utilities inside the definition (`hover:bg-accent-2`) become pseudo-class
+   * or media-query rules on that selector (`.btn:hover`, `@media ... .btn`)
+   * instead of being emitted under selectors the markup doesn't carry.
+   * Nested shortcuts flatten onto the outermost selector; `seen` breaks cycles.
+  */
+  private expandShortcut(name: string, shortcut: string | string[], seen: Set<string>): void {
+    const classes = Array.isArray(shortcut) ? shortcut : shortcut.split(/\s+/)
+    const prev = this.shortcutSelectorRaw
+    this.shortcutSelectorRaw = name
+    for (const cls of classes) {
+      if (!cls)
+        continue
+      const nested = this.config.shortcuts[cls]
+      if (nested) {
+        if (!seen.has(cls)) {
+          seen.add(cls)
+          this.expandShortcut(name, nested, seen)
+        }
+        continue
+      }
+      this.generateUtility(cls)
+    }
+    this.shortcutSelectorRaw = prev
+  }
+
+  /**
+   * Generate rules for a single utility class (no cache or shortcut handling)
+  */
+  private generateUtility(className: string): void {
     if (this.processed.hasBlocklist) {
       if (this.processed.blocklistExact.has(className)) {
         return
@@ -1992,8 +2027,11 @@ export class CSSGenerator {
    * Add a CSS rule with variants applied
   */
   private addRule(parsed: ParsedClass, properties: Record<string, string>, childSelector?: string, pseudoElement?: string): void {
-    // Use cached selector if available
-    const cacheKey = `${parsed.raw}${childSelector || ''}${pseudoElement || ''}`
+    // Use cached selector if available. Shortcut expansion changes the base
+    // selector for the same parsed class, so it needs its own cache slot.
+    const cacheKey = this.shortcutSelectorRaw === null
+      ? `${parsed.raw}${childSelector || ''}${pseudoElement || ''}`
+      : `${this.shortcutSelectorRaw} ${parsed.raw}${childSelector || ''}${pseudoElement || ''}`
     let selector = this.selectorCache.get(cacheKey)
     if (!selector) {
       selector = this.buildSelector(parsed)
@@ -2035,7 +2073,7 @@ export class CSSGenerator {
    * Optimized with pre-computed lookup maps for O(1) variant resolution
   */
   private buildSelector(parsed: ParsedClass): string {
-    let selector = `.${this.escapeSelector(parsed.raw)}`
+    let selector = `.${this.escapeSelector(this.shortcutSelectorRaw ?? parsed.raw)}`
     let prefix = ''
 
     const variants = parsed.variants
