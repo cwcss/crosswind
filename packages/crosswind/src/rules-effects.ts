@@ -330,7 +330,19 @@ export const opacityRule: UtilityRule = (parsed) => {
       95: '0.95',
       100: '1',
     }
-    return { opacity: opacityMap[parsed.value] || parsed.value }
+    if (opacityMap[parsed.value])
+      return { opacity: opacityMap[parsed.value] }
+    // Arbitrary values pass through; any bare integer maps to n/100
+    // (Tailwind v4: `opacity-33` → 0.33). Unknown words are rejected —
+    // `opacity: foo` is not a declaration.
+    if (parsed.arbitrary)
+      return { opacity: parsed.value }
+    if (/^\d+$/.test(parsed.value)) {
+      const n = Number.parseInt(parsed.value, 10)
+      if (n >= 0 && n <= 100)
+        return { opacity: `${n / 100}` }
+    }
+    return undefined
   }
 }
 

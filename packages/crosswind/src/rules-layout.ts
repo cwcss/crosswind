@@ -353,16 +353,12 @@ export const visibilityRule: UtilityRule = (parsed) => {
 
 export const zIndexRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'z' && parsed.value) {
-    const zIndexMap: Record<string, string> = {
-      0: '0',
-      10: '10',
-      20: '20',
-      30: '30',
-      40: '40',
-      50: '50',
-      auto: 'auto',
-    }
-    return { 'z-index': zIndexMap[parsed.value] || parsed.value }
+    // Integers (any, including negatives), auto, or arbitrary values only.
+    // An unknown word is not a z-index; passing it through emitted
+    // `z-index: foo` for semantic class names like `z-modal`.
+    if (parsed.arbitrary || parsed.value === 'auto' || /^-?\d+$/.test(parsed.value))
+      return { 'z-index': parsed.value }
+    return undefined
   }
 }
 
