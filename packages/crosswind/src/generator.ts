@@ -1911,7 +1911,9 @@ export class CSSGenerator {
     }
 
     // Rotate: rotate-{0-180} -> transform: rotate(Ndeg)
-    if (utility === 'rotate' && value && !parsed.arbitrary) {
+    // Bare numbers only; explicit units, arbitrary values, and word
+    // rejection fall through to the rotate rule handler.
+    if (utility === 'rotate' && value && !parsed.arbitrary && /^-?\d+(?:\.\d+)?$/.test(value)) {
       this.addRule(parsed, { transform: `rotate(${value}deg)` })
       return
     }
