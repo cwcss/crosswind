@@ -351,7 +351,7 @@ textarea {
 input::placeholder,
 textarea::placeholder {
   opacity: 1;
-  color: #9ca3af;
+  color: color-mix(in oklab, currentColor 50%, transparent);
 }
 
 button,
