@@ -921,3 +921,27 @@ describe('media query ordering', () => {
     expect(out.indexOf('.p-4')).toBeLessThan(out.indexOf('@media'))
   })
 })
+
+describe('max-* variants and media type ordering', () => {
+  it('max-md applies below the breakpoint', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('max-md:flex')
+    const out = gen.toCSS(false)
+    expect(out).toContain('@media (max-width: 767.98px)')
+    expect(out).toContain('.max-md\\:flex')
+  })
+
+  it('max-* stacks with pseudo variants', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('max-lg:hover:underline')
+    const out = gen.toCSS(false)
+    expect(out).toContain('@media (max-width: 1023.98px)')
+    expect(out).toContain(':hover')
+  })
+
+  it('puts the print media type before feature conditions', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('md:print:flex')
+    expect(gen.toCSS(false)).toContain('@media print and (min-width: 768px)')
+  })
+})
