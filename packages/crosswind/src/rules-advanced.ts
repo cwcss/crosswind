@@ -1,5 +1,5 @@
 import type { UtilityRule } from './rules'
-import { resolveColorValue } from './rules'
+import { resolveColorValue, resolveSizeToken } from './rules'
 
 // Advanced utilities
 
@@ -27,22 +27,22 @@ export const minMaxSizingRule: UtilityRule = (parsed, config) => {
   }
 
   if (parsed.utility === 'min-w' && parsed.value) {
-    const value = config.theme.spacing[parsed.value] || minMaxMap[parsed.value] || parsed.value
-    return { 'min-width': value } as Record<string, string>
+    const value = resolveSizeToken(parsed, config, minMaxMap)
+    return value !== undefined ? { 'min-width': value } as Record<string, string> : undefined
   }
   if (parsed.utility === 'max-w' && parsed.value) {
-    const value = config.theme.spacing[parsed.value] || minMaxMap[parsed.value] || parsed.value
-    return { 'max-width': value } as Record<string, string>
+    const value = resolveSizeToken(parsed, config, minMaxMap)
+    return value !== undefined ? { 'max-width': value } as Record<string, string> : undefined
   }
   if (parsed.utility === 'min-h' && parsed.value) {
     const hMap: Record<string, string> = { ...minMaxMap, screen: '100vh' }
-    const value = config.theme.spacing[parsed.value] || hMap[parsed.value] || parsed.value
-    return { 'min-height': value } as Record<string, string>
+    const value = resolveSizeToken(parsed, config, hMap)
+    return value !== undefined ? { 'min-height': value } as Record<string, string> : undefined
   }
   if (parsed.utility === 'max-h' && parsed.value) {
     const hMap: Record<string, string> = { ...minMaxMap, screen: '100vh' }
-    const value = config.theme.spacing[parsed.value] || hMap[parsed.value] || parsed.value
-    return { 'max-height': value } as Record<string, string>
+    const value = resolveSizeToken(parsed, config, hMap)
+    return value !== undefined ? { 'max-height': value } as Record<string, string> : undefined
   }
 }
 
