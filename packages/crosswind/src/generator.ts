@@ -1403,6 +1403,23 @@ const NOT_VARIANT_SELECTORS: Record<string, string> = {
 }
 
 // Pre-computed prefix variants (these modify the selector prefix, not suffix)
+// Minify a static CSS block: strip comments, then collapse whitespace
+// around syntax characters. Used for preflight and keyframes, which were
+// previously only whitespace-collapsed (comments and per-declaration
+// spacing survived into "minified" output).
+function minifyCSSBlock(css: string): string {
+  return css
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\s+/g, ' ')
+    .replace(/\s*\{\s*/g, '{')
+    .replace(/\s*\}\s*/g, '}')
+    .replace(/;\s*/g, ';')
+    .replace(/:\s+/g, ':')
+    .replace(/,\s+/g, ',')
+    .replace(/;\}/g, '}')
+    .trim()
+}
+
 // Separator between stacked at-rule wrappers in a rule-group key
 // (@media + @supports + @container). Never appears in CSS text.
 const AT_RULE_SEPARATOR = '\u0001'
@@ -2702,7 +2719,7 @@ export class CSSGenerator {
         // placeholders sitting flush against the border). Utilities stay
         // unlayered, so they still win over author styles as before.
         const layered = `@layer cw-base {\n${preflightCSS}\n}`
-        parts.push(minify ? layered.replace(/\s+/g, ' ').trim() : layered)
+        parts.push(minify ? minifyCSSBlock(layered) : layered)
       }
     }
 
@@ -2725,7 +2742,7 @@ export class CSSGenerator {
       for (const name of this.usedKeyframes) {
         const kf = KEYFRAMES[name]
         if (kf) {
-          parts.push(minify ? kf.replace(/\s+/g, ' ').replace(/\s*\{\s*/g, '{').replace(/\s*\}\s*/g, '}').replace(/;\s*/g, ';').trim() : kf)
+          parts.push(minify ? minifyCSSBlock(kf) : kf)
         }
       }
     }
