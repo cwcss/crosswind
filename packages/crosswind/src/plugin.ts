@@ -105,9 +105,11 @@ export function plugin(options: CrosswindPluginOptions = {}): BunPlugin {
           bracketSyntax: config.bracketSyntax,
         })
 
-        // Add safelist classes
+        // Add safelist classes (strings only; pattern objects are ignored)
         for (const cls of config.safelist) {
-          classes.add(cls)
+          if (typeof cls === 'string') {
+            classes.add(cls)
+          }
         }
 
         // Generate CSS

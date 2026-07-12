@@ -33,9 +33,16 @@ export async function build(config: CrosswindConfig): Promise<BuildResult> {
   })
   const { classes, transformedFiles } = await scanner.scan()
 
-  // Add safelist classes
+  // Add safelist classes. Only strings are supported — a Tailwind-style
+  // { pattern: /.../ } entry previously reached parseClass and crashed the
+  // whole build with 'className.startsWith is not a function'.
   for (const cls of config.safelist) {
-    classes.add(cls)
+    if (typeof cls === 'string') {
+      classes.add(cls)
+    }
+    else {
+      console.warn(`⚠️  Ignoring non-string safelist entry (patterns are not supported): ${JSON.stringify(cls)}`)
+    }
   }
 
   // Generate CSS
