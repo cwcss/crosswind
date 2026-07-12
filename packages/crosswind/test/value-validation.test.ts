@@ -117,3 +117,43 @@ describe('transform value validation', () => {
     expect(css('skew-y-[3deg]')).toContain('transform: skewY(3deg);')
   })
 })
+
+describe('typography value validation', () => {
+  it('rejects unknown words', () => {
+    expect(css('leading-foo')).toBe('')
+    expect(css('tracking-foo')).toBe('')
+    expect(css('-tracking-foo')).toBe('')
+    expect(css('line-clamp-foo')).toBe('')
+    expect(css('indent-foo')).toBe('')
+    expect(css('word-spacing-foo')).toBe('')
+  })
+
+  it('does not quote bare words as content (content-wrapper)', () => {
+    expect(css('content-wrapper')).toBe('')
+    expect(css('content-area')).toBe('')
+  })
+
+  it('keeps named scales, numbers, and arbitrary values', () => {
+    expect(css('leading-tight')).toContain('line-height: 1.25;')
+    expect(css('leading-7')).toContain('line-height: 1.75rem;')
+    expect(css('leading-[1.15]')).toContain('line-height: 1.15;')
+    expect(css('tracking-wide')).toContain('letter-spacing: 0.025em;')
+    expect(css('-tracking-wide')).toContain('letter-spacing: -0.025em;')
+    expect(css('tracking-[0.2em]')).toContain('letter-spacing: 0.2em;')
+    expect(css('line-clamp-3')).toContain('-webkit-line-clamp: 3;')
+    expect(css('indent-4')).toContain('text-indent: 1rem;')
+    expect(css('-indent-2')).toContain('text-indent: -0.5rem;')
+  })
+
+  it('keeps content keywords and arbitrary strings', () => {
+    expect(css('content-none')).toContain('content: none;')
+    expect(css('content-center')).toContain('align-content:')
+    expect(css("content-['hello']")).toContain('content: \'hello\';')
+  })
+
+  it('line-clamp-none unsets the clamp', () => {
+    const out = css('line-clamp-none')
+    expect(out).toContain('-webkit-line-clamp: none;')
+    expect(out).toContain('overflow: visible;')
+  })
+})

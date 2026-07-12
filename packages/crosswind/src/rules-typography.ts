@@ -69,17 +69,32 @@ export const letterSpacingRule: UtilityRule = (parsed) => {
     if (!parsed.value) {
       return undefined
     }
-    // Handle negative values
+    if (parsed.arbitrary)
+      return { 'letter-spacing': parsed.value }
+    // Handle negative values (named scale only: -tracking-wide)
     if (parsed.value.startsWith('-')) {
       const positiveValue = parsed.value.slice(1)
-      return { 'letter-spacing': `-${values[positiveValue] || positiveValue}` }
+      return values[positiveValue] ? { 'letter-spacing': `-${values[positiveValue]}` } : undefined
     }
-    return { 'letter-spacing': values[parsed.value] || parsed.value }
+    // Unknown words are rejected — `letter-spacing: foo` is not a declaration.
+    return values[parsed.value] ? { 'letter-spacing': values[parsed.value] } : undefined
   }
 }
 
 export const lineClampRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'line-clamp' && parsed.value) {
+    // Tailwind: line-clamp-none unsets the clamp
+    if (parsed.value === 'none') {
+      return {
+        'overflow': 'visible',
+        'display': 'block',
+        '-webkit-box-orient': 'horizontal',
+        '-webkit-line-clamp': 'none',
+      }
+    }
+    // A clamp is a line count: integers or arbitrary values only
+    if (!parsed.arbitrary && !/^\d+$/.test(parsed.value))
+      return undefined
     return {
       'overflow': 'hidden',
       'display': '-webkit-box',
@@ -224,13 +239,24 @@ export const textWrapRule: UtilityRule = (parsed) => {
 
 export const textIndentRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'indent' && parsed.value) {
-    // Handle negative values
-    if (parsed.value.startsWith('-')) {
-      const positiveValue = parsed.value.slice(1)
-      const spacing = config.theme.spacing[positiveValue] || positiveValue
-      return { 'text-indent': `-${spacing}` }
+    if (parsed.arbitrary)
+      return { 'text-indent': parsed.value }
+    // Theme scale or off-scale numbers (0.25rem steps); unknown words
+    // previously leaked into `text-indent` verbatim.
+    const resolve = (token: string): string | undefined => {
+      const hit = config.theme.spacing[token]
+      if (hit !== undefined)
+        return hit
+      if (/^\d+(?:\.\d+)?$/.test(token))
+        return `${Number.parseFloat(token) * 0.25}rem`
+      return undefined
     }
-    return { 'text-indent': config.theme.spacing[parsed.value] || parsed.value }
+    if (parsed.value.startsWith('-')) {
+      const spacing = resolve(parsed.value.slice(1))
+      return spacing !== undefined ? { 'text-indent': `-${spacing}` } : undefined
+    }
+    const spacing = resolve(parsed.value)
+    return spacing !== undefined ? { 'text-indent': spacing } : undefined
   }
 }
 
@@ -301,11 +327,16 @@ export const contentRule: UtilityRule = (parsed) => {
       none: 'none',
     }
     // If value is already quoted or is a special value, use as-is
+    // Only none, already-quoted strings, and arbitrary values. Auto-quoting
+    // bare words turned semantic class names like `content-wrapper` into
+    // `content: "wrapper"`; align-content keywords (content-center, ...)
+    // are handled by their own rule.
     if (values[parsed.value] || parsed.value.startsWith('"') || parsed.value.startsWith('\'')) {
       return { content: values[parsed.value] || parsed.value }
     }
-    // Otherwise wrap in quotes
-    return { content: `"${parsed.value}"` }
+    if (parsed.arbitrary)
+      return { content: parsed.value }
+    return undefined
   }
 }
 
@@ -332,7 +363,15 @@ export const lineHeightRule: UtilityRule = (parsed, _config) => {
       10: '2.5rem',
     }
 
-    return { 'line-height': lineHeights[parsed.value] || parsed.value }
+    if (lineHeights[parsed.value])
+      return { 'line-height': lineHeights[parsed.value] }
+    if (parsed.arbitrary)
+      return { 'line-height': parsed.value }
+    // Off-scale numbers keep the 0.25rem step (Tailwind v4 leading-<number>);
+    // unknown words previously leaked into `line-height` verbatim.
+    if (/^\d+(?:\.\d+)?$/.test(parsed.value))
+      return { 'line-height': `${Number.parseFloat(parsed.value) * 0.25}rem` }
+    return undefined
   }
 }
 
@@ -416,7 +455,13 @@ export const wordSpacingRule: UtilityRule = (parsed, config) => {
       'wider': '0.05em',
       'widest': '0.1em',
     }
-    return { 'word-spacing': values[parsed.value] || config.theme.spacing[parsed.value] || parsed.value }
+    if (values[parsed.value])
+      return { 'word-spacing': values[parsed.value] }
+    if (config.theme.spacing[parsed.value])
+      return { 'word-spacing': config.theme.spacing[parsed.value] }
+    if (parsed.arbitrary)
+      return { 'word-spacing': parsed.value }
+    return undefined
   }
 }
 
