@@ -1,6 +1,6 @@
 import type { CrosswindConfig, ParsedClass } from './types'
 import type { UtilityRule } from './rules'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 
 /**
@@ -62,8 +62,24 @@ function loadCollection(collection: string): IconifyJSONCollection | null {
     join(process.cwd(), 'node_modules', '@iconify-json', collection, 'icons.json'),
     join(process.cwd(), 'node_modules', '.bun', '@iconify-json', collection, 'icons.json'),
   ]
-  // Bun also hoists into per-package `.bun/<pkg>@<ver>/node_modules/<pkg>` —
-  // walk one level if the first two miss.
+  // Bun's isolated installs store packages as
+  // `.bun/@iconify-json+<collection>@<version>/node_modules/@iconify-json/<collection>`.
+  // The comment above previously claimed this walk existed but it never did,
+  // so isolated installs silently emitted no icon CSS at all.
+  const bunStore = join(process.cwd(), 'node_modules', '.bun')
+  if (existsSync(bunStore)) {
+    try {
+      const prefix = `@iconify-json+${collection}@`
+      for (const entry of readdirSync(bunStore)) {
+        if (entry.startsWith(prefix)) {
+          candidates.push(join(bunStore, entry, 'node_modules', '@iconify-json', collection, 'icons.json'))
+        }
+      }
+    }
+    catch {
+      // unreadable store — fall through to the plain candidates
+    }
+  }
   for (const path of candidates) {
     if (existsSync(path)) {
       try {
