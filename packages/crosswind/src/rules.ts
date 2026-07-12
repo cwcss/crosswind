@@ -541,7 +541,15 @@ export function applyOpacity(color: string, opacity: number): string {
       return `hsl(${hslMatch[1]} / ${opacity})`
     }
   }
-  // Fallback: use opacity as-is with the color
+  // Values whose channels can't be rewritten inline — var() references,
+  // color-mix(), named colors, currentColor — get their alpha via color-mix
+  // (like Tailwind), instead of silently dropping the opacity and rendering
+  // the color fully opaque. `inherit` can't participate in color-mix, so it
+  // passes through unchanged.
+  if (cleanColor !== 'inherit' && cleanColor !== 'transparent') {
+    const pct = Number((opacity * 100).toFixed(2))
+    return `color-mix(in srgb, ${cleanColor} ${pct}%, transparent)`
+  }
   return cleanColor
 }
 

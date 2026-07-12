@@ -1099,3 +1099,59 @@ describe('Nested color DEFAULT key (issue #17)', () => {
     expect(css).not.toContain('--brand-DEFAULT')
   })
 })
+
+describe('Opacity modifier on var()-based theme colors (issue #16)', () => {
+  // A theme color holding a var() reference has no channels to rewrite, so
+  // the opacity modifier must go through color-mix() instead of being
+  // silently dropped (which rendered bg-success/10 fully opaque).
+  const varConfig = {
+    ...defaultConfig,
+    theme: {
+      ...defaultConfig.theme,
+      extend: { colors: { success: 'var(--success)' } },
+    },
+  }
+
+  it('emits color-mix for bg-{varColor}/{n}', () => {
+    const gen = new CSSGenerator(varConfig)
+    gen.generate('bg-success/10')
+    expect(gen.toCSS(false)).toContain('background-color: color-mix(in srgb, var(--success) 10%, transparent);')
+  })
+
+  it('emits color-mix for text and border with variants', () => {
+    const gen = new CSSGenerator(varConfig)
+    gen.generateBatch(['text-success/50', 'hover:bg-success/15'])
+    const css = gen.toCSS(false)
+    expect(css).toContain('color: color-mix(in srgb, var(--success) 50%, transparent);')
+    expect(css).toContain('.hover\\:bg-success\\/15:hover')
+    expect(css).toContain('background-color: color-mix(in srgb, var(--success) 15%, transparent);')
+  })
+
+  it('emits color-mix for arbitrary opacity values', () => {
+    const gen = new CSSGenerator(varConfig)
+    gen.generate('border-success/[0.04]')
+    expect(gen.toCSS(false)).toContain('border-color: color-mix(in srgb, var(--success) 4%, transparent);')
+  })
+
+  it('keeps native alpha for channel-based theme colors', () => {
+    const gen = new CSSGenerator(varConfig)
+    gen.generate('bg-blue-500/50')
+    const css = gen.toCSS(false)
+    expect(css).toContain('/ 0.5)')
+    expect(css).not.toContain('color-mix')
+  })
+
+  it('applies color-mix to currentColor but passes inherit through', () => {
+    const gen = new CSSGenerator(varConfig)
+    gen.generateBatch(['bg-current/50', 'bg-inherit/50'])
+    const css = gen.toCSS(false)
+    expect(css).toContain('background-color: color-mix(in srgb, currentColor 50%, transparent);')
+    expect(css).toContain('background-color: inherit;')
+  })
+
+  it('does not alter the solid form of the var color', () => {
+    const gen = new CSSGenerator(varConfig)
+    gen.generate('text-success')
+    expect(gen.toCSS(false)).toContain('color: var(--success);')
+  })
+})
