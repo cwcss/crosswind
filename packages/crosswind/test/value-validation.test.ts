@@ -301,3 +301,15 @@ describe('gradient stop value validation', () => {
     expect(css('from-[var(--brand)]')).toContain('--cw-gradient-from: var(--brand);')
   })
 })
+
+describe('hex alpha handling in opacity modifiers', () => {
+  it('expands 4-digit hex per digit (opacity modifier replaces alpha)', () => {
+    expect(css('bg-[#f00a]/50')).toContain('background-color: rgb(255 0 0 / 0.5);')
+  })
+
+  it('keeps 3, 6, and 8-digit hex working', () => {
+    expect(css('bg-[#f00]/50')).toContain('background-color: rgb(255 0 0 / 0.5);')
+    expect(css('bg-[#ff0000]/25')).toContain('background-color: rgb(255 0 0 / 0.25);')
+    expect(css('bg-[#ff000080]/50')).toContain('background-color: rgb(255 0 0 / 0.5);')
+  })
+})
