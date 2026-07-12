@@ -24,6 +24,9 @@ export class Scanner {
   async scan(): Promise<ScanResult> {
     const allClasses = new Set<string>()
     const transformedFiles = new Map<string, string>()
+    // Overlapping patterns previously read and transformed the same file
+    // once per pattern — wasted I/O and duplicate transformer passes.
+    const seenFiles = new Set<string>()
 
     // Use Promise.all to scan all patterns concurrently for better performance
     await Promise.all(
@@ -32,6 +35,10 @@ export class Scanner {
 
         // Bun's glob.scan() returns an async iterable
         for await (const file of glob.scan('.')) {
+          if (seenFiles.has(file)) {
+            continue
+          }
+          seenFiles.add(file)
           try {
             let content = await Bun.file(file).text()
 
@@ -51,8 +58,9 @@ export class Scanner {
             }
           }
           catch {
-            // Silently skip files that can't be read
-            // (e.g., binary files, permission issues)
+            // Skip unreadable files (permission/FS errors). Note: binary
+            // content does NOT throw — text() decodes it — so extension
+            // globs should target source files only.
             continue
           }
         }

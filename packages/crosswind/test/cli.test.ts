@@ -92,3 +92,20 @@ describe('CLI config resolution (issue #15)', () => {
     expect(out).toContain('Config file not found')
   })
 })
+
+describe('CLI analyze', () => {
+  it('counts real occurrences and groups negatives/arbitrary correctly', async () => {
+    await Bun.write(join(TEST_DIR, 'src', 'more.html'), '<div class="p-4 p-4 -mt-2 [mask-type:luminance]"><span class="p-4"></span></div>')
+    const { exitCode, out } = await runCli(['analyze', '--json'], TEST_DIR)
+    expect(exitCode).toBe(0)
+    const stats = JSON.parse(out.slice(out.indexOf('{')))
+    const top = stats.topClasses[0]
+    // p-4 appears 4 times across the fixture files — must rank first with a real count
+    expect(top.class).toBe('p-4')
+    expect(top.count).toBeGreaterThanOrEqual(3)
+    // negative utilities group under their root, not 'other'; arbitrary props under 'arbitrary'
+    expect(stats.utilityGroups.mt).toBe(1)
+    expect(stats.utilityGroups.arbitrary).toBe(1)
+    expect(stats.outputSize).toBeGreaterThan(0)
+  })
+})

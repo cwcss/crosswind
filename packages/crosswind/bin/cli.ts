@@ -4,6 +4,7 @@ import { existsSync, statSync, watch } from 'node:fs'
 import { unlink } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import process from 'node:process'
+import { Glob } from 'bun'
 import { CLI } from '@stacksjs/clapp'
 import { version } from '../package.json'
 import { build, buildAndWrite } from '../src/build'
@@ -302,10 +303,53 @@ cli
 
       const result = await build(baseConfig)
 
-      // Group classes by utility type
+      // Count real occurrences across the content files so "top classes"
+      // reflects usage, not scan order (the classes set is de-duplicated).
+      const counts = new Map<string, number>()
+      for (const cls of result.classes) counts.set(cls, 0)
+      for (const pattern of baseConfig.content) {
+        const glob = new Glob(pattern)
+        for await (const file of glob.scan('.')) {
+          let content: string
+          try {
+            content = await Bun.file(file).text()
+          }
+          catch {
+            continue
+          }
+          for (const cls of result.classes) {
+            let idx = content.indexOf(cls)
+            while (idx !== -1) {
+              counts.set(cls, counts.get(cls)! + 1)
+              idx = content.indexOf(cls, idx + cls.length)
+            }
+          }
+        }
+      }
+
+      // Group classes by utility root: strip variants (last colon outside
+      // brackets), important markers, and negative signs; arbitrary
+      // properties group under 'arbitrary'. The old split('-')[0] put every
+      // negative utility in 'other' and arbitrary props under '[mask'.
+      const utilityRoot = (cls: string): string => {
+        let base = cls
+        const bracketIdx = base.indexOf('[')
+        const lastColon = base.lastIndexOf(':', bracketIdx === -1 ? base.length : bracketIdx)
+        if (lastColon !== -1)
+          base = base.slice(lastColon + 1)
+        if (base.startsWith('!'))
+          base = base.slice(1)
+        if (base.endsWith('!'))
+          base = base.slice(0, -1)
+        if (base.startsWith('-'))
+          base = base.slice(1)
+        if (base.startsWith('['))
+          return 'arbitrary'
+        return base.split('-')[0] || 'other'
+      }
       const utilityGroups = new Map<string, string[]>()
       for (const cls of result.classes) {
-        const utility = cls.split('-')[0].split(':').pop() || 'other'
+        const utility = utilityRoot(cls)
         if (!utilityGroups.has(utility)) {
           utilityGroups.set(utility, [])
         }
@@ -315,13 +359,18 @@ cli
       const stats = {
         totalClasses: result.classes.size,
         buildTime: result.duration,
-        outputSize: existsSync(baseConfig.output) ? Bun.file(baseConfig.output).size : 0,
+        // Size of the CSS just built — the previous file-size read reported
+        // a stale artifact (analyze never writes the output file).
+        outputSize: Buffer.byteLength(result.css),
         utilityGroups: Object.fromEntries(
           Array.from(utilityGroups.entries())
             .map(([key, value]) => [key, value.length] as [string, number])
             .sort((a, b) => (b[1] as number) - (a[1] as number)),
         ),
-        topClasses: Array.from(result.classes).slice(0, options.top || 10),
+        topClasses: [...counts.entries()]
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, options.top || 10)
+          .map(([cls, count]) => ({ class: cls, count })),
       }
 
       if (options.json) {
@@ -356,10 +405,13 @@ cli
 cli
   .command('clean', 'Remove the output CSS file')
   .option('--config <path>', 'Path to config file')
+  .option('--output <path>', 'Output CSS file path (defaults to the config output)')
   .example('crosswind clean')
-  .action(async (options: GlobalOptions) => {
+  .action(async (options: GlobalOptions & { output?: string }) => {
     try {
       const baseConfig = await loadCustomConfig(options.config)
+      if (options.output)
+        baseConfig.output = options.output
 
       if (!existsSync(baseConfig.output)) {
         console.log('ℹ️  Output file does not exist')
