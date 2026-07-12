@@ -41,14 +41,26 @@ export function plugin(options: CrosswindPluginOptions = {}): BunPlugin {
         defaultConfig,
       })
 
-      // Merge with provided options
+      // Merge with provided options. Theme sub-maps merge key-by-key: a
+      // shallow spread meant a partial override like
+      // `theme: { colors: { brand: '#f00' } }` replaced the ENTIRE default
+      // palette and every text-red-500 style stopped resolving.
+      const mergedTheme: CrosswindConfig['theme'] = { ...loadedConfig.theme }
+      if (options.config?.theme) {
+        for (const [key, value] of Object.entries(options.config.theme)) {
+          const base = (loadedConfig.theme as unknown as Record<string, unknown>)[key];
+          (mergedTheme as unknown as Record<string, unknown>)[key]
+            = base && typeof base === 'object' && !Array.isArray(base)
+              && value && typeof value === 'object' && !Array.isArray(value)
+              ? { ...base, ...value }
+              : value
+        }
+      }
+
       const config = {
         ...loadedConfig,
         ...options.config,
-        theme: {
-          ...loadedConfig.theme,
-          ...options.config?.theme,
-        },
+        theme: mergedTheme,
         shortcuts: {
           ...loadedConfig.shortcuts,
           ...options.config?.shortcuts,
@@ -85,8 +97,13 @@ export function plugin(options: CrosswindPluginOptions = {}): BunPlugin {
       build.onLoad({ filter: /\.html?$/ }, async ({ path }) => {
         const html = await Bun.file(path).text()
 
-        // Extract utility classes from HTML
-        const classes = extractClasses(html)
+        // Extract utility classes from HTML. Pass the same extract options
+        // the CLI build path uses — the plugin previously ignored
+        // attributify/bracketSyntax config entirely.
+        const classes = extractClasses(html, {
+          attributify: config.attributify,
+          bracketSyntax: config.bracketSyntax,
+        })
 
         // Add safelist classes
         for (const cls of config.safelist) {
@@ -103,8 +120,12 @@ export function plugin(options: CrosswindPluginOptions = {}): BunPlugin {
         // Generate CSS output
         const css = generator.toCSS(includePreflight, config.minify)
 
-        // Inject CSS into HTML
-        const contents = html.replace('</head>', `<style>${css}</style>\n</head>`)
+        // Inject CSS into HTML. Fragments without </head> previously came
+        // back unchanged — the generated CSS was silently dropped.
+        const styleTag = `<style>${css}</style>`
+        const contents = html.includes('</head>')
+          ? html.replace('</head>', `${styleTag}\n</head>`)
+          : `${styleTag}\n${html}`
 
         return {
           contents,
