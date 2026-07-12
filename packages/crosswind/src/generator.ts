@@ -2365,17 +2365,17 @@ export class CSSGenerator {
    * Optimized with charCode checks for common fast path
   */
   private escapeSelector(className: string): string {
-    // Fast path: check if string needs escaping at all
+    // Fast path: identifier-safe ASCII ([A-Za-z0-9_-]) needs no escaping.
+    // Everything else gets a backslash — an allowlist of "special" chars
+    // kept missing selector-significant ones (& ? { } ; < $ | \), so
+    // arbitrary values like content-['a?b&c'] produced invalid selectors.
+    // Non-ASCII (charCode > 127) is identifier-safe in CSS and stays raw.
     let needsEscape = false
     for (let i = 0; i < className.length; i++) {
       const c = className.charCodeAt(i)
-      // Check for special CSS selector characters:
-      // : (58), . (46), / (47), @ (64), space (32), [ (91), ] (93)
-      // ( (40), ) (41), % (37), # (35), , (44), > (62), + (43), ~ (126)
-      // ! (33), ' (39), " (34), * (42), = (61)
-      if (c === 58 || c === 46 || c === 47 || c === 64 || c === 32 || c === 91 || c === 93 ||
-          c === 40 || c === 41 || c === 37 || c === 35 || c === 44 || c === 62 || c === 43 || c === 126 ||
-          c === 33 || c === 39 || c === 34 || c === 42 || c === 61) {
+      const safe = (c >= 97 && c <= 122) || (c >= 65 && c <= 90) || (c >= 48 && c <= 57)
+        || c === 45 || c === 95 || c > 127 // a-z A-Z 0-9 - _ non-ASCII
+      if (!safe) {
         needsEscape = true
         break
       }
@@ -2383,7 +2383,8 @@ export class CSSGenerator {
     if (!needsEscape) {
       return className
     }
-    return className.replace(/[:./@ \[\]()%#,>+~!'"*=]/g, '\\$&')
+    // eslint-disable-next-line no-control-regex
+    return className.replace(/[\x00-\x2C\x2E\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7F]/g, '\\$&')
   }
 
   /**
