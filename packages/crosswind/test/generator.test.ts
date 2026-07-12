@@ -972,3 +972,47 @@ describe('unknown and arbitrary variants', () => {
     expect(out).toContain('display: flex;')
   })
 })
+
+describe('stacked at-rule variants and dark mode strategy', () => {
+  it('nests @media and @supports when stacked', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('md:supports-[display:grid]:flex')
+    const out = gen.toCSS(false)
+    const media = out.indexOf('@media (min-width: 768px)')
+    const supports = out.indexOf('@supports (display: grid)')
+    expect(media).toBeGreaterThan(-1)
+    expect(supports).toBeGreaterThan(media)
+    expect(out).toContain('display: flex;')
+  })
+
+  it('nests @media and @container when stacked', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('@sm:print:hidden')
+    const out = gen.toCSS(false)
+    expect(out).toContain('@media print')
+    expect(out).toContain('@container (min-width: 640px)')
+  })
+
+  it('keeps single supports/container variants working', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generateBatch(['supports-[display:grid]:grid', '@md:flex'])
+    const out = gen.toCSS(false)
+    expect(out).toContain('@supports (display: grid)')
+    expect(out).toContain('@container (min-width: 768px)')
+  })
+
+  it('darkMode media emits prefers-color-scheme instead of a class prefix', () => {
+    const gen = new CSSGenerator({ ...defaultConfig, darkMode: 'media' })
+    gen.generateBatch(['dark:bg-blue-500', 'light:flex'])
+    const out = gen.toCSS(false)
+    expect(out).toContain('@media (prefers-color-scheme: dark)')
+    expect(out).toContain('@media (prefers-color-scheme: light)')
+    expect(out).not.toContain('.dark .')
+  })
+
+  it('darkMode defaults to the class strategy', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('dark:bg-blue-500')
+    expect(gen.toCSS(false)).toContain('.dark .dark\\:bg-blue-500')
+  })
+})

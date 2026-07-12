@@ -91,6 +91,11 @@ export interface CrosswindConfig {
   verbose?: boolean
   /** Include the preflight/reset CSS in built output (default true). */
   includePreflight?: boolean
+  /**
+   * Dark mode strategy: 'class' scopes dark: under a .dark ancestor
+   * (default); 'media' uses @media (prefers-color-scheme: dark).
+  */
+  darkMode?: 'class' | 'media'
   theme: Theme
   /** Web fonts to load (Google Fonts `@import` and/or raw `@font-face`). */
   fonts?: FontConfig
