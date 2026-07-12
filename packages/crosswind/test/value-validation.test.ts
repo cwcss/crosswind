@@ -313,3 +313,24 @@ describe('hex alpha handling in opacity modifiers', () => {
     expect(css('bg-[#ff000080]/50')).toContain('background-color: rgb(255 0 0 / 0.5);')
   })
 })
+
+describe('scroll margin/padding, column-gap, perspective validation', () => {
+  it('rejects unknown words', () => {
+    expect(css('scroll-m-foo')).toBe('')
+    expect(css('scroll-mt-foo')).toBe('')
+    expect(css('scroll-p-foo')).toBe('')
+    expect(css('scroll-px-foo')).toBe('')
+    expect(css('column-gap-foo')).toBe('')
+    expect(css('perspective-foo')).toBe('')
+  })
+
+  it('keeps scale, off-scale numbers, and arbitrary', () => {
+    expect(css('scroll-mt-4')).toContain('scroll-margin-top: 1rem;')
+    expect(css('scroll-p-4.5')).toContain('scroll-padding: 1.125rem;')
+    expect(css('scroll-m-[10px]')).toContain('scroll-margin: 10px;')
+    expect(css('column-gap-8')).toContain('column-gap: 2rem;')
+    expect(css('perspective-1000')).toContain('perspective: 1000px;')
+    expect(css('perspective-none')).toContain('perspective: none;')
+    expect(css('perspective-[75vw]')).toContain('perspective: 75vw;')
+  })
+})

@@ -151,11 +151,13 @@ export const perspectiveRule: UtilityRule = (parsed) => {
       return { perspective: 'none' }
     }
     // If arbitrary or already has unit, use as-is
-    if (parsed.arbitrary || parsed.value.includes('px') || parsed.value.includes('rem') || parsed.value.includes('em')) {
+    if (parsed.arbitrary || /^\d+(?:\.\d+)?(?:px|rem|em)$/.test(parsed.value)) {
       return { perspective: parsed.value }
     }
-    // Otherwise add px
-    return { perspective: `${parsed.value}px` }
+    // Bare numbers get px; unknown words previously emitted foopx
+    if (/^\d+(?:\.\d+)?$/.test(parsed.value))
+      return { perspective: `${parsed.value}px` }
+    return undefined
   }
   return undefined
 }

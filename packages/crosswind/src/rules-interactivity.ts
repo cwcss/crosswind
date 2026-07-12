@@ -278,7 +278,15 @@ export const scrollMarginRule: UtilityRule = (parsed, config) => {
   if (!props || !parsed.value)
     return undefined
 
-  const value = config.theme.spacing[parsed.value] || parsed.value
+  // Theme scale, off-scale numbers (0.25rem steps), or arbitrary values;
+  // unknown words previously leaked verbatim (scroll-mt-foo).
+  let value: string | undefined = config.theme.spacing[parsed.value]
+  if (value === undefined && parsed.arbitrary)
+    value = parsed.value
+  if (value === undefined && /^\d+(?:\.\d+)?$/.test(parsed.value))
+    value = `${Number.parseFloat(parsed.value) * 0.25}rem`
+  if (value === undefined)
+    return undefined
   const result: Record<string, string> = {}
   for (const prop of props) {
     result[prop] = value
@@ -301,7 +309,15 @@ export const scrollPaddingRule: UtilityRule = (parsed, config) => {
   if (!props || !parsed.value)
     return undefined
 
-  const value = config.theme.spacing[parsed.value] || parsed.value
+  // Theme scale, off-scale numbers (0.25rem steps), or arbitrary values;
+  // unknown words previously leaked verbatim (scroll-mt-foo).
+  let value: string | undefined = config.theme.spacing[parsed.value]
+  if (value === undefined && parsed.arbitrary)
+    value = parsed.value
+  if (value === undefined && /^\d+(?:\.\d+)?$/.test(parsed.value))
+    value = `${Number.parseFloat(parsed.value) * 0.25}rem`
+  if (value === undefined)
+    return undefined
   const result: Record<string, string> = {}
   for (const prop of props) {
     result[prop] = value

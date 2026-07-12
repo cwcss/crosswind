@@ -97,7 +97,12 @@ export const columnFillRule: UtilityRule = (parsed) => {
 // Column gap (different from grid gap)
 export const columnGapRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'column-gap' && parsed.value) {
-    return { 'column-gap': config.theme.spacing[parsed.value] || parsed.value }
+    let value: string | undefined = config.theme.spacing[parsed.value]
+    if (value === undefined && parsed.arbitrary)
+      value = parsed.value
+    if (value === undefined && /^\d+(?:\.\d+)?$/.test(parsed.value))
+      value = `${Number.parseFloat(parsed.value) * 0.25}rem`
+    return value !== undefined ? { 'column-gap': value } : undefined
   }
 }
 
