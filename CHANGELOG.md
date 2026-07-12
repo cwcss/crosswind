@@ -1,3 +1,20 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.8...v0.2.9)
+
+## 🐛 Bug Fixes
+
+- resolve CLI --config from cwd and auto-discover project config ([f1a2b0a](https://github.com/cwcss/crosswind/commit/f1a2b0a)) _(by Chris <chrisbreuer93@gmail.com>)_
+- use printable delimiter in shortcut selector cache key ([2fa55ef](https://github.com/cwcss/crosswind/commit/2fa55ef)) _(by Chris <chrisbreuer93@gmail.com>)_
+- expand shortcut variants onto the shortcut's own selector ([e474ca3](https://github.com/cwcss/crosswind/commit/e474ca3)) _(by Chris <chrisbreuer93@gmail.com>)_
+- apply opacity modifiers to var()-based theme colors via color-mix ([8da8ace](https://github.com/cwcss/crosswind/commit/8da8ace)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.2.9 ([345e14a](https://github.com/cwcss/crosswind/commit/345e14a)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.7...v0.2.8)
 
 ## 🐛 Bug Fixes
