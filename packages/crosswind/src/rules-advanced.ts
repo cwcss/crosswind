@@ -71,7 +71,20 @@ export const ringRule: UtilityRule = (parsed, config) => {
       8: '8px',
       DEFAULT: '3px',
     }
-    const width = parsed.value ? widths[parsed.value] || parsed.value : widths.DEFAULT
+    // Ring widths: scale keys, bare numbers (px implied), or arbitrary.
+    // Unknown words previously produced calc(foo + ...) garbage (they are
+    // not colors either, or the color branch above would have taken them).
+    let width: string | undefined
+    if (!parsed.value)
+      width = widths.DEFAULT
+    else if (widths[parsed.value])
+      width = widths[parsed.value]
+    else if (parsed.arbitrary)
+      width = parsed.value
+    else if (/^\d+(?:\.\d+)?$/.test(parsed.value))
+      width = `${parsed.value}px`
+    if (width === undefined)
+      return undefined
     return {
       '--cw-ring-offset-shadow': 'var(--cw-ring-inset) 0 0 0 var(--cw-ring-offset-width) var(--cw-ring-offset-color)',
       '--cw-ring-shadow': `var(--cw-ring-inset) 0 0 0 calc(${width} + var(--cw-ring-offset-width)) var(--cw-ring-color)`,
@@ -495,7 +508,9 @@ export const justifySelfRule: UtilityRule = (parsed) => {
       center: 'center',
       stretch: 'stretch',
     }
-    return parsed.value ? { 'justify-self': values[parsed.value] || parsed.value } : undefined
+    // Keyword allowlist only — align keywords are finite; unknown words
+    // previously emitted justify-self: foo.
+    return parsed.value && values[parsed.value] ? { 'justify-self': values[parsed.value] } : undefined
   }
 }
 
@@ -509,7 +524,7 @@ export const alignSelfRule: UtilityRule = (parsed) => {
       stretch: 'stretch',
       baseline: 'baseline',
     }
-    return parsed.value ? { 'align-self': values[parsed.value] || parsed.value } : undefined
+    return parsed.value && values[parsed.value] ? { 'align-self': values[parsed.value] } : undefined
   }
 }
 

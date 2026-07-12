@@ -3,13 +3,24 @@ import type { UtilityRule } from './rules'
 // Layout utilities
 
 export const aspectRatioRule: UtilityRule = (parsed) => {
-  if (parsed.utility === 'aspect') {
+  if (parsed.utility === 'aspect' && parsed.value) {
     const ratios: Record<string, string> = {
       auto: 'auto',
       square: '1 / 1',
       video: '16 / 9',
     }
-    return parsed.value ? { 'aspect-ratio': ratios[parsed.value] || parsed.value } : undefined
+    if (ratios[parsed.value])
+      return { 'aspect-ratio': ratios[parsed.value] }
+    if (parsed.arbitrary)
+      return { 'aspect-ratio': parsed.value }
+    // Bare ratios and numbers: aspect-16/9 -> 16 / 9, aspect-2 -> 2.
+    // Unknown words previously emitted aspect-ratio: foo.
+    const ratioMatch = parsed.value.match(/^(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)$/)
+    if (ratioMatch)
+      return { 'aspect-ratio': `${ratioMatch[1]} / ${ratioMatch[2]}` }
+    if (/^\d+(?:\.\d+)?$/.test(parsed.value))
+      return { 'aspect-ratio': parsed.value }
+    return undefined
   }
 }
 
@@ -64,8 +75,12 @@ export const columnsRule: UtilityRule = (parsed, config) => {
       return { columns: config.theme.spacing[parsed.value] }
     }
 
-    // Arbitrary value support
-    return { columns: parsed.value }
+    // Arbitrary values only beyond the named scales; bare counts above 12
+    // are valid too. Unknown words previously emitted columns: foo.
+    if (parsed.arbitrary || /^\d+$/.test(parsed.value)) {
+      return { columns: parsed.value }
+    }
+    return undefined
   }
 }
 

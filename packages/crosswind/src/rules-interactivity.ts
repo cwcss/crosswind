@@ -16,39 +16,52 @@ const BLUR_SIZES: Record<string, string> = {
   '3xl': '64px',
 }
 
+// Percentage-scale filter amount: brightness-150 -> 1.5. Rejects unknown
+// words — Number('foo')/100 previously emitted filter: brightness(NaN).
+function filterAmount(parsed: { value?: string, arbitrary: boolean }): string | undefined {
+  if (parsed.arbitrary)
+    return parsed.value
+  if (/^\d+(?:\.\d+)?$/.test(parsed.value!))
+    return `${Number(parsed.value) / 100}`
+  return undefined
+}
+
+// Blur size: named scale, bare numbers (px implied), or arbitrary. Unknown
+// words previously emitted filter: blur(foo).
+function blurSize(parsed: { value?: string, arbitrary: boolean }): string | undefined {
+  if (!parsed.value)
+    return BLUR_SIZES.DEFAULT
+  if (BLUR_SIZES[parsed.value] !== undefined)
+    return BLUR_SIZES[parsed.value]
+  if (parsed.arbitrary)
+    return parsed.value
+  if (/^\d+(?:\.\d+)?$/.test(parsed.value))
+    return `${parsed.value}px`
+  return undefined
+}
+
+const PERCENT_FILTERS = ['brightness', 'contrast', 'grayscale', 'invert', 'saturate', 'sepia']
+
 // Filter utilities
 export const filterRule: UtilityRule = (parsed) => {
   // Handle filter-none
   if (parsed.raw === 'filter-none') {
     return { filter: 'none' }
   }
-  // `blur` (no value) → DEFAULT; `blur-sm` etc. use named sizes;
-  // `blur-12` → `blur(12px)`; `blur-[10px]` / `blur-[5em]` passes raw.
   if (parsed.utility === 'blur') {
-    const key = parsed.value || 'DEFAULT'
-    const size = BLUR_SIZES[key] ?? (parsed.value ? (/^\d/.test(parsed.value) ? `${parsed.value}px` : parsed.value) : BLUR_SIZES.DEFAULT)
-    return { filter: `blur(${size})` }
+    const size = blurSize(parsed)
+    return size !== undefined ? { filter: `blur(${size})` } : undefined
   }
-  if (parsed.utility === 'brightness' && parsed.value) {
-    return { filter: `brightness(${Number(parsed.value) / 100})` }
-  }
-  if (parsed.utility === 'contrast' && parsed.value) {
-    return { filter: `contrast(${Number(parsed.value) / 100})` }
-  }
-  if (parsed.utility === 'grayscale' && parsed.value) {
-    return { filter: `grayscale(${Number(parsed.value) / 100})` }
-  }
-  if (parsed.utility === 'invert' && parsed.value) {
-    return { filter: `invert(${Number(parsed.value) / 100})` }
-  }
-  if (parsed.utility === 'saturate' && parsed.value) {
-    return { filter: `saturate(${Number(parsed.value) / 100})` }
-  }
-  if (parsed.utility === 'sepia' && parsed.value) {
-    return { filter: `sepia(${Number(parsed.value) / 100})` }
+  if (PERCENT_FILTERS.includes(parsed.utility) && parsed.value) {
+    const amount = filterAmount(parsed)
+    return amount !== undefined ? { filter: `${parsed.utility}(${amount})` } : undefined
   }
   if (parsed.utility === 'hue-rotate' && parsed.value) {
-    return { filter: `hue-rotate(${parsed.value}deg)` }
+    if (parsed.arbitrary)
+      return { filter: `hue-rotate(${parsed.value})` }
+    if (/^-?\d+(?:\.\d+)?$/.test(parsed.value))
+      return { filter: `hue-rotate(${parsed.value}deg)` }
+    return undefined
   }
   if (parsed.utility === 'drop-shadow') {
     const shadows: Record<string, string> = {
@@ -60,7 +73,13 @@ export const filterRule: UtilityRule = (parsed) => {
       '2xl': 'drop-shadow(0 25px 25px rgb(0 0 0 / 0.15))',
       'none': 'drop-shadow(0 0 #0000)',
     }
-    return { filter: parsed.value ? (shadows[parsed.value] || `drop-shadow(${parsed.value})`) : shadows.DEFAULT }
+    if (!parsed.value)
+      return { filter: shadows.DEFAULT }
+    if (shadows[parsed.value])
+      return { filter: shadows[parsed.value] }
+    if (parsed.arbitrary)
+      return { filter: `drop-shadow(${parsed.value})` }
+    return undefined
   }
 }
 
@@ -69,36 +88,21 @@ export const backdropFilterRule: UtilityRule = (parsed): Record<string, string> 
   if (parsed.raw === 'backdrop-filter-none') {
     return { 'backdrop-filter': 'none' }
   }
-  // `backdrop-blur` (no value) → DEFAULT; `backdrop-blur-sm` etc. use named sizes;
-  // `backdrop-blur-12` or `backdrop-blur-[10px]` use raw value.
   if (parsed.utility === 'backdrop-blur') {
-    const key = parsed.value || 'DEFAULT'
-    const size = BLUR_SIZES[key] ?? (parsed.value ? (/^\d/.test(parsed.value) ? `${parsed.value}px` : parsed.value) : BLUR_SIZES.DEFAULT)
-    return { '-webkit-backdrop-filter': `blur(${size})`, 'backdrop-filter': `blur(${size})` }
+    const size = blurSize(parsed)
+    return size !== undefined
+      ? { '-webkit-backdrop-filter': `blur(${size})`, 'backdrop-filter': `blur(${size})` }
+      : undefined
   }
-  if (parsed.utility === 'backdrop-brightness' && parsed.value) {
-    const v = `brightness(${Number(parsed.value) / 100})`
-    return { '-webkit-backdrop-filter': v, 'backdrop-filter': v }
-  }
-  if (parsed.utility === 'backdrop-contrast' && parsed.value) {
-    const v = `contrast(${Number(parsed.value) / 100})`
-    return { '-webkit-backdrop-filter': v, 'backdrop-filter': v }
-  }
-  if (parsed.utility === 'backdrop-grayscale' && parsed.value) {
-    const v = `grayscale(${Number(parsed.value) / 100})`
-    return { '-webkit-backdrop-filter': v, 'backdrop-filter': v }
-  }
-  if (parsed.utility === 'backdrop-invert' && parsed.value) {
-    const v = `invert(${Number(parsed.value) / 100})`
-    return { '-webkit-backdrop-filter': v, 'backdrop-filter': v }
-  }
-  if (parsed.utility === 'backdrop-saturate' && parsed.value) {
-    const v = `saturate(${Number(parsed.value) / 100})`
-    return { '-webkit-backdrop-filter': v, 'backdrop-filter': v }
-  }
-  if (parsed.utility === 'backdrop-sepia' && parsed.value) {
-    const v = `sepia(${Number(parsed.value) / 100})`
-    return { '-webkit-backdrop-filter': v, 'backdrop-filter': v }
+  if (parsed.utility.startsWith('backdrop-') && parsed.value) {
+    const fn = parsed.utility.slice(9)
+    if (PERCENT_FILTERS.includes(fn)) {
+      const amount = filterAmount(parsed)
+      if (amount === undefined)
+        return undefined
+      const v = `${fn}(${amount})`
+      return { '-webkit-backdrop-filter': v, 'backdrop-filter': v }
+    }
   }
 }
 
@@ -112,18 +116,23 @@ export const borderCollapseRule: UtilityRule = (parsed) => {
 }
 
 export const borderSpacingRule: UtilityRule = (parsed, config) => {
-  if (parsed.utility === 'border-spacing' && parsed.value) {
-    const value = config.theme.spacing[parsed.value] || parsed.value
+  if (!parsed.utility.startsWith('border-spacing') || !parsed.value)
+    return undefined
+  // Theme spacing, off-scale numbers (0.25rem steps), or arbitrary values;
+  // unknown words previously emitted border-spacing: foo foo.
+  let value: string | undefined = config.theme.spacing[parsed.value]
+  if (value === undefined && parsed.arbitrary)
+    value = parsed.value
+  if (value === undefined && /^\d+(?:\.\d+)?$/.test(parsed.value))
+    value = `${Number.parseFloat(parsed.value) * 0.25}rem`
+  if (value === undefined)
+    return undefined
+  if (parsed.utility === 'border-spacing')
     return { 'border-spacing': `${value} ${value}` }
-  }
-  if (parsed.utility === 'border-spacing-x' && parsed.value) {
-    const value = config.theme.spacing[parsed.value] || parsed.value
+  if (parsed.utility === 'border-spacing-x')
     return { 'border-spacing': `${value} 0` }
-  }
-  if (parsed.utility === 'border-spacing-y' && parsed.value) {
-    const value = config.theme.spacing[parsed.value] || parsed.value
+  if (parsed.utility === 'border-spacing-y')
     return { 'border-spacing': `0 ${value}` }
-  }
 }
 
 export const tableLayoutRule: UtilityRule = (parsed) => {
