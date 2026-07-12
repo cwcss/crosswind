@@ -227,6 +227,45 @@ describe('Grid Utilities', () => {
     })
   })
 
+  // Track-definition utilities reject unknown words the same way: only
+  // counts, none/subgrid (templates), the sizing keywords (auto tracks),
+  // and arbitrary values produce CSS.
+  describe('Grid track definition rejection', () => {
+    it('should not emit CSS for grid-cols-foo / grid-rows-foo', () => {
+      for (const cls of ['grid-cols-foo', 'grid-rows-foo']) {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate(cls)
+        expect(gen.toCSS(false).trim()).toBe('')
+      }
+    })
+
+    it('should not emit CSS for auto-cols-foo / auto-rows-foo', () => {
+      for (const cls of ['auto-cols-foo', 'auto-rows-foo']) {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate(cls)
+        expect(gen.toCSS(false).trim()).toBe('')
+      }
+    })
+
+    it('should repeat any bare column count (grid-cols-16)', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('grid-cols-16')
+      expect(gen.toCSS(false)).toContain('grid-template-columns: repeat(16, minmax(0, 1fr));')
+    })
+
+    it('should repeat row counts beyond the classic 6 (grid-rows-8)', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('grid-rows-8')
+      expect(gen.toCSS(false)).toContain('grid-template-rows: repeat(8, minmax(0, 1fr));')
+    })
+
+    it('should still pass arbitrary auto track sizes through (auto-rows-[minmax(0,_2fr)])', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('auto-rows-[minmax(0,_2fr)]')
+      expect(gen.toCSS(false)).toContain('grid-auto-rows: minmax(0, 2fr);')
+    })
+  })
+
   // Same rejection rules for the compound placement utilities: an unknown
   // word after span/start/end is not a grid line number and must not reach
   // the emitted CSS. Named lines remain available via arbitrary values

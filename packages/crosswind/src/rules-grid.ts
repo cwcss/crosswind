@@ -12,24 +12,14 @@ const GRID_LINE_INTEGER_RE = /^-?\d+$/
 const GRID_SPAN_RE = /^span-(\d+)$/
 
 export const gridTemplateColumnsRule: UtilityRule = (parsed) => {
-  if (parsed.utility === 'grid-cols') {
-    const cols: Record<string, string> = {
-      1: 'repeat(1, minmax(0, 1fr))',
-      2: 'repeat(2, minmax(0, 1fr))',
-      3: 'repeat(3, minmax(0, 1fr))',
-      4: 'repeat(4, minmax(0, 1fr))',
-      5: 'repeat(5, minmax(0, 1fr))',
-      6: 'repeat(6, minmax(0, 1fr))',
-      7: 'repeat(7, minmax(0, 1fr))',
-      8: 'repeat(8, minmax(0, 1fr))',
-      9: 'repeat(9, minmax(0, 1fr))',
-      10: 'repeat(10, minmax(0, 1fr))',
-      11: 'repeat(11, minmax(0, 1fr))',
-      12: 'repeat(12, minmax(0, 1fr))',
-      none: 'none',
-      subgrid: 'subgrid',
-    }
-    return parsed.value ? { 'grid-template-columns': cols[parsed.value] || parsed.value } : undefined
+  if (parsed.utility === 'grid-cols' && parsed.value) {
+    if (parsed.arbitrary)
+      return { 'grid-template-columns': parsed.value } as Record<string, string>
+    if (parsed.value === 'none' || parsed.value === 'subgrid')
+      return { 'grid-template-columns': parsed.value } as Record<string, string>
+    if (/^\d+$/.test(parsed.value))
+      return { 'grid-template-columns': `repeat(${parsed.value}, minmax(0, 1fr))` } as Record<string, string>
+    return undefined
   }
 }
 
@@ -76,18 +66,14 @@ export const gridColumnRule: UtilityRule = (parsed) => {
 }
 
 export const gridTemplateRowsRule: UtilityRule = (parsed) => {
-  if (parsed.utility === 'grid-rows') {
-    const rows: Record<string, string> = {
-      1: 'repeat(1, minmax(0, 1fr))',
-      2: 'repeat(2, minmax(0, 1fr))',
-      3: 'repeat(3, minmax(0, 1fr))',
-      4: 'repeat(4, minmax(0, 1fr))',
-      5: 'repeat(5, minmax(0, 1fr))',
-      6: 'repeat(6, minmax(0, 1fr))',
-      none: 'none',
-      subgrid: 'subgrid',
-    }
-    return parsed.value ? { 'grid-template-rows': rows[parsed.value] || parsed.value } : undefined
+  if (parsed.utility === 'grid-rows' && parsed.value) {
+    if (parsed.arbitrary)
+      return { 'grid-template-rows': parsed.value } as Record<string, string>
+    if (parsed.value === 'none' || parsed.value === 'subgrid')
+      return { 'grid-template-rows': parsed.value } as Record<string, string>
+    if (/^\d+$/.test(parsed.value))
+      return { 'grid-template-rows': `repeat(${parsed.value}, minmax(0, 1fr))` } as Record<string, string>
+    return undefined
   }
 }
 
@@ -148,26 +134,30 @@ export const gridAutoFlowRule: UtilityRule = (parsed) => {
 }
 
 export const gridAutoColumnsRule: UtilityRule = (parsed) => {
-  if (parsed.utility === 'auto-cols') {
+  if (parsed.utility === 'auto-cols' && parsed.value) {
     const values: Record<string, string> = {
       auto: 'auto',
       min: 'min-content',
       max: 'max-content',
       fr: 'minmax(0, 1fr)',
     }
-    return parsed.value ? { 'grid-auto-columns': values[parsed.value] || parsed.value } : undefined
+    if (parsed.arbitrary)
+      return { 'grid-auto-columns': parsed.value } as Record<string, string>
+    return values[parsed.value] ? { 'grid-auto-columns': values[parsed.value] } : undefined
   }
 }
 
 export const gridAutoRowsRule: UtilityRule = (parsed) => {
-  if (parsed.utility === 'auto-rows') {
+  if (parsed.utility === 'auto-rows' && parsed.value) {
     const values: Record<string, string> = {
       auto: 'auto',
       min: 'min-content',
       max: 'max-content',
       fr: 'minmax(0, 1fr)',
     }
-    return parsed.value ? { 'grid-auto-rows': values[parsed.value] || parsed.value } : undefined
+    if (parsed.arbitrary)
+      return { 'grid-auto-rows': parsed.value } as Record<string, string>
+    return values[parsed.value] ? { 'grid-auto-rows': values[parsed.value] } : undefined
   }
 }
 
