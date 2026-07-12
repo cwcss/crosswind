@@ -181,3 +181,43 @@ describe('sizing value validation', () => {
     expect(css('max-w-[70ch]')).toContain('max-width: 70ch;')
   })
 })
+
+describe('spacing family value validation', () => {
+  it('rejects unknown words', () => {
+    expect(css('p-foo')).toBe('')
+    expect(css('m-header')).toBe('')
+    expect(css('mx-foo')).toBe('')
+    expect(css('gap-foo')).toBe('')
+    expect(css('gap-x-foo')).toBe('')
+    expect(css('top-bar')).toBe('')
+    expect(css('inset-foo')).toBe('')
+    expect(css('-left-foo')).toBe('')
+    expect(css('basis-foo')).toBe('')
+    expect(css('stroke-foo')).toBe('')
+    expect(css('underline-offset-foo')).toBe('')
+    expect(css('outline-offset-foo')).toBe('')
+  })
+
+  it('keeps scale, off-scale numbers, negatives, and keywords', () => {
+    expect(css('p-4')).toContain('padding: 1rem;')
+    expect(css('p-4.5')).toContain('padding: 1.125rem;')
+    expect(css('-m-2')).toContain('margin: -0.5rem;')
+    expect(css('gap-4.5')).toContain('gap: 1.125rem;')
+    expect(css('top-1/2')).toContain('top: 50%;')
+    expect(css('-top-4')).toContain('top: -1rem;')
+    expect(css('inset-0')).toContain('top: 0')
+    expect(css('basis-1/3')).toContain('flex-basis: 33.33')
+    expect(css('basis-64')).toContain('flex-basis: 16rem;')
+    expect(css('stroke-2')).toContain('stroke-width: 2;')
+    expect(css('underline-offset-4')).toContain('text-underline-offset: 4px;')
+    expect(css('outline-offset-2')).toContain('outline-offset: 2px;')
+  })
+
+  it('keeps arbitrary values', () => {
+    expect(css('p-[3vw]')).toContain('padding: 3vw;')
+    expect(css('gap-[calc(1rem+2px)]')).toContain('gap: calc(1rem+2px);')
+    expect(css('top-[10vh]')).toContain('top: 10vh;')
+    expect(css('basis-[12ch]')).toContain('flex-basis: 12ch;')
+    expect(css('underline-offset-[3px]')).toContain('text-underline-offset: 3px;')
+  })
+})

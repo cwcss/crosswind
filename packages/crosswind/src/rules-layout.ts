@@ -299,31 +299,44 @@ export const insetRule: UtilityRule = (parsed, config) => {
   if (!props || !parsed.value)
     return undefined
 
-  // Helper to resolve inset value (handles fractions, spacing, keywords)
-  const resolveInsetValue = (val: string): string => {
+  // Helper to resolve inset value (handles fractions, spacing, keywords).
+  // Unknown words return undefined — they previously leaked verbatim
+  // (`top-bar` emitted `top: bar;`).
+  const resolveInsetValue = (val: string): string | undefined => {
     // Handle fractions: 1/2 -> 50%, 1/3 -> 33.333333%, etc.
-    if (val.includes('/')) {
+    if (val.includes('/') && !parsed.arbitrary) {
       const [num, denom] = val.split('/').map(Number)
       if (!Number.isNaN(num) && !Number.isNaN(denom) && denom !== 0) {
         return `${(num / denom) * 100}%`
       }
+      return undefined
     }
     // Handle special keywords
     if (val === 'full')
       return '100%'
     if (val === 'auto')
       return 'auto'
-    // Check spacing config, then fall back to raw value
-    return config.theme.spacing[val] || val
+    if (parsed.arbitrary)
+      return val
+    const hit = config.theme.spacing[val]
+    if (hit !== undefined)
+      return hit
+    // Off-scale numbers keep the 0.25rem step (Tailwind v4)
+    if (/^\d+(?:\.\d+)?$/.test(val))
+      return `${Number.parseFloat(val) * 0.25}rem`
+    return undefined
   }
 
   // Handle negative values
-  let value: string
+  let value: string | undefined
   if (parsed.value.startsWith('-')) {
     const positiveValue = parsed.value.slice(1)
     const resolved = resolveInsetValue(positiveValue)
+    if (resolved === undefined) {
+      value = undefined
+    }
     // For percentage values, negate properly
-    if (resolved.endsWith('%')) {
+    else if (resolved.endsWith('%')) {
       const numericPart = Number.parseFloat(resolved)
       value = `${-numericPart}%`
     }
@@ -334,6 +347,9 @@ export const insetRule: UtilityRule = (parsed, config) => {
   else {
     value = resolveInsetValue(parsed.value)
   }
+
+  if (value === undefined)
+    return undefined
 
   const result: Record<string, string> = {}
   for (const prop of props) {

@@ -389,12 +389,12 @@ export const strokeRule: UtilityRule = (parsed, config) => {
 
 export const strokeWidthRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'stroke' && parsed.value) {
-    const widths: Record<string, string> = {
-      0: '0',
-      1: '1',
-      2: '2',
-    }
-    return { 'stroke-width': widths[parsed.value] || parsed.value }
+    // Stroke widths are numbers or arbitrary values; other tokens are
+    // stroke colors (handled by strokeColorRule) and unknown words must
+    // not leak into stroke-width.
+    if (parsed.arbitrary || /^\d+(?:\.\d+)?$/.test(parsed.value))
+      return { 'stroke-width': parsed.value }
+    return undefined
   }
 }
 

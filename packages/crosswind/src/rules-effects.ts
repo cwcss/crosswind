@@ -170,7 +170,14 @@ export const outlineRule: UtilityRule = (parsed, config) => {
       4: '4px',
       8: '8px',
     }
-    return { 'outline-offset': offsets[parsed.value] || parsed.value } as Record<string, string>
+    if (offsets[parsed.value])
+      return { 'outline-offset': offsets[parsed.value] } as Record<string, string>
+    if (parsed.arbitrary)
+      return { 'outline-offset': parsed.value } as Record<string, string>
+    // Off-scale numbers keep the px scale; unknown words are rejected
+    if (/^\d+(?:\.\d+)?$/.test(parsed.value))
+      return { 'outline-offset': `${parsed.value}px` } as Record<string, string>
+    return undefined
   }
 
   // Outline styles
