@@ -360,3 +360,24 @@ describe('outline, mask, and text-shadow value validation', () => {
     expect(css('text-shadow-sm')).toContain('text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);')
   })
 })
+
+describe('border-radius side/corner value validation', () => {
+  it('rejects unknown words', () => {
+    expect(css('rounded-t-foo')).toBe('')
+    expect(css('rounded-tr-brand')).toBe('')
+    expect(css('rounded-s-card')).toBe('')
+    expect(css('rounded-ee-foo')).toBe('')
+  })
+
+  it('bare side/corner forms take the DEFAULT radius', () => {
+    expect(css('rounded-t')).toContain('border-top-left-radius: 0.25rem;')
+    expect(css('rounded-s')).toContain('border-start-start-radius: 0.25rem;')
+    expect(css('rounded-tr')).toContain('border-top-right-radius: 0.25rem;')
+  })
+
+  it('keeps theme keys and arbitrary values', () => {
+    expect(css('rounded-t-lg')).toContain('border-top-left-radius: 0.5rem;')
+    expect(css('rounded-e-full')).toContain('border-start-end-radius: 9999px;')
+    expect(css('rounded-bl-[6px]')).toContain('border-bottom-left-radius: 6px;')
+  })
+})
