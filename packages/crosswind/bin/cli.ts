@@ -64,6 +64,21 @@ async function loadCustomConfig(configPath?: string): Promise<CrosswindConfig> {
 }
 
 /**
+ * Resolve the config file path in play (explicit --config or the
+ * auto-discovered crosswind.config.* in cwd), if any.
+*/
+function resolveConfigPath(configPath?: string): string | null {
+  if (configPath)
+    return resolve(process.cwd(), configPath)
+  for (const candidate of ['crosswind.config.ts', 'crosswind.config.js', 'crosswind.config.mjs']) {
+    const abs = resolve(process.cwd(), candidate)
+    if (existsSync(abs))
+      return abs
+  }
+  return null
+}
+
+/**
  * Merge CLI options with config
 */
 function mergeConfig(baseConfig: CrosswindConfig, options: BuildOptions): CrosswindConfig {
@@ -153,6 +168,31 @@ async function runBuild(buildConfig: CrosswindConfig, options: BuildOptions): Pr
 function setupWatch(buildConfig: CrosswindConfig, options: BuildOptions): void {
   console.log('👀 Watching for changes...')
 
+  // Reload the config file on change — the watcher previously closed over
+  // the resolved config forever, so edits to crosswind.config.ts (theme,
+  // content, safelist) were silently ignored until a restart. Re-imports
+  // are cache-busted with a query param since Bun caches module imports.
+  const configRef = { current: buildConfig }
+  const configPath = resolveConfigPath(options.config)
+  if (configPath) {
+    try {
+      watch(configPath, async () => {
+        try {
+          const fresh = await import(`${configPath}?t=${Date.now()}`)
+          configRef.current = mergeConfig({ ...config, ...(fresh.default || fresh) }, options)
+          console.log(`\n⚙️  ${configPath} changed, rebuilding with fresh config...`)
+          await runBuild(configRef.current, options)
+        }
+        catch (error) {
+          console.warn('⚠️  Failed to reload config:', error instanceof Error ? error.message : error)
+        }
+      })
+    }
+    catch {
+      // config file not watchable — non-fatal
+    }
+  }
+
   // Derive a real directory per content pattern. Splitting on '**' alone
   // handed fs.watch glob strings ('src/*.html') or file paths, which throw
   // ENOENT and killed the whole watcher on the first non-** pattern.
@@ -188,7 +228,7 @@ function setupWatch(buildConfig: CrosswindConfig, options: BuildOptions): void {
     rebuildTimer = setTimeout(async () => {
       rebuildTimer = null
       console.log(`\n📝 ${filename} changed, rebuilding...`)
-      await runBuild(buildConfig, options)
+      await runBuild(configRef.current, options)
     }, 50)
   }
 
