@@ -433,3 +433,17 @@ describe('form-* utilities', () => {
     expect(css('form-multiselect')).toContain('print-color-adjust: unset;')
   })
 })
+
+describe('transition defaults', () => {
+  it('sets default duration and easing so transitions actually animate', () => {
+    const out = css('transition-colors')
+    expect(out).toContain('transition-duration: 150ms;')
+    expect(out).toContain('transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);')
+  })
+
+  it('transition-none stays a plain disable', () => {
+    const out = css('transition-none')
+    expect(out).toContain('transition-property: none;')
+    expect(out).not.toContain('transition-duration')
+  })
+})

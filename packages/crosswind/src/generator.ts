@@ -129,15 +129,22 @@ const TRANSFORM_MAP: Record<string, Record<string, string>> = {
   'transform-none': { transform: 'none' },
 }
 
-// Transition utilities - direct raw class to CSS
+// Transition utilities - direct raw class to CSS. Each sets Tailwind's
+// default duration and easing too — with only transition-property, the
+// duration defaulted to 0s and `class="transition-colors"` alone animated
+// NOTHING (duration-* still overrides via cascade order).
+const TRANSITION_DEFAULTS: Record<string, string> = {
+  'transition-timing-function': 'cubic-bezier(0.4, 0, 0.2, 1)',
+  'transition-duration': '150ms',
+}
 const TRANSITION_MAP: Record<string, Record<string, string>> = {
   'transition-none': { 'transition-property': 'none' },
-  'transition-all': { 'transition-property': 'all' },
-  'transition': { 'transition-property': 'color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter' },
-  'transition-colors': { 'transition-property': 'color, background-color, border-color, text-decoration-color, fill, stroke' },
-  'transition-opacity': { 'transition-property': 'opacity' },
-  'transition-shadow': { 'transition-property': 'box-shadow' },
-  'transition-transform': { 'transition-property': 'transform' },
+  'transition-all': { 'transition-property': 'all', ...TRANSITION_DEFAULTS },
+  'transition': { 'transition-property': 'color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter', ...TRANSITION_DEFAULTS },
+  'transition-colors': { 'transition-property': 'color, background-color, border-color, text-decoration-color, fill, stroke', ...TRANSITION_DEFAULTS },
+  'transition-opacity': { 'transition-property': 'opacity', ...TRANSITION_DEFAULTS },
+  'transition-shadow': { 'transition-property': 'box-shadow', ...TRANSITION_DEFAULTS },
+  'transition-transform': { 'transition-property': 'transform', ...TRANSITION_DEFAULTS },
 }
 
 // Timing functions - direct raw class to CSS
