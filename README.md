@@ -47,11 +47,14 @@ This creates a `crosswind.config.ts` file:
 ```typescript
 import type { CrosswindOptions } from '@cwcss/crosswind'
 
-export default {
-  content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
+const config = {
+  content: ['./src/**/*.{html,js,ts,jsx,tsx,stx}'],
   output: './dist/crosswind.css',
   minify: false,
+  watch: false,
 } satisfies CrosswindOptions
+
+export default config
 ```
 
 2. **Add utility classes to your HTML**:
