@@ -227,6 +227,49 @@ describe('Grid Utilities', () => {
     })
   })
 
+  // Same rejection rules for the compound placement utilities: an unknown
+  // word after span/start/end is not a grid line number and must not reach
+  // the emitted CSS. Named lines remain available via arbitrary values
+  // (row-start-[header]).
+  describe('Compound grid placement rejection', () => {
+    it('should not emit CSS for row-span-foo / col-span-foo', () => {
+      for (const cls of ['row-span-foo', 'col-span-foo']) {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate(cls)
+        expect(gen.toCSS(false).trim()).toBe('')
+      }
+    })
+
+    it('should not emit CSS for start/end with bare words', () => {
+      for (const cls of ['row-start-name', 'row-end-name', 'col-start-header', 'col-end-header']) {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate(cls)
+        expect(gen.toCSS(false).trim()).toBe('')
+      }
+    })
+
+    it('should span any bare number beyond the classic 12 (col-span-16)', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('col-span-16')
+      expect(gen.toCSS(false)).toContain('grid-column: span 16 / span 16;')
+    })
+
+    it('should still generate negative start values (col-start--1)', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('-col-start-1')
+      expect(gen.toCSS(false)).toContain('grid-column-start: -1;')
+    })
+
+    it('should still pass named lines through arbitrary start/end values', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('row-start-[header]')
+      gen.generate('col-end-[sidebar-end]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('grid-row-start: header;')
+      expect(css).toContain('grid-column-end: sidebar-end;')
+    })
+  })
+
   // Regression: semantic class names sharing the `row-` / `col-` prefix
   // (e.g. `row-list` on a list wrapper) must not emit `grid-row: list` —
   // an unknown word is not a utility value, and the named-grid-line
