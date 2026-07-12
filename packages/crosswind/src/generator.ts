@@ -1562,8 +1562,23 @@ export class CSSGenerator {
     // Handles ~80% of common utilities without any rule iteration
     // ==========================================================================
 
-    // Check static raw class map first (display, flex-direction, transform, transition, etc.)
-    const staticResult = STATIC_UTILITY_MAP[parsed.raw]
+    // Check static raw class map first (display, flex-direction, transform,
+    // transition, etc.). The lookup must use the variant/important-stripped
+    // base class: keying on parsed.raw made every static-map-only utility
+    // (underline, italic, truncate, sr-only, transition, ...) emit NOTHING
+    // under any variant — hover:underline generated no CSS at all.
+    let baseRaw = parsed.raw
+    for (const variant of parsed.variants) {
+      if (baseRaw.startsWith(`${variant}:`))
+        baseRaw = baseRaw.slice(variant.length + 1)
+    }
+    if (parsed.important) {
+      if (baseRaw.charCodeAt(0) === 33) // '!' — prefix form, incl. after variants
+        baseRaw = baseRaw.slice(1)
+      else if (baseRaw.charCodeAt(baseRaw.length - 1) === 33)
+        baseRaw = baseRaw.slice(0, -1)
+    }
+    const staticResult = STATIC_UTILITY_MAP[baseRaw]
     if (staticResult) {
       this.addRule(parsed, staticResult)
       // Track animation keyframe usage

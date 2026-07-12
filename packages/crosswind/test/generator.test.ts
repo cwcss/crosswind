@@ -863,3 +863,40 @@ describe('selector escaping completeness', () => {
     expect(gen.toCSS(false)).toContain('.hover\\:bg-blue-500:hover')
   })
 })
+
+describe('static utilities under variants', () => {
+  // The static-map fast path keyed on parsed.raw (variants included), so
+  // every static-map-only utility emitted NOTHING under any variant.
+  it('generates hover/dark/responsive variants of static utilities', () => {
+    const cases: Array<[string, string]> = [
+      ['hover:underline', '.hover\\:underline:hover'],
+      ['dark:italic', '.dark .dark\\:italic'],
+      ['md:cursor-pointer', '@media (min-width: 768px)'],
+      ['group-hover:truncate', '.group:hover .group-hover\\:truncate'],
+      ['focus:sr-only', '.focus\\:sr-only:focus'],
+    ]
+    for (const [cls, expected] of cases) {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate(cls)
+      const out = gen.toCSS(false)
+      expect(out).toContain(expected)
+      expect(out.trim()).not.toBe('')
+    }
+  })
+
+  it('handles the important marker after variants (md:!uppercase)', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('md:!uppercase')
+    const out = gen.toCSS(false)
+    expect(out).toContain('text-transform: uppercase !important;')
+    expect(out).toContain('@media (min-width: 768px)')
+  })
+
+  it('tracks keyframes for variant animations', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate('hover:animate-spin')
+    const out = gen.toCSS(false)
+    expect(out).toContain('.hover\\:animate-spin:hover')
+    expect(out).toContain('@keyframes spin')
+  })
+})
