@@ -426,14 +426,21 @@ export const strokeWidthRule: UtilityRule = (parsed) => {
 // SVG stroke-dasharray
 export const strokeDasharrayRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'stroke-dasharray' && parsed.value) {
-    return { 'stroke-dasharray': parsed.value === 'none' ? 'none' : parsed.value }
+    if (parsed.value === 'none')
+      return { 'stroke-dasharray': 'none' }
+    // Dash lists are numbers (or arbitrary values); words are not dashes
+    if (parsed.arbitrary || /^\d+(?:\.\d+)?$/.test(parsed.value))
+      return { 'stroke-dasharray': parsed.value }
+    return undefined
   }
 }
 
 // SVG stroke-dashoffset
 export const strokeDashoffsetRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'stroke-dashoffset' && parsed.value) {
-    return { 'stroke-dashoffset': parsed.value }
+    if (parsed.arbitrary || /^-?\d+(?:\.\d+)?$/.test(parsed.value))
+      return { 'stroke-dashoffset': parsed.value }
+    return undefined
   }
 }
 

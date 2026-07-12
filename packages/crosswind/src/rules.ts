@@ -632,6 +632,7 @@ export function resolveColorValue(value: string, config: { theme: { colors: Reco
     || colorKey.startsWith('lch(')
     || colorKey.startsWith('color(')
     || colorKey.startsWith('color-mix(')
+    || colorKey.startsWith('hwb(')
   ) {
     return opacity !== undefined ? applyOpacity(colorKey, opacity) : colorKey
   }
