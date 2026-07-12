@@ -381,3 +381,31 @@ describe('border-radius side/corner value validation', () => {
     expect(css('rounded-bl-[6px]')).toContain('border-bottom-left-radius: 6px;')
   })
 })
+
+describe('decoration, SVG dash, text-emphasis, and color expression validation', () => {
+  it('rejects unknown words', () => {
+    expect(css('decoration-foo')).toBe('')
+    expect(css('stroke-dasharray-foo')).toBe('')
+    expect(css('stroke-dashoffset-foo')).toBe('')
+    expect(css('text-emphasis-foo')).toBe('')
+  })
+
+  it('keeps valid forms', () => {
+    expect(css('decoration-wavy')).toContain('text-decoration-style: wavy;')
+    expect(css('decoration-2')).toContain('text-decoration-thickness: 2px;')
+    expect(css('decoration-blue-500')).toContain('text-decoration-color:')
+    expect(css('stroke-dasharray-4')).toContain('stroke-dasharray: 4;')
+    expect(css('stroke-dashoffset-2.5')).toContain('stroke-dashoffset: 2.5;')
+    expect(css('text-emphasis-dot')).toContain('text-emphasis: dot;')
+  })
+
+  it('parses short hex divide colors and hwb() arbitrary colors', () => {
+    const gen = new CSSGenerator({
+      ...defaultConfig,
+      theme: { ...defaultConfig.theme, extend: { colors: { rosy: '#f00a' } } },
+    })
+    gen.generate('divide-rosy/50')
+    expect(gen.toCSS(false)).toContain('rgb(255 0 0 / 0.5)')
+    expect(css('accent-[hwb(120_0%_0%)]')).toContain('accent-color: hwb(120 0% 0%);')
+  })
+})

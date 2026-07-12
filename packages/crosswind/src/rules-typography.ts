@@ -183,8 +183,10 @@ export const textDecorationRule: UtilityRule = (parsed, config) => {
       return { 'text-decoration-color': color } as Record<string, string>
     }
 
-    // Fallback for arbitrary values
-    return { 'text-decoration-color': parsed.value } as Record<string, string>
+    // Unknown words are not colors — the fallback leaked decoration-foo
+    // into text-decoration-color verbatim. (Arbitrary values were already
+    // consumed by the thickness/color branches above.)
+    return undefined
   }
 
   return undefined
@@ -424,7 +426,9 @@ export const textEmphasisRule: UtilityRule = (parsed) => {
       'triangle': 'triangle',
       'sesame': 'sesame',
     }
-    return { 'text-emphasis': styles[parsed.value] || parsed.value }
+    if (styles[parsed.value])
+      return { 'text-emphasis': styles[parsed.value] }
+    return parsed.arbitrary ? { 'text-emphasis': parsed.value } : undefined
   }
 }
 

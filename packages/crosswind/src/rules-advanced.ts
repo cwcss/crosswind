@@ -349,7 +349,9 @@ export const divideRule: UtilityRule = (parsed, config) => {
         // Hex color -> rgb with alpha
         if (color.charCodeAt(0) === 35) {
           let hex = color.slice(1)
-          if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
+          // Expand short hex (#rgb / #rgba) per digit; slicing #f00a as six
+          // digits produced a NaN channel.
+          if (hex.length === 3 || hex.length === 4) hex = hex.split('').map(c => c + c).join('')
           const r = Number.parseInt(hex.slice(0, 2), 16)
           const g = Number.parseInt(hex.slice(2, 4), 16)
           const b = Number.parseInt(hex.slice(4, 6), 16)
