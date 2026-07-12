@@ -900,3 +900,24 @@ describe('static utilities under variants', () => {
     expect(out).toContain('@keyframes spin')
   })
 })
+
+describe('media query ordering', () => {
+  it('emits breakpoints mobile-first regardless of generation order', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generateBatch(['lg:p-4', 'sm:p-4', 'md:p-4'])
+    const out = gen.toCSS(false)
+    const sm = out.indexOf('min-width: 640px')
+    const md = out.indexOf('min-width: 768px')
+    const lg = out.indexOf('min-width: 1024px')
+    expect(sm).toBeGreaterThan(-1)
+    expect(sm).toBeLessThan(md)
+    expect(md).toBeLessThan(lg)
+  })
+
+  it('keeps base rules before media blocks', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generateBatch(['md:p-8', 'p-4'])
+    const out = gen.toCSS(false)
+    expect(out.indexOf('.p-4')).toBeLessThan(out.indexOf('@media'))
+  })
+})

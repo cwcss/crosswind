@@ -2490,13 +2490,22 @@ export class CSSGenerator {
       }
     }
 
-    // Media query rules
-    for (const [key, rules] of this.rules.entries()) {
-      if (key !== 'base' && rules.length > 0) {
-        const mediaQuery = rules[0].mediaQuery!
-        const css = this.rulesToCSS(rules, minify)
-        parts.push(minify ? `${mediaQuery}{${css}}` : `${mediaQuery} {\n${css}\n}`)
-      }
+    // Media query rules — emitted mobile-first regardless of the order
+    // classes were generated in. Insertion order let a `sm:` block land
+    // AFTER `lg:` and win the cascade at large widths.
+    const mediaEntries = [...this.rules.entries()].filter(([key, rules]) => key !== 'base' && rules.length > 0)
+    const minWidthOf = (query: string): number => {
+      const m = query.match(/min-width:\s*([\d.]+)(px|rem|em)/)
+      if (!m)
+        return Number.MAX_SAFE_INTEGER // non-width queries keep insertion order at the end
+      const n = Number.parseFloat(m[1])
+      return m[2] === 'px' ? n : n * 16
+    }
+    mediaEntries.sort((a, b) => minWidthOf(a[1][0].mediaQuery!) - minWidthOf(b[1][0].mediaQuery!))
+    for (const [, rules] of mediaEntries) {
+      const mediaQuery = rules[0].mediaQuery!
+      const css = this.rulesToCSS(rules, minify)
+      parts.push(minify ? `${mediaQuery}{${css}}` : `${mediaQuery} {\n${css}\n}`)
     }
 
     return minify ? parts.join('') : parts.join('\n\n')
