@@ -233,6 +233,20 @@ export const transitionPropertyRule: UtilityRule = (parsed) => {
   return properties[parsed.raw] ? { 'transition-property': properties[parsed.raw] } : undefined
 }
 
+// Resolve a duration/delay token: presets keep their exact form, arbitrary
+// values pass through verbatim (duration-[2s] must not become "2sms"),
+// bare numbers get the ms suffix, and unknown words are rejected.
+function resolveTimeToken(parsed: { value?: string, arbitrary: boolean }, presets: Record<string, string>): string | undefined {
+  const value = parsed.value!
+  if (presets[value])
+    return presets[value]
+  if (parsed.arbitrary)
+    return value
+  if (/^\d+(?:\.\d+)?$/.test(value))
+    return `${value}ms`
+  return undefined
+}
+
 export const transitionDurationRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'duration' && parsed.value) {
     // Named duration presets (like Tailwind)
@@ -247,7 +261,8 @@ export const transitionDurationRule: UtilityRule = (parsed) => {
       '700': '700ms',
       '1000': '1000ms',
     }
-    return { 'transition-duration': durations[parsed.value] || `${parsed.value}ms` }
+    const time = resolveTimeToken(parsed, durations)
+    return time !== undefined ? { 'transition-duration': time } : undefined
   }
 }
 
@@ -275,7 +290,8 @@ export const transitionDelayRule: UtilityRule = (parsed) => {
       '700': '700ms',
       '1000': '1000ms',
     }
-    return { 'transition-delay': delays[parsed.value] || `${parsed.value}ms` }
+    const time = resolveTimeToken(parsed, delays)
+    return time !== undefined ? { 'transition-delay': time } : undefined
   }
 }
 
@@ -348,7 +364,10 @@ export const animationFillModeRule: UtilityRule = (parsed) => {
 // Animation iteration count
 export const animationIterationRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'animate-iteration' && parsed.value) {
-    return { 'animation-iteration-count': parsed.value === 'infinite' ? 'infinite' : parsed.value }
+    // A count is a number (fractions allowed per spec), infinite, or arbitrary.
+    if (parsed.value === 'infinite' || parsed.arbitrary || /^\d+(?:\.\d+)?$/.test(parsed.value))
+      return { 'animation-iteration-count': parsed.value }
+    return undefined
   }
 }
 
@@ -359,7 +378,8 @@ export const animationDurationRule: UtilityRule = (parsed) => {
       '75': '75ms', '100': '100ms', '150': '150ms', '200': '200ms',
       '300': '300ms', '500': '500ms', '700': '700ms', '1000': '1000ms',
     }
-    return { 'animation-duration': durations[parsed.value] || `${parsed.value}ms` }
+    const time = resolveTimeToken(parsed, durations)
+    return time !== undefined ? { 'animation-duration': time } : undefined
   }
 }
 
@@ -370,7 +390,8 @@ export const animationDelayRule: UtilityRule = (parsed) => {
       '75': '75ms', '100': '100ms', '150': '150ms', '200': '200ms',
       '300': '300ms', '500': '500ms', '700': '700ms', '1000': '1000ms',
     }
-    return { 'animation-delay': delays[parsed.value] || `${parsed.value}ms` }
+    const time = resolveTimeToken(parsed, delays)
+    return time !== undefined ? { 'animation-delay': time } : undefined
   }
 }
 

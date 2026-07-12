@@ -59,3 +59,28 @@ describe('opacity value validation', () => {
     expect(css('opacity-150')).toBe('')
   })
 })
+
+describe('transition/animation time value validation', () => {
+  it('rejects unknown words instead of emitting fooms', () => {
+    expect(css('duration-foo')).toBe('')
+    expect(css('delay-foo')).toBe('')
+    expect(css('animate-duration-foo')).toBe('')
+    expect(css('animate-delay-foo')).toBe('')
+    expect(css('animate-iteration-foo')).toBe('')
+  })
+
+  it('keeps presets and bare numbers', () => {
+    expect(css('duration-300')).toContain('transition-duration: 300ms;')
+    expect(css('duration-250')).toContain('transition-duration: 250ms;')
+    expect(css('delay-0')).toContain('transition-delay: 0s;')
+    expect(css('animate-duration-500')).toContain('animation-duration: 500ms;')
+    expect(css('animate-iteration-3')).toContain('animation-iteration-count: 3;')
+    expect(css('animate-iteration-infinite')).toContain('animation-iteration-count: infinite;')
+  })
+
+  it('passes arbitrary values through verbatim (no double ms suffix)', () => {
+    expect(css('duration-[2s]')).toContain('transition-duration: 2s;')
+    expect(css('delay-[150ms]')).toContain('transition-delay: 150ms;')
+    expect(css('duration-[var(--speed)]')).toContain('transition-duration: var(--speed);')
+  })
+})

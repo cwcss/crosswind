@@ -1917,13 +1917,16 @@ export class CSSGenerator {
     }
 
     // Duration: duration-{75|100|150|200|300|500|700|1000}
-    if (utility === 'duration' && value) {
+    // Fast path handles bare numbers only; presets (duration-0 -> 0s),
+    // arbitrary values (duration-[2s] must stay 2s, not 2sms), and word
+    // rejection are the rule handler's job.
+    if (utility === 'duration' && value && value !== '0' && !parsed.arbitrary && /^\d+(?:\.\d+)?$/.test(value)) {
       this.addRule(parsed, { 'transition-duration': `${value}ms` })
       return
     }
 
     // Delay: delay-{75|100|150|200|300|500|700|1000}
-    if (utility === 'delay' && value) {
+    if (utility === 'delay' && value && value !== '0' && !parsed.arbitrary && /^\d+(?:\.\d+)?$/.test(value)) {
       this.addRule(parsed, { 'transition-delay': `${value}ms` })
       return
     }
