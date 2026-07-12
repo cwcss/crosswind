@@ -2307,6 +2307,19 @@ export class CSSGenerator {
           mediaConditions.push(`(min-width: ${breakpoint})`)
           continue
         }
+        // max-* variants: max-md applies BELOW the md breakpoint. Without
+        // this branch the variant was ignored and the utility applied at
+        // every width — the opposite of the author's intent.
+        if (variant.startsWith('max-')) {
+          const maxBreakpoint = this.screenBreakpoints.get(variant.slice(4))
+          if (maxBreakpoint) {
+            const px = maxBreakpoint.match(/^([\d.]+)px$/)
+            mediaConditions.push(px
+              ? `(max-width: ${Number.parseFloat(px[1]) - 0.02}px)`
+              : `not all and (min-width: ${maxBreakpoint})`)
+            continue
+          }
+        }
       }
 
       // Media preference variants
@@ -2365,7 +2378,11 @@ export class CSSGenerator {
     }
 
     if (mediaConditions.length > 0) {
-      // Combine conditions: @media (min-width: 1024px) and (orientation: landscape)
+      // Combine conditions: @media (min-width: 1024px) and (orientation: landscape).
+      // Media TYPES (print) must precede feature conditions — authoring order
+      // `md:print:` previously emitted the invalid `(min-width: 768px) and print`,
+      // which browsers drop wholesale.
+      mediaConditions.sort((a, b) => Number(a.charCodeAt(0) === 40) - Number(b.charCodeAt(0) === 40)) // '('
       const result = `@media ${mediaConditions.join(' and ')}`
       this.mediaQueryCache.set(cacheKey, result)
       return result
