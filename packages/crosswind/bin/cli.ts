@@ -2,11 +2,12 @@
 import type { CrosswindConfig } from '../src/types'
 import { existsSync, watch } from 'node:fs'
 import { unlink } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import process from 'node:process'
 import { CLI } from '@stacksjs/clapp'
 import { version } from '../package.json'
 import { build, buildAndWrite } from '../src/build'
-import { config } from '../src/config'
+import { config, getConfig } from '../src/config'
 import { tailwindPreflight } from '../src/preflight'
 
 const cli = new CLI('crosswind')
@@ -38,21 +39,27 @@ interface AnalyzeOptions extends GlobalOptions {
 */
 async function loadCustomConfig(configPath?: string): Promise<CrosswindConfig> {
   if (configPath) {
-    if (!existsSync(configPath)) {
-      console.error(`❌ Config file not found: ${configPath}`)
+    // Resolve against cwd — a bare `import('./x.ts')` resolves relative to
+    // this module inside the installed package, so the documented
+    // `--config ./crosswind.config.ts` form never found the project's file.
+    const absolutePath = resolve(process.cwd(), configPath)
+    if (!existsSync(absolutePath)) {
+      console.error(`❌ Config file not found: ${absolutePath}`)
       process.exit(1)
     }
     try {
-      const customConfig = await import(configPath)
+      const customConfig = await import(absolutePath)
       return { ...config, ...(customConfig.default || customConfig) }
     }
     catch (error) {
-      console.error(`❌ Failed to load config file: ${configPath}`)
+      console.error(`❌ Failed to load config file: ${absolutePath}`)
       console.error(error)
       process.exit(1)
     }
   }
-  return config
+  // No --config: auto-discover crosswind.config.{ts,js,...} in cwd via
+  // bunfig, so a project's output/content/theme/safelist are honored.
+  return getConfig()
 }
 
 /**
