@@ -20,6 +20,17 @@ describe('build', () => {
     await rm(TEST_DIR, { recursive: true, force: true })
   })
 
+  it('ignores non-string safelist entries instead of crashing', async () => {
+    const config = {
+      ...defaultConfig,
+      content: [join(TEST_DIR, '*.html')],
+      minify: false,
+      safelist: ['bg-red-500', { pattern: /bg-(green|blue)-500/ } as any],
+    }
+    const result = await build(config)
+    expect(result.css).toContain('.bg-red-500')
+  })
+
   it('should build CSS from files', async () => {
     const config = {
       ...defaultConfig,
