@@ -1043,3 +1043,15 @@ describe('presets', () => {
     expect(css).toContain('background-color: #123456;')
   })
 })
+
+describe('reset', () => {
+  it('clears compiled-class state so groups regenerate after reset', () => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generateCompiledClass('cw-x1', ['p-4'])
+    expect(gen.toCSS(false)).toContain('.cw-x1 {')
+    gen.reset()
+    expect(gen.toCSS(false)).not.toContain('.cw-x1')
+    gen.generateCompiledClass('cw-x1', ['p-4'])
+    expect(gen.toCSS(false)).toContain('.cw-x1 {')
+  })
+})
