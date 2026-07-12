@@ -1101,3 +1101,27 @@ describe('theme overrides reach the fast paths', () => {
     expect(out).toContain('oklch(82.3% 0.12 346.018)')
   })
 })
+
+describe('utility cascade ranking', () => {
+  const emitOrder = (classes: string[]): number[] => {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generateBatch(classes)
+    const css = gen.toCSS(false)
+    return classes.map(c => css.indexOf(`.${c.replace('!', '\\!')}`))
+  }
+
+  it('ranks important shorthands before important axis utilities', () => {
+    const [mxAuto, m0] = emitOrder(['!mx-auto', '!m-0'])
+    expect(m0).toBeLessThan(mxAuto)
+  })
+
+  it('ranks rounded edges before corners', () => {
+    const [tl, t] = emitOrder(['rounded-tl-lg', 'rounded-t-md'])
+    expect(t).toBeLessThan(tl)
+  })
+
+  it('ranks gap shorthand before gap-x/gap-y', () => {
+    const [gx, g] = emitOrder(['gap-x-8', 'gap-4'])
+    expect(g).toBeLessThan(gx)
+  })
+})

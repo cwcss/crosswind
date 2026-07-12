@@ -2749,14 +2749,18 @@ export class CSSGenerator {
    * 2 — side     (`mt-*`, `mr-*`, `pt-*`, `top-*`, `border-t-*`, …)
    */
   private getUtilityRank(selector: string): number {
-    const m = selector.match(/\.(?:[a-zA-Z0-9_-]*\\?:)*([a-zA-Z0-9_-]+)/)
+    // The escaped important marker (`.\!m-0`) must be skipped or the class
+    // match fails and every !-utility ranked 0, letting `!m-0` emit after
+    // (and defeat) `!mx-auto`.
+    const m = selector.match(/\.(?:\\!)?(?:[a-zA-Z0-9_-]*\\?:)*(?:\\!)?([a-zA-Z0-9_-]+)/)
     if (!m) return 0
     const cls = m[1]
-    if (/^(?:mx|my|px|py|inset-x|inset-y|border-x|border-y|scroll-mx|scroll-my|scroll-px|scroll-py|space-x|space-y)-/.test(cls)
-      || /^rounded-(?:[tlbr]|tl|tr|bl|br)(?:-|$)/.test(cls)) {
+    if (/^(?:mx|my|px|py|inset-x|inset-y|border-x|border-y|scroll-mx|scroll-my|scroll-px|scroll-py|space-x|space-y|gap-x|gap-y)-/.test(cls)
+      || /^rounded-(?:[tlbr])(?:-|$)/.test(cls)) {
       return 1
     }
-    if (/^(?:mt|mr|mb|ml|pt|pr|pb|pl|top|right|bottom|left|border-t|border-r|border-b|border-l|scroll-mt|scroll-mr|scroll-mb|scroll-ml|scroll-pt|scroll-pr|scroll-pb|scroll-pl)-/.test(cls)) {
+    if (/^(?:mt|mr|mb|ml|pt|pr|pb|pl|top|right|bottom|left|border-t|border-r|border-b|border-l|scroll-mt|scroll-mr|scroll-mb|scroll-ml|scroll-pt|scroll-pr|scroll-pb|scroll-pl)-/.test(cls)
+      || /^rounded-(?:tl|tr|bl|br)(?:-|$)/.test(cls)) {
       return 2
     }
     return 0
