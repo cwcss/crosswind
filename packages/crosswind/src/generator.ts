@@ -1366,6 +1366,10 @@ const NOT_VARIANT_SELECTORS: Record<string, string> = {
 }
 
 // Pre-computed prefix variants (these modify the selector prefix, not suffix)
+// Separator between stacked at-rule wrappers in a rule-group key
+// (@media + @supports + @container). Never appears in CSS text.
+const AT_RULE_SEPARATOR = '\u0001'
+
 const PREFIX_VARIANTS: Record<string, string> = {
   'dark': '.dark ',
   'light': '.light ',
@@ -1455,6 +1459,7 @@ export class CSSGenerator {
   private usedKeyframes: Set<string> = new Set()
   private variantHandledCache: Map<string, boolean> = new Map()
   private compiledGenerated: Set<string> = new Set()
+  private darkStrategy: 'class' | 'media'
   // While expanding a shortcut, rules emit under the shortcut's own class
   // name (with variants applied to it: `.btn:hover`) instead of the
   // sub-utility's selector, which the markup never carries.
@@ -1467,6 +1472,7 @@ export class CSSGenerator {
     this.variantEnabled = this.processed.variantEnabled
     this.screenBreakpoints = this.processed.screenBreakpoints
     this.extendColors = this.processed.extendColors
+    this.darkStrategy = config.darkMode === 'media' ? 'media' : 'class'
   }
 
   /**
@@ -2195,6 +2201,11 @@ export class CSSGenerator {
       // Try prefix selector lookup (dark, rtl, ltr)
       const prefixSelector = PREFIX_VARIANTS[variant]
       if (prefixSelector !== undefined) {
+        // Under darkMode: 'media', dark:/light: scope via a
+        // prefers-color-scheme query (getMediaQuery), not a class prefix.
+        if (this.darkStrategy === 'media' && (variant === 'dark' || variant === 'light')) {
+          continue
+        }
         if (this.variantEnabled[variant]) {
           prefix = prefixSelector
         }
@@ -2345,8 +2356,15 @@ export class CSSGenerator {
       return cached || undefined // Convert empty string to undefined
     }
 
-    // Collect all media conditions — multiple media variants can stack
+    // Collect at-rule conditions — media, @supports, and @container variants
+    // can all stack on one class. They can't share a single prelude, so each
+    // family collects separately and toCSS nests the resulting at-rules.
+    // (Previously supports-*/@sm returned early, silently DROPPING any other
+    // stacked condition: md:supports-[display:grid]:flex applied at every
+    // width.)
     const mediaConditions: string[] = []
+    const supportsQueries: string[] = []
+    const containerQueries: string[] = []
 
     for (let i = 0; i < variantsLen; i++) {
       const variant = variants[i]
@@ -2366,10 +2384,15 @@ export class CSSGenerator {
         const breakpointKey = variant.slice(1)
         const breakpoint = this.screenBreakpoints.get(breakpointKey)
         if (breakpoint) {
-          const result = `@container (min-width: ${breakpoint})`
-          this.mediaQueryCache.set(cacheKey, result)
-          return result
+          containerQueries.push(`@container (min-width: ${breakpoint})`)
         }
+        continue
+      }
+
+      // dark:/light: under the media strategy become color-scheme queries
+      // instead of class prefixes.
+      if (this.darkStrategy === 'media' && (variant === 'dark' || variant === 'light')) {
+        mediaConditions.push(`(prefers-color-scheme: ${variant})`)
         continue
       }
 
@@ -2443,20 +2466,26 @@ export class CSSGenerator {
           else {
             supportsQuery = `@supports (${supportsValue})`
           }
-          // Supports queries don't combine with @media — return directly
-          this.mediaQueryCache.set(cacheKey, supportsQuery)
-          return supportsQuery
+          supportsQueries.push(supportsQuery)
         }
       }
     }
 
+    const wrappers: string[] = []
     if (mediaConditions.length > 0) {
       // Combine conditions: @media (min-width: 1024px) and (orientation: landscape).
       // Media TYPES (print) must precede feature conditions — authoring order
       // `md:print:` previously emitted the invalid `(min-width: 768px) and print`,
       // which browsers drop wholesale.
       mediaConditions.sort((a, b) => Number(a.charCodeAt(0) === 40) - Number(b.charCodeAt(0) === 40)) // '('
-      const result = `@media ${mediaConditions.join(' and ')}`
+      wrappers.push(`@media ${mediaConditions.join(' and ')}`)
+    }
+    wrappers.push(...supportsQueries, ...containerQueries)
+
+    if (wrappers.length > 0) {
+      // Multiple at-rules nest in toCSS; the separator groups rules that
+      // share the exact same wrapper chain.
+      const result = wrappers.join(AT_RULE_SEPARATOR)
       this.mediaQueryCache.set(cacheKey, result)
       return result
     }
@@ -2593,9 +2622,13 @@ export class CSSGenerator {
     }
     mediaEntries.sort((a, b) => minWidthOf(a[1][0].mediaQuery!) - minWidthOf(b[1][0].mediaQuery!))
     for (const [, rules] of mediaEntries) {
-      const mediaQuery = rules[0].mediaQuery!
-      const css = this.rulesToCSS(rules, minify)
-      parts.push(minify ? `${mediaQuery}{${css}}` : `${mediaQuery} {\n${css}\n}`)
+      const wrappers = rules[0].mediaQuery!.split(AT_RULE_SEPARATOR)
+      let css = this.rulesToCSS(rules, minify)
+      // Innermost wrapper first, so the first wrapper ends up outermost
+      for (let i = wrappers.length - 1; i >= 0; i--) {
+        css = minify ? `${wrappers[i]}{${css}}` : `${wrappers[i]} {\n${css}\n}`
+      }
+      parts.push(css)
     }
 
     return minify ? parts.join('') : parts.join('\n\n')
