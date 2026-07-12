@@ -409,3 +409,16 @@ describe('decoration, SVG dash, text-emphasis, and color expression validation',
     expect(css('accent-[hwb(120_0%_0%)]')).toContain('accent-color: hwb(120 0% 0%);')
   })
 })
+
+describe('negative spacing validity', () => {
+  it('rejects negative padding (invalid CSS)', () => {
+    expect(css('-p-4')).toBe('')
+    expect(css('-px-2')).toBe('')
+    expect(css('-pt-1')).toBe('')
+  })
+
+  it('keeps negative margins', () => {
+    expect(css('-m-4')).toContain('margin: -1rem;')
+    expect(css('-mx-2')).toContain('margin-left: -0.5rem;')
+  })
+})
