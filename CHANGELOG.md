@@ -1,3 +1,17 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.7...v0.2.8)
+
+## 🐛 Bug Fixes
+
+- add repository metadata to crosswind-vscode for npm provenance ([1976b04](https://github.com/cwcss/crosswind/commit/1976b04)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.2.8 ([65acc86](https://github.com/cwcss/crosswind/commit/65acc86)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.6...v0.2.7)
 
 ## 🐛 Bug Fixes
