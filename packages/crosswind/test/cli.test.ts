@@ -69,6 +69,23 @@ describe('CLI config resolution (issue #15)', () => {
     expect(css).toContain('.btn:hover')
   })
 
+  it('honors --no-preflight', async () => {
+    await rm(join(TEST_DIR, 'out'), { recursive: true, force: true })
+    const { exitCode } = await runCli(['build', '--no-preflight'], TEST_DIR)
+    expect(exitCode).toBe(0)
+    const css = await Bun.file(join(TEST_DIR, 'out', 'styles.css')).text()
+    expect(css).not.toContain('box-sizing: border-box')
+    expect(css).toContain('.p-4')
+  })
+
+  it('includes preflight by default', async () => {
+    await rm(join(TEST_DIR, 'out'), { recursive: true, force: true })
+    const { exitCode } = await runCli(['build'], TEST_DIR)
+    expect(exitCode).toBe(0)
+    const css = await Bun.file(join(TEST_DIR, 'out', 'styles.css')).text()
+    expect(css).toContain('box-sizing: border-box')
+  })
+
   it('errors clearly when --config points at a missing file', async () => {
     const { exitCode, out } = await runCli(['build', '--config', './nope.config.ts'], TEST_DIR)
     expect(exitCode).toBe(1)

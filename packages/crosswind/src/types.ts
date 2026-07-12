@@ -89,6 +89,8 @@ export interface CrosswindConfig {
   minify: boolean
   watch: boolean
   verbose?: boolean
+  /** Include the preflight/reset CSS in built output (default true). */
+  includePreflight?: boolean
   theme: Theme
   /** Web fonts to load (Google Fonts `@import` and/or raw `@font-face`). */
   fonts?: FontConfig
