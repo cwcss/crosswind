@@ -72,6 +72,12 @@ function mergeConfig(baseConfig: CrosswindConfig, options: BuildOptions): Crossw
     minify: options.minify ?? baseConfig.minify,
     content: options.content ? [options.content] : baseConfig.content,
     verbose: options.verbose ?? baseConfig.verbose,
+    // clapp exposes --no-preflight as preflight: false; keep the declared
+    // noPreflight form working too. The flag was previously declared but
+    // never read, so it silently did nothing.
+    includePreflight: options.noPreflight === true || (options as { preflight?: boolean }).preflight === false
+      ? false
+      : baseConfig.includePreflight,
   }
 }
 
@@ -218,7 +224,7 @@ cli
     const defaultConfig = `import type { CrosswindOptions } from '@cwcss/crosswind'
 
 const config = {
-  content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
+  content: ['./src/**/*.{html,js,ts,jsx,tsx,stx}'],
   output: './dist/crosswind.css',
   minify: false,
   watch: false,

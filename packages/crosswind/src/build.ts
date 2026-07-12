@@ -56,7 +56,7 @@ export async function build(config: CrosswindConfig): Promise<BuildResult> {
   }
 
   // Preflight CSS is now added by generator.toCSS()
-  const css = generator.toCSS(true, config.minify)
+  const css = generator.toCSS(config.includePreflight !== false, config.minify)
   const duration = performance.now() - startTime
 
   return {
