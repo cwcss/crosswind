@@ -803,3 +803,34 @@ describe('CSSGenerator - Edge Cases', () => {
     })
   })
 })
+
+describe('important modifier isolation', () => {
+  // addRule must not mutate the properties object it receives: custom rules
+  // and static utility maps hand out shared references, and an in-place
+  // ' !important' append poisoned every later use of the same object
+  // (stacking suffixes across generator instances).
+  it('does not mutate shared custom-rule objects', () => {
+    const SHARED: Record<string, string> = { color: 'red' }
+    const config = {
+      ...defaultConfig,
+      rules: [[/^!?myred$/, () => SHARED]] as any,
+    }
+
+    const genA = new CSSGenerator(config)
+    genA.generate('!myred')
+    expect(genA.toCSS(false)).toContain('color: red !important;')
+    expect(SHARED.color).toBe('red')
+
+    // A second instance generating the important form must not double-append
+    const genB = new CSSGenerator(config)
+    genB.generate('!myred')
+    expect(genB.toCSS(false)).toContain('color: red !important;')
+    expect(genB.toCSS(false)).not.toContain('!important !important')
+
+    // The plain form stays non-important
+    const genC = new CSSGenerator(config)
+    genC.generate('myred')
+    expect(genC.toCSS(false)).toContain('color: red;')
+    expect(genC.toCSS(false)).not.toContain('!important')
+  })
+})

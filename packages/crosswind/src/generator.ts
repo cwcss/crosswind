@@ -2058,11 +2058,16 @@ export class CSSGenerator {
 
     const mediaQuery = this.getMediaQuery(parsed)
 
-    // Apply !important modifier
+    // Apply !important modifier. Build a fresh object — `properties` is
+    // often a shared reference (static utility maps, memoized custom-rule
+    // results), and mutating it in place poisoned every later use of the
+    // same object with stacking ' !important' suffixes.
     if (parsed.important) {
+      const flagged: Record<string, string> = {}
       for (const key in properties) {
-        properties[key] += ' !important'
+        flagged[key] = `${properties[key]} !important`
       }
+      properties = flagged
     }
 
     const key = mediaQuery || 'base'
