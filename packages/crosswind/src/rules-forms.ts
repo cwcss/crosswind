@@ -36,20 +36,29 @@ const baseCheckboxRadioStyles = {
   'border-width': '1px',
 }
 
+// The parser splits `form-input` into utility `form` + value `input`, so
+// guards on `parsed.utility === 'form-input'` NEVER matched — every form-*
+// class silently emitted nothing. Match the parsed shape (and keep the
+// compound form for robustness).
+function isFormUtility(parsed: { utility: string, value?: string }, name: string): boolean {
+  return (parsed.utility === 'form' && parsed.value === name)
+    || (parsed.utility === `form-${name}` && !parsed.value)
+}
+
 export const formInputRule: UtilityRule = (parsed) => {
-  if (parsed.utility === 'form-input' && !parsed.value) {
+  if (isFormUtility(parsed, 'input')) {
     return baseInputStyles
   }
 }
 
 export const formTextareaRule: UtilityRule = (parsed) => {
-  if (parsed.utility === 'form-textarea' && !parsed.value) {
+  if (isFormUtility(parsed, 'textarea')) {
     return baseInputStyles
   }
 }
 
 export const formSelectRule: UtilityRule = (parsed) => {
-  if (parsed.utility === 'form-select' && !parsed.value) {
+  if (isFormUtility(parsed, 'select')) {
     return {
       ...baseInputStyles,
       'background-image': 'url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'%3e%3cpath stroke=\'%236b7280\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'M6 8l4 4 4-4\'/%3e%3c/svg%3e")',
@@ -63,7 +72,7 @@ export const formSelectRule: UtilityRule = (parsed) => {
 }
 
 export const formMultiselectRule: UtilityRule = (parsed) => {
-  if (parsed.utility === 'form-multiselect' && !parsed.value) {
+  if (isFormUtility(parsed, 'multiselect')) {
     return {
       ...baseInputStyles,
       'background-image': 'initial',
@@ -76,7 +85,7 @@ export const formMultiselectRule: UtilityRule = (parsed) => {
 }
 
 export const formCheckboxRule: UtilityRule = (parsed) => {
-  if (parsed.utility === 'form-checkbox' && !parsed.value) {
+  if (isFormUtility(parsed, 'checkbox')) {
     return {
       ...baseCheckboxRadioStyles,
       'border-radius': '0px',
@@ -85,7 +94,7 @@ export const formCheckboxRule: UtilityRule = (parsed) => {
 }
 
 export const formRadioRule: UtilityRule = (parsed) => {
-  if (parsed.utility === 'form-radio' && !parsed.value) {
+  if (isFormUtility(parsed, 'radio')) {
     return {
       ...baseCheckboxRadioStyles,
       'border-radius': '100%',

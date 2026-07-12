@@ -422,3 +422,14 @@ describe('negative spacing validity', () => {
     expect(css('-mx-2')).toContain('margin-left: -0.5rem;')
   })
 })
+
+describe('form-* utilities', () => {
+  it('generates the @tailwindcss/forms styles (previously dead rules)', () => {
+    expect(css('form-input')).toContain('appearance: none;')
+    expect(css('form-select')).toContain('background-image:')
+    expect(css('form-checkbox')).toContain('border-radius: 0px;')
+    expect(css('form-radio')).toContain('border-radius: 100%;')
+    expect(css('form-textarea')).toContain('padding-left: 0.75rem;')
+    expect(css('form-multiselect')).toContain('print-color-adjust: unset;')
+  })
+})
