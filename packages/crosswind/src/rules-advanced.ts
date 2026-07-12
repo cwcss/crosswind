@@ -466,14 +466,24 @@ export const gradientStopsRule: UtilityRule = (parsed, config) => {
       }
     }
 
-    // Arbitrary color like `#FF3E54` — apply alpha via the hex path.
-    if (lookup.startsWith('#')) return applyAlpha(lookup)
+    // Arbitrary values and CSS color expressions pass through the alpha
+    // path; unknown bare words are rejected — they previously leaked into
+    // the gradient variables (`from-foo` -> --cw-gradient-from: foo).
+    if (
+      parsed.arbitrary
+      || lookup.startsWith('#')
+      || /^(?:var|rgb|rgba|hsl|hsla|oklch|oklab|lab|lch|color|color-mix)\(/.test(lookup)
+    ) {
+      return applyAlpha(lookup)
+    }
 
-    return applyAlpha(lookup)
+    return undefined
   }
 
   if (parsed.utility === 'from' && parsed.value) {
     const color = getColor(parsed.value)
+    if (color === undefined)
+      return undefined
     return {
       '--cw-gradient-from': color,
       '--cw-gradient-to': 'rgb(255 255 255 / 0)',
@@ -483,6 +493,8 @@ export const gradientStopsRule: UtilityRule = (parsed, config) => {
 
   if (parsed.utility === 'via' && parsed.value) {
     const color = getColor(parsed.value)
+    if (color === undefined)
+      return undefined
     return {
       '--cw-gradient-to': 'rgb(255 255 255 / 0)',
       '--cw-gradient-stops': `var(--cw-gradient-from), ${color}, var(--cw-gradient-to)`,
@@ -491,6 +503,8 @@ export const gradientStopsRule: UtilityRule = (parsed, config) => {
 
   if (parsed.utility === 'to' && parsed.value) {
     const color = getColor(parsed.value)
+    if (color === undefined)
+      return undefined
     return {
       '--cw-gradient-to': color,
       '--cw-gradient-stops': 'var(--cw-gradient-from), var(--cw-gradient-to)',

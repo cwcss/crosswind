@@ -285,3 +285,19 @@ describe('between-element utilities value validation', () => {
     expect(css('border-opacity-75')).toContain('--cw-border-opacity: 0.75;')
   })
 })
+
+describe('gradient stop value validation', () => {
+  it('rejects unknown words', () => {
+    expect(css('from-foo')).toBe('')
+    expect(css('via-foo')).toBe('')
+    expect(css('to-foo')).toBe('')
+  })
+
+  it('keeps theme colors, opacity modifiers, and arbitrary values', () => {
+    expect(css('from-blue-500')).toContain('--cw-gradient-from: oklch(62.3% 0.214 259.815);')
+    expect(css('from-blue-500/50')).toContain('/ 0.5)')
+    expect(css('via-transparent')).toContain('transparent')
+    expect(css('to-[#ff3e54]')).toContain('--cw-gradient-to: #ff3e54;')
+    expect(css('from-[var(--brand)]')).toContain('--cw-gradient-from: var(--brand);')
+  })
+})
