@@ -157,3 +157,27 @@ describe('typography value validation', () => {
     expect(out).toContain('overflow: visible;')
   })
 })
+
+describe('sizing value validation', () => {
+  it('rejects unknown words', () => {
+    expect(css('w-foo')).toBe('')
+    expect(css('w-sidebar')).toBe('')
+    expect(css('h-foo')).toBe('')
+    expect(css('size-foo')).toBe('')
+    expect(css('min-w-foo')).toBe('')
+    expect(css('max-h-foo')).toBe('')
+  })
+
+  it('keeps keywords, scale, fractions, off-scale numbers, and arbitrary', () => {
+    expect(css('w-full')).toContain('width: 100%;')
+    expect(css('w-dvw')).toContain('width: 100dvw;')
+    expect(css('w-4')).toContain('width: 1rem;')
+    expect(css('w-1/2')).toContain('width: 50%;')
+    expect(css('h-screen')).toContain('height: 100vh;')
+    expect(css('size-8')).toContain('width: 2rem;')
+    expect(css('max-w-2xl')).toContain('max-width: 42rem;')
+    expect(css('min-h-screen')).toContain('min-height: 100vh;')
+    expect(css('w-[calc(100%-2rem)]')).toContain('width: calc(100%-2rem);')
+    expect(css('max-w-[70ch]')).toContain('max-width: 70ch;')
+  })
+})

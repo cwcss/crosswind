@@ -293,6 +293,34 @@ export const spacingRule: UtilityRule = (parsed, config) => {
   return result
 }
 
+// Resolve a size/spacing token shared by the sizing utilities: fractions,
+// keyword map, theme spacing, off-scale numbers (0.25rem steps), and
+// arbitrary values. Unknown words return undefined — they previously
+// leaked verbatim (`w-sidebar` emitted `width: sidebar;`).
+export function resolveSizeToken(
+  parsed: { value?: string, arbitrary: boolean },
+  config: { theme: { spacing: Record<string, string> } },
+  sizeMap: Record<string, string>,
+): string | undefined {
+  const token = parsed.value!
+  if (token.includes('/') && !parsed.arbitrary) {
+    const [num, denom] = token.split('/').map(Number)
+    if (Number.isNaN(num) || Number.isNaN(denom) || denom === 0)
+      return undefined
+    return `${(num / denom) * 100}%`
+  }
+  const spacing = config.theme.spacing[token]
+  if (spacing !== undefined)
+    return spacing
+  if (sizeMap[token])
+    return sizeMap[token]
+  if (parsed.arbitrary)
+    return token
+  if (/^\d+(?:\.\d+)?$/.test(token))
+    return `${Number.parseFloat(token) * 0.25}rem`
+  return undefined
+}
+
 // Width and height utilities
 export const sizingRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'w' && parsed.value) {
@@ -310,18 +338,8 @@ export const sizingRule: UtilityRule = (parsed, config) => {
       max: 'max-content',
       fit: 'fit-content',
     }
-    // Handle fractions: 1/2 -> 50%
-    if (parsed.value.includes('/')) {
-      const [num, denom] = parsed.value.split('/').map(Number)
-      // Validate: skip invalid fractions (NaN or division by zero)
-      if (Number.isNaN(num) || Number.isNaN(denom) || denom === 0) {
-        return undefined
-      }
-      return { width: `${(num / denom) * 100}%` } as Record<string, string>
-    }
-    // Check spacing config first, then sizeMap, then raw value
-    const value = config.theme.spacing[parsed.value] || sizeMap[parsed.value] || parsed.value
-    return { width: value } as Record<string, string>
+    const value = resolveSizeToken(parsed, config, sizeMap)
+    return value !== undefined ? { width: value } as Record<string, string> : undefined
   }
 
   if (parsed.utility === 'h' && parsed.value) {
@@ -337,18 +355,8 @@ export const sizingRule: UtilityRule = (parsed, config) => {
       max: 'max-content',
       fit: 'fit-content',
     }
-    // Handle fractions: 3/4 -> 75%
-    if (parsed.value.includes('/')) {
-      const [num, denom] = parsed.value.split('/').map(Number)
-      // Validate: skip invalid fractions (NaN or division by zero)
-      if (Number.isNaN(num) || Number.isNaN(denom) || denom === 0) {
-        return undefined
-      }
-      return { height: `${(num / denom) * 100}%` } as Record<string, string>
-    }
-    // Check spacing config first, then sizeMap, then raw value
-    const value = config.theme.spacing[parsed.value] || sizeMap[parsed.value] || parsed.value
-    return { height: value } as Record<string, string>
+    const value = resolveSizeToken(parsed, config, sizeMap)
+    return value !== undefined ? { height: value } as Record<string, string> : undefined
   }
 
   // Size utility (width + height shorthand)
@@ -360,17 +368,8 @@ export const sizingRule: UtilityRule = (parsed, config) => {
       max: 'max-content',
       fit: 'fit-content',
     }
-    // Handle fractions: 1/2 -> 50%
-    if (parsed.value.includes('/')) {
-      const [num, denom] = parsed.value.split('/').map(Number)
-      if (Number.isNaN(num) || Number.isNaN(denom) || denom === 0) {
-        return undefined
-      }
-      const percent = `${(num / denom) * 100}%`
-      return { width: percent, height: percent } as Record<string, string>
-    }
-    const value = config.theme.spacing[parsed.value] || sizeMap[parsed.value] || parsed.value
-    return { width: value, height: value } as Record<string, string>
+    const value = resolveSizeToken(parsed, config, sizeMap)
+    return value !== undefined ? { width: value, height: value } as Record<string, string> : undefined
   }
 
   return undefined
