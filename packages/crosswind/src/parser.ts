@@ -1348,6 +1348,9 @@ function parseClassImpl(className: string): ParsedClass {
     // `text-emphasis-color-red-500` parses as `text-emphasis` / `color-red-500`.
     'text-emphasis-color',
     'text-emphasis',
+    // `text-shadow` must be a compound prefix or `text-shadow-sm` parses as
+    // `text` / `shadow-sm` and the text-shadow rule never matches at all.
+    'text-shadow',
     'word-spacing',
     'column-gap',
     'column-rule',

@@ -334,3 +334,29 @@ describe('scroll margin/padding, column-gap, perspective validation', () => {
     expect(css('perspective-[75vw]')).toContain('perspective: 75vw;')
   })
 })
+
+describe('outline, mask, and text-shadow value validation', () => {
+  it('rejects unknown words', () => {
+    expect(css('outline-foo')).toBe('')
+    expect(css('mask-clip-foo')).toBe('')
+    expect(css('mask-origin-foo')).toBe('')
+    expect(css('mask-position-somewhere')).toBe('')
+    expect(css('mask-repeat-nope')).toBe('')
+    expect(css('mask-size-big')).toBe('')
+    expect(css('mask-image-foo')).toBe('')
+    expect(css('text-shadow-foo')).toBe('')
+  })
+
+  it('keeps keywords, numbers, and arbitrary values', () => {
+    expect(css('outline-2')).toContain('outline-width: 2px;')
+    expect(css('outline-3')).toContain('outline-width: 3px;')
+    expect(css('outline-dashed')).toContain('outline-style: dashed;')
+    expect(css('outline-hidden')).toContain('outline: 2px solid transparent;')
+    expect(css('mask-clip-border')).toContain('mask-clip: border-box;')
+    expect(css('mask-position-top-left')).toContain('mask-position: top left;')
+    expect(css('mask-size-cover')).toContain('mask-size: cover;')
+    expect(css('mask-image-none')).toContain('mask-image: none;')
+    expect(css('mask-image-[url(/img/mask.png)]')).toContain('mask-image: url(/img/mask.png);')
+    expect(css('text-shadow-sm')).toContain('text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);')
+  })
+})

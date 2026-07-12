@@ -192,6 +192,11 @@ export const outlineRule: UtilityRule = (parsed, config) => {
     if (outlineStyles[parsed.value]) {
       return { 'outline-style': outlineStyles[parsed.value] } as Record<string, string>
     }
+    // Tailwind v4: outline-hidden hides the outline but preserves it in
+    // forced-colors mode via a transparent outline.
+    if (parsed.value === 'hidden') {
+      return { 'outline': '2px solid transparent', 'outline-offset': '2px' } as Record<string, string>
+    }
   }
 
   if (parsed.utility === 'outline') {
@@ -205,7 +210,8 @@ export const outlineRule: UtilityRule = (parsed, config) => {
       return { 'outline-color': color } as Record<string, string>
     }
 
-    // Check for width values
+    // Widths: scale keys, bare numbers (px implied), or arbitrary values.
+    // Unknown words previously leaked into outline-width verbatim.
     const widths: Record<string, string> = {
       0: '0px',
       1: '1px',
@@ -216,9 +222,13 @@ export const outlineRule: UtilityRule = (parsed, config) => {
     if (widths[parsed.value]) {
       return { 'outline-width': widths[parsed.value] } as Record<string, string>
     }
-
-    // Fallback to raw value as width
-    return { 'outline-width': parsed.value } as Record<string, string>
+    if (parsed.arbitrary) {
+      return { 'outline-width': parsed.value } as Record<string, string>
+    }
+    if (/^\d+(?:\.\d+)?$/.test(parsed.value)) {
+      return { 'outline-width': `${parsed.value}px` } as Record<string, string>
+    }
+    return undefined
   }
 }
 
@@ -314,7 +324,11 @@ export const textShadowRule: UtilityRule = (parsed) => {
       xl: '0 20px 25px rgba(0, 0, 0, 0.1)',
       none: 'none',
     }
-    return parsed.value ? { 'text-shadow': shadows[parsed.value] || parsed.value } : undefined
+    if (!parsed.value)
+      return { 'text-shadow': shadows.DEFAULT }
+    if (shadows[parsed.value])
+      return { 'text-shadow': shadows[parsed.value] }
+    return parsed.arbitrary ? { 'text-shadow': parsed.value } : undefined
   }
 }
 
@@ -381,7 +395,9 @@ export const maskRule: UtilityRule = (parsed) => {
       'view': 'view-box',
       'no-clip': 'no-clip',
     }
-    return { 'mask-clip': clips[parsed.value] || parsed.value } as Record<string, string>
+    if (clips[parsed.value])
+      return { 'mask-clip': clips[parsed.value] } as Record<string, string>
+    return parsed.arbitrary ? { 'mask-clip': parsed.value } as Record<string, string> : undefined
   }
 
   // mask-composite
@@ -395,7 +411,15 @@ export const maskRule: UtilityRule = (parsed) => {
     if (parsed.value === 'none') {
       return { 'mask-image': 'none' } as Record<string, string>
     }
-    return { 'mask-image': `url(${parsed.value})` } as Record<string, string>
+    // Arbitrary values only: url(...) and gradients pass through; wrapping a
+    // bare word produced mask-image: url(foo) — a bogus relative request.
+    if (parsed.arbitrary) {
+      const value = parsed.value.startsWith('url(') || parsed.value.includes('gradient(')
+        ? parsed.value
+        : `url(${parsed.value})`
+      return { 'mask-image': value } as Record<string, string>
+    }
+    return undefined
   }
 
   // mask-mode
@@ -414,7 +438,9 @@ export const maskRule: UtilityRule = (parsed) => {
       stroke: 'stroke-box',
       view: 'view-box',
     }
-    return { 'mask-origin': origins[parsed.value] || parsed.value } as Record<string, string>
+    if (origins[parsed.value])
+      return { 'mask-origin': origins[parsed.value] } as Record<string, string>
+    return parsed.arbitrary ? { 'mask-origin': parsed.value } as Record<string, string> : undefined
   }
 
   // mask-position
@@ -430,7 +456,9 @@ export const maskRule: UtilityRule = (parsed) => {
       'bottom-left': 'bottom left',
       'bottom-right': 'bottom right',
     }
-    return { 'mask-position': positions[parsed.value] || parsed.value } as Record<string, string>
+    if (positions[parsed.value])
+      return { 'mask-position': positions[parsed.value] } as Record<string, string>
+    return parsed.arbitrary ? { 'mask-position': parsed.value } as Record<string, string> : undefined
   }
 
   // mask-repeat
@@ -443,7 +471,9 @@ export const maskRule: UtilityRule = (parsed) => {
       'round': 'round',
       'space': 'space',
     }
-    return { 'mask-repeat': repeats[parsed.value] || parsed.value } as Record<string, string>
+    if (repeats[parsed.value])
+      return { 'mask-repeat': repeats[parsed.value] } as Record<string, string>
+    return parsed.arbitrary ? { 'mask-repeat': parsed.value } as Record<string, string> : undefined
   }
 
   // mask-size
@@ -453,7 +483,9 @@ export const maskRule: UtilityRule = (parsed) => {
       cover: 'cover',
       contain: 'contain',
     }
-    return { 'mask-size': sizes[parsed.value] || parsed.value } as Record<string, string>
+    if (sizes[parsed.value])
+      return { 'mask-size': sizes[parsed.value] } as Record<string, string>
+    return parsed.arbitrary ? { 'mask-size': parsed.value } as Record<string, string> : undefined
   }
 
   // mask-type
