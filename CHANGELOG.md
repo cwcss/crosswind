@@ -1,3 +1,77 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.9...v0.2.10)
+
+## 🚀 Features
+
+- reload the config file during watch mode ([807b74d](https://github.com/cwcss/crosswind/commit/807b74d)) _(by Chris <chrisbreuer93@gmail.com>)_
+- adopt the Tailwind v4 radius and shadow scales ([deac57c](https://github.com/cwcss/crosswind/commit/deac57c)) _(by Chris <chrisbreuer93@gmail.com>)_
+- nest stacked at-rule variants and add darkMode media strategy ([53e0fda](https://github.com/cwcss/crosswind/commit/53e0fda)) _(by Chris <chrisbreuer93@gmail.com>)_
+- support max-* breakpoint variants and order media types first ([362c833](https://github.com/cwcss/crosswind/commit/362c833)) _(by Chris <chrisbreuer93@gmail.com>)_
+- extract classes from clsx/array/class:list/:class expressions ([2d45ae5](https://github.com/cwcss/crosswind/commit/2d45ae5)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🐛 Bug Fixes
+
+- use Tailwind v4's adaptive placeholder color in preflight ([67b8176](https://github.com/cwcss/crosswind/commit/67b8176)) _(by Chris <chrisbreuer93@gmail.com>)_
+- resolve iconify collections from Bun's isolated-install store ([1a0d618](https://github.com/cwcss/crosswind/commit/1a0d618)) _(by Chris <chrisbreuer93@gmail.com>)_
+- compose touch pan/pinch utilities through variables ([c229564](https://github.com/cwcss/crosswind/commit/c229564)) _(by Chris <chrisbreuer93@gmail.com>)_
+- emit only custom colors as :root CSS variables ([3160b0a](https://github.com/cwcss/crosswind/commit/3160b0a)) _(by Chris <chrisbreuer93@gmail.com>)_
+- canonical colon-syntax negatives and valid bracket color families ([597e2b3](https://github.com/cwcss/crosswind/commit/597e2b3)) _(by Chris <chrisbreuer93@gmail.com>)_
+- correct utility cascade ranking for important, rounded corners, and gaps ([0427381](https://github.com/cwcss/crosswind/commit/0427381)) _(by Chris <chrisbreuer93@gmail.com>)_
+- stop fast-path lookup tables shadowing theme overrides ([a6065ab](https://github.com/cwcss/crosswind/commit/a6065ab)) _(by Chris <chrisbreuer93@gmail.com>)_
+- compose ring utilities through the variable system with fallbacks ([faa09db](https://github.com/cwcss/crosswind/commit/faa09db)) _(by Chris <chrisbreuer93@gmail.com>)_
+- give transition utilities Tailwind's default duration and easing ([14e0799](https://github.com/cwcss/crosswind/commit/14e0799)) _(by Chris <chrisbreuer93@gmail.com>)_
+- make form-* utilities generate CSS at all ([a03b48d](https://github.com/cwcss/crosswind/commit/a03b48d)) _(by Chris <chrisbreuer93@gmail.com>)_
+- reject negative padding utilities ([aee4139](https://github.com/cwcss/crosswind/commit/aee4139)) _(by Chris <chrisbreuer93@gmail.com>)_
+- clear compiled-class state in generator reset ([0c19f0c](https://github.com/cwcss/crosswind/commit/0c19f0c)) _(by Chris <chrisbreuer93@gmail.com>)_
+- honor config watch/verbose fields and warn on zero-match content patterns ([2dc0a15](https://github.com/cwcss/crosswind/commit/2dc0a15)) _(by Chris <chrisbreuer93@gmail.com>)_
+- apply preset rules, shortcuts, variants, and preflights ([36302ad](https://github.com/cwcss/crosswind/commit/36302ad)) _(by Chris <chrisbreuer93@gmail.com>)_
+- make analyze stats honest and dedupe overlapping scan patterns ([b600be6](https://github.com/cwcss/crosswind/commit/b600be6)) _(by Chris <chrisbreuer93@gmail.com>)_
+- ignore non-string safelist entries instead of crashing the build ([182fa84](https://github.com/cwcss/crosswind/commit/182fa84)) _(by Chris <chrisbreuer93@gmail.com>)_
+- emit real CSS for compile-class groups under the hashed selector ([154b7c7](https://github.com/cwcss/crosswind/commit/154b7c7)) _(by Chris <chrisbreuer93@gmail.com>)_
+- deep-merge plugin theme overrides, honor extract options, inject into fragments ([f1925b5](https://github.com/cwcss/crosswind/commit/f1925b5)) _(by Chris <chrisbreuer93@gmail.com>)_
+- stop watch mode crashing on non-** content patterns and debounce rebuilds ([05b9f7d](https://github.com/cwcss/crosswind/commit/05b9f7d)) _(by Chris <chrisbreuer93@gmail.com>)_
+- make --no-preflight work and scan .stx in the init template ([202a5d2](https://github.com/cwcss/crosswind/commit/202a5d2)) _(by Chris <chrisbreuer93@gmail.com>)_
+- validate decoration, SVG dash, and text-emphasis values; accept hwb() and short-hex alpha ([4b9ba1b](https://github.com/cwcss/crosswind/commit/4b9ba1b)) _(by Chris <chrisbreuer93@gmail.com>)_
+- validate border-radius side/corner values and support bare side forms ([a6f2529](https://github.com/cwcss/crosswind/commit/a6f2529)) _(by Chris <chrisbreuer93@gmail.com>)_
+- validate outline, mask, and text-shadow values ([3a3d788](https://github.com/cwcss/crosswind/commit/3a3d788)) _(by Chris <chrisbreuer93@gmail.com>)_
+- drop rules with unknown variants and support arbitrary variants ([7d54f25](https://github.com/cwcss/crosswind/commit/7d54f25)) _(by Chris <chrisbreuer93@gmail.com>)_
+- emit media query blocks in mobile-first breakpoint order ([900bf90](https://github.com/cwcss/crosswind/commit/900bf90)) _(by Chris <chrisbreuer93@gmail.com>)_
+- generate static-map utilities under variants ([fdb6304](https://github.com/cwcss/crosswind/commit/fdb6304)) _(by Chris <chrisbreuer93@gmail.com>)_
+- validate scroll margin/padding, column-gap, and perspective values ([16fdc32](https://github.com/cwcss/crosswind/commit/16fdc32)) _(by Chris <chrisbreuer93@gmail.com>)_
+- expand short hex with alpha correctly in opacity modifiers ([b54a337](https://github.com/cwcss/crosswind/commit/b54a337)) _(by Chris <chrisbreuer93@gmail.com>)_
+- reject unknown words in gradient color stops ([323b9f1](https://github.com/cwcss/crosswind/commit/323b9f1)) _(by Chris <chrisbreuer93@gmail.com>)_
+- validate divide, space-between, and ring/border opacity values ([268d6d0](https://github.com/cwcss/crosswind/commit/268d6d0)) _(by Chris <chrisbreuer93@gmail.com>)_
+- escape all non-identifier characters in class selectors ([45d9cd8](https://github.com/cwcss/crosswind/commit/45d9cd8)) _(by Chris <chrisbreuer93@gmail.com>)_
+- stop the important modifier mutating shared rule property objects ([2b3a5ab](https://github.com/cwcss/crosswind/commit/2b3a5ab)) _(by Chris <chrisbreuer93@gmail.com>)_
+- validate filter, ring, columns, aspect, align-self, and border-spacing values ([d53348d](https://github.com/cwcss/crosswind/commit/d53348d)) _(by Chris <chrisbreuer93@gmail.com>)_
+- validate spacing-derived utility values ([c5fd362](https://github.com/cwcss/crosswind/commit/c5fd362)) _(by Chris <chrisbreuer93@gmail.com>)_
+- validate width, height, size, and min/max sizing values ([5670e7a](https://github.com/cwcss/crosswind/commit/5670e7a)) _(by Chris <chrisbreuer93@gmail.com>)_
+- validate typography values and stop quoting bare words as content ([b2ef16c](https://github.com/cwcss/crosswind/commit/b2ef16c)) _(by Chris <chrisbreuer93@gmail.com>)_
+- validate transform scale, rotate, skew, and translate values ([dfa7487](https://github.com/cwcss/crosswind/commit/dfa7487)) _(by Chris <chrisbreuer93@gmail.com>)_
+- validate transition and animation time values ([fbd1e87](https://github.com/cwcss/crosswind/commit/fbd1e87)) _(by Chris <chrisbreuer93@gmail.com>)_
+- validate z-index, order, and opacity values instead of passing words through ([52a5c42](https://github.com/cwcss/crosswind/commit/52a5c42)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## ⚡ Performance Improvements
+
+- actually minify preflight and keyframes in minified output ([f27abc5](https://github.com/cwcss/crosswind/commit/f27abc5)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 📚 Documentation
+
+- declare Tailwind v4 semantics as the compass ([c40c586](https://github.com/cwcss/crosswind/commit/c40c586)) _(by Chris <chrisbreuer93@gmail.com>)_
+- align README init snippet with the actual scaffold ([8123862](https://github.com/cwcss/crosswind/commit/8123862)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 💅 Styles
+
+- build the color fast-path overlay from a diff map ([c9bc43b](https://github.com/cwcss/crosswind/commit/c9bc43b)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.2.10 ([8cbe056](https://github.com/cwcss/crosswind/commit/8cbe056)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **pkg**: add sideEffects:false for bundler tree-shaking (publint) ([1bd41bc](https://github.com/cwcss/crosswind/commit/1bd41bc)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.8...v0.2.9)
 
 ## 🐛 Bug Fixes
