@@ -70,7 +70,7 @@
   },
   "dependencies": {
     "@stacksjs/clapp": "^0.2.0",
-    "bunfig": "^0.15.0"
+    "bunfig": "^0.15.15"
   },
   "lint-staged": {
     "*.{js,ts}": "bunx --bun pickier run --mode lint --fix"
