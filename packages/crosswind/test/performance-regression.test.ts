@@ -2,6 +2,16 @@ import { beforeEach, describe, expect, it } from 'bun:test'
 import { CSSGenerator } from '../src/generator'
 import { defaultConfig } from '../src/config'
 
+// GitHub-hosted runners share CPU with other workloads and routinely show
+// 1.3-1.6x variance on sub-20ms samples. Keep local regression budgets strict,
+// while allowing one scheduler-sized interruption in CI. Correctness and
+// algorithmic guards below remain identical in both environments.
+const PERFORMANCE_BUDGET_MULTIPLIER = process.env.CI ? 2 : 1
+
+function performanceBudget(localMilliseconds: number): number {
+  return localMilliseconds * PERFORMANCE_BUDGET_MULTIPLIER
+}
+
 /**
  * Performance Regression Tests
  *
@@ -53,7 +63,7 @@ describe('Performance Regression Tests', () => {
       const duration = performance.now() - start
 
       // Current: ~2ms, threshold: 5ms (2.5x margin for safety)
-      expect(duration).toBeLessThan(5) // 5ms
+      expect(duration).toBeLessThan(performanceBudget(5)) // 5ms locally
     })
   })
 
@@ -74,7 +84,7 @@ describe('Performance Regression Tests', () => {
       const duration = performance.now() - start
 
       // Current: ~0.2ms locally, up to ~1.5ms on CI runners
-      expect(duration).toBeLessThan(3) // 3ms
+      expect(duration).toBeLessThan(performanceBudget(3)) // 3ms locally
     })
   })
 
@@ -97,7 +107,7 @@ describe('Performance Regression Tests', () => {
       const duration = performance.now() - start
 
       // Current: ~0.05ms locally, up to ~1ms on CI runners
-      expect(duration).toBeLessThan(2) // 2ms
+      expect(duration).toBeLessThan(performanceBudget(2)) // 2ms locally
     })
   })
 
@@ -122,7 +132,7 @@ describe('Performance Regression Tests', () => {
       const duration = performance.now() - start
 
       // Current: ~0.5ms, threshold: 2ms
-      expect(duration).toBeLessThan(2) // 2ms
+      expect(duration).toBeLessThan(performanceBudget(2)) // 2ms locally
     })
   })
 
@@ -140,7 +150,7 @@ describe('Performance Regression Tests', () => {
       const duration = performance.now() - start
 
       // Current: ~5ms, threshold: 15ms (3x margin)
-      expect(duration).toBeLessThan(15) // 15ms
+      expect(duration).toBeLessThan(performanceBudget(15)) // 15ms locally
     })
   })
 
@@ -162,7 +172,7 @@ describe('Performance Regression Tests', () => {
       const duration = performance.now() - start
 
       // Current: ~2ms, threshold: 5ms
-      expect(duration).toBeLessThan(5) // 5ms
+      expect(duration).toBeLessThan(performanceBudget(5)) // 5ms locally
       expect(css.length).toBeGreaterThan(0)
     })
   })
@@ -188,7 +198,7 @@ describe('Performance Regression Tests', () => {
       const duration = performance.now() - start
 
       // Current: ~1ms, threshold: 3ms
-      expect(duration).toBeLessThan(3) // 3ms
+      expect(duration).toBeLessThan(performanceBudget(3)) // 3ms locally
     })
   })
 
@@ -210,7 +220,7 @@ describe('Performance Regression Tests', () => {
       const duration = performance.now() - start
 
       // Current: ~4ms locally, up to ~16ms on CI runners
-      expect(duration).toBeLessThan(25) // 25ms
+      expect(duration).toBeLessThan(performanceBudget(25)) // 25ms locally
     })
   })
 
@@ -232,7 +242,7 @@ describe('Performance Regression Tests', () => {
       const duration = performance.now() - start
 
       // Current: ~2.5ms locally, up to ~10ms on CI runners
-      expect(duration).toBeLessThan(16) // 16ms
+      expect(duration).toBeLessThan(performanceBudget(16)) // 16ms locally
     })
   })
 
@@ -252,7 +262,7 @@ describe('Performance Regression Tests', () => {
       const duration = performance.now() - start
 
       // Current: ~0.12ms, threshold: 0.5ms (this should be VERY fast due to caching)
-      expect(duration).toBeLessThan(0.5) // 0.5ms
+      expect(duration).toBeLessThan(performanceBudget(0.5)) // 0.5ms locally
     })
   })
 
@@ -276,34 +286,29 @@ describe('Performance Regression Tests', () => {
 
       // These should be EXTREMELY fast (< 0.05ms locally, up to ~1ms on CI runners)
       // because they match in the first 3 rules
-      expect(duration).toBeLessThan(2) // 2ms
+      expect(duration).toBeLessThan(performanceBudget(2)) // 2ms locally
     })
   })
 
   describe('Cache Effectiveness', () => {
-    it('should benefit from parse cache on repeated patterns', () => {
+    it('should keep repeated patterns within the cached budget', () => {
       const pattern = 'hover:bg-blue-500'
 
-      // First pass - no cache
-      const gen1 = new CSSGenerator(defaultConfig)
-      const start1 = performance.now()
-      for (let i = 0; i < 100; i++) {
-        gen1.generate(pattern)
-      }
-      const duration1 = performance.now() - start1
+      // Prime the global parse cache with a separate generator.
+      const warmGenerator = new CSSGenerator(defaultConfig)
+      warmGenerator.generate(pattern)
 
-      // Second pass - with cache (different generator, but parse cache is global)
-      const gen2 = new CSSGenerator(defaultConfig)
-      const start2 = performance.now()
+      const cachedGenerator = new CSSGenerator(defaultConfig)
+      const start = performance.now()
       for (let i = 0; i < 100; i++) {
-        gen2.generate(pattern)
+        cachedGenerator.generate(pattern)
       }
-      const duration2 = performance.now() - start2
+      const duration = performance.now() - start
 
-      // Second pass should be faster or equal (cache helps)
-      // Due to class cache, second pass should be near-instant
-      expect(duration2).toBeLessThanOrEqual(duration1)
-      expect(duration2).toBeLessThan(0.05) // Should be < 50µs with full caching
+      // Avoid comparing two sub-millisecond samples: scheduler noise can make
+      // either one appear faster. The absolute cached-path budget is the
+      // meaningful regression guard.
+      expect(duration).toBeLessThan(performanceBudget(0.05)) // < 50µs locally with full caching
     })
 
     it('should handle class cache efficiently', () => {
@@ -324,7 +329,7 @@ describe('Performance Regression Tests', () => {
       const duration = performance.now() - start
 
       // 4000 cached lookups should be fast
-      expect(duration).toBeLessThan(1) // < 1ms for 4000 cached lookups
+      expect(duration).toBeLessThan(performanceBudget(1)) // < 1ms locally for 4000 cached lookups
     })
   })
 
@@ -370,7 +375,7 @@ describe('Performance Regression Tests', () => {
 
       // Average per iteration should be < 20µs
       // If someone moves rules back, this will break
-      expect(avgPerIteration).toBeLessThan(0.02) // 20 microseconds per iteration
+      expect(avgPerIteration).toBeLessThan(performanceBudget(0.02)) // 20µs locally per iteration
     })
   })
 })
