@@ -1,3 +1,40 @@
+[Compare changes](https://github.com/stacksjs/ts-css/compare/v0.1.0...v0.1.1)
+
+## 🐛 Bug Fixes
+
+- remove consumer postinstall hook ([44d1ee3](https://github.com/stacksjs/ts-css/commit/44d1ee3)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **scripts**: stop double-generating CHANGELOG on release ([7fe2506](https://github.com/stacksjs/ts-css/commit/7fe2506)) _(by Glenn Michael Torregosa <gtorregosa@gmail.com>)_
+
+## 🤖 Continuous Integration
+
+- drop redundant setup-bun (pantry installs bun via deps.yaml) ([7fafadf](https://github.com/stacksjs/ts-css/commit/7fafadf)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.1.1 ([5639aff](https://github.com/stacksjs/ts-css/commit/5639aff)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: declare bun ^1.3.14 in deps.yaml ([83f0002](https://github.com/stacksjs/ts-css/commit/83f0002)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: refresh bun.lock to pick up pickier 0.1.37 ([6b8d86c](https://github.com/stacksjs/ts-css/commit/6b8d86c)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **deps**: refresh bun.lock to pick up pickier 0.1.35 ([2dc313e](https://github.com/stacksjs/ts-css/commit/2dc313e)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **deps**: refresh bun.lock to pick up pickier 0.1.33 ([a89a742](https://github.com/stacksjs/ts-css/commit/a89a742)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **deps**: refresh bun.lock to pick up @stacksjs/logsmith 0.2.3 ([0b2e754](https://github.com/stacksjs/ts-css/commit/0b2e754)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **deps**: refresh bun.lock to pick up buddy-bot 0.9.20 ([66d94f2](https://github.com/stacksjs/ts-css/commit/66d94f2)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **deps**: bump better-dx to ^0.2.15 ([cbe57f9](https://github.com/stacksjs/ts-css/commit/cbe57f9)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **ci**: bump actions/checkout to v6, actions/cache to v5 ([7ed4b33](https://github.com/stacksjs/ts-css/commit/7ed4b33)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- refresh bun.lock to pick up bun-plugin-dtsx@0.9.18 ([12aa00f](https://github.com/stacksjs/ts-css/commit/12aa00f)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- refresh bun.lock and apply pickier --fix ([ceb799c](https://github.com/stacksjs/ts-css/commit/ceb799c)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- refresh bun.lock ([9a27cc0](https://github.com/stacksjs/ts-css/commit/9a27cc0)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- refresh bun.lock to pick up latest pickier ([5c717ee](https://github.com/stacksjs/ts-css/commit/5c717ee)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+
+## ⏪ Reverts
+
+- keep staged-lint kebab + bunx gitlint shorthand ([cb5bcc0](https://github.com/stacksjs/ts-css/commit/cb5bcc0)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+- _Glenn Michael Torregosa <gtorregosa@gmail.com>_
+- _glennmichael123 <gtorregosa@gmail.com>_
+
 ### 🐛 Bug Fixes
 
 - add setup-bun to publish-commit job ([ba0a364](https://github.com/stacksjs/ts-css/commit/ba0a364)) _(by glennmichael123 <gtorregosa@gmail.com>)_
