@@ -314,7 +314,7 @@ Now that you understand what Crosswind is and how it works, explore:
 ## Community & Support
 
 -**GitHub**- [github.com/cwcss/crosswind](https://github.com/cwcss/crosswind)
--**Discord**- [Join the Stacks Discord](https://discord.gg/stacksjs)
+-**Discord**- [Join the Stacks Discord](https://stacksjs.com/discord)
 -**Issues**- [Report bugs or request features](https://github.com/cwcss/crosswind/issues)
 -**Discussions**- [Ask questions and share ideas](https://github.com/cwcss/crosswind/discussions)
 

@@ -433,4 +433,4 @@ If the build fails:
 
 - [GitHub Issues](https://github.com/cwcss/crosswind/issues)
 - [Documentation](https://crosswind.sh)
-- [Discord Community](https://discord.gg/stacksjs)
+- [Discord Community](https://stacksjs.com/discord)
