@@ -81,22 +81,64 @@ export const backgroundClipRule: UtilityRule = (parsed) => {
   return undefined
 }
 
+// Direction keyword per Tailwind's compass suffix.
+const GRADIENT_DIRECTIONS: Record<string, string> = {
+  t: 'to top',
+  tr: 'to top right',
+  r: 'to right',
+  br: 'to bottom right',
+  b: 'to bottom',
+  bl: 'to bottom left',
+  l: 'to left',
+  tl: 'to top left',
+}
+
+/**
+ * Linear gradients. `bg-linear-*` is Tailwind v4's name for `bg-gradient-*`;
+ * both spellings are accepted so v3 markup keeps working.
+ *
+ * Three shapes reach here with different parses:
+ *   bg-linear-to-r        utility `bg`,        value `linear-to-r`
+ *   -bg-linear-45         utility `bg`,        value `-linear-45`
+ *   bg-linear-[0.25turn]  utility `bg-linear`, value `0.25turn` (arbitrary)
+ */
 export const backgroundImageRule: UtilityRule = (parsed) => {
-  if (parsed.utility === 'bg' && parsed.value) {
-    const gradients: Record<string, string> = {
-      'gradient-to-t': 'linear-gradient(to top, var(--cw-gradient-stops))',
-      'gradient-to-tr': 'linear-gradient(to top right, var(--cw-gradient-stops))',
-      'gradient-to-r': 'linear-gradient(to right, var(--cw-gradient-stops))',
-      'gradient-to-br': 'linear-gradient(to bottom right, var(--cw-gradient-stops))',
-      'gradient-to-b': 'linear-gradient(to bottom, var(--cw-gradient-stops))',
-      'gradient-to-bl': 'linear-gradient(to bottom left, var(--cw-gradient-stops))',
-      'gradient-to-l': 'linear-gradient(to left, var(--cw-gradient-stops))',
-      'gradient-to-tl': 'linear-gradient(to top left, var(--cw-gradient-stops))',
-    }
-    if (gradients[parsed.value]) {
-      return { 'background-image': gradients[parsed.value] } as Record<string, string>
-    }
+  if (!parsed.value)
+    return undefined
+
+  let angle: string | undefined
+  if (parsed.utility === 'bg-linear' || parsed.utility === 'bg-gradient') {
+    angle = parsed.value
   }
+  else if (parsed.utility === 'bg') {
+    // A leading `-` belongs to the angle, not to the family name.
+    const negative = parsed.value.startsWith('-')
+    const token = negative ? parsed.value.slice(1) : parsed.value
+    const match = token.match(/^(?:gradient|linear)-(.+)$/)
+    if (!match)
+      return undefined
+    angle = negative ? `-${match[1]}` : match[1]
+  }
+  else {
+    return undefined
+  }
+
+  // Compass form: bg-linear-to-r
+  if (angle.startsWith('to-')) {
+    const direction = GRADIENT_DIRECTIONS[angle.slice(3)]
+    return direction
+      ? { 'background-image': `linear-gradient(${direction}, var(--cw-gradient-stops))` }
+      : undefined
+  }
+
+  // Angle form (v4 only). A bare number is degrees; anything else must be an
+  // arbitrary value carrying its own unit.
+  if (parsed.arbitrary)
+    return { 'background-image': `linear-gradient(${angle}, var(--cw-gradient-stops))` }
+  if (/^-?\d+(?:\.\d+)?$/.test(angle))
+    return { 'background-image': `linear-gradient(${angle}deg, var(--cw-gradient-stops))` }
+
+  return undefined
 }
 
 export const backgroundOriginRule: UtilityRule = (parsed) => {

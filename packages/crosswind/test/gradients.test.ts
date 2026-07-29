@@ -131,3 +131,54 @@ describe('Gradient Utilities', () => {
     })
   })
 })
+
+describe('bg-linear (Tailwind v4 naming)', () => {
+  function css(...classNames: string[]): string {
+    const gen = new CSSGenerator(defaultConfig)
+    for (const className of classNames) gen.generate(className)
+    return gen.toCSS(false)
+  }
+
+  it('accepts the v4 bg-linear-to-* spelling alongside bg-gradient-to-*', () => {
+    for (const [suffix, direction] of [
+      ['t', 'to top'],
+      ['tr', 'to top right'],
+      ['r', 'to right'],
+      ['br', 'to bottom right'],
+      ['b', 'to bottom'],
+      ['bl', 'to bottom left'],
+      ['l', 'to left'],
+      ['tl', 'to top left'],
+    ] as const) {
+      const expected = `linear-gradient(${direction}, var(--cw-gradient-stops))`
+      expect(css(`bg-linear-to-${suffix}`)).toContain(expected)
+      expect(css(`bg-gradient-to-${suffix}`)).toContain(expected)
+    }
+  })
+
+  it('supports angles, including negative and arbitrary ones', () => {
+    expect(css('bg-linear-45')).toContain('linear-gradient(45deg, var(--cw-gradient-stops))')
+    expect(css('-bg-linear-45')).toContain('linear-gradient(-45deg, var(--cw-gradient-stops))')
+    expect(css('bg-linear-[0.25turn]')).toContain('linear-gradient(0.25turn, var(--cw-gradient-stops))')
+  })
+
+  it('composes with the gradient stop utilities', () => {
+    const out = css('bg-linear-to-r', 'from-blue-500', 'to-green-500')
+    expect(out).toContain('linear-gradient(to right, var(--cw-gradient-stops))')
+    expect(out).toContain('--cw-gradient-from:')
+    expect(out).toContain('--cw-gradient-to:')
+  })
+
+  it('rejects unknown directions and leaves other bg-* utilities alone', () => {
+    expect(css('bg-linear-foo')).toBe('')
+    expect(css('bg-linear-to-x')).toBe('')
+    expect(css('bg-cover')).toContain('background-size: cover;')
+    expect(css('bg-red-500')).toContain('background-color:')
+  })
+
+  it('works under variants', () => {
+    const out = css('md:bg-linear-to-r')
+    expect(out).toContain('@media (min-width: 768px)')
+    expect(out).toContain('linear-gradient(to right, var(--cw-gradient-stops))')
+  })
+})
