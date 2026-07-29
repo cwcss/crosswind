@@ -35,9 +35,15 @@ export const fontStyleRule: UtilityRule = (parsed) => {
 }
 
 export const fontStretchRule: UtilityRule = (parsed) => {
-  if (parsed.utility === 'font-stretch') {
+  if (parsed.utility === 'font-stretch' && parsed.value) {
     const stretches = ['ultra-condensed', 'extra-condensed', 'condensed', 'semi-condensed', 'normal', 'semi-expanded', 'expanded', 'extra-expanded', 'ultra-expanded']
-    return parsed.value && stretches.includes(parsed.value) ? { 'font-stretch': parsed.value } : undefined
+    if (stretches.includes(parsed.value))
+      return { 'font-stretch': parsed.value }
+    // font-stretch also takes a percentage (font-stretch-75%) or an arbitrary
+    // value, per Tailwind v4.
+    if (parsed.arbitrary || /^\d+(?:\.\d+)?%$/.test(parsed.value))
+      return { 'font-stretch': parsed.value }
+    return undefined
   }
 }
 
@@ -106,7 +112,13 @@ export const lineClampRule: UtilityRule = (parsed) => {
 
 export const listStyleImageRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'list-image' && parsed.value) {
-    return { 'list-style-image': parsed.value === 'none' ? 'none' : `url(${parsed.value})` }
+    if (parsed.value === 'none')
+      return { 'list-style-image': 'none' }
+    // Arbitrary values already carry their own function — wrapping them again
+    // produced `url(url(/img.png))`. Only a bare path needs the url() wrapper.
+    if (parsed.arbitrary)
+      return { 'list-style-image': parsed.value }
+    return { 'list-style-image': `url(${parsed.value})` }
   }
 }
 
