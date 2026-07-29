@@ -92,3 +92,63 @@ describe('Scanner', () => {
     })
   })
 })
+
+describe('Scanner concurrency', () => {
+  const CONCURRENCY_DIR = join(import.meta.dir, '.scanner-concurrency')
+
+  beforeAll(async () => {
+    await mkdir(CONCURRENCY_DIR, { recursive: true })
+  })
+
+  afterAll(async () => {
+    await rm(CONCURRENCY_DIR, { recursive: true, force: true })
+  })
+
+  it('reads many files without dropping any classes', async () => {
+    // More files than the read pool is wide, so the pool has to cycle workers.
+    const count = 120
+    await Promise.all(
+      Array.from({ length: count }, (_, i) =>
+        writeFile(join(CONCURRENCY_DIR, `file-${i}.html`), `<div class="p-${i}"></div>`)),
+    )
+    const scanner = new Scanner([join(CONCURRENCY_DIR, '*.html')])
+    const { classes } = await scanner.scan()
+    for (let i = 0; i < count; i++) {
+      expect(classes.has(`p-${i}`)).toBe(true)
+    }
+  })
+
+  it('reports unmatched patterns in config order', async () => {
+    await writeFile(join(CONCURRENCY_DIR, 'only.html'), '<div class="flex"></div>')
+    const scanner = new Scanner([
+      join(CONCURRENCY_DIR, 'nope-a', '*.html'),
+      join(CONCURRENCY_DIR, 'only.*'),
+      join(CONCURRENCY_DIR, 'nope-b', '*.html'),
+    ])
+    const { unmatchedPatterns } = await scanner.scan()
+    expect(unmatchedPatterns).toEqual([
+      join(CONCURRENCY_DIR, 'nope-a', '*.html'),
+      join(CONCURRENCY_DIR, 'nope-b', '*.html'),
+    ])
+  })
+
+  it('deduplicates files matched by overlapping patterns', async () => {
+    await writeFile(join(CONCURRENCY_DIR, 'shared.html'), '<div class="gap-7"></div>')
+    const scanner = new Scanner([
+      join(CONCURRENCY_DIR, '*.html'),
+      join(CONCURRENCY_DIR, 'shared.*'),
+    ])
+    const { classes, unmatchedPatterns } = await scanner.scan()
+    expect(classes.has('gap-7')).toBe(true)
+    expect(unmatchedPatterns).toEqual([])
+  })
+
+  it('treats a pattern rooted at a missing directory as unmatched, not fatal', async () => {
+    // Bun's glob throws ENOENT here; that used to abort the whole build.
+    const missing = join(CONCURRENCY_DIR, 'does-not-exist', '**', '*.html')
+    const scanner = new Scanner([missing, join(CONCURRENCY_DIR, '*.html')])
+    const { classes, unmatchedPatterns } = await scanner.scan()
+    expect(unmatchedPatterns).toEqual([missing])
+    expect(classes.size).toBeGreaterThan(0)
+  })
+})
