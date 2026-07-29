@@ -1,3 +1,28 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.10...v0.2.11)
+
+## 🐛 Bug Fixes
+
+- emit CSS for arbitrary box shadows and shadow colors ([5ec4b94](https://github.com/cwcss/crosswind/commit/5ec4b94)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 📚 Documentation
+
+- link the community as stacksjs.com/discord ([1ba2f60](https://github.com/cwcss/crosswind/commit/1ba2f60)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧪 Tests
+
+- **performance**: account for CI scheduler variance ([6ba83a9](https://github.com/cwcss/crosswind/commit/6ba83a9)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.2.11 ([799efe4](https://github.com/cwcss/crosswind/commit/799efe4)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: refresh pantry lockfile ([001ec62](https://github.com/cwcss/crosswind/commit/001ec62)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: update bunfig to 0.15.15 ([aa5635d](https://github.com/cwcss/crosswind/commit/aa5635d)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: declare bun ^1.3.14 in deps.yaml ([30e3874](https://github.com/cwcss/crosswind/commit/30e3874)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.9...v0.2.10)
 
 ## 🚀 Features
