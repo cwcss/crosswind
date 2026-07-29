@@ -42,6 +42,40 @@ function blurSize(parsed: { value?: string, arbitrary: boolean }): string | unde
 
 const PERCENT_FILTERS = ['brightness', 'contrast', 'grayscale', 'invert', 'saturate', 'sepia']
 
+/**
+ * Filter utilities compose through one custom property per function instead
+ * of each writing a complete `filter` / `backdrop-filter`.
+ *
+ * A whole-property write means two filter utilities on one element cannot
+ * coexist: `backdrop-blur-[50px] backdrop-saturate-[180%]` emitted two rules
+ * that each set `backdrop-filter`, so whichever landed later in the sheet
+ * won and the other silently did nothing. Naming each function lets the
+ * shared declaration list them all, and the empty `var(--x, )` fallback means
+ * a function nobody set contributes nothing — no global reset rule needed.
+ */
+const FILTER_FUNCTIONS = ['blur', 'brightness', 'contrast', 'grayscale', 'hue-rotate', 'invert', 'saturate', 'sepia', 'drop-shadow']
+const BACKDROP_FUNCTIONS = ['blur', 'brightness', 'contrast', 'grayscale', 'hue-rotate', 'invert', 'opacity', 'saturate', 'sepia']
+
+const FILTER_COMPOSED = FILTER_FUNCTIONS.map(fn => `var(--cw-${fn}, )`).join(' ')
+const BACKDROP_COMPOSED = BACKDROP_FUNCTIONS.map(fn => `var(--cw-backdrop-${fn}, )`).join(' ')
+
+/** One filter function, plus the composed `filter` that includes it. */
+function filterDecl(fn: string, value: string): Record<string, string> {
+  return {
+    [`--cw-${fn}`]: value,
+    filter: FILTER_COMPOSED,
+  }
+}
+
+/** One backdrop function, plus the composed `backdrop-filter`. */
+function backdropDecl(fn: string, value: string): Record<string, string> {
+  return {
+    [`--cw-backdrop-${fn}`]: value,
+    '-webkit-backdrop-filter': BACKDROP_COMPOSED,
+    'backdrop-filter': BACKDROP_COMPOSED,
+  }
+}
+
 // Filter utilities
 export const filterRule: UtilityRule = (parsed) => {
   // Handle filter-none
@@ -50,17 +84,17 @@ export const filterRule: UtilityRule = (parsed) => {
   }
   if (parsed.utility === 'blur') {
     const size = blurSize(parsed)
-    return size !== undefined ? { filter: `blur(${size})` } : undefined
+    return size !== undefined ? filterDecl('blur', `blur(${size})`) : undefined
   }
   if (PERCENT_FILTERS.includes(parsed.utility) && parsed.value) {
     const amount = filterAmount(parsed)
-    return amount !== undefined ? { filter: `${parsed.utility}(${amount})` } : undefined
+    return amount !== undefined ? filterDecl(parsed.utility, `${parsed.utility}(${amount})`) : undefined
   }
   if (parsed.utility === 'hue-rotate' && parsed.value) {
     if (parsed.arbitrary)
-      return { filter: `hue-rotate(${parsed.value})` }
+      return filterDecl('hue-rotate', `hue-rotate(${parsed.value})`)
     if (/^-?\d+(?:\.\d+)?$/.test(parsed.value))
-      return { filter: `hue-rotate(${parsed.value}deg)` }
+      return filterDecl('hue-rotate', `hue-rotate(${parsed.value}deg)`)
     return undefined
   }
   if (parsed.utility === 'drop-shadow') {
@@ -74,11 +108,11 @@ export const filterRule: UtilityRule = (parsed) => {
       'none': 'drop-shadow(0 0 #0000)',
     }
     if (!parsed.value)
-      return { filter: shadows.DEFAULT }
+      return filterDecl('drop-shadow', shadows.DEFAULT)
     if (shadows[parsed.value])
-      return { filter: shadows[parsed.value] }
+      return filterDecl('drop-shadow', shadows[parsed.value])
     if (parsed.arbitrary)
-      return { filter: `drop-shadow(${parsed.value})` }
+      return filterDecl('drop-shadow', `drop-shadow(${parsed.value})`)
     return undefined
   }
 }
@@ -90,18 +124,22 @@ export const backdropFilterRule: UtilityRule = (parsed): Record<string, string> 
   }
   if (parsed.utility === 'backdrop-blur') {
     const size = blurSize(parsed)
-    return size !== undefined
-      ? { '-webkit-backdrop-filter': `blur(${size})`, 'backdrop-filter': `blur(${size})` }
-      : undefined
+    return size !== undefined ? backdropDecl('blur', `blur(${size})`) : undefined
   }
   if (parsed.utility.startsWith('backdrop-') && parsed.value) {
     const fn = parsed.utility.slice(9)
-    if (PERCENT_FILTERS.includes(fn)) {
+    if (PERCENT_FILTERS.includes(fn) || fn === 'opacity') {
       const amount = filterAmount(parsed)
       if (amount === undefined)
         return undefined
-      const v = `${fn}(${amount})`
-      return { '-webkit-backdrop-filter': v, 'backdrop-filter': v }
+      return backdropDecl(fn, `${fn}(${amount})`)
+    }
+    if (fn === 'hue-rotate') {
+      if (parsed.arbitrary)
+        return backdropDecl(fn, `hue-rotate(${parsed.value})`)
+      if (/^-?\d+(?:\.\d+)?$/.test(parsed.value))
+        return backdropDecl(fn, `hue-rotate(${parsed.value}deg)`)
+      return undefined
     }
   }
 }

@@ -241,13 +241,15 @@ describe('visual utilities value validation', () => {
   })
 
   it('keeps named scales, numbers, and arbitrary values', () => {
-    expect(css('blur-sm')).toContain('filter: blur(4px);')
-    expect(css('blur-12')).toContain('filter: blur(12px);')
-    expect(css('blur-[5em]')).toContain('filter: blur(5em);')
-    expect(css('brightness-150')).toContain('filter: brightness(1.5);')
-    expect(css('hue-rotate-90')).toContain('filter: hue-rotate(90deg);')
-    expect(css('backdrop-blur-md')).toContain('backdrop-filter: blur(12px);')
-    expect(css('backdrop-saturate-200')).toContain('backdrop-filter: saturate(2);')
+    // Each filter function is named so several can compose on one element;
+    // the shared `filter` declaration lists them all.
+    expect(css('blur-sm')).toContain('--cw-blur: blur(4px);')
+    expect(css('blur-12')).toContain('--cw-blur: blur(12px);')
+    expect(css('blur-[5em]')).toContain('--cw-blur: blur(5em);')
+    expect(css('brightness-150')).toContain('--cw-brightness: brightness(1.5);')
+    expect(css('hue-rotate-90')).toContain('--cw-hue-rotate: hue-rotate(90deg);')
+    expect(css('backdrop-blur-md')).toContain('--cw-backdrop-blur: blur(12px);')
+    expect(css('backdrop-saturate-200')).toContain('--cw-backdrop-saturate: saturate(2);')
     expect(css('columns-3')).toContain('columns: 3;')
     expect(css('columns-13')).toContain('columns: 13;')
     expect(css('aspect-video')).toContain('aspect-ratio: 16 / 9;')

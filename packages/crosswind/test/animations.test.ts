@@ -62,8 +62,12 @@ describe('Backdrop Filter Vendor Prefix', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('backdrop-blur-sm')
     const css = gen.toCSS(false)
-    expect(css).toContain('-webkit-backdrop-filter: blur(4px)')
-    expect(css).toContain('backdrop-filter: blur(4px)')
+    // The prefixed property still ships; the value now composes every
+    // backdrop function through custom properties so two backdrop utilities
+    // on one element no longer overwrite each other.
+    expect(css).toContain('--cw-backdrop-blur: blur(4px)')
+    expect(css).toContain('-webkit-backdrop-filter: var(--cw-backdrop-blur, )')
+    expect(css).toContain('backdrop-filter: var(--cw-backdrop-blur, )')
   })
 
   it('should include -webkit-backdrop-filter for backdrop-brightness', () => {
@@ -78,7 +82,8 @@ describe('Backdrop Filter Vendor Prefix', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('backdrop-grayscale')
     const css = gen.toCSS(false)
-    expect(css).toContain('-webkit-backdrop-filter: grayscale(100%)')
+    expect(css).toContain('--cw-backdrop-grayscale: grayscale(100%)')
+    expect(css).toContain('-webkit-backdrop-filter: var(--cw-backdrop-blur, )')
   })
 })
 

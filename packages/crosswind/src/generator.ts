@@ -1165,59 +1165,80 @@ const STROKE_LINEJOIN_MAP: Record<string, Record<string, string>> = {
 // FILTER UTILITIES - Fast path for filters
 // =============================================================================
 
+// Filter utilities compose through one custom property per function (see
+// rules-interactivity.ts). These fast-path maps must emit the same shape, or
+// a named utility like `backdrop-blur-md` would go back to writing the whole
+// `backdrop-filter` and clobber any other filter set on the same element.
+const CW_FILTER_FUNCTIONS = ['blur', 'brightness', 'contrast', 'grayscale', 'hue-rotate', 'invert', 'saturate', 'sepia', 'drop-shadow']
+const CW_BACKDROP_FUNCTIONS = ['blur', 'brightness', 'contrast', 'grayscale', 'hue-rotate', 'invert', 'opacity', 'saturate', 'sepia']
+const CW_FILTER_COMPOSED = CW_FILTER_FUNCTIONS.map(fn => `var(--cw-${fn}, )`).join(' ')
+const CW_BACKDROP_COMPOSED = CW_BACKDROP_FUNCTIONS.map(fn => `var(--cw-backdrop-${fn}, )`).join(' ')
+
+function cwFilter(fn: string, value: string): Record<string, string> {
+  return { [`--cw-${fn}`]: value, filter: CW_FILTER_COMPOSED }
+}
+
+function cwBackdrop(fn: string, value: string): Record<string, string> {
+  return {
+    [`--cw-backdrop-${fn}`]: value,
+    '-webkit-backdrop-filter': CW_BACKDROP_COMPOSED,
+    'backdrop-filter': CW_BACKDROP_COMPOSED,
+  }
+}
+
 // Blur - direct raw class to CSS
 const BLUR_MAP: Record<string, Record<string, string>> = {
-  'blur-none': { filter: 'blur(0)' },
-  'blur-sm': { filter: 'blur(4px)' },
-  'blur': { filter: 'blur(8px)' },
-  'blur-md': { filter: 'blur(12px)' },
-  'blur-lg': { filter: 'blur(16px)' },
-  'blur-xl': { filter: 'blur(24px)' },
-  'blur-2xl': { filter: 'blur(40px)' },
-  'blur-3xl': { filter: 'blur(64px)' },
+  'blur-none': cwFilter('blur', 'blur(0)'),
+  'blur-sm': cwFilter('blur', 'blur(4px)'),
+  'blur': cwFilter('blur', 'blur(8px)'),
+  'blur-md': cwFilter('blur', 'blur(12px)'),
+  'blur-lg': cwFilter('blur', 'blur(16px)'),
+  'blur-xl': cwFilter('blur', 'blur(24px)'),
+  'blur-2xl': cwFilter('blur', 'blur(40px)'),
+  'blur-3xl': cwFilter('blur', 'blur(64px)'),
 }
 
 // Backdrop blur - direct raw class to CSS (with -webkit- prefix for Safari)
 const BACKDROP_BLUR_MAP: Record<string, Record<string, string>> = {
-  'backdrop-blur-none': { '-webkit-backdrop-filter': 'blur(0)', 'backdrop-filter': 'blur(0)' },
-  'backdrop-blur-sm': { '-webkit-backdrop-filter': 'blur(4px)', 'backdrop-filter': 'blur(4px)' },
-  'backdrop-blur': { '-webkit-backdrop-filter': 'blur(8px)', 'backdrop-filter': 'blur(8px)' },
-  'backdrop-blur-md': { '-webkit-backdrop-filter': 'blur(12px)', 'backdrop-filter': 'blur(12px)' },
-  'backdrop-blur-lg': { '-webkit-backdrop-filter': 'blur(16px)', 'backdrop-filter': 'blur(16px)' },
-  'backdrop-blur-xl': { '-webkit-backdrop-filter': 'blur(24px)', 'backdrop-filter': 'blur(24px)' },
-  'backdrop-blur-2xl': { '-webkit-backdrop-filter': 'blur(40px)', 'backdrop-filter': 'blur(40px)' },
-  'backdrop-blur-3xl': { '-webkit-backdrop-filter': 'blur(64px)', 'backdrop-filter': 'blur(64px)' },
+  'backdrop-blur-none': cwBackdrop('blur', 'blur(0)'),
+  'backdrop-blur-sm': cwBackdrop('blur', 'blur(4px)'),
+  'backdrop-blur': cwBackdrop('blur', 'blur(8px)'),
+  'backdrop-blur-md': cwBackdrop('blur', 'blur(12px)'),
+  'backdrop-blur-lg': cwBackdrop('blur', 'blur(16px)'),
+  'backdrop-blur-xl': cwBackdrop('blur', 'blur(24px)'),
+  'backdrop-blur-2xl': cwBackdrop('blur', 'blur(40px)'),
+  'backdrop-blur-3xl': cwBackdrop('blur', 'blur(64px)'),
 }
 
 // Grayscale/invert/sepia - direct raw class to CSS
 const FILTER_TOGGLE_MAP: Record<string, Record<string, string>> = {
-  'grayscale-0': { filter: 'grayscale(0)' },
-  'grayscale': { filter: 'grayscale(100%)' },
-  'invert-0': { filter: 'invert(0)' },
-  'invert': { filter: 'invert(100%)' },
-  'sepia-0': { filter: 'sepia(0)' },
-  'sepia': { filter: 'sepia(100%)' },
+  'grayscale-0': cwFilter('grayscale', 'grayscale(0)'),
+  'grayscale': cwFilter('grayscale', 'grayscale(100%)'),
+  'invert-0': cwFilter('invert', 'invert(0)'),
+  'invert': cwFilter('invert', 'invert(100%)'),
+  'sepia-0': cwFilter('sepia', 'sepia(0)'),
+  'sepia': cwFilter('sepia', 'sepia(100%)'),
 }
 
 // Backdrop grayscale/invert/sepia - direct raw class to CSS (with -webkit- prefix)
 const BACKDROP_FILTER_TOGGLE_MAP: Record<string, Record<string, string>> = {
-  'backdrop-grayscale-0': { '-webkit-backdrop-filter': 'grayscale(0)', 'backdrop-filter': 'grayscale(0)' },
-  'backdrop-grayscale': { '-webkit-backdrop-filter': 'grayscale(100%)', 'backdrop-filter': 'grayscale(100%)' },
-  'backdrop-invert-0': { '-webkit-backdrop-filter': 'invert(0)', 'backdrop-filter': 'invert(0)' },
-  'backdrop-invert': { '-webkit-backdrop-filter': 'invert(100%)', 'backdrop-filter': 'invert(100%)' },
-  'backdrop-sepia-0': { '-webkit-backdrop-filter': 'sepia(0)', 'backdrop-filter': 'sepia(0)' },
-  'backdrop-sepia': { '-webkit-backdrop-filter': 'sepia(100%)', 'backdrop-filter': 'sepia(100%)' },
+  'backdrop-grayscale-0': cwBackdrop('grayscale', 'grayscale(0)'),
+  'backdrop-grayscale': cwBackdrop('grayscale', 'grayscale(100%)'),
+  'backdrop-invert-0': cwBackdrop('invert', 'invert(0)'),
+  'backdrop-invert': cwBackdrop('invert', 'invert(100%)'),
+  'backdrop-sepia-0': cwBackdrop('sepia', 'sepia(0)'),
+  'backdrop-sepia': cwBackdrop('sepia', 'sepia(100%)'),
 }
 
 // Drop shadow - direct raw class to CSS
 const DROP_SHADOW_MAP: Record<string, Record<string, string>> = {
-  'drop-shadow-sm': { filter: 'drop-shadow(0 1px 1px rgb(0 0 0 / 0.05))' },
-  'drop-shadow': { filter: 'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06))' },
-  'drop-shadow-md': { filter: 'drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06))' },
-  'drop-shadow-lg': { filter: 'drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))' },
-  'drop-shadow-xl': { filter: 'drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08))' },
-  'drop-shadow-2xl': { filter: 'drop-shadow(0 25px 25px rgb(0 0 0 / 0.15))' },
-  'drop-shadow-none': { filter: 'drop-shadow(0 0 #0000)' },
+  'drop-shadow-sm': cwFilter('drop-shadow', 'drop-shadow(0 1px 1px rgb(0 0 0 / 0.05))'),
+  'drop-shadow': cwFilter('drop-shadow', 'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06))'),
+  'drop-shadow-md': cwFilter('drop-shadow', 'drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06))'),
+  'drop-shadow-lg': cwFilter('drop-shadow', 'drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))'),
+  'drop-shadow-xl': cwFilter('drop-shadow', 'drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08))'),
+  'drop-shadow-2xl': cwFilter('drop-shadow', 'drop-shadow(0 25px 25px rgb(0 0 0 / 0.15))'),
+  'drop-shadow-none': cwFilter('drop-shadow', 'drop-shadow(0 0 #0000)'),
 }
 
 // Mix blend mode - direct raw class to CSS
