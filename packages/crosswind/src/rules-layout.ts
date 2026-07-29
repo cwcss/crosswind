@@ -234,6 +234,42 @@ export const isolationRule: UtilityRule = (parsed) => {
   return values[parsed.base] ? { isolation: values[parsed.base] } : undefined
 }
 
+/**
+ * CSS containment (`contain-*`).
+ *
+ * `size`, `inline-size`, `layout`, `paint` and `style` are independently
+ * combinable, so each writes its own custom property and they share one
+ * `contain` declaration — `contain-layout contain-paint` has to end up as
+ * `contain: layout paint`, not as one utility overwriting the other. The empty
+ * `var(--x, )` fallback means a keyword nobody set contributes nothing.
+ *
+ * `none`, `content` and `strict` are whole values in their own right and
+ * simply replace the property.
+ */
+const CONTAIN_KEYWORDS = ['size', 'inline-size', 'layout', 'paint', 'style']
+const CONTAIN_COMPOSED = CONTAIN_KEYWORDS.map(keyword => `var(--cw-contain-${keyword}, )`).join(' ')
+const CONTAIN_STANDALONE = ['none', 'content', 'strict']
+
+export const containRule: UtilityRule = (parsed) => {
+  if (parsed.utility !== 'contain' || !parsed.value)
+    return undefined
+
+  if (parsed.arbitrary)
+    return { contain: parsed.value }
+
+  if (CONTAIN_STANDALONE.includes(parsed.value))
+    return { contain: parsed.value }
+
+  if (CONTAIN_KEYWORDS.includes(parsed.value)) {
+    return {
+      [`--cw-contain-${parsed.value}`]: parsed.value,
+      contain: CONTAIN_COMPOSED,
+    }
+  }
+
+  return undefined
+}
+
 export const objectFitRule: UtilityRule = (parsed) => {
   const fits: Record<string, string> = {
     'object-contain': 'contain',
@@ -411,6 +447,7 @@ export const layoutRules: UtilityRule[] = [
   boxSizingRule,
   floatRule,
   clearRule,
+  containRule,
   isolationRule,
   objectFitRule,
   objectPositionRule,
