@@ -93,7 +93,9 @@ const defaultBracketAliases: Record<string, string> = {
  * Pre-compiled regex patterns for performance (avoid regex compilation on each call)
 */
 const SPECIAL_CHARS_REGEX = /[%#()]/
-const CSS_UNITS_REGEX = /^\d+(\.\d+)?(px|rem|em|vh|vw|dvh|dvw|svh|svw|lvh|lvw|ch|ex|lh|cap|ic|rlh|vi|vb|vmin|vmax|cqw|cqh|cqi|cqb|cqmin|cqmax|cm|mm|in|pt|pc|Q)$/
+// Groups are non-capturing: the callers only ever test, so capturing made the
+// engine build a match array per call for nothing.
+const CSS_UNITS_REGEX = /^\d+(?:\.\d+)?(?:px|rem|em|vh|vw|dvh|dvw|svh|svw|lvh|lvw|ch|ex|lh|cap|ic|rlh|vi|vb|vmin|vmax|cqw|cqh|cqi|cqb|cqmin|cqmax|cm|mm|in|pt|pc|Q)$/
 
 /**
  * Check if value needs arbitrary bracket syntax

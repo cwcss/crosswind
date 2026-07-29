@@ -72,11 +72,19 @@ const SCROLL_BEHAVIOR_VALUES: Record<string, string> = {
   'scroll-smooth': 'smooth',
 }
 
+// Kept in step with the generator's static scroll-snap map. The axis
+// utilities defer the strictness to a variable (default proximity, as
+// Tailwind does) so snap-mandatory / snap-proximity can change it; the
+// strictness utilities only set that variable, because `scroll-snap-type:
+// mandatory` on its own is not a valid declaration.
 const SCROLL_SNAP_TYPES: Record<string, string> = {
   'snap-none': 'none',
-  'snap-x': 'x mandatory',
-  'snap-y': 'y mandatory',
-  'snap-both': 'both mandatory',
+  'snap-x': 'x var(--cw-scroll-snap-strictness, proximity)',
+  'snap-y': 'y var(--cw-scroll-snap-strictness, proximity)',
+  'snap-both': 'both var(--cw-scroll-snap-strictness, proximity)',
+}
+
+const SCROLL_SNAP_STRICTNESS: Record<string, string> = {
   'snap-mandatory': 'mandatory',
   'snap-proximity': 'proximity',
 }
@@ -457,9 +465,11 @@ export const scrollPaddingRule: UtilityRule = (parsed, config) => {
 
 export const scrollSnapRule: UtilityRule = (parsed) => {
   if (SCROLL_SNAP_TYPES[parsed.base]) {
-    return parsed.base.includes('mandatory') || parsed.base.includes('proximity')
-      ? { 'scroll-snap-type': SCROLL_SNAP_TYPES[parsed.base] } as Record<string, string>
-      : { 'scroll-snap-type': SCROLL_SNAP_TYPES[parsed.base] } as Record<string, string>
+    return { 'scroll-snap-type': SCROLL_SNAP_TYPES[parsed.base] }
+  }
+
+  if (SCROLL_SNAP_STRICTNESS[parsed.base]) {
+    return { '--cw-scroll-snap-strictness': SCROLL_SNAP_STRICTNESS[parsed.base] }
   }
 
   if (SCROLL_SNAP_ALIGNS[parsed.base]) {
