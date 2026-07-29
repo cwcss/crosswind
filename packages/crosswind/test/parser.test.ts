@@ -6,6 +6,7 @@ describe('parseClass', () => {
     const result = parseClass('flex')
     expect(result).toEqual({
       raw: 'flex',
+      base: 'flex',
       variants: [],
       utility: 'flex',
       value: undefined,
@@ -18,6 +19,7 @@ describe('parseClass', () => {
     const result = parseClass('p-4')
     expect(result).toEqual({
       raw: 'p-4',
+      base: 'p-4',
       variants: [],
       utility: 'p',
       value: '4',
@@ -30,6 +32,7 @@ describe('parseClass', () => {
     const result = parseClass('!p-4')
     expect(result).toEqual({
       raw: '!p-4',
+      base: 'p-4',
       variants: [],
       utility: 'p',
       value: '4',
@@ -42,6 +45,7 @@ describe('parseClass', () => {
     const result = parseClass('w-[100px]')
     expect(result).toEqual({
       raw: 'w-[100px]',
+      base: 'w-[100px]',
       variants: [],
       utility: 'w',
       value: '100px',
@@ -54,6 +58,7 @@ describe('parseClass', () => {
     const result = parseClass('bg-[#ff0000]')
     expect(result).toEqual({
       raw: 'bg-[#ff0000]',
+      base: 'bg-[#ff0000]',
       variants: [],
       utility: 'bg',
       value: '#ff0000',
@@ -66,6 +71,7 @@ describe('parseClass', () => {
     const result = parseClass('!w-[100px]')
     expect(result).toEqual({
       raw: '!w-[100px]',
+      base: 'w-[100px]',
       variants: [],
       utility: 'w',
       value: '100px',
@@ -78,6 +84,7 @@ describe('parseClass', () => {
     const result = parseClass('bg-blue-500')
     expect(result).toEqual({
       raw: 'bg-blue-500',
+      base: 'bg-blue-500',
       variants: [],
       utility: 'bg',
       value: 'blue-500',
@@ -90,6 +97,7 @@ describe('parseClass', () => {
     const result = parseClass('hover:bg-blue-500')
     expect(result).toEqual({
       raw: 'hover:bg-blue-500',
+      base: 'bg-blue-500',
       variants: ['hover'],
       utility: 'bg',
       value: 'blue-500',
@@ -102,6 +110,7 @@ describe('parseClass', () => {
     const result = parseClass('sm:hover:flex')
     expect(result).toEqual({
       raw: 'sm:hover:flex',
+      base: 'flex',
       variants: ['sm', 'hover'],
       utility: 'flex',
       value: undefined,
@@ -114,6 +123,7 @@ describe('parseClass', () => {
     const result = parseClass('md:p-8')
     expect(result).toEqual({
       raw: 'md:p-8',
+      base: 'p-8',
       variants: ['md'],
       utility: 'p',
       value: '8',
@@ -126,6 +136,7 @@ describe('parseClass', () => {
     const result = parseClass('lg:dark:hover:text-gray-800')
     expect(result).toEqual({
       raw: 'lg:dark:hover:text-gray-800',
+      base: 'text-gray-800',
       variants: ['lg', 'dark', 'hover'],
       utility: 'text',
       value: 'gray-800',
@@ -231,6 +242,7 @@ describe('parseClass - Edge Cases', () => {
     const result = parseClass('-m-0')
     expect(result).toEqual({
       raw: '-m-0',
+      base: '-m-0',
       variants: [],
       utility: 'm',
       value: '-0',
@@ -243,6 +255,7 @@ describe('parseClass - Edge Cases', () => {
     const result = parseClass('w-0/0')
     expect(result).toEqual({
       raw: 'w-0/0',
+      base: 'w-0/0',
       variants: [],
       utility: 'w',
       value: '0/0',

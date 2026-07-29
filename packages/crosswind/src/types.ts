@@ -196,6 +196,14 @@ export interface VariantConfig {
 
 export interface ParsedClass {
   raw: string
+  /**
+   * `raw` with every variant prefix and the `!` important marker stripped —
+   * the bare utility token (`hover:!bg-red-500` → `bg-red-500`).
+   *
+   * Rules that recognise a whole class by name must match on this, not on
+   * `raw`, or the utility silently generates nothing under any variant.
+   */
+  base: string
   variants: string[]
   utility: string
   value?: string

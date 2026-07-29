@@ -79,7 +79,7 @@ function backdropDecl(fn: string, value: string): Record<string, string> {
 // Filter utilities
 export const filterRule: UtilityRule = (parsed) => {
   // Handle filter-none
-  if (parsed.raw === 'filter-none') {
+  if (parsed.base === 'filter-none') {
     return { filter: 'none' }
   }
   if (parsed.utility === 'blur') {
@@ -119,7 +119,7 @@ export const filterRule: UtilityRule = (parsed) => {
 
 export const backdropFilterRule: UtilityRule = (parsed): Record<string, string> | undefined => {
   // Handle backdrop-filter-none
-  if (parsed.raw === 'backdrop-filter-none') {
+  if (parsed.base === 'backdrop-filter-none') {
     return { 'backdrop-filter': 'none' }
   }
   if (parsed.utility === 'backdrop-blur') {
@@ -150,7 +150,7 @@ export const borderCollapseRule: UtilityRule = (parsed) => {
     'border-collapse': 'collapse',
     'border-separate': 'separate',
   }
-  return values[parsed.raw] ? { 'border-collapse': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'border-collapse': values[parsed.base] } : undefined
 }
 
 export const borderSpacingRule: UtilityRule = (parsed, config) => {
@@ -189,7 +189,7 @@ export const captionSideRule: UtilityRule = (parsed) => {
     'caption-top': 'top',
     'caption-bottom': 'bottom',
   }
-  return values[parsed.raw] ? { 'caption-side': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'caption-side': values[parsed.base] } : undefined
 }
 
 // Interactivity utilities
@@ -205,7 +205,7 @@ export const appearanceRule: UtilityRule = (parsed) => {
     'appearance-none': 'none',
     'appearance-auto': 'auto',
   }
-  return values[parsed.raw] ? { appearance: values[parsed.raw] } : undefined
+  return values[parsed.base] ? { appearance: values[parsed.base] } : undefined
 }
 
 export const caretColorRule: UtilityRule = (parsed, config) => {
@@ -222,7 +222,7 @@ export const colorSchemeRule: UtilityRule = (parsed) => {
     'color-scheme-dark': 'dark',
     'color-scheme-light-dark': 'light dark',
   }
-  return schemes[parsed.raw] ? { 'color-scheme': schemes[parsed.raw] } : undefined
+  return schemes[parsed.base] ? { 'color-scheme': schemes[parsed.base] } : undefined
 }
 
 export const fieldSizingRule: UtilityRule = (parsed) => {
@@ -230,7 +230,7 @@ export const fieldSizingRule: UtilityRule = (parsed) => {
     'field-sizing-content': 'content',
     'field-sizing-fixed': 'fixed',
   }
-  return values[parsed.raw] ? { 'field-sizing': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'field-sizing': values[parsed.base] } : undefined
 }
 
 export const cursorRule: UtilityRule = (parsed) => {
@@ -272,7 +272,7 @@ export const cursorRule: UtilityRule = (parsed) => {
     'cursor-zoom-in': 'zoom-in',
     'cursor-zoom-out': 'zoom-out',
   }
-  return cursors[parsed.raw] ? { cursor: cursors[parsed.raw] } : undefined
+  return cursors[parsed.base] ? { cursor: cursors[parsed.base] } : undefined
 }
 
 export const pointerEventsRule: UtilityRule = (parsed) => {
@@ -280,7 +280,7 @@ export const pointerEventsRule: UtilityRule = (parsed) => {
     'pointer-events-none': 'none',
     'pointer-events-auto': 'auto',
   }
-  return values[parsed.raw] ? { 'pointer-events': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'pointer-events': values[parsed.base] } : undefined
 }
 
 export const resizeRule: UtilityRule = (parsed) => {
@@ -290,7 +290,7 @@ export const resizeRule: UtilityRule = (parsed) => {
     'resize-y': 'vertical',
     'resize-x': 'horizontal',
   }
-  return values[parsed.raw] ? { resize: values[parsed.raw] } : undefined
+  return values[parsed.base] ? { resize: values[parsed.base] } : undefined
 }
 
 export const scrollBehaviorRule: UtilityRule = (parsed) => {
@@ -298,7 +298,7 @@ export const scrollBehaviorRule: UtilityRule = (parsed) => {
     'scroll-auto': 'auto',
     'scroll-smooth': 'smooth',
   }
-  return values[parsed.raw] ? { 'scroll-behavior': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'scroll-behavior': values[parsed.base] } : undefined
 }
 
 export const scrollMarginRule: UtilityRule = (parsed, config) => {
@@ -372,10 +372,10 @@ export const scrollSnapRule: UtilityRule = (parsed) => {
     'snap-mandatory': 'mandatory',
     'snap-proximity': 'proximity',
   }
-  if (types[parsed.raw]) {
-    return parsed.raw.includes('mandatory') || parsed.raw.includes('proximity')
-      ? { 'scroll-snap-type': types[parsed.raw] } as Record<string, string>
-      : { 'scroll-snap-type': types[parsed.raw] } as Record<string, string>
+  if (types[parsed.base]) {
+    return parsed.base.includes('mandatory') || parsed.base.includes('proximity')
+      ? { 'scroll-snap-type': types[parsed.base] } as Record<string, string>
+      : { 'scroll-snap-type': types[parsed.base] } as Record<string, string>
   }
 
   const aligns: Record<string, string> = {
@@ -384,16 +384,16 @@ export const scrollSnapRule: UtilityRule = (parsed) => {
     'snap-center': 'center',
     'snap-align-none': 'none',
   }
-  if (aligns[parsed.raw]) {
-    return { 'scroll-snap-align': aligns[parsed.raw] } as Record<string, string>
+  if (aligns[parsed.base]) {
+    return { 'scroll-snap-align': aligns[parsed.base] } as Record<string, string>
   }
 
   const stops: Record<string, string> = {
     'snap-normal': 'normal',
     'snap-always': 'always',
   }
-  if (stops[parsed.raw]) {
-    return { 'scroll-snap-stop': stops[parsed.raw] } as Record<string, string>
+  if (stops[parsed.base]) {
+    return { 'scroll-snap-stop': stops[parsed.base] } as Record<string, string>
   }
 }
 
@@ -410,7 +410,7 @@ export const touchActionRule: UtilityRule = (parsed) => {
     'touch-pinch-zoom': 'pinch-zoom',
     'touch-manipulation': 'manipulation',
   }
-  return actions[parsed.raw] ? { 'touch-action': actions[parsed.raw] } : undefined
+  return actions[parsed.base] ? { 'touch-action': actions[parsed.base] } : undefined
 }
 
 export const userSelectRule: UtilityRule = (parsed) => {
@@ -420,7 +420,7 @@ export const userSelectRule: UtilityRule = (parsed) => {
     'select-all': 'all',
     'select-auto': 'auto',
   }
-  return selects[parsed.raw] ? { 'user-select': selects[parsed.raw] } : undefined
+  return selects[parsed.base] ? { 'user-select': selects[parsed.base] } : undefined
 }
 
 export const willChangeRule: UtilityRule = (parsed) => {
@@ -430,7 +430,7 @@ export const willChangeRule: UtilityRule = (parsed) => {
     'will-change-contents': 'contents',
     'will-change-transform': 'transform',
   }
-  return values[parsed.raw] ? { 'will-change': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'will-change': values[parsed.base] } : undefined
 }
 
 // SVG utilities
@@ -489,7 +489,7 @@ export const strokeLinecapRule: UtilityRule = (parsed) => {
     'stroke-linecap-round': 'round',
     'stroke-linecap-square': 'square',
   }
-  return values[parsed.raw] ? { 'stroke-linecap': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'stroke-linecap': values[parsed.base] } : undefined
 }
 
 // SVG stroke-linejoin
@@ -499,12 +499,12 @@ export const strokeLinejoinRule: UtilityRule = (parsed) => {
     'stroke-linejoin-round': 'round',
     'stroke-linejoin-bevel': 'bevel',
   }
-  return values[parsed.raw] ? { 'stroke-linejoin': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'stroke-linejoin': values[parsed.base] } : undefined
 }
 
 // Accessibility
 export const screenReaderRule: UtilityRule = (parsed) => {
-  if (parsed.raw === 'sr-only') {
+  if (parsed.base === 'sr-only') {
     return {
       'position': 'absolute',
       'width': '1px',
@@ -517,7 +517,7 @@ export const screenReaderRule: UtilityRule = (parsed) => {
       'border-width': '0',
     } as Record<string, string>
   }
-  if (parsed.raw === 'not-sr-only') {
+  if (parsed.base === 'not-sr-only') {
     return {
       'position': 'static',
       'width': 'auto',
@@ -537,7 +537,7 @@ export const forcedColorAdjustRule: UtilityRule = (parsed) => {
     'forced-color-adjust-auto': 'auto',
     'forced-color-adjust-none': 'none',
   }
-  return values[parsed.raw] ? { 'forced-color-adjust': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'forced-color-adjust': values[parsed.base] } : undefined
 }
 
 export const interactivityRules: UtilityRule[] = [

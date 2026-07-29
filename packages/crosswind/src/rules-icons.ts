@@ -145,7 +145,7 @@ function svgToDataUrl(svg: string): string {
 const ICON_RE = /^i-([a-z][a-z0-9]*)-(.+)$/
 
 export const iconRule: UtilityRule = (parsed: ParsedClass, _config: CrosswindConfig) => {
-  const m = parsed.raw.match(ICON_RE)
+  const m = parsed.base.match(ICON_RE)
   if (!m) return undefined
   const [, collectionName, iconName] = m
 

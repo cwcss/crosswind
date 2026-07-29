@@ -36,6 +36,7 @@ describe('Arbitrary Values and Properties', () => {
       const result = parseClass('[color:red]')
       expect(result).toEqual({
         raw: '[color:red]',
+        base: '[color:red]',
         variants: [],
         utility: 'color',
         value: 'red',
@@ -48,6 +49,7 @@ describe('Arbitrary Values and Properties', () => {
       const result = parseClass('[mask-type:luminance]')
       expect(result).toEqual({
         raw: '[mask-type:luminance]',
+        base: '[mask-type:luminance]',
         variants: [],
         utility: 'mask-type',
         value: 'luminance',

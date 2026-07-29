@@ -91,7 +91,7 @@ export const columnFillRule: UtilityRule = (parsed) => {
     'column-fill-balance': 'balance',
     'column-fill-balance-all': 'balance-all',
   }
-  return values[parsed.raw] ? { 'column-fill': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'column-fill': values[parsed.base] } : undefined
 }
 
 // Column gap (different from grid gap)
@@ -163,7 +163,7 @@ export const columnSpanRule: UtilityRule = (parsed) => {
     'column-span-all': 'all',
     'column-span-none': 'none',
   }
-  return values[parsed.raw] ? { 'column-span': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'column-span': values[parsed.base] } : undefined
 }
 
 export const breakRule: UtilityRule = (parsed) => {
@@ -183,7 +183,7 @@ export const breakRule: UtilityRule = (parsed) => {
     'break-inside-avoid-page': { 'break-inside': 'avoid-page' },
     'break-inside-avoid-column': { 'break-inside': 'avoid-column' },
   }
-  return breaks[parsed.raw]
+  return breaks[parsed.base]
 }
 
 export const boxDecorationRule: UtilityRule = (parsed) => {
@@ -191,7 +191,7 @@ export const boxDecorationRule: UtilityRule = (parsed) => {
     'box-decoration-clone': 'clone',
     'box-decoration-slice': 'slice',
   }
-  return values[parsed.raw] ? { 'box-decoration-break': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'box-decoration-break': values[parsed.base] } : undefined
 }
 
 export const boxSizingRule: UtilityRule = (parsed) => {
@@ -199,7 +199,7 @@ export const boxSizingRule: UtilityRule = (parsed) => {
     'box-border': 'border-box',
     'box-content': 'content-box',
   }
-  return values[parsed.raw] ? { 'box-sizing': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'box-sizing': values[parsed.base] } : undefined
 }
 
 export const floatRule: UtilityRule = (parsed) => {
@@ -210,7 +210,7 @@ export const floatRule: UtilityRule = (parsed) => {
     'float-left': 'left',
     'float-none': 'none',
   }
-  return floats[parsed.raw] ? { float: floats[parsed.raw] } : undefined
+  return floats[parsed.base] ? { float: floats[parsed.base] } : undefined
 }
 
 export const clearRule: UtilityRule = (parsed) => {
@@ -222,7 +222,7 @@ export const clearRule: UtilityRule = (parsed) => {
     'clear-both': 'both',
     'clear-none': 'none',
   }
-  return clears[parsed.raw] ? { clear: clears[parsed.raw] } : undefined
+  return clears[parsed.base] ? { clear: clears[parsed.base] } : undefined
 }
 
 export const isolationRule: UtilityRule = (parsed) => {
@@ -230,7 +230,7 @@ export const isolationRule: UtilityRule = (parsed) => {
     'isolate': 'isolate',
     'isolation-auto': 'auto',
   }
-  return values[parsed.raw] ? { isolation: values[parsed.raw] } : undefined
+  return values[parsed.base] ? { isolation: values[parsed.base] } : undefined
 }
 
 export const objectFitRule: UtilityRule = (parsed) => {
@@ -241,7 +241,7 @@ export const objectFitRule: UtilityRule = (parsed) => {
     'object-none': 'none',
     'object-scale-down': 'scale-down',
   }
-  return fits[parsed.raw] ? { 'object-fit': fits[parsed.raw] } : undefined
+  return fits[parsed.base] ? { 'object-fit': fits[parsed.base] } : undefined
 }
 
 export const objectPositionRule: UtilityRule = (parsed) => {
@@ -256,7 +256,7 @@ export const objectPositionRule: UtilityRule = (parsed) => {
     'object-right-top': 'right top',
     'object-top': 'top',
   }
-  return positions[parsed.raw] ? { 'object-position': positions[parsed.raw] } : undefined
+  return positions[parsed.base] ? { 'object-position': positions[parsed.base] } : undefined
 }
 
 export const overflowRule: UtilityRule = (parsed) => {
@@ -286,12 +286,12 @@ export const overscrollRule: UtilityRule = (parsed) => {
     'overscroll-y-contain': 'contain',
     'overscroll-y-none': 'none',
   }
-  const prop = parsed.raw.startsWith('overscroll-x')
+  const prop = parsed.base.startsWith('overscroll-x')
     ? 'overscroll-behavior-x'
-    : parsed.raw.startsWith('overscroll-y')
+    : parsed.base.startsWith('overscroll-y')
       ? 'overscroll-behavior-y'
       : 'overscroll-behavior'
-  return behaviors[parsed.raw] ? { [prop]: behaviors[parsed.raw] } : undefined
+  return behaviors[parsed.base] ? { [prop]: behaviors[parsed.base] } : undefined
 }
 
 export const positionRule: UtilityRule = (parsed) => {
