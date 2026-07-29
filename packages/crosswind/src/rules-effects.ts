@@ -235,9 +235,21 @@ export const outlineRule: UtilityRule = (parsed, config) => {
 // Effect utilities
 export const boxShadowThemeRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'shadow') {
-    const shadow = parsed.value
-      ? config.theme.boxShadow[parsed.value]
-      : config.theme.boxShadow.DEFAULT
+    // An arbitrary value is either a whole shadow (`shadow-[0_1px_4px_black]`)
+    // or just a shadow COLOR (`shadow-[#ff0000]`), which shadowColorRule
+    // below owns. A shadow definition always has offsets, so the presence of
+    // whitespace — underscores in the class, spaces once parsed — tells the
+    // two apart. Without this branch every arbitrary shadow fell through the
+    // theme lookup and emitted no CSS at all, silently dropping the utility.
+    const isArbitraryShadow = parsed.arbitrary
+      && !!parsed.value
+      && (/\s/.test(parsed.value) || parsed.value === 'none')
+
+    const shadow = isArbitraryShadow
+      ? parsed.value
+      : parsed.value
+        ? config.theme.boxShadow[parsed.value]
+        : config.theme.boxShadow.DEFAULT
     if (!shadow) return undefined
 
     // shadow-none is a simple reset — no CSS variables needed
@@ -265,6 +277,11 @@ export const shadowColorRule: UtilityRule = (parsed, config) => {
 
   // Skip if it matches a theme shadow size (sm, md, lg, xl, none, DEFAULT)
   if (config.theme.boxShadow[parsed.value])
+    return undefined
+
+  // Skip a full arbitrary shadow definition — boxShadowThemeRule owns those.
+  // Only a bare arbitrary COLOR (`shadow-[#ff0000]`) belongs here.
+  if (parsed.arbitrary && /\s/.test(parsed.value))
     return undefined
 
   // Build/update color cache if needed
@@ -301,7 +318,11 @@ export const shadowColorRule: UtilityRule = (parsed, config) => {
     colorName = value
   }
 
+  // An arbitrary literal (`shadow-[#ff0000]`, `shadow-[rgb(1_2_3)]`) is a
+  // real colour the theme has never heard of, so fall back to using it
+  // verbatim rather than dropping the utility.
   const resolvedColor = shadowColorCache.get(colorName)
+    ?? (parsed.arbitrary ? colorName : undefined)
   if (!resolvedColor) return undefined
 
   const finalColor = opacity !== undefined
