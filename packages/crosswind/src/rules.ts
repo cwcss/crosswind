@@ -8,6 +8,7 @@ import { interactivityRules } from './rules-interactivity'
 import { layoutRules } from './rules-layout'
 import { transformsRules } from './rules-transforms'
 import { typographyRules } from './rules-typography'
+import { fractionToPercent } from './format'
 
 export type UtilityRule = (_parsed: ParsedClass, _config: CrosswindConfig) => Record<string, string> | UtilityRuleResult | undefined
 
@@ -316,7 +317,7 @@ export function resolveSizeToken(
     const [num, denom] = token.split('/').map(Number)
     if (Number.isNaN(num) || Number.isNaN(denom) || denom === 0)
       return undefined
-    return `${(num / denom) * 100}%`
+    return fractionToPercent(num, denom)
   }
   const spacing = config.theme.spacing[token]
   if (spacing !== undefined)

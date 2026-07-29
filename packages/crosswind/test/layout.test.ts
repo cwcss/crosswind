@@ -151,7 +151,7 @@ describe('Layout Utilities', () => {
     it('should generate top-1/3 as 33.333333%', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('top-1/3')
-      expect(gen.toCSS(false)).toContain('top: 33.33333333333333%;')
+      expect(gen.toCSS(false)).toContain('top: 33.333333%;')
     })
 
     it('should generate right-3/4 as 75%', () => {

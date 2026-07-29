@@ -1,4 +1,5 @@
 import type { UtilityRule } from './rules'
+import { fractionToPercent } from './format'
 
 // Transform, Transition, Animation utilities
 
@@ -85,8 +86,7 @@ export const translateRule: UtilityRule = (parsed, config) => {
     // Handle fractions: 1/2 -> 50%, 1/3 -> 33.333333%, etc.
     if (val.includes('/')) {
       const [num, denom] = val.split('/')
-      const percentage = (Number(num) / Number(denom)) * 100
-      return Number.isFinite(percentage) ? `${percentage}%` : undefined
+      return fractionToPercent(Number(num), Number(denom))
     }
     // Handle special keywords
     if (val === 'full')

@@ -1,4 +1,5 @@
 import type { UtilityRule } from './rules'
+import { fractionToPercent } from './format'
 
 // Layout utilities
 
@@ -327,7 +328,7 @@ export const insetRule: UtilityRule = (parsed, config) => {
     if (val.includes('/') && !parsed.arbitrary) {
       const [num, denom] = val.split('/').map(Number)
       if (!Number.isNaN(num) && !Number.isNaN(denom) && denom !== 0) {
-        return `${(num / denom) * 100}%`
+        return fractionToPercent(num, denom)
       }
       return undefined
     }
