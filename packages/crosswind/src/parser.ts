@@ -1091,6 +1091,44 @@ export function parseClass(className: string): ParsedClass {
   return result
 }
 
+const OPACITY_UTILITIES = new Set([
+  'bg', 'text', 'border', 'ring', 'placeholder', 'divide', 'accent', 'caret',
+  'fill', 'stroke', 'outline', 'decoration', 'shadow', 'ring-offset',
+  'from', 'via', 'to',
+])
+const OPACITY_VALUE_RE = /^(.+?)\/(\d+|\[\d*\.?\d+\])$/
+const FRACTION_VALUE_RE = /^(\d+)\/(\d+)$/
+
+/**
+ * Split a utility token into its name and value at the first dash, requiring
+ * the name to be dash-separated runs of lowercase letters and the value to be
+ * non-empty: `bg-red-500` → `['bg', 'red-500']`.
+ *
+ * Replaces `/^([a-z]+(?:-[a-z]+)*?)-(.+)$/`, which matched the same strings
+ * but through a nested unbounded quantifier — the classic super-linear
+ * backtracking shape, and paid for on every class that reaches this point.
+ * A single left-to-right scan is both linear and allocation-free.
+ */
+function splitUtilityValue(token: string): [string, string] | undefined {
+  let segmentHasLetter = false
+  for (let i = 0; i < token.length; i++) {
+    const code = token.charCodeAt(i)
+    if (code === 45) { // '-'
+      // An empty segment (leading or doubled dash) can't start a utility name.
+      if (!segmentHasLetter || i + 1 >= token.length)
+        return undefined
+      return [token.slice(0, i), token.slice(i + 1)]
+    }
+    if (code >= 97 && code <= 122) { // a-z
+      segmentHasLetter = true
+      continue
+    }
+    // Anything else before the first dash means there is no valid name here.
+    return undefined
+  }
+  return undefined
+}
+
 /**
  * Strip variant prefixes and the important marker off `raw`, leaving the bare
  * utility token. Computed once per class and memoized alongside the rest of
@@ -1522,13 +1560,13 @@ function parseClassImpl(className: string): Omit<ParsedClass, 'base'> {
     }
 
     // Regular negative value
-    const match = positiveUtility.match(/^([a-z]+(?:-[a-z]+)*?)-(.+)$/)
-    if (match) {
+    const split = splitUtilityValue(positiveUtility)
+    if (split) {
       return {
         raw: className,
         variants,
-        utility: match[1],
-        value: `-${match[2]}`,
+        utility: split[0],
+        value: `-${split[1]}`,
         important,
         arbitrary: false,
       }
@@ -1548,40 +1586,40 @@ function parseClassImpl(className: string): Omit<ParsedClass, 'base'> {
   // Check for color opacity modifiers: bg-blue-500/50, text-red-500/75, bg-white/[0.04]
   // Must come before fractional values to avoid conflict.
   // Gradient stops (from/via/to) accept opacity too — `from-red-500/50`.
-  const opacityMatch = utility.match(/^([a-z]+(?:-[a-z]+)*?)-(.+?)\/(\d+|\[\d*\.?\d+\])$/)
-  if (opacityMatch && ['bg', 'text', 'border', 'ring', 'placeholder', 'divide', 'accent', 'caret', 'fill', 'stroke', 'outline', 'decoration', 'shadow', 'ring-offset', 'from', 'via', 'to'].includes(opacityMatch[1])) {
-    return {
-      raw: className,
-      variants,
-      utility: opacityMatch[1],
-      value: `${opacityMatch[2]}/${opacityMatch[3]}`,
-      important,
-      arbitrary: false,
+  const split = splitUtilityValue(utility)
+  if (split) {
+    const [utilityName, rest] = split
+    const opacityMatch = rest.match(OPACITY_VALUE_RE)
+    if (opacityMatch && OPACITY_UTILITIES.has(utilityName)) {
+      return {
+        raw: className,
+        variants,
+        utility: utilityName,
+        value: `${opacityMatch[1]}/${opacityMatch[2]}`,
+        important,
+        arbitrary: false,
+      }
     }
-  }
 
-  // Check for fractional values: w-1/2, h-3/4
-  const fractionMatch = utility.match(/^([a-z]+(?:-[a-z]+)*?)-(\d+)\/(\d+)$/)
-  if (fractionMatch) {
-    return {
-      raw: className,
-      variants,
-      utility: fractionMatch[1],
-      value: `${fractionMatch[2]}/${fractionMatch[3]}`,
-      important,
-      arbitrary: false,
+    // Check for fractional values: w-1/2, h-3/4
+    const fractionMatch = rest.match(FRACTION_VALUE_RE)
+    if (fractionMatch) {
+      return {
+        raw: className,
+        variants,
+        utility: utilityName,
+        value: `${fractionMatch[1]}/${fractionMatch[2]}`,
+        important,
+        arbitrary: false,
+      }
     }
-  }
 
-  // Regular parsing - split on last dash
-  // First try: utility-value pattern (e.g., text-current, p-4)
-  const matchWithValue = utility.match(/^([a-z]+(?:-[a-z]+)*?)-(.+)$/)
-  if (matchWithValue) {
+    // Regular utility-value pattern (e.g., text-current, p-4)
     return {
       raw: className,
       variants,
-      utility: matchWithValue[1],
-      value: matchWithValue[2],
+      utility: utilityName,
+      value: rest,
       important,
       arbitrary: false,
     }
