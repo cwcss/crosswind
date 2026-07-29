@@ -123,6 +123,7 @@ describe('Sizing Utilities', () => {
       const result = parseClass('w-1/2')
       expect(result).toEqual({
         raw: 'w-1/2',
+        base: 'w-1/2',
         variants: [],
         utility: 'w',
         value: '1/2',

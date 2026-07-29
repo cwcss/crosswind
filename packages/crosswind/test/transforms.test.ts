@@ -93,6 +93,7 @@ describe('Transform Utilities', () => {
       const result = parseClass('-translate-x-4')
       expect(result).toEqual({
         raw: '-translate-x-4',
+        base: '-translate-x-4',
         variants: [],
         utility: 'translate-x',
         value: '-4',

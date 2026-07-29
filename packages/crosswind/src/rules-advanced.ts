@@ -633,8 +633,7 @@ export const containerRule: UtilityRule = (parsed, config) => {
 export const arbitraryPropertyRule: UtilityRule = (parsed) => {
   // Only handle true arbitrary properties: [color:red], [mask-type:alpha]
   // NOT arbitrary values like w-[100px]
-  const rawWithoutImportant = parsed.raw.replace(/^!/, '')
-  if (parsed.arbitrary && parsed.utility && parsed.value && rawWithoutImportant.startsWith('[')) {
+  if (parsed.arbitrary && parsed.utility && parsed.value && parsed.base.startsWith('[')) {
     // Arbitrary properties start with [ and have the pattern [prop:value]
     return { [parsed.utility]: parsed.value }
   }

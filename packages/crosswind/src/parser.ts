@@ -1017,15 +1017,40 @@ export function parseClass(className: string): ParsedClass {
     return cached
   }
 
-  const result = parseClassImpl(className)
+  // parseClassImpl builds everything but `base`; fill it in place rather than
+  // spreading into a new object, so parsing stays a single allocation.
+  const result = parseClassImpl(className) as ParsedClass
+  result.base = stripVariantsAndImportant(result)
   parseCache.set(className, result)
   return result
 }
 
 /**
+ * Strip variant prefixes and the important marker off `raw`, leaving the bare
+ * utility token. Computed once per class and memoized alongside the rest of
+ * the parse, so whole-class lookups cost nothing extra at match time.
+ */
+function stripVariantsAndImportant(parsed: Omit<ParsedClass, 'base'>): string {
+  let base = parsed.raw
+  for (const variant of parsed.variants) {
+    if (base.startsWith(`${variant}:`))
+      base = base.slice(variant.length + 1)
+  }
+  if (parsed.important) {
+    // Prefix form (`!p-4`, and `hover:!p-4` once the variant is gone) or the
+    // v4 suffix form (`p-4!`).
+    if (base.charCodeAt(0) === 33)
+      base = base.slice(1)
+    else if (base.charCodeAt(base.length - 1) === 33)
+      base = base.slice(0, -1)
+  }
+  return base
+}
+
+/**
  * Internal implementation of parseClass
 */
-function parseClassImpl(className: string): ParsedClass {
+function parseClassImpl(className: string): Omit<ParsedClass, 'base'> {
   // Check for important modifier. Supports both Tailwind v3 prefix form
   // (`!p-4`) and v4 suffix form (`p-4!`). Suffix form is checked BEFORE
   // rejecting arbitrary-value brackets so `p-4!` peels the bang off cleanly

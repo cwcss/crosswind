@@ -105,7 +105,7 @@ export const backgroundOriginRule: UtilityRule = (parsed) => {
     'bg-origin-padding': 'padding-box',
     'bg-origin-content': 'content-box',
   }
-  return values[parsed.raw] ? { 'background-origin': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'background-origin': values[parsed.base] } : undefined
 }
 
 export const backgroundPositionRule: UtilityRule = (parsed) => {
@@ -120,7 +120,7 @@ export const backgroundPositionRule: UtilityRule = (parsed) => {
     'bg-right-top': 'right top',
     'bg-top': 'top',
   }
-  return positions[parsed.raw] ? { 'background-position': positions[parsed.raw] } : undefined
+  return positions[parsed.base] ? { 'background-position': positions[parsed.base] } : undefined
 }
 
 export const backgroundRepeatRule: UtilityRule = (parsed) => {
@@ -132,7 +132,7 @@ export const backgroundRepeatRule: UtilityRule = (parsed) => {
     'bg-repeat-round': 'round',
     'bg-repeat-space': 'space',
   }
-  return repeats[parsed.raw] ? { 'background-repeat': repeats[parsed.raw] } : undefined
+  return repeats[parsed.base] ? { 'background-repeat': repeats[parsed.base] } : undefined
 }
 
 export const backgroundSizeRule: UtilityRule = (parsed) => {
@@ -141,7 +141,7 @@ export const backgroundSizeRule: UtilityRule = (parsed) => {
     'bg-cover': 'cover',
     'bg-contain': 'contain',
   }
-  return sizes[parsed.raw] ? { 'background-size': sizes[parsed.raw] } : undefined
+  return sizes[parsed.base] ? { 'background-size': sizes[parsed.base] } : undefined
 }
 
 // Border utilities

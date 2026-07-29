@@ -24,7 +24,7 @@ const TRANSFORM_VALUES: Record<string, string> = {
 }
 
 export const transformRule: UtilityRule = (parsed) => {
-  const value = TRANSFORM_VALUES[parsed.raw]
+  const value = TRANSFORM_VALUES[parsed.base]
   return value ? { transform: value } : undefined
 }
 
@@ -200,7 +200,7 @@ export const backfaceVisibilityRule: UtilityRule = (parsed) => {
     'backface-visible': 'visible',
     'backface-hidden': 'hidden',
   }
-  return values[parsed.raw] ? { 'backface-visibility': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'backface-visibility': values[parsed.base] } : undefined
 }
 
 export const transformStyleRule: UtilityRule = (parsed) => {
@@ -208,7 +208,7 @@ export const transformStyleRule: UtilityRule = (parsed) => {
     'transform-flat': 'flat',
     'transform-3d': 'preserve-3d',
   }
-  return values[parsed.raw] ? { 'transform-style': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'transform-style': values[parsed.base] } : undefined
 }
 
 // Transition utilities
@@ -222,7 +222,7 @@ export const transitionPropertyRule: UtilityRule = (parsed) => {
     'transition-shadow': 'box-shadow',
     'transition-transform': 'transform',
   }
-  return properties[parsed.raw] ? { 'transition-property': properties[parsed.raw] } : undefined
+  return properties[parsed.base] ? { 'transition-property': properties[parsed.base] } : undefined
 }
 
 // Resolve a duration/delay token: presets keep their exact form, arbitrary
@@ -265,7 +265,7 @@ export const transitionTimingRule: UtilityRule = (parsed) => {
     'ease-out': 'cubic-bezier(0, 0, 0.2, 1)',
     'ease-in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
   }
-  return timings[parsed.raw] ? { 'transition-timing-function': timings[parsed.raw] } : undefined
+  return timings[parsed.base] ? { 'transition-timing-function': timings[parsed.base] } : undefined
 }
 
 export const transitionDelayRule: UtilityRule = (parsed) => {
@@ -292,7 +292,7 @@ export const transitionBehaviorRule: UtilityRule = (parsed) => {
     'transition-behavior-normal': 'normal',
     'transition-behavior-allow-discrete': 'allow-discrete',
   }
-  return values[parsed.raw] ? { 'transition-behavior': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'transition-behavior': values[parsed.base] } : undefined
 }
 
 export const animationRule: UtilityRule = (parsed) => {
@@ -328,7 +328,7 @@ export const animationPlayStateRule: UtilityRule = (parsed) => {
     'animate-running': 'running',
     'animate-paused': 'paused',
   }
-  return values[parsed.raw] ? { 'animation-play-state': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'animation-play-state': values[parsed.base] } : undefined
 }
 
 // Animation direction
@@ -339,7 +339,7 @@ export const animationDirectionRule: UtilityRule = (parsed) => {
     'animate-alternate': 'alternate',
     'animate-alternate-reverse': 'alternate-reverse',
   }
-  return values[parsed.raw] ? { 'animation-direction': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'animation-direction': values[parsed.base] } : undefined
 }
 
 // Animation fill mode
@@ -350,7 +350,7 @@ export const animationFillModeRule: UtilityRule = (parsed) => {
     'animate-fill-backwards': 'backwards',
     'animate-fill-both': 'both',
   }
-  return values[parsed.raw] ? { 'animation-fill-mode': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'animation-fill-mode': values[parsed.base] } : undefined
 }
 
 // Animation iteration count
@@ -395,7 +395,7 @@ export const animationTimingRule: UtilityRule = (parsed) => {
     'animate-ease-out': 'cubic-bezier(0, 0, 0.2, 1)',
     'animate-ease-in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
   }
-  return values[parsed.raw] ? { 'animation-timing-function': values[parsed.raw] } : undefined
+  return values[parsed.base] ? { 'animation-timing-function': values[parsed.base] } : undefined
 }
 
 export const transformsRules: UtilityRule[] = [

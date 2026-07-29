@@ -105,6 +105,7 @@ describe('Spacing Utilities', () => {
       const result = parseClass('-m-4')
       expect(result).toEqual({
         raw: '-m-4',
+        base: '-m-4',
         variants: [],
         utility: 'm',
         value: '-4',
