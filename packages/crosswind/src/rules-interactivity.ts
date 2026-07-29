@@ -204,9 +204,12 @@ export const appearanceRule: UtilityRule = (parsed) => {
   const values: Record<string, string> = {
     'appearance-none': 'none',
     'appearance-auto': 'auto',
+    // v4: opts a form control into the browser's new base styling.
+    'appearance-base': 'base',
   }
   return values[parsed.base] ? { appearance: values[parsed.base] } : undefined
 }
+
 
 export const caretColorRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'caret' && parsed.value) {
@@ -215,14 +218,30 @@ export const caretColorRule: UtilityRule = (parsed, config) => {
   }
 }
 
+/**
+ * Which colour schemes an element renders its UI in.
+ *
+ * Tailwind v4 spells these `scheme-*`; the longer `color-scheme-*` form this
+ * package shipped first stays accepted. `only-*` maps to CSS's `only <scheme>`.
+ */
+const COLOR_SCHEMES: Record<string, string> = {
+  normal: 'normal',
+  light: 'light',
+  dark: 'dark',
+  'light-dark': 'light dark',
+  'only-dark': 'only dark',
+  'only-light': 'only light',
+}
+
 export const colorSchemeRule: UtilityRule = (parsed) => {
-  const schemes: Record<string, string> = {
-    'color-scheme-normal': 'normal',
-    'color-scheme-light': 'light',
-    'color-scheme-dark': 'dark',
-    'color-scheme-light-dark': 'light dark',
-  }
-  return schemes[parsed.base] ? { 'color-scheme': schemes[parsed.base] } : undefined
+  const base = parsed.base
+  const suffix = base.startsWith('scheme-')
+    ? base.slice(7)
+    : base.startsWith('color-scheme-') ? base.slice(13) : undefined
+  if (suffix === undefined)
+    return undefined
+  const scheme = COLOR_SCHEMES[suffix]
+  return scheme ? { 'color-scheme': scheme } : undefined
 }
 
 export const fieldSizingRule: UtilityRule = (parsed) => {
@@ -549,6 +568,7 @@ export const interactivityRules: UtilityRule[] = [
   captionSideRule,
   accentColorRule,
   appearanceRule,
+  colorSchemeRule,
   caretColorRule,
   colorSchemeRule,
   fieldSizingRule,
