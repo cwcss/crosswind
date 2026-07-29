@@ -1,5 +1,12 @@
 import type { UtilityRule } from './rules'
 
+const GAP_PROPS: Record<string, string> = {
+  'gap': 'gap',
+  'gap-x': 'column-gap',
+  'gap-y': 'row-gap',
+}
+
+
 // Grid utilities
 
 // Grid placement values a class token may resolve to without brackets:
@@ -176,12 +183,7 @@ function resolveSpacing(parsed: { arbitrary: boolean }, config: any, token: stri
 }
 
 export const gapRule: UtilityRule = (parsed, config) => {
-  const props: Record<string, string> = {
-    'gap': 'gap',
-    'gap-x': 'column-gap',
-    'gap-y': 'row-gap',
-  }
-  const prop = props[parsed.utility]
+  const prop = GAP_PROPS[parsed.utility]
   if (!prop || !parsed.value)
     return undefined
   const value = resolveSpacing(parsed, config, parsed.value)

@@ -1,6 +1,86 @@
 import type { UtilityRule } from './rules'
 import { fractionToPercent } from './format'
 
+const ROTATE_FNS: Record<string, string> = {
+  'rotate': 'rotate',
+  'rotate-x': 'rotateX',
+  'rotate-y': 'rotateY',
+  'rotate-z': 'rotateZ',
+}
+
+const TRANSLATE_FNS: Record<string, string> = {
+  'translate-x': 'translateX',
+  'translate-y': 'translateY',
+  'translate-z': 'translateZ',
+}
+
+const BACKFACE_VISIBILITY_VALUES: Record<string, string> = {
+  'backface-visible': 'visible',
+  'backface-hidden': 'hidden',
+}
+
+const TRANSFORM_STYLE_VALUES: Record<string, string> = {
+  'transform-flat': 'flat',
+  'transform-3d': 'preserve-3d',
+}
+
+const TRANSITION_PROPERTY_PROPERTIES: Record<string, string> = {
+  'transition-none': 'none',
+  'transition-all': 'all',
+  'transition': 'color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter',
+  'transition-colors': 'color, background-color, border-color, text-decoration-color, fill, stroke',
+  'transition-opacity': 'opacity',
+  'transition-shadow': 'box-shadow',
+  'transition-transform': 'transform',
+}
+
+const TRANSITION_TIMING_TIMINGS: Record<string, string> = {
+  'ease-linear': 'linear',
+  'ease-in': 'cubic-bezier(0.4, 0, 1, 1)',
+  'ease-out': 'cubic-bezier(0, 0, 0.2, 1)',
+  'ease-in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
+}
+
+const TRANSITION_BEHAVIOR_VALUES: Record<string, string> = {
+  'transition-behavior-normal': 'normal',
+  'transition-behavior-allow-discrete': 'allow-discrete',
+}
+
+const ANIMATION_ANIMATIONS: Record<string, string> = {
+  none: 'none',
+  spin: 'spin 1s linear infinite',
+  ping: 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
+  pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+  bounce: 'bounce 1s infinite',
+}
+
+const ANIMATION_PLAY_STATE_VALUES: Record<string, string> = {
+  'animate-running': 'running',
+  'animate-paused': 'paused',
+}
+
+const ANIMATION_DIRECTION_VALUES: Record<string, string> = {
+  'animate-normal': 'normal',
+  'animate-reverse': 'reverse',
+  'animate-alternate': 'alternate',
+  'animate-alternate-reverse': 'alternate-reverse',
+}
+
+const ANIMATION_FILL_MODE_VALUES: Record<string, string> = {
+  'animate-fill-none': 'none',
+  'animate-fill-forwards': 'forwards',
+  'animate-fill-backwards': 'backwards',
+  'animate-fill-both': 'both',
+}
+
+const ANIMATION_TIMING_VALUES: Record<string, string> = {
+  'animate-ease-linear': 'linear',
+  'animate-ease-in': 'cubic-bezier(0.4, 0, 1, 1)',
+  'animate-ease-out': 'cubic-bezier(0, 0, 0.2, 1)',
+  'animate-ease-in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
+}
+
+
 // Transform, Transition, Animation utilities
 
 /**
@@ -68,13 +148,7 @@ export const scaleRule: UtilityRule = (parsed) => {
 export const rotateRule: UtilityRule = (parsed) => {
   if (!parsed.value)
     return undefined
-  const fns: Record<string, string> = {
-    'rotate': 'rotate',
-    'rotate-x': 'rotateX',
-    'rotate-y': 'rotateY',
-    'rotate-z': 'rotateZ',
-  }
-  const fn = fns[parsed.utility]
+  const fn = ROTATE_FNS[parsed.utility]
   if (!fn)
     return undefined
   const value = angleToken(parsed)
@@ -106,12 +180,7 @@ export const translateRule: UtilityRule = (parsed, config) => {
     return undefined
   }
 
-  const fns: Record<string, string> = {
-    'translate-x': 'translateX',
-    'translate-y': 'translateY',
-    'translate-z': 'translateZ',
-  }
-  const fn = fns[parsed.utility]
+  const fn = TRANSLATE_FNS[parsed.utility]
   if (!fn || !parsed.value)
     return undefined
 
@@ -208,33 +277,16 @@ export const perspectiveOriginRule: UtilityRule = (parsed) => {
 }
 
 export const backfaceVisibilityRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'backface-visible': 'visible',
-    'backface-hidden': 'hidden',
-  }
-  return values[parsed.base] ? { 'backface-visibility': values[parsed.base] } : undefined
+  return BACKFACE_VISIBILITY_VALUES[parsed.base] ? { 'backface-visibility': BACKFACE_VISIBILITY_VALUES[parsed.base] } : undefined
 }
 
 export const transformStyleRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'transform-flat': 'flat',
-    'transform-3d': 'preserve-3d',
-  }
-  return values[parsed.base] ? { 'transform-style': values[parsed.base] } : undefined
+  return TRANSFORM_STYLE_VALUES[parsed.base] ? { 'transform-style': TRANSFORM_STYLE_VALUES[parsed.base] } : undefined
 }
 
 // Transition utilities
 export const transitionPropertyRule: UtilityRule = (parsed) => {
-  const properties: Record<string, string> = {
-    'transition-none': 'none',
-    'transition-all': 'all',
-    'transition': 'color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter',
-    'transition-colors': 'color, background-color, border-color, text-decoration-color, fill, stroke',
-    'transition-opacity': 'opacity',
-    'transition-shadow': 'box-shadow',
-    'transition-transform': 'transform',
-  }
-  return properties[parsed.base] ? { 'transition-property': properties[parsed.base] } : undefined
+  return TRANSITION_PROPERTY_PROPERTIES[parsed.base] ? { 'transition-property': TRANSITION_PROPERTY_PROPERTIES[parsed.base] } : undefined
 }
 
 // Resolve a duration/delay token: presets keep their exact form, arbitrary
@@ -271,13 +323,7 @@ export const transitionDurationRule: UtilityRule = (parsed) => {
 }
 
 export const transitionTimingRule: UtilityRule = (parsed) => {
-  const timings: Record<string, string> = {
-    'ease-linear': 'linear',
-    'ease-in': 'cubic-bezier(0.4, 0, 1, 1)',
-    'ease-out': 'cubic-bezier(0, 0, 0.2, 1)',
-    'ease-in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
-  }
-  return timings[parsed.base] ? { 'transition-timing-function': timings[parsed.base] } : undefined
+  return TRANSITION_TIMING_TIMINGS[parsed.base] ? { 'transition-timing-function': TRANSITION_TIMING_TIMINGS[parsed.base] } : undefined
 }
 
 export const transitionDelayRule: UtilityRule = (parsed) => {
@@ -300,11 +346,7 @@ export const transitionDelayRule: UtilityRule = (parsed) => {
 }
 
 export const transitionBehaviorRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'transition-behavior-normal': 'normal',
-    'transition-behavior-allow-discrete': 'allow-discrete',
-  }
-  return values[parsed.base] ? { 'transition-behavior': values[parsed.base] } : undefined
+  return TRANSITION_BEHAVIOR_VALUES[parsed.base] ? { 'transition-behavior': TRANSITION_BEHAVIOR_VALUES[parsed.base] } : undefined
 }
 
 export const animationRule: UtilityRule = (parsed) => {
@@ -312,13 +354,6 @@ export const animationRule: UtilityRule = (parsed) => {
     return undefined
   }
 
-  const animations: Record<string, string> = {
-    none: 'none',
-    spin: 'spin 1s linear infinite',
-    ping: 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
-    pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-    bounce: 'bounce 1s infinite',
-  }
 
   // Support arbitrary animation values
   if (parsed.arbitrary && parsed.value) {
@@ -326,9 +361,9 @@ export const animationRule: UtilityRule = (parsed) => {
     return { animation: parsed.value.replace(/_/g, ' ') }
   }
 
-  // Support predefined animations
-  if (parsed.value && animations[parsed.value]) {
-    return { animation: animations[parsed.value] }
+  // Support predefined ANIMATION_ANIMATIONS
+  if (parsed.value && ANIMATION_ANIMATIONS[parsed.value]) {
+    return { animation: ANIMATION_ANIMATIONS[parsed.value] }
   }
 
   return undefined
@@ -336,33 +371,17 @@ export const animationRule: UtilityRule = (parsed) => {
 
 // Animation play state
 export const animationPlayStateRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'animate-running': 'running',
-    'animate-paused': 'paused',
-  }
-  return values[parsed.base] ? { 'animation-play-state': values[parsed.base] } : undefined
+  return ANIMATION_PLAY_STATE_VALUES[parsed.base] ? { 'animation-play-state': ANIMATION_PLAY_STATE_VALUES[parsed.base] } : undefined
 }
 
 // Animation direction
 export const animationDirectionRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'animate-normal': 'normal',
-    'animate-reverse': 'reverse',
-    'animate-alternate': 'alternate',
-    'animate-alternate-reverse': 'alternate-reverse',
-  }
-  return values[parsed.base] ? { 'animation-direction': values[parsed.base] } : undefined
+  return ANIMATION_DIRECTION_VALUES[parsed.base] ? { 'animation-direction': ANIMATION_DIRECTION_VALUES[parsed.base] } : undefined
 }
 
 // Animation fill mode
 export const animationFillModeRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'animate-fill-none': 'none',
-    'animate-fill-forwards': 'forwards',
-    'animate-fill-backwards': 'backwards',
-    'animate-fill-both': 'both',
-  }
-  return values[parsed.base] ? { 'animation-fill-mode': values[parsed.base] } : undefined
+  return ANIMATION_FILL_MODE_VALUES[parsed.base] ? { 'animation-fill-mode': ANIMATION_FILL_MODE_VALUES[parsed.base] } : undefined
 }
 
 // Animation iteration count
@@ -401,13 +420,7 @@ export const animationDelayRule: UtilityRule = (parsed) => {
 
 // Animation timing function
 export const animationTimingRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'animate-ease-linear': 'linear',
-    'animate-ease-in': 'cubic-bezier(0.4, 0, 1, 1)',
-    'animate-ease-out': 'cubic-bezier(0, 0, 0.2, 1)',
-    'animate-ease-in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
-  }
-  return values[parsed.base] ? { 'animation-timing-function': values[parsed.base] } : undefined
+  return ANIMATION_TIMING_VALUES[parsed.base] ? { 'animation-timing-function': ANIMATION_TIMING_VALUES[parsed.base] } : undefined
 }
 
 export const transformsRules: UtilityRule[] = [

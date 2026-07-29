@@ -1,6 +1,88 @@
 import type { UtilityRule } from './rules'
 import { fractionToPercent } from './format'
 
+const COLUMN_FILL_VALUES: Record<string, string> = {
+  'column-fill-auto': 'auto',
+  'column-fill-balance': 'balance',
+  'column-fill-balance-all': 'balance-all',
+}
+
+const COLUMN_SPAN_VALUES: Record<string, string> = {
+  'column-span-all': 'all',
+  'column-span-none': 'none',
+}
+
+const BOX_DECORATION_VALUES: Record<string, string> = {
+  'box-decoration-clone': 'clone',
+  'box-decoration-slice': 'slice',
+}
+
+const BOX_SIZING_VALUES: Record<string, string> = {
+  'box-border': 'border-box',
+  'box-content': 'content-box',
+}
+
+const FLOAT_FLOATS: Record<string, string> = {
+  'float-start': 'inline-start',
+  'float-end': 'inline-end',
+  'float-right': 'right',
+  'float-left': 'left',
+  'float-none': 'none',
+}
+
+const CLEAR_CLEARS: Record<string, string> = {
+  'clear-start': 'inline-start',
+  'clear-end': 'inline-end',
+  'clear-left': 'left',
+  'clear-right': 'right',
+  'clear-both': 'both',
+  'clear-none': 'none',
+}
+
+const ISOLATION_VALUES: Record<string, string> = {
+  'isolate': 'isolate',
+  'isolation-auto': 'auto',
+}
+
+const OBJECT_FIT_FITS: Record<string, string> = {
+  'object-contain': 'contain',
+  'object-cover': 'cover',
+  'object-fill': 'fill',
+  'object-none': 'none',
+  'object-scale-down': 'scale-down',
+}
+
+const OBJECT_POSITION_POSITIONS: Record<string, string> = {
+  'object-bottom': 'bottom',
+  'object-center': 'center',
+  'object-left': 'left',
+  'object-left-bottom': 'left bottom',
+  'object-left-top': 'left top',
+  'object-right': 'right',
+  'object-right-bottom': 'right bottom',
+  'object-right-top': 'right top',
+  'object-top': 'top',
+}
+
+const OVERSCROLL_BEHAVIORS: Record<string, string> = {
+  'overscroll-auto': 'auto',
+  'overscroll-contain': 'contain',
+  'overscroll-none': 'none',
+  'overscroll-x-auto': 'auto',
+  'overscroll-x-contain': 'contain',
+  'overscroll-x-none': 'none',
+  'overscroll-y-auto': 'auto',
+  'overscroll-y-contain': 'contain',
+  'overscroll-y-none': 'none',
+}
+
+const VISIBILITY_VALUES: Record<string, string> = {
+  visible: 'visible',
+  invisible: 'hidden',
+  collapse: 'collapse',
+}
+
+
 // Layout utilities
 
 export const aspectRatioRule: UtilityRule = (parsed) => {
@@ -87,12 +169,7 @@ export const columnsRule: UtilityRule = (parsed, config) => {
 
 // Column fill
 export const columnFillRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'column-fill-auto': 'auto',
-    'column-fill-balance': 'balance',
-    'column-fill-balance-all': 'balance-all',
-  }
-  return values[parsed.base] ? { 'column-fill': values[parsed.base] } : undefined
+  return COLUMN_FILL_VALUES[parsed.base] ? { 'column-fill': COLUMN_FILL_VALUES[parsed.base] } : undefined
 }
 
 // Column gap (different from grid gap)
@@ -160,11 +237,7 @@ export const columnRuleRule: UtilityRule = (parsed, config) => {
 
 // Column span
 export const columnSpanRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'column-span-all': 'all',
-    'column-span-none': 'none',
-  }
-  return values[parsed.base] ? { 'column-span': values[parsed.base] } : undefined
+  return COLUMN_SPAN_VALUES[parsed.base] ? { 'column-span': COLUMN_SPAN_VALUES[parsed.base] } : undefined
 }
 
 export const breakRule: UtilityRule = (parsed) => {
@@ -188,50 +261,23 @@ export const breakRule: UtilityRule = (parsed) => {
 }
 
 export const boxDecorationRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'box-decoration-clone': 'clone',
-    'box-decoration-slice': 'slice',
-  }
-  return values[parsed.base] ? { 'box-decoration-break': values[parsed.base] } : undefined
+  return BOX_DECORATION_VALUES[parsed.base] ? { 'box-decoration-break': BOX_DECORATION_VALUES[parsed.base] } : undefined
 }
 
 export const boxSizingRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'box-border': 'border-box',
-    'box-content': 'content-box',
-  }
-  return values[parsed.base] ? { 'box-sizing': values[parsed.base] } : undefined
+  return BOX_SIZING_VALUES[parsed.base] ? { 'box-sizing': BOX_SIZING_VALUES[parsed.base] } : undefined
 }
 
 export const floatRule: UtilityRule = (parsed) => {
-  const floats: Record<string, string> = {
-    'float-start': 'inline-start',
-    'float-end': 'inline-end',
-    'float-right': 'right',
-    'float-left': 'left',
-    'float-none': 'none',
-  }
-  return floats[parsed.base] ? { float: floats[parsed.base] } : undefined
+  return FLOAT_FLOATS[parsed.base] ? { float: FLOAT_FLOATS[parsed.base] } : undefined
 }
 
 export const clearRule: UtilityRule = (parsed) => {
-  const clears: Record<string, string> = {
-    'clear-start': 'inline-start',
-    'clear-end': 'inline-end',
-    'clear-left': 'left',
-    'clear-right': 'right',
-    'clear-both': 'both',
-    'clear-none': 'none',
-  }
-  return clears[parsed.base] ? { clear: clears[parsed.base] } : undefined
+  return CLEAR_CLEARS[parsed.base] ? { clear: CLEAR_CLEARS[parsed.base] } : undefined
 }
 
 export const isolationRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'isolate': 'isolate',
-    'isolation-auto': 'auto',
-  }
-  return values[parsed.base] ? { isolation: values[parsed.base] } : undefined
+  return ISOLATION_VALUES[parsed.base] ? { isolation: ISOLATION_VALUES[parsed.base] } : undefined
 }
 
 /**
@@ -271,29 +317,11 @@ export const containRule: UtilityRule = (parsed) => {
 }
 
 export const objectFitRule: UtilityRule = (parsed) => {
-  const fits: Record<string, string> = {
-    'object-contain': 'contain',
-    'object-cover': 'cover',
-    'object-fill': 'fill',
-    'object-none': 'none',
-    'object-scale-down': 'scale-down',
-  }
-  return fits[parsed.base] ? { 'object-fit': fits[parsed.base] } : undefined
+  return OBJECT_FIT_FITS[parsed.base] ? { 'object-fit': OBJECT_FIT_FITS[parsed.base] } : undefined
 }
 
 export const objectPositionRule: UtilityRule = (parsed) => {
-  const positions: Record<string, string> = {
-    'object-bottom': 'bottom',
-    'object-center': 'center',
-    'object-left': 'left',
-    'object-left-bottom': 'left bottom',
-    'object-left-top': 'left top',
-    'object-right': 'right',
-    'object-right-bottom': 'right bottom',
-    'object-right-top': 'right top',
-    'object-top': 'top',
-  }
-  return positions[parsed.base] ? { 'object-position': positions[parsed.base] } : undefined
+  return OBJECT_POSITION_POSITIONS[parsed.base] ? { 'object-position': OBJECT_POSITION_POSITIONS[parsed.base] } : undefined
 }
 
 export const overflowRule: UtilityRule = (parsed) => {
@@ -312,23 +340,12 @@ export const overflowRule: UtilityRule = (parsed) => {
 }
 
 export const overscrollRule: UtilityRule = (parsed) => {
-  const behaviors: Record<string, string> = {
-    'overscroll-auto': 'auto',
-    'overscroll-contain': 'contain',
-    'overscroll-none': 'none',
-    'overscroll-x-auto': 'auto',
-    'overscroll-x-contain': 'contain',
-    'overscroll-x-none': 'none',
-    'overscroll-y-auto': 'auto',
-    'overscroll-y-contain': 'contain',
-    'overscroll-y-none': 'none',
-  }
   const prop = parsed.base.startsWith('overscroll-x')
     ? 'overscroll-behavior-x'
     : parsed.base.startsWith('overscroll-y')
       ? 'overscroll-behavior-y'
       : 'overscroll-behavior'
-  return behaviors[parsed.base] ? { [prop]: behaviors[parsed.base] } : undefined
+  return OVERSCROLL_BEHAVIORS[parsed.base] ? { [prop]: OVERSCROLL_BEHAVIORS[parsed.base] } : undefined
 }
 
 export const positionRule: UtilityRule = (parsed) => {
@@ -416,12 +433,7 @@ export const insetRule: UtilityRule = (parsed, config) => {
 }
 
 export const visibilityRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    visible: 'visible',
-    invisible: 'hidden',
-    collapse: 'collapse',
-  }
-  return values[parsed.utility] ? { visibility: values[parsed.utility] } : undefined
+  return VISIBILITY_VALUES[parsed.utility] ? { visibility: VISIBILITY_VALUES[parsed.utility] } : undefined
 }
 
 export const zIndexRule: UtilityRule = (parsed) => {
