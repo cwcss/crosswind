@@ -1,3 +1,18 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.11...v0.2.12)
+
+## 🐛 Bug Fixes
+
+- compose filter utilities instead of overwriting each other ([7462d1d](https://github.com/cwcss/crosswind/commit/7462d1d)) _(by Chris <chrisbreuer93@gmail.com>)_
+- give the scroll-snap strictness variable a proximity fallback ([5adeefc](https://github.com/cwcss/crosswind/commit/5adeefc)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.2.12 ([ac10410](https://github.com/cwcss/crosswind/commit/ac10410)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.10...v0.2.11)
 
 ## 🐛 Bug Fixes
