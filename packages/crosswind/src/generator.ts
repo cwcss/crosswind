@@ -4,6 +4,7 @@ import { parseClass } from './parser'
 import { defaultConfig } from './config'
 import { builtInRules } from './rules'
 import { TRANSFORM_2D, TRANSFORM_3D } from './rules-transforms'
+import { fractionToPercent } from './format'
 
 /**
  * Deep merge objects
@@ -498,22 +499,23 @@ const SIZE_VALUES: Record<string, string> = {
   'min': 'min-content',
   'max': 'max-content',
   'fit': 'fit-content',
-  // Common fractions (using same precision as original implementation)
-  '1/2': '50%',
-  '1/3': '33.33333333333333%',
-  '2/3': '66.66666666666666%',
-  '1/4': '25%',
-  '2/4': '50%',
-  '3/4': '75%',
-  '1/5': '20%',
-  '2/5': '40%',
-  '3/5': '60%',
-  '4/5': '80%',
-  '1/6': '16.666666666666664%',
-  '2/6': '33.33333333333333%',
-  '3/6': '50%',
-  '4/6': '66.66666666666666%',
-  '5/6': '83.33333333333334%',
+  // Common fractions. Derived rather than written out so this fast path and
+  // the rule path can't disagree, and so the values carry CSS-relevant
+  // precision instead of float noise ('33.33333333333333%').
+  ...buildFractionValues(6),
+}
+
+/**
+ * Every `n/d` for d up to `maxDenominator`, as a percentage.
+ */
+function buildFractionValues(maxDenominator: number): Record<string, string> {
+  const values: Record<string, string> = {}
+  for (let denom = 2; denom <= maxDenominator; denom++) {
+    for (let num = 1; num < denom; num++) {
+      values[`${num}/${denom}`] = fractionToPercent(num, denom)!
+    }
+  }
+  return values
 }
 
 // Pre-computed color values for common Tailwind colors (O(1) lookup)
@@ -1798,7 +1800,7 @@ export class CSSGenerator {
           const num = Number(fractionMatch[1])
           const denom = Number(fractionMatch[2])
           if (!Number.isNaN(num) && !Number.isNaN(denom) && denom !== 0) {
-            this.addRule(parsed, { width: `${(num / denom) * 100}%` })
+            this.addRule(parsed, { width: fractionToPercent(num, denom)! })
             return
           }
         }
@@ -1823,7 +1825,7 @@ export class CSSGenerator {
           const num = Number(fractionMatch[1])
           const denom = Number(fractionMatch[2])
           if (!Number.isNaN(num) && !Number.isNaN(denom) && denom !== 0) {
-            this.addRule(parsed, { height: `${(num / denom) * 100}%` })
+            this.addRule(parsed, { height: fractionToPercent(num, denom)! })
             return
           }
         }

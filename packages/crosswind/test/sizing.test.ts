@@ -141,13 +141,13 @@ describe('Sizing Utilities', () => {
     it('should generate 33.333% width for w-1/3', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('w-1/3')
-      expect(gen.toCSS(false)).toContain('width: 33.33333333333333%;')
+      expect(gen.toCSS(false)).toContain('width: 33.333333%;')
     })
 
     it('should generate 66.666% width for w-2/3', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('w-2/3')
-      expect(gen.toCSS(false)).toContain('width: 66.66666666666666%;')
+      expect(gen.toCSS(false)).toContain('width: 66.666667%;')
     })
 
     it('should generate 75% height for h-3/4', () => {
