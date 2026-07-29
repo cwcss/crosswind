@@ -1,10 +1,42 @@
 import type { AttributifyConfig, BracketSyntaxConfig, ParsedClass } from './types'
 
+/**
+ * Module-level caches are shared by every generator in the process and live
+ * for its whole lifetime, so they need a ceiling. A watching build re-scans on
+ * every keystroke and arbitrary values (`w-[137px]`, `w-[138px]`, …) mint a
+ * fresh key each time — unbounded, these grew without limit for as long as the
+ * dev server ran.
+ *
+ * Eviction is oldest-first: Map iterates in insertion order, so the first key
+ * is the least recently added. Entries are pure functions of their key, so
+ * dropping one only costs a re-parse.
+ */
+const MAX_CACHE_ENTRIES = 10_000
+
+function cacheSet<K, V>(cache: Map<K, V>, key: K, value: V): V {
+  if (cache.size >= MAX_CACHE_ENTRIES) {
+    const oldest = cache.keys().next().value
+    if (oldest !== undefined)
+      cache.delete(oldest)
+  }
+  cache.set(key, value)
+  return value
+}
+
 // Cache for parsed classes to avoid re-parsing
 const parseCache = new Map<string, ParsedClass>()
 
 // Cache for expanded bracket syntax
 const bracketExpansionCache = new Map<string, string[]>()
+
+/**
+ * Drop the module-level parse caches. Exposed for long-lived hosts that want
+ * to reclaim the memory between builds; correctness never depends on it.
+ */
+export function clearParseCaches(): void {
+  parseCache.clear()
+  bracketExpansionCache.clear()
+}
 
 /**
  * Options for class extraction
@@ -659,6 +691,40 @@ const variantPrefixes = new Set([
 ])
 
 /**
+ * Per-config memos for bracket expansion.
+ *
+ * The alias table and the cache-key fingerprint used to be rebuilt on every
+ * single call — a spread of the ~30 default aliases plus a JSON.stringify of
+ * the user's, for each class encountered. Both are pure functions of the
+ * config object, which is stable for the life of a build, so they are computed
+ * once per object. WeakMap so a discarded config is still collectable.
+ */
+const aliasCache = new WeakMap<BracketSyntaxConfig, Record<string, string>>()
+const fingerprintCache = new WeakMap<BracketSyntaxConfig, string>()
+
+function resolveAliases(config?: BracketSyntaxConfig): Record<string, string> {
+  if (!config)
+    return defaultBracketAliases
+  let aliases = aliasCache.get(config)
+  if (!aliases) {
+    aliases = config.aliases ? { ...defaultBracketAliases, ...config.aliases } : defaultBracketAliases
+    aliasCache.set(config, aliases)
+  }
+  return aliases
+}
+
+function configFingerprint(config?: BracketSyntaxConfig): string {
+  if (!config?.aliases)
+    return ''
+  let fingerprint = fingerprintCache.get(config)
+  if (fingerprint === undefined) {
+    fingerprint = JSON.stringify(config.aliases)
+    fingerprintCache.set(config, fingerprint)
+  }
+  return fingerprint
+}
+
+/**
  * Expand bracket/grouped syntax into individual class names
  * e.g., flex[col jc-center ai-center] -> ['flex-col', 'justify-center', 'items-center']
  * e.g., text[white 2rem 700] -> ['text-white', 'text-[2rem]', 'font-bold']
@@ -669,13 +735,13 @@ const variantPrefixes = new Set([
 */
 export function expandBracketSyntax(className: string, config?: BracketSyntaxConfig): string[] {
   // Check cache first
-  const cacheKey = `${className}:${config?.colonSyntax}:${JSON.stringify(config?.aliases || {})}`
+  const cacheKey = `${className}:${config?.colonSyntax}:${configFingerprint(config)}`
   const cached = bracketExpansionCache.get(cacheKey)
   if (cached) {
     return cached
   }
 
-  const aliases = { ...defaultBracketAliases, ...config?.aliases }
+  const aliases = resolveAliases(config)
 
   // Handle colon syntax: bg:black -> bg-black, w:100% -> w-[100%]
   // Only if colonSyntax is explicitly enabled
@@ -689,7 +755,7 @@ export function expandBracketSyntax(className: string, config?: BracketSyntaxCon
         // If value contains special characters, use arbitrary syntax
         if (needsArbitraryBrackets(value)) {
           const result = [`${prefix}-[${value}]`]
-          bracketExpansionCache.set(cacheKey, result)
+          cacheSet(bracketExpansionCache, cacheKey, result)
           return result
         }
         // Negative values move the sign to the canonical prefix position:
@@ -697,7 +763,7 @@ export function expandBracketSyntax(className: string, config?: BracketSyntaxCon
         const result = value.startsWith('-')
           ? [`-${prefix}-${value.slice(1)}`]
           : [`${prefix}-${value}`]
-        bracketExpansionCache.set(cacheKey, result)
+        cacheSet(bracketExpansionCache, cacheKey, result)
         return result
       }
     }
@@ -732,7 +798,7 @@ export function expandBracketSyntax(className: string, config?: BracketSyntaxCon
   if (!bracketMatch || workingClassName.includes('-[')) {
     // No bracket syntax or it's an arbitrary value, return as-is
     const result = [className]
-    bracketExpansionCache.set(cacheKey, result)
+    cacheSet(bracketExpansionCache, cacheKey, result)
     return result
   }
 
@@ -741,7 +807,7 @@ export function expandBracketSyntax(className: string, config?: BracketSyntaxCon
 
   // Handle empty brackets
   if (parts.length === 0) {
-    bracketExpansionCache.set(cacheKey, [])
+    cacheSet(bracketExpansionCache, cacheKey, [])
     return []
   }
 
@@ -755,7 +821,7 @@ export function expandBracketSyntax(className: string, config?: BracketSyntaxCon
         const neg = isNegative ? '-' : ''
         return `${variantPrefix}${neg}${cls}`
       })
-      bracketExpansionCache.set(cacheKey, results)
+      cacheSet(bracketExpansionCache, cacheKey, results)
       return results
     }
   }
@@ -796,7 +862,7 @@ else {
         results.push(`${variantPrefix}${innerVariant}${important}${neg}${partNegative}${prefix}-${partValue}`)
       }
     }
-    bracketExpansionCache.set(cacheKey, results)
+    cacheSet(bracketExpansionCache, cacheKey, results)
     return results
   }
 
@@ -835,7 +901,7 @@ else {
     }
   }
 
-  bracketExpansionCache.set(cacheKey, results)
+  cacheSet(bracketExpansionCache, cacheKey, results)
   return results
 }
 
@@ -1021,7 +1087,7 @@ export function parseClass(className: string): ParsedClass {
   // spreading into a new object, so parsing stays a single allocation.
   const result = parseClassImpl(className) as ParsedClass
   result.base = stripVariantsAndImportant(result)
-  parseCache.set(className, result)
+  cacheSet(parseCache, className, result)
   return result
 }
 
