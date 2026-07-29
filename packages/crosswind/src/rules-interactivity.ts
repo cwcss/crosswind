@@ -1,6 +1,143 @@
 import type { UtilityRule } from './rules'
 import { resolveColorValue } from './rules'
 
+const BORDER_COLLAPSE_VALUES: Record<string, string> = {
+  'border-collapse': 'collapse',
+  'border-separate': 'separate',
+}
+
+const CAPTION_SIDE_VALUES: Record<string, string> = {
+  'caption-top': 'top',
+  'caption-bottom': 'bottom',
+}
+
+const FIELD_SIZING_VALUES: Record<string, string> = {
+  'field-sizing-content': 'content',
+  'field-sizing-fixed': 'fixed',
+}
+
+const CURSOR_CURSORS: Record<string, string> = {
+  'cursor-auto': 'auto',
+  'cursor-default': 'default',
+  'cursor-pointer': 'pointer',
+  'cursor-wait': 'wait',
+  'cursor-text': 'text',
+  'cursor-move': 'move',
+  'cursor-help': 'help',
+  'cursor-not-allowed': 'not-allowed',
+  'cursor-none': 'none',
+  'cursor-context-menu': 'context-menu',
+  'cursor-progress': 'progress',
+  'cursor-cell': 'cell',
+  'cursor-crosshair': 'crosshair',
+  'cursor-vertical-text': 'vertical-text',
+  'cursor-alias': 'alias',
+  'cursor-copy': 'copy',
+  'cursor-no-drop': 'no-drop',
+  'cursor-grab': 'grab',
+  'cursor-grabbing': 'grabbing',
+  'cursor-all-scroll': 'all-scroll',
+  'cursor-col-resize': 'col-resize',
+  'cursor-row-resize': 'row-resize',
+  'cursor-n-resize': 'n-resize',
+  'cursor-e-resize': 'e-resize',
+  'cursor-s-resize': 's-resize',
+  'cursor-w-resize': 'w-resize',
+  'cursor-ne-resize': 'ne-resize',
+  'cursor-nw-resize': 'nw-resize',
+  'cursor-se-resize': 'se-resize',
+  'cursor-sw-resize': 'sw-resize',
+  'cursor-ew-resize': 'ew-resize',
+  'cursor-ns-resize': 'ns-resize',
+  'cursor-nesw-resize': 'nesw-resize',
+  'cursor-nwse-resize': 'nwse-resize',
+  'cursor-zoom-in': 'zoom-in',
+  'cursor-zoom-out': 'zoom-out',
+}
+
+const POINTER_EVENTS_VALUES: Record<string, string> = {
+  'pointer-events-none': 'none',
+  'pointer-events-auto': 'auto',
+}
+
+const RESIZE_VALUES: Record<string, string> = {
+  'resize-none': 'none',
+  'resize': 'both',
+  'resize-y': 'vertical',
+  'resize-x': 'horizontal',
+}
+
+const SCROLL_BEHAVIOR_VALUES: Record<string, string> = {
+  'scroll-auto': 'auto',
+  'scroll-smooth': 'smooth',
+}
+
+const SCROLL_SNAP_TYPES: Record<string, string> = {
+  'snap-none': 'none',
+  'snap-x': 'x mandatory',
+  'snap-y': 'y mandatory',
+  'snap-both': 'both mandatory',
+  'snap-mandatory': 'mandatory',
+  'snap-proximity': 'proximity',
+}
+
+const SCROLL_SNAP_ALIGNS: Record<string, string> = {
+  'snap-start': 'start',
+  'snap-end': 'end',
+  'snap-center': 'center',
+  'snap-align-none': 'none',
+}
+
+const SCROLL_SNAP_STOPS: Record<string, string> = {
+  'snap-normal': 'normal',
+  'snap-always': 'always',
+}
+
+const TOUCH_ACTION_ACTIONS: Record<string, string> = {
+  'touch-auto': 'auto',
+  'touch-none': 'none',
+  'touch-pan-x': 'pan-x',
+  'touch-pan-left': 'pan-left',
+  'touch-pan-right': 'pan-right',
+  'touch-pan-y': 'pan-y',
+  'touch-pan-up': 'pan-up',
+  'touch-pan-down': 'pan-down',
+  'touch-pinch-zoom': 'pinch-zoom',
+  'touch-manipulation': 'manipulation',
+}
+
+const USER_SELECT_SELECTS: Record<string, string> = {
+  'select-none': 'none',
+  'select-text': 'text',
+  'select-all': 'all',
+  'select-auto': 'auto',
+}
+
+const WILL_CHANGE_VALUES: Record<string, string> = {
+  'will-change-auto': 'auto',
+  'will-change-scroll': 'scroll-position',
+  'will-change-contents': 'contents',
+  'will-change-transform': 'transform',
+}
+
+const STROKE_LINECAP_VALUES: Record<string, string> = {
+  'stroke-linecap-butt': 'butt',
+  'stroke-linecap-round': 'round',
+  'stroke-linecap-square': 'square',
+}
+
+const STROKE_LINEJOIN_VALUES: Record<string, string> = {
+  'stroke-linejoin-miter': 'miter',
+  'stroke-linejoin-round': 'round',
+  'stroke-linejoin-bevel': 'bevel',
+}
+
+const FORCED_COLOR_ADJUST_VALUES: Record<string, string> = {
+  'forced-color-adjust-auto': 'auto',
+  'forced-color-adjust-none': 'none',
+}
+
+
 // Filters, Tables, Interactivity, SVG, Accessibility utilities
 
 // Shared named-size map for `blur-*` and `backdrop-blur-*` (Tailwind parity).
@@ -146,11 +283,7 @@ export const backdropFilterRule: UtilityRule = (parsed): Record<string, string> 
 
 // Table utilities
 export const borderCollapseRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'border-collapse': 'collapse',
-    'border-separate': 'separate',
-  }
-  return values[parsed.base] ? { 'border-collapse': values[parsed.base] } : undefined
+  return BORDER_COLLAPSE_VALUES[parsed.base] ? { 'border-collapse': BORDER_COLLAPSE_VALUES[parsed.base] } : undefined
 }
 
 export const borderSpacingRule: UtilityRule = (parsed, config) => {
@@ -185,11 +318,7 @@ export const tableLayoutRule: UtilityRule = (parsed) => {
 }
 
 export const captionSideRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'caption-top': 'top',
-    'caption-bottom': 'bottom',
-  }
-  return values[parsed.base] ? { 'caption-side': values[parsed.base] } : undefined
+  return CAPTION_SIDE_VALUES[parsed.base] ? { 'caption-side': CAPTION_SIDE_VALUES[parsed.base] } : undefined
 }
 
 // Interactivity utilities
@@ -245,79 +374,23 @@ export const colorSchemeRule: UtilityRule = (parsed) => {
 }
 
 export const fieldSizingRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'field-sizing-content': 'content',
-    'field-sizing-fixed': 'fixed',
-  }
-  return values[parsed.base] ? { 'field-sizing': values[parsed.base] } : undefined
+  return FIELD_SIZING_VALUES[parsed.base] ? { 'field-sizing': FIELD_SIZING_VALUES[parsed.base] } : undefined
 }
 
 export const cursorRule: UtilityRule = (parsed) => {
-  const cursors: Record<string, string> = {
-    'cursor-auto': 'auto',
-    'cursor-default': 'default',
-    'cursor-pointer': 'pointer',
-    'cursor-wait': 'wait',
-    'cursor-text': 'text',
-    'cursor-move': 'move',
-    'cursor-help': 'help',
-    'cursor-not-allowed': 'not-allowed',
-    'cursor-none': 'none',
-    'cursor-context-menu': 'context-menu',
-    'cursor-progress': 'progress',
-    'cursor-cell': 'cell',
-    'cursor-crosshair': 'crosshair',
-    'cursor-vertical-text': 'vertical-text',
-    'cursor-alias': 'alias',
-    'cursor-copy': 'copy',
-    'cursor-no-drop': 'no-drop',
-    'cursor-grab': 'grab',
-    'cursor-grabbing': 'grabbing',
-    'cursor-all-scroll': 'all-scroll',
-    'cursor-col-resize': 'col-resize',
-    'cursor-row-resize': 'row-resize',
-    'cursor-n-resize': 'n-resize',
-    'cursor-e-resize': 'e-resize',
-    'cursor-s-resize': 's-resize',
-    'cursor-w-resize': 'w-resize',
-    'cursor-ne-resize': 'ne-resize',
-    'cursor-nw-resize': 'nw-resize',
-    'cursor-se-resize': 'se-resize',
-    'cursor-sw-resize': 'sw-resize',
-    'cursor-ew-resize': 'ew-resize',
-    'cursor-ns-resize': 'ns-resize',
-    'cursor-nesw-resize': 'nesw-resize',
-    'cursor-nwse-resize': 'nwse-resize',
-    'cursor-zoom-in': 'zoom-in',
-    'cursor-zoom-out': 'zoom-out',
-  }
-  return cursors[parsed.base] ? { cursor: cursors[parsed.base] } : undefined
+  return CURSOR_CURSORS[parsed.base] ? { cursor: CURSOR_CURSORS[parsed.base] } : undefined
 }
 
 export const pointerEventsRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'pointer-events-none': 'none',
-    'pointer-events-auto': 'auto',
-  }
-  return values[parsed.base] ? { 'pointer-events': values[parsed.base] } : undefined
+  return POINTER_EVENTS_VALUES[parsed.base] ? { 'pointer-events': POINTER_EVENTS_VALUES[parsed.base] } : undefined
 }
 
 export const resizeRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'resize-none': 'none',
-    'resize': 'both',
-    'resize-y': 'vertical',
-    'resize-x': 'horizontal',
-  }
-  return values[parsed.base] ? { resize: values[parsed.base] } : undefined
+  return RESIZE_VALUES[parsed.base] ? { resize: RESIZE_VALUES[parsed.base] } : undefined
 }
 
 export const scrollBehaviorRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'scroll-auto': 'auto',
-    'scroll-smooth': 'smooth',
-  }
-  return values[parsed.base] ? { 'scroll-behavior': values[parsed.base] } : undefined
+  return SCROLL_BEHAVIOR_VALUES[parsed.base] ? { 'scroll-behavior': SCROLL_BEHAVIOR_VALUES[parsed.base] } : undefined
 }
 
 export const scrollMarginRule: UtilityRule = (parsed, config) => {
@@ -383,73 +456,31 @@ export const scrollPaddingRule: UtilityRule = (parsed, config) => {
 }
 
 export const scrollSnapRule: UtilityRule = (parsed) => {
-  const types: Record<string, string> = {
-    'snap-none': 'none',
-    'snap-x': 'x mandatory',
-    'snap-y': 'y mandatory',
-    'snap-both': 'both mandatory',
-    'snap-mandatory': 'mandatory',
-    'snap-proximity': 'proximity',
-  }
-  if (types[parsed.base]) {
+  if (SCROLL_SNAP_TYPES[parsed.base]) {
     return parsed.base.includes('mandatory') || parsed.base.includes('proximity')
-      ? { 'scroll-snap-type': types[parsed.base] } as Record<string, string>
-      : { 'scroll-snap-type': types[parsed.base] } as Record<string, string>
+      ? { 'scroll-snap-type': SCROLL_SNAP_TYPES[parsed.base] } as Record<string, string>
+      : { 'scroll-snap-type': SCROLL_SNAP_TYPES[parsed.base] } as Record<string, string>
   }
 
-  const aligns: Record<string, string> = {
-    'snap-start': 'start',
-    'snap-end': 'end',
-    'snap-center': 'center',
-    'snap-align-none': 'none',
-  }
-  if (aligns[parsed.base]) {
-    return { 'scroll-snap-align': aligns[parsed.base] } as Record<string, string>
+  if (SCROLL_SNAP_ALIGNS[parsed.base]) {
+    return { 'scroll-snap-align': SCROLL_SNAP_ALIGNS[parsed.base] } as Record<string, string>
   }
 
-  const stops: Record<string, string> = {
-    'snap-normal': 'normal',
-    'snap-always': 'always',
-  }
-  if (stops[parsed.base]) {
-    return { 'scroll-snap-stop': stops[parsed.base] } as Record<string, string>
+  if (SCROLL_SNAP_STOPS[parsed.base]) {
+    return { 'scroll-snap-stop': SCROLL_SNAP_STOPS[parsed.base] } as Record<string, string>
   }
 }
 
 export const touchActionRule: UtilityRule = (parsed) => {
-  const actions: Record<string, string> = {
-    'touch-auto': 'auto',
-    'touch-none': 'none',
-    'touch-pan-x': 'pan-x',
-    'touch-pan-left': 'pan-left',
-    'touch-pan-right': 'pan-right',
-    'touch-pan-y': 'pan-y',
-    'touch-pan-up': 'pan-up',
-    'touch-pan-down': 'pan-down',
-    'touch-pinch-zoom': 'pinch-zoom',
-    'touch-manipulation': 'manipulation',
-  }
-  return actions[parsed.base] ? { 'touch-action': actions[parsed.base] } : undefined
+  return TOUCH_ACTION_ACTIONS[parsed.base] ? { 'touch-action': TOUCH_ACTION_ACTIONS[parsed.base] } : undefined
 }
 
 export const userSelectRule: UtilityRule = (parsed) => {
-  const selects: Record<string, string> = {
-    'select-none': 'none',
-    'select-text': 'text',
-    'select-all': 'all',
-    'select-auto': 'auto',
-  }
-  return selects[parsed.base] ? { 'user-select': selects[parsed.base] } : undefined
+  return USER_SELECT_SELECTS[parsed.base] ? { 'user-select': USER_SELECT_SELECTS[parsed.base] } : undefined
 }
 
 export const willChangeRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'will-change-auto': 'auto',
-    'will-change-scroll': 'scroll-position',
-    'will-change-contents': 'contents',
-    'will-change-transform': 'transform',
-  }
-  return values[parsed.base] ? { 'will-change': values[parsed.base] } : undefined
+  return WILL_CHANGE_VALUES[parsed.base] ? { 'will-change': WILL_CHANGE_VALUES[parsed.base] } : undefined
 }
 
 // SVG utilities
@@ -503,22 +534,12 @@ export const strokeDashoffsetRule: UtilityRule = (parsed) => {
 
 // SVG stroke-linecap
 export const strokeLinecapRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'stroke-linecap-butt': 'butt',
-    'stroke-linecap-round': 'round',
-    'stroke-linecap-square': 'square',
-  }
-  return values[parsed.base] ? { 'stroke-linecap': values[parsed.base] } : undefined
+  return STROKE_LINECAP_VALUES[parsed.base] ? { 'stroke-linecap': STROKE_LINECAP_VALUES[parsed.base] } : undefined
 }
 
 // SVG stroke-linejoin
 export const strokeLinejoinRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'stroke-linejoin-miter': 'miter',
-    'stroke-linejoin-round': 'round',
-    'stroke-linejoin-bevel': 'bevel',
-  }
-  return values[parsed.base] ? { 'stroke-linejoin': values[parsed.base] } : undefined
+  return STROKE_LINEJOIN_VALUES[parsed.base] ? { 'stroke-linejoin': STROKE_LINEJOIN_VALUES[parsed.base] } : undefined
 }
 
 // Accessibility
@@ -552,11 +573,7 @@ export const screenReaderRule: UtilityRule = (parsed) => {
 }
 
 export const forcedColorAdjustRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'forced-color-adjust-auto': 'auto',
-    'forced-color-adjust-none': 'none',
-  }
-  return values[parsed.base] ? { 'forced-color-adjust': values[parsed.base] } : undefined
+  return FORCED_COLOR_ADJUST_VALUES[parsed.base] ? { 'forced-color-adjust': FORCED_COLOR_ADJUST_VALUES[parsed.base] } : undefined
 }
 
 export const interactivityRules: UtilityRule[] = [

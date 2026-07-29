@@ -1,6 +1,28 @@
 import type { UtilityRule } from './rules'
 import { resolveColorValue, resolveSizeToken } from './rules'
 
+const MIN_MAX_SIZING_MINMAXMAP: Record<string, string> = {
+  '0': '0',
+  'full': '100%',
+  'min': 'min-content',
+  'max': 'max-content',
+  'fit': 'fit-content',
+  'none': 'none',
+  'xs': '20rem',
+  'sm': '24rem',
+  'md': '28rem',
+  'lg': '32rem',
+  'xl': '36rem',
+  '2xl': '42rem',
+  '3xl': '48rem',
+  '4xl': '56rem',
+  '5xl': '64rem',
+  '6xl': '72rem',
+  '7xl': '80rem',
+  'screen': '100vw',
+}
+
+
 // Advanced utilities
 
 // Opacity token: scale keys, any 0-100 integer (n/100), or arbitrary values.
@@ -25,42 +47,22 @@ function resolveOpacityToken(
 
 // Min/Max sizing
 export const minMaxSizingRule: UtilityRule = (parsed, config) => {
-  const minMaxMap: Record<string, string> = {
-    '0': '0',
-    'full': '100%',
-    'min': 'min-content',
-    'max': 'max-content',
-    'fit': 'fit-content',
-    'none': 'none',
-    'xs': '20rem',
-    'sm': '24rem',
-    'md': '28rem',
-    'lg': '32rem',
-    'xl': '36rem',
-    '2xl': '42rem',
-    '3xl': '48rem',
-    '4xl': '56rem',
-    '5xl': '64rem',
-    '6xl': '72rem',
-    '7xl': '80rem',
-    'screen': '100vw',
-  }
 
   if (parsed.utility === 'min-w' && parsed.value) {
-    const value = resolveSizeToken(parsed, config, minMaxMap)
+    const value = resolveSizeToken(parsed, config, MIN_MAX_SIZING_MINMAXMAP)
     return value !== undefined ? { 'min-width': value } as Record<string, string> : undefined
   }
   if (parsed.utility === 'max-w' && parsed.value) {
-    const value = resolveSizeToken(parsed, config, minMaxMap)
+    const value = resolveSizeToken(parsed, config, MIN_MAX_SIZING_MINMAXMAP)
     return value !== undefined ? { 'max-width': value } as Record<string, string> : undefined
   }
   if (parsed.utility === 'min-h' && parsed.value) {
-    const hMap: Record<string, string> = { ...minMaxMap, screen: '100vh' }
+    const hMap: Record<string, string> = { ...MIN_MAX_SIZING_MINMAXMAP, screen: '100vh' }
     const value = resolveSizeToken(parsed, config, hMap)
     return value !== undefined ? { 'min-height': value } as Record<string, string> : undefined
   }
   if (parsed.utility === 'max-h' && parsed.value) {
-    const hMap: Record<string, string> = { ...minMaxMap, screen: '100vh' }
+    const hMap: Record<string, string> = { ...MIN_MAX_SIZING_MINMAXMAP, screen: '100vh' }
     const value = resolveSizeToken(parsed, config, hMap)
     return value !== undefined ? { 'max-height': value } as Record<string, string> : undefined
   }

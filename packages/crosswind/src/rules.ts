@@ -10,6 +10,27 @@ import { transformsRules } from './rules-transforms'
 import { typographyRules } from './rules-typography'
 import { fractionToPercent } from './format'
 
+const FLEX_DIRECTION_DIRECTIONS: Record<string, string> = {
+  'flex-row': 'row',
+  'flex-row-reverse': 'row-reverse',
+  'flex-col': 'column',
+  'flex-col-reverse': 'column-reverse',
+}
+
+const FLEX_WRAP_WRAPS: Record<string, string> = {
+  'flex-wrap': 'wrap',
+  'flex-wrap-reverse': 'wrap-reverse',
+  'flex-nowrap': 'nowrap',
+}
+
+const BORDER_SIDE_WIDTH_WIDTHMAP: Record<string, string> = {
+  0: '0px',
+  2: '2px',
+  4: '4px',
+  8: '8px',
+}
+
+
 export type UtilityRule = (_parsed: ParsedClass, _config: CrosswindConfig) => Record<string, string> | UtilityRuleResult | undefined
 
 /**
@@ -91,22 +112,11 @@ export const containerRule: UtilityRule = (parsed) => {
 
 // Flexbox utilities
 export const flexDirectionRule: UtilityRule = (parsed) => {
-  const directions: Record<string, string> = {
-    'flex-row': 'row',
-    'flex-row-reverse': 'row-reverse',
-    'flex-col': 'column',
-    'flex-col-reverse': 'column-reverse',
-  }
-  return directions[parsed.utility] ? { 'flex-direction': directions[parsed.utility] } : undefined
+  return FLEX_DIRECTION_DIRECTIONS[parsed.utility] ? { 'flex-direction': FLEX_DIRECTION_DIRECTIONS[parsed.utility] } : undefined
 }
 
 export const flexWrapRule: UtilityRule = (parsed) => {
-  const wraps: Record<string, string> = {
-    'flex-wrap': 'wrap',
-    'flex-wrap-reverse': 'wrap-reverse',
-    'flex-nowrap': 'nowrap',
-  }
-  return wraps[parsed.utility] ? { 'flex-wrap': wraps[parsed.utility] } : undefined
+  return FLEX_WRAP_WRAPS[parsed.utility] ? { 'flex-wrap': FLEX_WRAP_WRAPS[parsed.utility] } : undefined
 }
 
 export const flexRule: UtilityRule = (parsed) => {
@@ -935,12 +945,6 @@ export const borderSideWidthRule: UtilityRule = (parsed, config) => {
     return undefined
 
   // Width values: 0, 2, 4, 8 (or default to 1px if no value)
-  const widthMap: Record<string, string> = {
-    0: '0px',
-    2: '2px',
-    4: '4px',
-    8: '8px',
-  }
 
   // No value → default 1px width
   if (!parsed.value) {
@@ -966,12 +970,12 @@ export const borderSideWidthRule: UtilityRule = (parsed, config) => {
   }
 
   // Named width from the simple map
-  if (widthMap[parsed.value]) {
+  if (BORDER_SIDE_WIDTH_WIDTHMAP[parsed.value]) {
     const prop = widthProp
     if (Array.isArray(prop)) {
-      return prop.reduce((acc, p) => ({ ...acc, [p]: widthMap[parsed.value!] }), {} as Record<string, string>)
+      return prop.reduce((acc, p) => ({ ...acc, [p]: BORDER_SIDE_WIDTH_WIDTHMAP[parsed.value!] }), {} as Record<string, string>)
     }
-    return { [prop]: widthMap[parsed.value] }
+    return { [prop]: BORDER_SIDE_WIDTH_WIDTHMAP[parsed.value] }
   }
 
   // Color palette lookup for `border-r-red-500`, `border-t-gray-800`, etc.

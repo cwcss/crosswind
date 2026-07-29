@@ -1,6 +1,40 @@
 import type { UtilityRule } from './rules'
 import { resolveColorValue } from './rules'
 
+const BACKGROUND_ORIGIN_VALUES: Record<string, string> = {
+  'bg-origin-border': 'border-box',
+  'bg-origin-padding': 'padding-box',
+  'bg-origin-content': 'content-box',
+}
+
+const BACKGROUND_POSITION_POSITIONS: Record<string, string> = {
+  'bg-bottom': 'bottom',
+  'bg-center': 'center',
+  'bg-left': 'left',
+  'bg-left-bottom': 'left bottom',
+  'bg-left-top': 'left top',
+  'bg-right': 'right',
+  'bg-right-bottom': 'right bottom',
+  'bg-right-top': 'right top',
+  'bg-top': 'top',
+}
+
+const BACKGROUND_REPEAT_REPEATS: Record<string, string> = {
+  'bg-repeat': 'repeat',
+  'bg-no-repeat': 'no-repeat',
+  'bg-repeat-x': 'repeat-x',
+  'bg-repeat-y': 'repeat-y',
+  'bg-repeat-round': 'round',
+  'bg-repeat-space': 'space',
+}
+
+const BACKGROUND_SIZE_SIZES: Record<string, string> = {
+  'bg-auto': 'auto',
+  'bg-cover': 'cover',
+  'bg-contain': 'contain',
+}
+
+
 // =============================================================================
 // Shadow color helpers
 // =============================================================================
@@ -142,48 +176,19 @@ export const backgroundImageRule: UtilityRule = (parsed) => {
 }
 
 export const backgroundOriginRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'bg-origin-border': 'border-box',
-    'bg-origin-padding': 'padding-box',
-    'bg-origin-content': 'content-box',
-  }
-  return values[parsed.base] ? { 'background-origin': values[parsed.base] } : undefined
+  return BACKGROUND_ORIGIN_VALUES[parsed.base] ? { 'background-origin': BACKGROUND_ORIGIN_VALUES[parsed.base] } : undefined
 }
 
 export const backgroundPositionRule: UtilityRule = (parsed) => {
-  const positions: Record<string, string> = {
-    'bg-bottom': 'bottom',
-    'bg-center': 'center',
-    'bg-left': 'left',
-    'bg-left-bottom': 'left bottom',
-    'bg-left-top': 'left top',
-    'bg-right': 'right',
-    'bg-right-bottom': 'right bottom',
-    'bg-right-top': 'right top',
-    'bg-top': 'top',
-  }
-  return positions[parsed.base] ? { 'background-position': positions[parsed.base] } : undefined
+  return BACKGROUND_POSITION_POSITIONS[parsed.base] ? { 'background-position': BACKGROUND_POSITION_POSITIONS[parsed.base] } : undefined
 }
 
 export const backgroundRepeatRule: UtilityRule = (parsed) => {
-  const repeats: Record<string, string> = {
-    'bg-repeat': 'repeat',
-    'bg-no-repeat': 'no-repeat',
-    'bg-repeat-x': 'repeat-x',
-    'bg-repeat-y': 'repeat-y',
-    'bg-repeat-round': 'round',
-    'bg-repeat-space': 'space',
-  }
-  return repeats[parsed.base] ? { 'background-repeat': repeats[parsed.base] } : undefined
+  return BACKGROUND_REPEAT_REPEATS[parsed.base] ? { 'background-repeat': BACKGROUND_REPEAT_REPEATS[parsed.base] } : undefined
 }
 
 export const backgroundSizeRule: UtilityRule = (parsed) => {
-  const sizes: Record<string, string> = {
-    'bg-auto': 'auto',
-    'bg-cover': 'cover',
-    'bg-contain': 'contain',
-  }
-  return sizes[parsed.base] ? { 'background-size': sizes[parsed.base] } : undefined
+  return BACKGROUND_SIZE_SIZES[parsed.base] ? { 'background-size': BACKGROUND_SIZE_SIZES[parsed.base] } : undefined
 }
 
 // Border utilities

@@ -1,6 +1,127 @@
 import type { UtilityRule } from './rules'
 import { resolveColorValue } from './rules'
 
+const FONT_STYLE_STYLES: Record<string, string> = {
+  'italic': 'italic',
+  'not-italic': 'normal',
+}
+
+const FONT_VARIANT_NUMERIC_VARIANTS: Record<string, string> = {
+  'normal-nums': 'normal',
+  'ordinal': 'ordinal',
+  'slashed-zero': 'slashed-zero',
+  'lining-nums': 'lining-nums',
+  'oldstyle-nums': 'oldstyle-nums',
+  'proportional-nums': 'proportional-nums',
+  'tabular-nums': 'tabular-nums',
+  'diagonal-fractions': 'diagonal-fractions',
+  'stacked-fractions': 'stacked-fractions',
+}
+
+const LIST_STYLE_POSITION_POSITIONS: Record<string, string> = {
+  'list-inside': 'inside',
+  'list-outside': 'outside',
+}
+
+const LIST_STYLE_TYPE_TYPES: Record<string, string> = {
+  none: 'none',
+  disc: 'disc',
+  decimal: 'decimal',
+}
+
+const TEXT_DECORATION_DECORATIONS: Record<string, string> = {
+  'underline': 'underline',
+  'overline': 'overline',
+  'line-through': 'line-through',
+  'no-underline': 'none',
+}
+
+const TEXT_TRANSFORM_TRANSFORMS: Record<string, string> = {
+  'uppercase': 'uppercase',
+  'lowercase': 'lowercase',
+  'capitalize': 'capitalize',
+  'normal-case': 'none',
+}
+
+const TEXT_WRAP_WRAPS: Record<string, string> = {
+  'text-wrap': 'wrap',
+  'text-nowrap': 'nowrap',
+  'text-balance': 'balance',
+  'text-pretty': 'pretty',
+}
+
+const VERTICAL_ALIGN_ALIGNS: Record<string, string> = {
+  'align-baseline': 'baseline',
+  'align-top': 'top',
+  'align-middle': 'middle',
+  'align-bottom': 'bottom',
+  'align-text-top': 'text-top',
+  'align-text-bottom': 'text-bottom',
+  'align-sub': 'sub',
+  'align-super': 'super',
+}
+
+const WHITE_SPACE_SPACES: Record<string, string> = {
+  'whitespace-normal': 'normal',
+  'whitespace-nowrap': 'nowrap',
+  'whitespace-pre': 'pre',
+  'whitespace-pre-line': 'pre-line',
+  'whitespace-pre-wrap': 'pre-wrap',
+  'whitespace-break-spaces': 'break-spaces',
+}
+
+const WORD_BREAK_BREAKS: Record<string, string> = {
+  'break-all': 'break-all',
+  'break-keep': 'keep-all',
+}
+
+const HYPHENS_VALUES: Record<string, string> = {
+  'hyphens-none': 'none',
+  'hyphens-manual': 'manual',
+  'hyphens-auto': 'auto',
+}
+
+const WRITING_MODE_VALUES: Record<string, string> = {
+  'writing-horizontal-tb': 'horizontal-tb',
+  'writing-vertical-rl': 'vertical-rl',
+  'writing-vertical-lr': 'vertical-lr',
+}
+
+const TEXT_ORIENTATION_VALUES: Record<string, string> = {
+  'text-orientation-mixed': 'mixed',
+  'text-orientation-upright': 'upright',
+  'text-orientation-sideways': 'sideways',
+}
+
+const DIRECTION_VALUES: Record<string, string> = {
+  'direction-ltr': 'ltr',
+  'direction-rtl': 'rtl',
+}
+
+const FONT_VARIANT_CAPS_VALUES: Record<string, string> = {
+  'small-caps': 'small-caps',
+  'all-small-caps': 'all-small-caps',
+  'petite-caps': 'petite-caps',
+  'all-petite-caps': 'all-petite-caps',
+  'unicase': 'unicase',
+  'titling-caps': 'titling-caps',
+  'normal-caps': 'normal',
+}
+
+const FONT_VARIANT_LIGATURES_VALUES: Record<string, string> = {
+  'ligatures-normal': 'normal',
+  'ligatures-none': 'none',
+  'common-ligatures': 'common-ligatures',
+  'no-common-ligatures': 'no-common-ligatures',
+  'discretionary-ligatures': 'discretionary-ligatures',
+  'no-discretionary-ligatures': 'no-discretionary-ligatures',
+  'historical-ligatures': 'historical-ligatures',
+  'no-historical-ligatures': 'no-historical-ligatures',
+  'contextual': 'contextual',
+  'no-contextual': 'no-contextual',
+}
+
+
 // Typography utilities
 
 export const fontFamilyRule: UtilityRule = (parsed, config) => {
@@ -27,11 +148,7 @@ export const fontSmoothingRule: UtilityRule = (parsed) => {
 }
 
 export const fontStyleRule: UtilityRule = (parsed) => {
-  const styles: Record<string, string> = {
-    'italic': 'italic',
-    'not-italic': 'normal',
-  }
-  return styles[parsed.base] ? { 'font-style': styles[parsed.base] } : undefined
+  return FONT_STYLE_STYLES[parsed.base] ? { 'font-style': FONT_STYLE_STYLES[parsed.base] } : undefined
 }
 
 export const fontStretchRule: UtilityRule = (parsed) => {
@@ -48,18 +165,7 @@ export const fontStretchRule: UtilityRule = (parsed) => {
 }
 
 export const fontVariantNumericRule: UtilityRule = (parsed) => {
-  const variants: Record<string, string> = {
-    'normal-nums': 'normal',
-    'ordinal': 'ordinal',
-    'slashed-zero': 'slashed-zero',
-    'lining-nums': 'lining-nums',
-    'oldstyle-nums': 'oldstyle-nums',
-    'proportional-nums': 'proportional-nums',
-    'tabular-nums': 'tabular-nums',
-    'diagonal-fractions': 'diagonal-fractions',
-    'stacked-fractions': 'stacked-fractions',
-  }
-  return variants[parsed.base] ? { 'font-variant-numeric': variants[parsed.base] } : undefined
+  return FONT_VARIANT_NUMERIC_VARIANTS[parsed.base] ? { 'font-variant-numeric': FONT_VARIANT_NUMERIC_VARIANTS[parsed.base] } : undefined
 }
 
 export const letterSpacingRule: UtilityRule = (parsed) => {
@@ -123,37 +229,22 @@ export const listStyleImageRule: UtilityRule = (parsed) => {
 }
 
 export const listStylePositionRule: UtilityRule = (parsed) => {
-  const positions: Record<string, string> = {
-    'list-inside': 'inside',
-    'list-outside': 'outside',
-  }
-  return positions[parsed.base] ? { 'list-style-position': positions[parsed.base] } : undefined
+  return LIST_STYLE_POSITION_POSITIONS[parsed.base] ? { 'list-style-position': LIST_STYLE_POSITION_POSITIONS[parsed.base] } : undefined
 }
 
 export const listStyleTypeRule: UtilityRule = (parsed) => {
   if (parsed.utility !== 'list' || !parsed.value)
     return undefined
-  const types: Record<string, string> = {
-    none: 'none',
-    disc: 'disc',
-    decimal: 'decimal',
-  }
   // Only match recognized list-style-type values. Returning the raw value as
   // a fallback turned `list-item` (which is `display: list-item`, handled by
   // displayRule) into an invalid `list-style-type: item` rule and shadowed
   // the display utility entirely.
-  return types[parsed.value] ? { 'list-style-type': types[parsed.value] } : undefined
+  return LIST_STYLE_TYPE_TYPES[parsed.value] ? { 'list-style-type': LIST_STYLE_TYPE_TYPES[parsed.value] } : undefined
 }
 
 export const textDecorationRule: UtilityRule = (parsed, config) => {
-  const decorations: Record<string, string> = {
-    'underline': 'underline',
-    'overline': 'overline',
-    'line-through': 'line-through',
-    'no-underline': 'none',
-  }
-  if (decorations[parsed.base]) {
-    return { 'text-decoration-line': decorations[parsed.base] } as Record<string, string>
+  if (TEXT_DECORATION_DECORATIONS[parsed.base]) {
+    return { 'text-decoration-line': TEXT_DECORATION_DECORATIONS[parsed.base] } as Record<string, string>
   }
 
   if (parsed.utility === 'decoration' && parsed.value) {
@@ -226,13 +317,7 @@ export const underlineOffsetRule: UtilityRule = (parsed) => {
 }
 
 export const textTransformRule: UtilityRule = (parsed) => {
-  const transforms: Record<string, string> = {
-    'uppercase': 'uppercase',
-    'lowercase': 'lowercase',
-    'capitalize': 'capitalize',
-    'normal-case': 'none',
-  }
-  return transforms[parsed.base] ? { 'text-transform': transforms[parsed.base] } : undefined
+  return TEXT_TRANSFORM_TRANSFORMS[parsed.base] ? { 'text-transform': TEXT_TRANSFORM_TRANSFORMS[parsed.base] } : undefined
 }
 
 export const textOverflowRule: UtilityRule = (parsed) => {
@@ -249,13 +334,7 @@ export const textOverflowRule: UtilityRule = (parsed) => {
 }
 
 export const textWrapRule: UtilityRule = (parsed) => {
-  const wraps: Record<string, string> = {
-    'text-wrap': 'wrap',
-    'text-nowrap': 'nowrap',
-    'text-balance': 'balance',
-    'text-pretty': 'pretty',
-  }
-  return wraps[parsed.base] ? { 'text-wrap': wraps[parsed.base] } : undefined
+  return TEXT_WRAP_WRAPS[parsed.base] ? { 'text-wrap': TEXT_WRAP_WRAPS[parsed.base] } : undefined
 }
 
 export const textIndentRule: UtilityRule = (parsed, config) => {
@@ -282,29 +361,11 @@ export const textIndentRule: UtilityRule = (parsed, config) => {
 }
 
 export const verticalAlignRule: UtilityRule = (parsed) => {
-  const aligns: Record<string, string> = {
-    'align-baseline': 'baseline',
-    'align-top': 'top',
-    'align-middle': 'middle',
-    'align-bottom': 'bottom',
-    'align-text-top': 'text-top',
-    'align-text-bottom': 'text-bottom',
-    'align-sub': 'sub',
-    'align-super': 'super',
-  }
-  return aligns[parsed.base] ? { 'vertical-align': aligns[parsed.base] } : undefined
+  return VERTICAL_ALIGN_ALIGNS[parsed.base] ? { 'vertical-align': VERTICAL_ALIGN_ALIGNS[parsed.base] } : undefined
 }
 
 export const whiteSpaceRule: UtilityRule = (parsed) => {
-  const spaces: Record<string, string> = {
-    'whitespace-normal': 'normal',
-    'whitespace-nowrap': 'nowrap',
-    'whitespace-pre': 'pre',
-    'whitespace-pre-line': 'pre-line',
-    'whitespace-pre-wrap': 'pre-wrap',
-    'whitespace-break-spaces': 'break-spaces',
-  }
-  return spaces[parsed.base] ? { 'white-space': spaces[parsed.base] } : undefined
+  return WHITE_SPACE_SPACES[parsed.base] ? { 'white-space': WHITE_SPACE_SPACES[parsed.base] } : undefined
 }
 
 export const wordBreakRule: UtilityRule = (parsed) => {
@@ -317,11 +378,7 @@ export const wordBreakRule: UtilityRule = (parsed) => {
   if (parsed.base === 'break-words') {
     return { 'overflow-wrap': 'break-word' } as Record<string, string>
   }
-  const breaks: Record<string, string> = {
-    'break-all': 'break-all',
-    'break-keep': 'keep-all',
-  }
-  return breaks[parsed.base] ? { 'word-break': breaks[parsed.base] } : undefined
+  return WORD_BREAK_BREAKS[parsed.base] ? { 'word-break': WORD_BREAK_BREAKS[parsed.base] } : undefined
 }
 
 export const overflowWrapRule: UtilityRule = (parsed) => {
@@ -350,12 +407,7 @@ export const tabSizeRule: UtilityRule = (parsed) => {
 }
 
 export const hyphensRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'hyphens-none': 'none',
-    'hyphens-manual': 'manual',
-    'hyphens-auto': 'auto',
-  }
-  return values[parsed.base] ? { hyphens: values[parsed.base] } : undefined
+  return HYPHENS_VALUES[parsed.base] ? { hyphens: HYPHENS_VALUES[parsed.base] } : undefined
 }
 
 export const contentRule: UtilityRule = (parsed) => {
@@ -414,31 +466,17 @@ export const lineHeightRule: UtilityRule = (parsed, _config) => {
 
 // Writing mode
 export const writingModeRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'writing-horizontal-tb': 'horizontal-tb',
-    'writing-vertical-rl': 'vertical-rl',
-    'writing-vertical-lr': 'vertical-lr',
-  }
-  return values[parsed.base] ? { 'writing-mode': values[parsed.base] } : undefined
+  return WRITING_MODE_VALUES[parsed.base] ? { 'writing-mode': WRITING_MODE_VALUES[parsed.base] } : undefined
 }
 
 // Text orientation
 export const textOrientationRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'text-orientation-mixed': 'mixed',
-    'text-orientation-upright': 'upright',
-    'text-orientation-sideways': 'sideways',
-  }
-  return values[parsed.base] ? { 'text-orientation': values[parsed.base] } : undefined
+  return TEXT_ORIENTATION_VALUES[parsed.base] ? { 'text-orientation': TEXT_ORIENTATION_VALUES[parsed.base] } : undefined
 }
 
 // Direction (ltr/rtl)
 export const directionRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'direction-ltr': 'ltr',
-    'direction-rtl': 'rtl',
-  }
-  return values[parsed.base] ? { direction: values[parsed.base] } : undefined
+  return DIRECTION_VALUES[parsed.base] ? { direction: DIRECTION_VALUES[parsed.base] } : undefined
 }
 
 // Text emphasis
@@ -506,33 +544,12 @@ export const wordSpacingRule: UtilityRule = (parsed, config) => {
 
 // Font variant caps
 export const fontVariantCapsRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'small-caps': 'small-caps',
-    'all-small-caps': 'all-small-caps',
-    'petite-caps': 'petite-caps',
-    'all-petite-caps': 'all-petite-caps',
-    'unicase': 'unicase',
-    'titling-caps': 'titling-caps',
-    'normal-caps': 'normal',
-  }
-  return values[parsed.base] ? { 'font-variant-caps': values[parsed.base] } : undefined
+  return FONT_VARIANT_CAPS_VALUES[parsed.base] ? { 'font-variant-caps': FONT_VARIANT_CAPS_VALUES[parsed.base] } : undefined
 }
 
 // Font variant ligatures
 export const fontVariantLigaturesRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'ligatures-normal': 'normal',
-    'ligatures-none': 'none',
-    'common-ligatures': 'common-ligatures',
-    'no-common-ligatures': 'no-common-ligatures',
-    'discretionary-ligatures': 'discretionary-ligatures',
-    'no-discretionary-ligatures': 'no-discretionary-ligatures',
-    'historical-ligatures': 'historical-ligatures',
-    'no-historical-ligatures': 'no-historical-ligatures',
-    'contextual': 'contextual',
-    'no-contextual': 'no-contextual',
-  }
-  return values[parsed.base] ? { 'font-variant-ligatures': values[parsed.base] } : undefined
+  return FONT_VARIANT_LIGATURES_VALUES[parsed.base] ? { 'font-variant-ligatures': FONT_VARIANT_LIGATURES_VALUES[parsed.base] } : undefined
 }
 
 export const typographyRules: UtilityRule[] = [
