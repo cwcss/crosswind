@@ -1389,6 +1389,12 @@ function parseClassImpl(className: string): Omit<ParsedClass, 'base'> {
     'word-spacing',
     'column-gap',
     'column-rule',
+    // Without these the parser splits at the first dash — `font-stretch-expanded`
+    // parsed as `font` / `stretch-expanded` and `list-image-none` as `list` /
+    // `image-none`, so fontStretchRule and listStyleImageRule (which match on
+    // the compound utility name) never fired for any input.
+    'font-stretch',
+    'list-image',
   ]
 
   // Special case for divide-x and divide-y (without values, they should be treated as compound)
