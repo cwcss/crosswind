@@ -3,6 +3,7 @@ import type { UtilityRule } from './rules'
 import { parseClass } from './parser'
 import { defaultConfig } from './config'
 import { builtInRules } from './rules'
+import { TRANSFORM_2D, TRANSFORM_3D } from './rules-transforms'
 
 /**
  * Deep merge objects
@@ -124,9 +125,9 @@ const BORDER_STYLE_MAP: Record<string, Record<string, string>> = {
 
 // Transform utilities - direct raw class to CSS
 const TRANSFORM_MAP: Record<string, Record<string, string>> = {
-  'transform': { transform: 'translate(var(--cw-translate-x), var(--cw-translate-y)) rotate(var(--cw-rotate)) skewX(var(--cw-skew-x)) skewY(var(--cw-skew-y)) scaleX(var(--cw-scale-x)) scaleY(var(--cw-scale-y))' },
-  'transform-cpu': { transform: 'translate(var(--cw-translate-x), var(--cw-translate-y)) rotate(var(--cw-rotate)) skewX(var(--cw-skew-x)) skewY(var(--cw-skew-y)) scaleX(var(--cw-scale-x)) scaleY(var(--cw-scale-y))' },
-  'transform-gpu': { transform: 'translate3d(var(--cw-translate-x), var(--cw-translate-y), 0) rotate(var(--cw-rotate)) skewX(var(--cw-skew-x)) skewY(var(--cw-skew-y)) scaleX(var(--cw-scale-x)) scaleY(var(--cw-scale-y))' },
+  'transform': { transform: TRANSFORM_2D },
+  'transform-cpu': { transform: TRANSFORM_2D },
+  'transform-gpu': { transform: TRANSFORM_3D },
   'transform-none': { transform: 'none' },
 }
 

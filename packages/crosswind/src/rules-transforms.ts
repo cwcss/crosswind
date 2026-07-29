@@ -2,14 +2,30 @@ import type { UtilityRule } from './rules'
 
 // Transform, Transition, Animation utilities
 
+/**
+ * The composed `transform` value shared by transform / transform-cpu.
+ *
+ * Every var carries an identity fallback. Nothing declares these custom
+ * properties — the translate, rotate, scale and skew utilities each write the
+ * `transform` property directly — and a single unresolved var makes the whole
+ * declaration invalid at computed-value time — so `transform` and
+ * `transform-gpu` used to be dropped entirely by the browser instead of
+ * establishing the containing block / stacking context they exist for.
+ */
+const TRANSFORM_FUNCTIONS = 'rotate(var(--cw-rotate, 0deg)) skewX(var(--cw-skew-x, 0deg)) skewY(var(--cw-skew-y, 0deg)) scaleX(var(--cw-scale-x, 1)) scaleY(var(--cw-scale-y, 1))'
+export const TRANSFORM_2D = `translate(var(--cw-translate-x, 0), var(--cw-translate-y, 0)) ${TRANSFORM_FUNCTIONS}`
+export const TRANSFORM_3D = `translate3d(var(--cw-translate-x, 0), var(--cw-translate-y, 0), 0) ${TRANSFORM_FUNCTIONS}`
+
+const TRANSFORM_VALUES: Record<string, string> = {
+  'transform': TRANSFORM_2D,
+  'transform-cpu': TRANSFORM_2D,
+  'transform-gpu': TRANSFORM_3D,
+  'transform-none': 'none',
+}
+
 export const transformRule: UtilityRule = (parsed) => {
-  const values: Record<string, string> = {
-    'transform': 'translate(var(--cw-translate-x), var(--cw-translate-y)) rotate(var(--cw-rotate)) skewX(var(--cw-skew-x)) skewY(var(--cw-skew-y)) scaleX(var(--cw-scale-x)) scaleY(var(--cw-scale-y))',
-    'transform-cpu': 'translate(var(--cw-translate-x), var(--cw-translate-y)) rotate(var(--cw-rotate)) skewX(var(--cw-skew-x)) skewY(var(--cw-skew-y)) scaleX(var(--cw-scale-x)) scaleY(var(--cw-scale-y))',
-    'transform-gpu': 'translate3d(var(--cw-translate-x), var(--cw-translate-y), 0) rotate(var(--cw-rotate)) skewX(var(--cw-skew-x)) skewY(var(--cw-skew-y)) scaleX(var(--cw-scale-x)) scaleY(var(--cw-scale-y))',
-    'transform-none': 'none',
-  }
-  return values[parsed.raw] ? { transform: values[parsed.raw] } : undefined
+  const value = TRANSFORM_VALUES[parsed.raw]
+  return value ? { transform: value } : undefined
 }
 
 // A bare scale token is a percentage number (scale-150 -> 1.5). Unknown
