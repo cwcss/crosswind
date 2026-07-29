@@ -699,3 +699,69 @@ describe('Arbitrary Values and Properties', () => {
     })
   })
 })
+
+/**
+ * `shadow-[...]` had no arbitrary branch at all: the rule only looked its
+ * value up in `theme.boxShadow`, so any real shadow definition missed and the
+ * utility emitted nothing. Nothing failed loudly — the element simply had no
+ * shadow, which is indistinguishable from a design choice.
+ *
+ * The value is ambiguous by design: `shadow-[#ff0000]` names a shadow COLOUR
+ * while `shadow-[0_1px_4px_black]` is a whole shadow. Offsets mean a shadow
+ * definition always contains whitespace, which is how the two rules divide it.
+ */
+describe('arbitrary box shadows', () => {
+  function css(className: string): string {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate(className)
+    return gen.toCSS(false)
+  }
+
+  it('emits a full arbitrary shadow definition', () => {
+    expect(css('shadow-[0_1px_4px_rgba(0,0,0,0.12)]')).toContain('--cw-shadow: 0 1px 4px rgba(0,0,0,0.12);')
+  })
+
+  it('supports inset and multi-part arbitrary shadows', () => {
+    expect(css('shadow-[inset_0_1px_0_white]')).toContain('--cw-shadow: inset 0 1px 0 white;')
+  })
+
+  it('routes a bare arbitrary colour to the shadow-colour rule', () => {
+    const out = css('shadow-[#ff0000]')
+    expect(out).toContain('--cw-shadow-color: #ff0000;')
+    // A colour must not be emitted as the shadow itself.
+    expect(out).not.toContain('--cw-shadow: #ff0000;')
+  })
+
+  it('keeps the named scale working', () => {
+    expect(css('shadow-lg')).toContain('--cw-shadow: 0 10px 15px -3px')
+  })
+
+  it('treats shadow-[none] as a reset', () => {
+    expect(css('shadow-[none]')).toContain('--cw-shadow: 0 0 #0000;')
+  })
+})
+
+/**
+ * Arbitrary filter amounts must pass through untouched. A percentage-scale
+ * divide (`brightness-150` -> 1.5) applied to an arbitrary value produced
+ * `saturate(NaN)` for `[180%]` and `saturate(0.017)` for `[1.7]`, and the
+ * blur rule appended `px` to a value that already carried a unit, giving
+ * `blur(50pxpx)`. All three are invalid CSS a browser silently drops.
+ */
+describe('arbitrary filter amounts', () => {
+  function css(className: string): string {
+    const gen = new CSSGenerator(defaultConfig)
+    gen.generate(className)
+    return gen.toCSS(false)
+  }
+
+  it('does not double the unit on arbitrary blur', () => {
+    expect(css('blur-[50px]')).toContain('filter: blur(50px);')
+    expect(css('backdrop-blur-[50px]')).toContain('backdrop-filter: blur(50px);')
+  })
+
+  it('does not rescale arbitrary percentage filters', () => {
+    expect(css('backdrop-saturate-[180%]')).toContain('backdrop-filter: saturate(180%);')
+    expect(css('backdrop-saturate-[1.7]')).toContain('backdrop-filter: saturate(1.7);')
+  })
+})
