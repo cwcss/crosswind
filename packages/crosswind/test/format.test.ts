@@ -60,3 +60,39 @@ describe('generated fractions', () => {
     expect(css('w-3/6')).toContain('width: 50%;')
   })
 })
+
+describe('cascade ranking', () => {
+  function rank(...classNames: string[]): string {
+    const gen = new CSSGenerator(defaultConfig)
+    for (const className of classNames) gen.generate(className)
+    return gen.toCSS(false)
+  }
+
+  // Shorthands must emit before their axis/side counterparts, whatever order
+  // the author wrote them in, or `m-0 mx-auto` silently loses the auto margins.
+  it('emits shorthands before axis utilities', () => {
+    const out = rank('mx-auto', 'm-0')
+    expect(out.indexOf('.m-0')).toBeLessThan(out.indexOf('.mx-auto'))
+  })
+
+  it('emits axis utilities before side utilities', () => {
+    const out = rank('mt-4', 'mx-auto')
+    expect(out.indexOf('.mx-auto')).toBeLessThan(out.indexOf('.mt-4'))
+  })
+
+  it('ranks important utilities by their class, not the marker', () => {
+    const out = rank('!mx-auto', '!m-0')
+    expect(out.indexOf('.\\!m-0')).toBeLessThan(out.indexOf('.\\!mx-auto'))
+  })
+
+  it('ranks through escaped variant prefixes', () => {
+    const out = rank('md:hover:mx-auto', 'md:hover:m-0')
+    expect(out.indexOf('m-0')).toBeLessThan(out.indexOf('mx-auto'))
+  })
+
+  it('ranks corner radii below side radii', () => {
+    const out = rank('rounded-tl-lg', 'rounded-t-lg', 'rounded-lg')
+    expect(out.indexOf('.rounded-lg')).toBeLessThan(out.indexOf('.rounded-t-lg'))
+    expect(out.indexOf('.rounded-t-lg')).toBeLessThan(out.indexOf('.rounded-tl-lg'))
+  })
+})

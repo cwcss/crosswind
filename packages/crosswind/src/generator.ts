@@ -1605,19 +1605,66 @@ function processConfig(config: CrosswindConfig): ProcessedConfig {
  * 1 — axis     (`mx-*`, `my-*`, `px-*`, `py-*`, `inset-x-*`, corner radii)
  * 2 — side     (`mt-*`, `mr-*`, `pt-*`, `top-*`, `border-t-*`, …)
  */
-const SELECTOR_CLASS_RE = /\.(?:\\!)?(?:[a-zA-Z0-9_-]*\\?:)*(?:\\!)?([a-zA-Z0-9_-]+)/
+function isIdentChar(code: number): boolean {
+  return (code >= 97 && code <= 122) || (code >= 65 && code <= 90)
+    || (code >= 48 && code <= 57) || code === 45 || code === 95 // a-z A-Z 0-9 - _
+}
+
+/**
+ * The class token a selector ranks by: the first `.`, past any escaped `!`
+ * and any escaped variant prefixes, up to the end of the identifier.
+ * `.md\:hover\:mx-auto` → `mx-auto`.
+ *
+ * Replaces /\.(?:\\!)?(?:[a-zA-Z0-9_-]*\\?:)*(?:\\!)?([a-zA-Z0-9_-]+)/, whose
+ * nested unbounded quantifier backtracks super-linearly.
+ */
+function selectorClassToken(selector: string): string | undefined {
+  let i = selector.indexOf('.')
+  if (i === -1)
+    return undefined
+  i++
+
+  // The escaped important marker (`.\!m-0`) must be skipped or the token comes
+  // out empty and every !-utility ranked 0, letting `!m-0` emit after (and
+  // defeat) `!mx-auto`.
+  const skipImportant = (): void => {
+    if (selector.charCodeAt(i) === 92 && selector.charCodeAt(i + 1) === 33) // \!
+      i += 2
+  }
+
+  skipImportant()
+
+  // Consume variant prefixes. Only an ESCAPED colon separates them: variant
+  // prefixes live inside the class name, so their colons are escaped
+  // (`.md\:hover\:m-0`), while the trailing pseudo-class colon is not
+  // (`…m-0:hover`). Treating both alike made the ranker read `hover` as the
+  // class of `.md\:hover\:m-0:hover` and rank every stateful utility 0, so
+  // `md:hover:m-0 md:hover:mx-auto` fell back to authoring order and the
+  // shorthand could reset the auto margins.
+  for (;;) {
+    let end = i
+    while (end < selector.length && isIdentChar(selector.charCodeAt(end)))
+      end++
+    if (selector.charCodeAt(end) !== 92 || selector.charCodeAt(end + 1) !== 58) // \:
+      break
+    i = end + 2
+  }
+
+  skipImportant()
+
+  let end = i
+  while (end < selector.length && isIdentChar(selector.charCodeAt(end)))
+    end++
+  return end > i ? selector.slice(i, end) : undefined
+}
 const AXIS_UTILITY_RE = /^(?:mx|my|px|py|inset-x|inset-y|border-x|border-y|scroll-mx|scroll-my|scroll-px|scroll-py|space-x|space-y|gap-x|gap-y)-/
 const AXIS_RADIUS_RE = /^rounded-[tlbr](?:-|$)/
 const SIDE_UTILITY_RE = /^(?:mt|mr|mb|ml|pt|pr|pb|pl|top|right|bottom|left|border-t|border-r|border-b|border-l|scroll-mt|scroll-mr|scroll-mb|scroll-ml|scroll-pt|scroll-pr|scroll-pb|scroll-pl)-/
 const SIDE_RADIUS_RE = /^rounded-(?:tl|tr|bl|br)(?:-|$)/
 
 function computeUtilityRank(selector: string): number {
-  // The escaped important marker (`.\!m-0`) must be skipped or the class
-  // match fails and every !-utility ranked 0, letting `!m-0` emit after
-  // (and defeat) `!mx-auto`.
-  const m = SELECTOR_CLASS_RE.exec(selector)
-  if (!m) return 0
-  const cls = m[1]
+  const cls = selectorClassToken(selector)
+  if (!cls) return 0
   if (AXIS_UTILITY_RE.test(cls) || AXIS_RADIUS_RE.test(cls))
     return 1
   if (SIDE_UTILITY_RE.test(cls) || SIDE_RADIUS_RE.test(cls))
