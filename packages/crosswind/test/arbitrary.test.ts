@@ -756,12 +756,23 @@ describe('arbitrary filter amounts', () => {
   }
 
   it('does not double the unit on arbitrary blur', () => {
-    expect(css('blur-[50px]')).toContain('filter: blur(50px);')
-    expect(css('backdrop-blur-[50px]')).toContain('backdrop-filter: blur(50px);')
+    expect(css('blur-[50px]')).toContain('--cw-blur: blur(50px);')
+    expect(css('backdrop-blur-[50px]')).toContain('--cw-backdrop-blur: blur(50px);')
   })
 
   it('does not rescale arbitrary percentage filters', () => {
-    expect(css('backdrop-saturate-[180%]')).toContain('backdrop-filter: saturate(180%);')
-    expect(css('backdrop-saturate-[1.7]')).toContain('backdrop-filter: saturate(1.7);')
+    expect(css('backdrop-saturate-[180%]')).toContain('--cw-backdrop-saturate: saturate(180%);')
+    expect(css('backdrop-saturate-[1.7]')).toContain('--cw-backdrop-saturate: saturate(1.7);')
+  })
+
+  it('lets several filter functions compose on one element', () => {
+    // Each used to write the whole `backdrop-filter`, so the later rule in
+    // the sheet won and the other silently did nothing.
+    const blur = css('backdrop-blur-[50px]')
+    const saturate = css('backdrop-saturate-[180%]')
+    expect(blur).toContain('--cw-backdrop-blur: blur(50px);')
+    expect(blur).toContain('var(--cw-backdrop-saturate, )')
+    expect(saturate).toContain('--cw-backdrop-saturate: saturate(180%);')
+    expect(saturate).toContain('var(--cw-backdrop-blur, )')
   })
 })
