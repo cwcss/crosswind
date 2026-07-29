@@ -160,6 +160,15 @@ export const transformOriginRule: UtilityRule = (parsed) => {
   return undefined
 }
 
+// Tailwind v4's named perspective scale.
+const PERSPECTIVE_VALUES: Record<string, string> = {
+  dramatic: '100px',
+  near: '300px',
+  normal: '500px',
+  midrange: '800px',
+  distant: '1200px',
+}
+
 export const perspectiveRule: UtilityRule = (parsed) => {
   if (parsed.utility === 'perspective' && parsed.value) {
     // If value is 'none', use as-is
@@ -170,6 +179,9 @@ export const perspectiveRule: UtilityRule = (parsed) => {
     if (parsed.arbitrary || /^\d+(?:\.\d+)?(?:px|rem|em)$/.test(parsed.value)) {
       return { perspective: parsed.value }
     }
+    const named = PERSPECTIVE_VALUES[parsed.value]
+    if (named)
+      return { perspective: named }
     // Bare numbers get px; unknown words previously emitted foopx
     if (/^\d+(?:\.\d+)?$/.test(parsed.value))
       return { perspective: `${parsed.value}px` }

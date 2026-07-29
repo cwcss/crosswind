@@ -329,8 +329,24 @@ export const overflowWrapRule: UtilityRule = (parsed) => {
     'overflow-wrap-normal': 'normal',
     'overflow-wrap-break': 'break-word',
     'overflow-wrap-anywhere': 'anywhere',
+    // Tailwind v4's shorter spelling of the same three values.
+    'wrap-normal': 'normal',
+    'wrap-break-word': 'break-word',
+    'wrap-anywhere': 'anywhere',
   }
   return wraps[parsed.base] ? { 'overflow-wrap': wraps[parsed.base] } : undefined
+}
+
+/**
+ * `tab-<integer>` / `tab-[<value>]` — the size of a tab character.
+ * Only integers and lengths are valid; an unknown word is not a tab size.
+ */
+export const tabSizeRule: UtilityRule = (parsed) => {
+  if (parsed.utility !== 'tab' || !parsed.value)
+    return undefined
+  if (parsed.arbitrary || /^\d+$/.test(parsed.value))
+    return { 'tab-size': parsed.value }
+  return undefined
 }
 
 export const hyphensRule: UtilityRule = (parsed) => {
@@ -543,6 +559,7 @@ export const typographyRules: UtilityRule[] = [
   whiteSpaceRule,
   wordBreakRule,
   overflowWrapRule,
+  tabSizeRule,
   hyphensRule,
   contentRule,
   writingModeRule,
