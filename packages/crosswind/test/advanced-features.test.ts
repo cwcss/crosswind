@@ -389,6 +389,20 @@ describe('Advanced Features', () => {
       expect(css).toContain('scroll-snap')
     })
 
+    it('should give the snap strictness variable a proximity fallback', () => {
+      // Without a fallback the declaration is invalid at computed-value time
+      // whenever snap-mandatory/snap-proximity is absent, so `snap-x` alone
+      // would snap nothing.
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('snap-x')
+      gen.generate('snap-y')
+      gen.generate('snap-both')
+      const css = gen.toCSS(false)
+      expect(css).toContain('scroll-snap-type: x var(--cw-scroll-snap-strictness, proximity)')
+      expect(css).toContain('scroll-snap-type: y var(--cw-scroll-snap-strictness, proximity)')
+      expect(css).toContain('scroll-snap-type: both var(--cw-scroll-snap-strictness, proximity)')
+    })
+
     it('should handle scroll-snap-align', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('snap-start')

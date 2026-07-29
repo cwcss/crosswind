@@ -1015,12 +1015,17 @@ const SCROLL_BEHAVIOR_MAP: Record<string, Record<string, string>> = {
   'scroll-smooth': { 'scroll-behavior': 'smooth' },
 }
 
-// Scroll snap type - direct raw class to CSS
+// Scroll snap type - direct raw class to CSS.
+// The strictness var carries a `proximity` fallback (Tailwind's default):
+// nothing declares --cw-scroll-snap-strictness unless snap-mandatory /
+// snap-proximity is also used, and an unresolved var makes the whole
+// declaration invalid at computed-value time — `snap-x` on its own snapped
+// nothing at all.
 const SCROLL_SNAP_MAP: Record<string, Record<string, string>> = {
   'snap-none': { 'scroll-snap-type': 'none' },
-  'snap-x': { 'scroll-snap-type': 'x var(--cw-scroll-snap-strictness)' },
-  'snap-y': { 'scroll-snap-type': 'y var(--cw-scroll-snap-strictness)' },
-  'snap-both': { 'scroll-snap-type': 'both var(--cw-scroll-snap-strictness)' },
+  'snap-x': { 'scroll-snap-type': 'x var(--cw-scroll-snap-strictness, proximity)' },
+  'snap-y': { 'scroll-snap-type': 'y var(--cw-scroll-snap-strictness, proximity)' },
+  'snap-both': { 'scroll-snap-type': 'both var(--cw-scroll-snap-strictness, proximity)' },
   'snap-mandatory': { '--cw-scroll-snap-strictness': 'mandatory' },
   'snap-proximity': { '--cw-scroll-snap-strictness': 'proximity' },
   'snap-start': { 'scroll-snap-align': 'start' },
