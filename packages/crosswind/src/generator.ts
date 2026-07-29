@@ -1598,6 +1598,33 @@ function processConfig(config: CrosswindConfig): ProcessedConfig {
 /**
  * Generates CSS rules from parsed utility classes
 */
+/**
+ * Selector → cascade rank.
+ *
+ * 0 — shorthand (`m-*`, `p-*`, `border`, `rounded`, `inset-*`)
+ * 1 — axis     (`mx-*`, `my-*`, `px-*`, `py-*`, `inset-x-*`, corner radii)
+ * 2 — side     (`mt-*`, `mr-*`, `pt-*`, `top-*`, `border-t-*`, …)
+ */
+const SELECTOR_CLASS_RE = /\.(?:\\!)?(?:[a-zA-Z0-9_-]*\\?:)*(?:\\!)?([a-zA-Z0-9_-]+)/
+const AXIS_UTILITY_RE = /^(?:mx|my|px|py|inset-x|inset-y|border-x|border-y|scroll-mx|scroll-my|scroll-px|scroll-py|space-x|space-y|gap-x|gap-y)-/
+const AXIS_RADIUS_RE = /^rounded-[tlbr](?:-|$)/
+const SIDE_UTILITY_RE = /^(?:mt|mr|mb|ml|pt|pr|pb|pl|top|right|bottom|left|border-t|border-r|border-b|border-l|scroll-mt|scroll-mr|scroll-mb|scroll-ml|scroll-pt|scroll-pr|scroll-pb|scroll-pl)-/
+const SIDE_RADIUS_RE = /^rounded-(?:tl|tr|bl|br)(?:-|$)/
+
+function computeUtilityRank(selector: string): number {
+  // The escaped important marker (`.\!m-0`) must be skipped or the class
+  // match fails and every !-utility ranked 0, letting `!m-0` emit after
+  // (and defeat) `!mx-auto`.
+  const m = SELECTOR_CLASS_RE.exec(selector)
+  if (!m) return 0
+  const cls = m[1]
+  if (AXIS_UTILITY_RE.test(cls) || AXIS_RADIUS_RE.test(cls))
+    return 1
+  if (SIDE_UTILITY_RE.test(cls) || SIDE_RADIUS_RE.test(cls))
+    return 2
+  return 0
+}
+
 export class CSSGenerator {
   private rules: Map<string, CSSRule[]> = new Map()
   private classCache: Set<string> = new Set()
@@ -1609,6 +1636,7 @@ export class CSSGenerator {
   private noMatchCache: Set<string> = new Set()
   private usedKeyframes: Set<string> = new Set()
   private variantHandledCache: Map<string, boolean> = new Map()
+  private utilityRankCache: Map<string, number> = new Map()
   private compiledGenerated: Set<string> = new Set()
   private darkStrategy: 'class' | 'media'
   // Fast-path lookup tables, re-based on the user's theme when it diverges
@@ -2797,26 +2825,18 @@ export class CSSGenerator {
    * combinations like `m-0 mx-auto` silently break (the shorthand resets
    * the auto margins). Matches Tailwind's own stylesheet ordering.
    *
-   * 0 — shorthand (`m-*`, `p-*`, `border`, `rounded`, `inset-*`)
-   * 1 — axis     (`mx-*`, `my-*`, `px-*`, `py-*`, `inset-x-*`, corner radii)
-   * 2 — side     (`mt-*`, `mr-*`, `pt-*`, `top-*`, `border-t-*`, …)
+   * See computeUtilityRank for the ranks themselves.
    */
   private getUtilityRank(selector: string): number {
-    // The escaped important marker (`.\!m-0`) must be skipped or the class
-    // match fails and every !-utility ranked 0, letting `!m-0` emit after
-    // (and defeat) `!mx-auto`.
-    const m = selector.match(/\.(?:\\!)?(?:[a-zA-Z0-9_-]*\\?:)*(?:\\!)?([a-zA-Z0-9_-]+)/)
-    if (!m) return 0
-    const cls = m[1]
-    if (/^(?:mx|my|px|py|inset-x|inset-y|border-x|border-y|scroll-mx|scroll-my|scroll-px|scroll-py|space-x|space-y|gap-x|gap-y)-/.test(cls)
-      || /^rounded-(?:[tlbr])(?:-|$)/.test(cls)) {
-      return 1
-    }
-    if (/^(?:mt|mr|mb|ml|pt|pr|pb|pl|top|right|bottom|left|border-t|border-r|border-b|border-l|scroll-mt|scroll-mr|scroll-mb|scroll-ml|scroll-pt|scroll-pr|scroll-pb|scroll-pl)-/.test(cls)
-      || /^rounded-(?:tl|tr|bl|br)(?:-|$)/.test(cls)) {
-      return 2
-    }
-    return 0
+    // Ranking is a pure function of the selector, and toCSS re-ranks every
+    // rule on every call — a watching build pays for the same three regexes
+    // over the same selectors on each rebuild. Memoize per generator.
+    const cached = this.utilityRankCache.get(selector)
+    if (cached !== undefined)
+      return cached
+    const rank = computeUtilityRank(selector)
+    this.utilityRankCache.set(selector, rank)
+    return rank
   }
 
   /**
@@ -2937,6 +2957,9 @@ export class CSSGenerator {
     this.noMatchCache.clear()
     this.usedKeyframes.clear()
     this.compiledGenerated.clear()
+    // Keyed by selector, so it tracks the same set of classes selectorCache
+    // does and would otherwise accumulate across a watch session's rebuilds.
+    this.utilityRankCache.clear()
     // variantHandledCache is config-derived, not generation state — it
     // stays valid across resets.
   }
