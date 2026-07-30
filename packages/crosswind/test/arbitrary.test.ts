@@ -94,25 +94,25 @@ describe('Arbitrary Values and Properties', () => {
       it('should handle calc() in arbitrary values', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('w-[calc(100%-2rem)]')
-        expect(gen.toCSS(false)).toContain('width: calc(100%-2rem);')
+        expect(gen.toCSS(false)).toContain('width: calc(100% - 2rem);')
       })
 
       it('should handle clamp() in arbitrary values', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('text-[clamp(1rem,2.5vw,3rem)]')
-        expect(gen.toCSS(false)).toContain('font-size: clamp(1rem,2.5vw,3rem);')
+        expect(gen.toCSS(false)).toContain('font-size: clamp(1rem, 2.5vw, 3rem);')
       })
 
       it('should handle min() in arbitrary values', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('w-[min(100%,500px)]')
-        expect(gen.toCSS(false)).toContain('width: min(100%,500px);')
+        expect(gen.toCSS(false)).toContain('width: min(100%, 500px);')
       })
 
       it('should handle max() in arbitrary values', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('h-[max(50vh,300px)]')
-        expect(gen.toCSS(false)).toContain('height: max(50vh,300px);')
+        expect(gen.toCSS(false)).toContain('height: max(50vh, 300px);')
       })
 
       it('should handle CSS variables', () => {
@@ -400,7 +400,7 @@ describe('Arbitrary Values and Properties', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('h-[calc(100vh-4rem)]')
         const css = gen.toCSS(false)
-        expect(css).toContain('height: calc(100vh-4rem);')
+        expect(css).toContain('height: calc(100vh - 4rem);')
         // Verify the selector is properly escaped with backslashes
         expect(css).toContain('.h-\\[calc\\(100vh-4rem\\)\\]')
       })
@@ -409,7 +409,7 @@ describe('Arbitrary Values and Properties', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('w-[calc(100%-2rem)]')
         const css = gen.toCSS(false)
-        expect(css).toContain('width: calc(100%-2rem);')
+        expect(css).toContain('width: calc(100% - 2rem);')
         expect(css).toContain('.w-\\[calc\\(100\\%-2rem\\)\\]')
       })
 
@@ -417,7 +417,7 @@ describe('Arbitrary Values and Properties', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('w-[min(100%,500px)]')
         const css = gen.toCSS(false)
-        expect(css).toContain('width: min(100%,500px);')
+        expect(css).toContain('width: min(100%, 500px);')
         expect(css).toContain('.w-\\[min\\(100\\%\\,500px\\)\\]')
       })
 
@@ -425,7 +425,7 @@ describe('Arbitrary Values and Properties', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('h-[max(50vh,300px)]')
         const css = gen.toCSS(false)
-        expect(css).toContain('height: max(50vh,300px);')
+        expect(css).toContain('height: max(50vh, 300px);')
         expect(css).toContain('.h-\\[max\\(50vh\\,300px\\)\\]')
       })
 
@@ -433,7 +433,7 @@ describe('Arbitrary Values and Properties', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('text-[clamp(1rem,2.5vw,3rem)]')
         const css = gen.toCSS(false)
-        expect(css).toContain('font-size: clamp(1rem,2.5vw,3rem);')
+        expect(css).toContain('font-size: clamp(1rem, 2.5vw, 3rem);')
         expect(css).toContain('.text-\\[clamp\\(1rem\\,2\\.5vw\\,3rem\\)\\]')
       })
 
@@ -474,7 +474,7 @@ describe('Arbitrary Values and Properties', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('w-[calc((100vw-64px)/2)]')
         const css = gen.toCSS(false)
-        expect(css).toContain('width: calc((100vw-64px)/2);')
+        expect(css).toContain('width: calc((100vw - 64px) / 2);')
       })
 
       it('should handle sidebar-style height calculation', () => {
@@ -483,7 +483,7 @@ describe('Arbitrary Values and Properties', () => {
         gen.generate('h-[calc(100vh-4rem)]')
         const css = gen.toCSS(false)
         // Must contain valid CSS
-        expect(css).toContain('height: calc(100vh-4rem);')
+        expect(css).toContain('height: calc(100vh - 4rem);')
         // Selector must be properly escaped so browser can match it
         expect(css).toMatch(/\.h-\\\[calc\\\(100vh-4rem\\\)\\\]/)
       })
@@ -492,14 +492,14 @@ describe('Arbitrary Values and Properties', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('min-h-[calc(100vh-64px)]')
         const css = gen.toCSS(false)
-        expect(css).toContain('min-height: calc(100vh-64px);')
+        expect(css).toContain('min-height: calc(100vh - 64px);')
       })
 
       it('should handle max-width with calc', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('max-w-[calc(100%-2rem)]')
         const css = gen.toCSS(false)
-        expect(css).toContain('max-width: calc(100%-2rem);')
+        expect(css).toContain('max-width: calc(100% - 2rem);')
       })
 
       it('should escape special characters with variants', () => {
@@ -507,7 +507,7 @@ describe('Arbitrary Values and Properties', () => {
         gen.generate('lg:h-[calc(100vh-4rem)]')
         const css = gen.toCSS(false)
         expect(css).toContain('@media (min-width: 1024px)')
-        expect(css).toContain('height: calc(100vh-4rem);')
+        expect(css).toContain('height: calc(100vh - 4rem);')
       })
 
       it('should escape special characters with hover variant', () => {
@@ -529,7 +529,7 @@ describe('Arbitrary Values and Properties', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('[transform:translateX(calc(100%+1rem))]')
         const css = gen.toCSS(false)
-        expect(css).toContain('transform: translateX(calc(100%+1rem));')
+        expect(css).toContain('transform: translateX(calc(100% + 1rem));')
       })
 
       it('should handle filter with multiple functions', () => {
@@ -543,7 +543,7 @@ describe('Arbitrary Values and Properties', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('[margin:calc(1rem+2px)]')
         const css = gen.toCSS(false)
-        expect(css).toContain('margin: calc(1rem+2px);')
+        expect(css).toContain('margin: calc(1rem + 2px);')
         expect(css).toContain('.\\[margin\\:calc\\(1rem\\+2px\\)\\]')
       })
 

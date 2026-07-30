@@ -177,7 +177,7 @@ describe('sizing value validation', () => {
     expect(css('size-8')).toContain('width: 2rem;')
     expect(css('max-w-2xl')).toContain('max-width: 42rem;')
     expect(css('min-h-screen')).toContain('min-height: 100vh;')
-    expect(css('w-[calc(100%-2rem)]')).toContain('width: calc(100%-2rem);')
+    expect(css('w-[calc(100%-2rem)]')).toContain('width: calc(100% - 2rem);')
     expect(css('max-w-[70ch]')).toContain('max-width: 70ch;')
   })
 })
@@ -215,7 +215,7 @@ describe('spacing family value validation', () => {
 
   it('keeps arbitrary values', () => {
     expect(css('p-[3vw]')).toContain('padding: 3vw;')
-    expect(css('gap-[calc(1rem+2px)]')).toContain('gap: calc(1rem+2px);')
+    expect(css('gap-[calc(1rem+2px)]')).toContain('gap: calc(1rem + 2px);')
     expect(css('top-[10vh]')).toContain('top: 10vh;')
     expect(css('basis-[12ch]')).toContain('flex-basis: 12ch;')
     expect(css('underline-offset-[3px]')).toContain('text-underline-offset: 3px;')

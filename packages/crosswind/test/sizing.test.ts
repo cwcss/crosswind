@@ -285,7 +285,7 @@ describe('Edge Cases', () => {
     it('should handle width with calc()', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('w-[calc(100vw-2rem)]')
-      expect(gen.toCSS(false)).toContain('width: calc(100vw-2rem);')
+      expect(gen.toCSS(false)).toContain('width: calc(100vw - 2rem);')
     })
 
     it('should handle width with CSS variables', () => {
@@ -297,19 +297,19 @@ describe('Edge Cases', () => {
     it('should handle width with clamp()', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('w-[clamp(200px,50vw,600px)]')
-      expect(gen.toCSS(false)).toContain('width: clamp(200px,50vw,600px);')
+      expect(gen.toCSS(false)).toContain('width: clamp(200px, 50vw, 600px);')
     })
 
     it('should handle width with min()', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('w-[min(100%,500px)]')
-      expect(gen.toCSS(false)).toContain('width: min(100%,500px);')
+      expect(gen.toCSS(false)).toContain('width: min(100%, 500px);')
     })
 
     it('should handle width with max()', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('w-[max(300px,50%)]')
-      expect(gen.toCSS(false)).toContain('width: max(300px,50%);')
+      expect(gen.toCSS(false)).toContain('width: max(300px, 50%);')
     })
 
     it('should handle width 100dvw', () => {
@@ -359,7 +359,7 @@ describe('Edge Cases', () => {
     it('should handle height with calc()', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('h-[calc(100vh-80px)]')
-      expect(gen.toCSS(false)).toContain('height: calc(100vh-80px);')
+      expect(gen.toCSS(false)).toContain('height: calc(100vh - 80px);')
     })
   })
 
@@ -423,7 +423,7 @@ describe('Edge Cases', () => {
     it('should handle min-w with calc()', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('min-w-[calc(100%-40px)]')
-      expect(gen.toCSS(false)).toContain('min-width: calc(100%-40px);')
+      expect(gen.toCSS(false)).toContain('min-width: calc(100% - 40px);')
     })
 
     it('should handle max-w with vw', () => {

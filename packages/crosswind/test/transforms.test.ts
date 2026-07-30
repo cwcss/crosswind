@@ -414,7 +414,7 @@ describe('Transform Utilities', () => {
       it('should handle translate with calc', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('translate-x-[calc(100%+1rem)]')
-        expect(gen.toCSS(false)).toContain('transform: translateX(calc(100%+1rem));')
+        expect(gen.toCSS(false)).toContain('transform: translateX(calc(100% + 1rem));')
       })
     })
 

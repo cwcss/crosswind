@@ -268,7 +268,7 @@ describe('parseClass - Edge Cases', () => {
     const result = parseClass('w-[calc(100%-20px)]')
     expect(result.arbitrary).toBe(true)
     expect(result.utility).toBe('w')
-    expect(result.value).toBe('calc(100%-20px)')
+    expect(result.value).toBe('calc(100% - 20px)')
   })
 
   it('should handle arbitrary value with special characters', () => {
@@ -663,6 +663,18 @@ describe('parseClass - Arbitrary underscore conversion', () => {
     const r = parseClass('font-[family-name:Inter_Tight]')
     expect(r.typeHint).toBe('family-name')
     expect(r.value).toBe('Inter Tight')
+  })
+})
+
+describe('parseClass - CSS math normalization', () => {
+  it('restores required whitespace around compact binary operators', () => {
+    expect(parseClass('max-h-[calc(100dvh-2rem)]').value).toBe('calc(100dvh - 2rem)')
+    expect(parseClass('w-[calc(var(--width)-2rem)]').value).toBe('calc(var(--width) - 2rem)')
+    expect(parseClass('w-[calc(100%/var(--columns))]').value).toBe('calc(100% / var(--columns))')
+  })
+
+  it('preserves unary signs and scientific notation', () => {
+    expect(parseClass('w-[calc(-1rem+2e-3px)]').value).toBe('calc(-1rem + 2e-3px)')
   })
 })
 

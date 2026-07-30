@@ -245,7 +245,7 @@ describe('Flexbox Utilities', () => {
     it('should handle basis with calc', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('basis-[calc(50%-1rem)]')
-      expect(gen.toCSS(false)).toContain('flex-basis: calc(50%-1rem);')
+      expect(gen.toCSS(false)).toContain('flex-basis: calc(50% - 1rem);')
     })
   })
 
@@ -474,13 +474,13 @@ describe('Edge Cases', () => {
     it('should handle basis with min()', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('basis-[min(50%,300px)]')
-      expect(gen.toCSS(false)).toContain('flex-basis: min(50%,300px);')
+      expect(gen.toCSS(false)).toContain('flex-basis: min(50%, 300px);')
     })
 
     it('should handle basis with clamp()', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('basis-[clamp(100px,50%,500px)]')
-      expect(gen.toCSS(false)).toContain('flex-basis: clamp(100px,50%,500px);')
+      expect(gen.toCSS(false)).toContain('flex-basis: clamp(100px, 50%, 500px);')
     })
   })
 

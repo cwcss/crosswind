@@ -734,7 +734,7 @@ describe('Edge Cases', () => {
     it('should handle gap-x with calc', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('gap-x-[calc(100%-2rem)]')
-      expect(gen.toCSS(false)).toContain('column-gap: calc(100%-2rem);')
+      expect(gen.toCSS(false)).toContain('column-gap: calc(100% - 2rem);')
     })
   })
 
