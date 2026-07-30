@@ -275,7 +275,7 @@ describe('Layout Utilities', () => {
       it('should handle inset with calc()', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('top-[calc(100%-20px)]')
-        expect(gen.toCSS(false)).toContain('top: calc(100%-20px);')
+        expect(gen.toCSS(false)).toContain('top: calc(100% - 20px);')
       })
 
       it('should handle inset-x-0', () => {

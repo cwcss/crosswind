@@ -284,7 +284,7 @@ describe('Spacing Utilities', () => {
       gen.generate('p-[calc(1rem+5px)]')
       const css = gen.toCSS(false)
       expect(css).toContain('padding: 1px;')
-      expect(css).toContain('padding: calc(1rem+5px);')
+      expect(css).toContain('padding: calc(1rem + 5px);')
     })
 
     // Guardrail — the existing theme-scale lookups must keep winning.
@@ -353,13 +353,13 @@ describe('Edge Cases', () => {
     it('should handle padding with calc()', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('p-[calc(100%-2rem)]')
-      expect(gen.toCSS(false)).toContain('padding: calc(100%-2rem);')
+      expect(gen.toCSS(false)).toContain('padding: calc(100% - 2rem);')
     })
 
     it('should handle margin with calc()', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('m-[calc(50%+10px)]')
-      expect(gen.toCSS(false)).toContain('margin: calc(50%+10px);')
+      expect(gen.toCSS(false)).toContain('margin: calc(50% + 10px);')
     })
 
     it('should handle padding with CSS variables', () => {

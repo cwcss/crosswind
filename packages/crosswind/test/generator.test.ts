@@ -581,7 +581,7 @@ describe('CSSGenerator - Edge Cases', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('w-[calc(100vw-2rem)]')
     const css = gen.toCSS(false)
-    expect(css).toContain('width: calc(100vw-2rem);')
+    expect(css).toContain('width: calc(100vw - 2rem);')
   })
 
   it('should handle arbitrary value with CSS variables', () => {

@@ -96,12 +96,167 @@ const SPECIAL_CHARS_REGEX = /[%#()]/
 // Groups are non-capturing: the callers only ever test, so capturing made the
 // engine build a match array per call for nothing.
 const CSS_UNITS_REGEX = /^\d+(?:\.\d+)?(?:px|rem|em|vh|vw|dvh|dvw|svh|svw|lvh|lvw|ch|ex|lh|cap|ic|rlh|vi|vb|vmin|vmax|cqw|cqh|cqi|cqb|cqmin|cqmax|cm|mm|in|pt|pc|Q)$/
+const MATH_FUNCTIONS = [
+  'calc',
+  'min',
+  'max',
+  'clamp',
+  'mod',
+  'rem',
+  'sin',
+  'cos',
+  'tan',
+  'asin',
+  'acos',
+  'atan',
+  'atan2',
+  'pow',
+  'sqrt',
+  'hypot',
+  'log',
+  'exp',
+  'round',
+] as const
+const MATH_FUNCTION_SET = new Set<string>(MATH_FUNCTIONS)
 
 /**
  * Check if value needs arbitrary bracket syntax
 */
 function needsArbitraryBrackets(value: string): boolean {
   return SPECIAL_CHARS_REGEX.test(value) || CSS_UNITS_REGEX.test(value)
+}
+
+/**
+ * CSS math requires whitespace around binary + and - operators. Arbitrary
+ * values commonly omit it because spaces delimit utility classes, so match
+ * Tailwind's decoding semantics and restore operator whitespace while
+ * preserving unary signs, scientific notation, and nested non-math functions.
+ */
+function addWhitespaceAroundMathOperators(value: string): string {
+  if (!MATH_FUNCTIONS.some(fn => value.includes(`${fn}(`)))
+    return value
+
+  let result = ''
+  const formattable: boolean[] = []
+  let valuePosition: number | null = null
+  let lastValuePosition: number | null = null
+
+  for (let index = 0; index < value.length; index++) {
+    const character = value.charCodeAt(index)
+
+    if (character >= 0x30 && character <= 0x39) {
+      valuePosition = index
+    }
+    else if (
+      valuePosition !== null
+      && (
+        character === 0x25
+        || (character >= 0x61 && character <= 0x7A)
+        || (character >= 0x41 && character <= 0x5A)
+      )
+    ) {
+      valuePosition = index
+    }
+    else {
+      lastValuePosition = valuePosition
+      valuePosition = null
+    }
+
+    if (character === 0x28) {
+      result += value[index]
+      let functionStart = index
+
+      for (let cursor = index - 1; cursor >= 0; cursor--) {
+        const inner = value.charCodeAt(cursor)
+        if (
+          (inner >= 0x30 && inner <= 0x39)
+          || (inner >= 0x61 && inner <= 0x7A)
+        ) {
+          functionStart = cursor
+        }
+        else {
+          break
+        }
+      }
+
+      const functionName = value.slice(functionStart, index)
+      if (MATH_FUNCTION_SET.has(functionName))
+        formattable.unshift(true)
+      else if (formattable[0] && functionName === '')
+        formattable.unshift(true)
+      else
+        formattable.unshift(false)
+
+      continue
+    }
+
+    if (character === 0x29) {
+      result += value[index]
+      formattable.shift()
+      continue
+    }
+
+    if (character === 0x2C && formattable[0]) {
+      result += ', '
+      continue
+    }
+
+    if (character === 0x20 && formattable[0] && result.charCodeAt(result.length - 1) === 0x20)
+      continue
+
+    const isMathOperator = character === 0x2B
+      || character === 0x2D
+      || character === 0x2A
+      || character === 0x2F
+
+    if (isMathOperator && formattable[0]) {
+      const trimmed = result.trimEnd()
+      const previous = trimmed.charCodeAt(trimmed.length - 1)
+      const previousPrevious = trimmed.charCodeAt(trimmed.length - 2)
+      const next = value.charCodeAt(index + 1)
+      const previousIsOperator = previous === 0x2B
+        || previous === 0x2D
+        || previous === 0x2A
+        || previous === 0x2F
+      const nextIsOperator = next === 0x2B
+        || next === 0x2D
+        || next === 0x2A
+        || next === 0x2F
+
+      if (
+        (previous === 0x65 || previous === 0x45)
+        && previousPrevious >= 0x30
+        && previousPrevious <= 0x39
+      ) {
+        result += value[index]
+      }
+      else if (previousIsOperator || previous === 0x28 || previous === 0x2C) {
+        result += value[index]
+      }
+      else if (value.charCodeAt(index - 1) === 0x20) {
+        result += `${value[index]} `
+      }
+      else if (
+        (previous >= 0x30 && previous <= 0x39)
+        || (next >= 0x30 && next <= 0x39)
+        || previous === 0x29
+        || next === 0x28
+        || nextIsOperator
+        || (lastValuePosition !== null && lastValuePosition === index - 1)
+      ) {
+        result += ` ${value[index]} `
+      }
+      else {
+        result += value[index]
+      }
+
+      continue
+    }
+
+    result += value[index]
+  }
+
+  return result
 }
 
 /**
@@ -117,7 +272,8 @@ function needsArbitraryBrackets(value: string): boolean {
  * To emit a literal underscore in a non-url value, escape it as `\_`.
  */
 function convertArbitraryUnderscores(value: string): string {
-  if (!value.includes('_')) return value
+  if (!value.includes('_'))
+    return addWhitespaceAroundMathOperators(value)
 
   let result = ''
   let i = 0
@@ -148,7 +304,7 @@ function convertArbitraryUnderscores(value: string): string {
     result += ch === '_' ? ' ' : ch
     i++
   }
-  return result
+  return addWhitespaceAroundMathOperators(result)
 }
 
 /**

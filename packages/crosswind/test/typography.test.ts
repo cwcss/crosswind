@@ -275,7 +275,7 @@ describe('Typography Utilities', () => {
       it('should handle arbitrary font size with clamp', () => {
         const gen = new CSSGenerator(defaultConfig)
         gen.generate('text-[clamp(1rem,2.5vw,3rem)]')
-        expect(gen.toCSS(false)).toContain('font-size: clamp(1rem,2.5vw,3rem);')
+        expect(gen.toCSS(false)).toContain('font-size: clamp(1rem, 2.5vw, 3rem);')
       })
     })
 
