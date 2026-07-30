@@ -103,6 +103,7 @@ export function plugin(options: CrosswindPluginOptions = {}): BunPlugin {
         const classes = extractClasses(html, {
           attributify: config.attributify,
           bracketSyntax: config.bracketSyntax,
+          codeStrings: config.codeStrings,
         })
 
         // Add safelist classes (strings only; pattern objects are ignored)

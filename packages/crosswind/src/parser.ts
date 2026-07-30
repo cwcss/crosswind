@@ -44,6 +44,32 @@ export function clearParseCaches(): void {
 export interface ExtractClassesOptions {
   attributify?: AttributifyConfig
   bracketSyntax?: BracketSyntaxConfig
+  codeStrings?: CodeStringsConfig
+}
+
+/**
+ * Extraction from string literals in code, not just from class attributes.
+ *
+ * Utility classes routinely live in code rather than in markup: a helper that
+ * returns a class string, a lookup table of icons keyed by status, a signal
+ * holding the current variant. Attribute-scoped extraction cannot see any of
+ * it, so those classes silently never generate and the element renders
+ * unstyled — with no error, because nothing went wrong as far as the build is
+ * concerned.
+ *
+ * The failure is quiet enough that projects tend to work around it instead of
+ * reporting it: pre-generating a whole icon stylesheet, restating class names
+ * in a dummy attribute, or moving state into `data-` attributes and styling
+ * those instead. All of that goes away if the scanner reads the strings.
+ *
+ * Only *compound* tokens are taken from code — see `isCodeStringCandidate`.
+ */
+export interface CodeStringsConfig {
+  /**
+   * Extract utility classes from string literals in scanned files.
+   * Defaults to true.
+   */
+  enabled?: boolean
 }
 
 /**
@@ -1823,7 +1849,15 @@ function isValidClassName(name: string, bracketConfig?: BracketSyntaxConfig): bo
   // - Arbitrary values in brackets like -[100px] or -[#ff0000]
   // - Variant prefixes with colons like hover:, sm:, focus:
   // - Decimal values like py-2.5, gap-0.5
-  return /^!?-?[a-z][a-z0-9.-]*(?:-\[[^\]]+\])?(?::!?-?[a-z][a-z0-9.-]*(?:-\[[^\]]+\])?)*$/i.test(name)
+  // - Opacity modifiers like bg-white/55, ring-black/[0.06]
+  //
+  // The modifier was missing, which made this reject every `.../<n>` class the
+  // generator happily builds. It only ever bit the paths that filter through
+  // here — the unquoted-attribute fallback and code strings — so the same class
+  // extracted fine from `class="bg-white/55"` and vanished from
+  // `const cls = 'bg-white/55'`.
+  const segment = String.raw`!?-?[a-z][a-z0-9.-]*(?:-\[[^\]]+\])?(?:\/(?:[\w.]+|\[[^\]]+\]))?`
+  return new RegExp(`^${segment}(?::${segment})*$`, 'i').test(name)
 }
 
 /**
@@ -1936,6 +1970,14 @@ export function extractClasses(content: string, options?: ExtractClassesOptions)
     }
   }
 
+  // String literals in code. See CodeStringsConfig for why this is not
+  // optional in practice.
+  if (options?.codeStrings?.enabled !== false) {
+    for (const token of extractCodeStringCandidates(content, options?.bracketSyntax)) {
+      addClassWithExpansion(classes, token, options)
+    }
+  }
+
   // Extract attributify classes if enabled
   if (options?.attributify?.enabled) {
     const attributifyClasses = extractAttributifyClasses(content, options.attributify)
@@ -1945,6 +1987,116 @@ export function extractClasses(content: string, options?: ExtractClassesOptions)
   }
 
   return classes
+}
+
+/**
+ * Is this token worth taking from a *code* string?
+ *
+ * Attributes may say `class="flex"`, and a bare word there is unambiguous: the
+ * author is naming a class. A bare word inside a code string is not — `'block'`
+ * is far more likely to be a variable's value, an enum member or a word in a
+ * sentence than a request for `display: block`. Accepting those would emit CSS
+ * nobody asked for, and the offenders are exactly the short English words that
+ * appear most often in code: block, table, grid, fixed, static, hidden.
+ *
+ * So a code-string token has to be *compound* — it must carry a variant
+ * separator, an arbitrary-value bracket, an opacity slash or a namespace dash.
+ * That is a property no prose word has and every real utility beyond the
+ * single-word display helpers does: `bg-blue-500`, `hover:bg-white/55`,
+ * `text-[13px]`, `i-hugeicons-search-01`, `dark:ring-white/10`.
+ *
+ * The rule is deliberately syntactic rather than a list of known namespaces:
+ * a project's own custom rules and icon collections have namespaces this file
+ * cannot know, and they should work without registering anything here.
+ */
+function isCodeStringCandidate(token: string, bracketConfig?: BracketSyntaxConfig): boolean {
+  if (!/[-:/[]/.test(token))
+    return false
+  // A leading or trailing dash is punctuation or a range in prose ("well-"),
+  // never a utility.
+  if (token.startsWith('-') && !/^-[a-z]/i.test(token))
+    return false
+  return isValidClassName(token, bracketConfig)
+}
+
+/**
+ * Collect candidate class names from every string literal in `content`.
+ *
+ * Quote handling follows JavaScript rather than being generic, because getting
+ * it wrong is how a scanner silently loses classes. `'` and `"` literals stop
+ * at end of line — that is what keeps an apostrophe in a comment ("don't") from
+ * opening a span that swallows the rest of the file. Backticks may span lines,
+ * and their `${…}` holes are code, so they are blanked out rather than read.
+ */
+function extractCodeStringCandidates(content: string, bracketConfig?: BracketSyntaxConfig): Set<string> {
+  const tokens = new Set<string>()
+  const length = content.length
+  let i = 0
+
+  while (i < length) {
+    const quote = content[i]
+    if (quote !== '"' && quote !== '\'' && quote !== '`') {
+      i++
+      continue
+    }
+
+    const multiline = quote === '`'
+    let j = i + 1
+    let literal = ''
+    let closed = false
+
+    while (j < length) {
+      const char = content[j]
+
+      if (char === '\\') {
+        // Escaped character: keep the payload, skip the backslash. A class name
+        // never contains one, so this only matters for not ending the span.
+        literal += content[j + 1] ?? ''
+        j += 2
+        continue
+      }
+      if (char === quote) {
+        closed = true
+        j++
+        break
+      }
+      if (!multiline && char === '\n') {
+        // Unterminated single-line literal: almost certainly an apostrophe in
+        // prose. Resume scanning from just after it rather than from the end,
+        // so a real literal later on the same line is still seen.
+        break
+      }
+      if (multiline && char === '$' && content[j + 1] === '{') {
+        // Skip the interpolation, tracking nesting so an object literal or a
+        // nested template inside it does not end the hole early.
+        let depth = 1
+        j += 2
+        while (j < length && depth > 0) {
+          if (content[j] === '{') depth++
+          else if (content[j] === '}') depth--
+          j++
+        }
+        literal += ' '
+        continue
+      }
+
+      literal += char
+      j++
+    }
+
+    if (closed) {
+      for (const token of splitClassString(literal)) {
+        if (isCodeStringCandidate(token, bracketConfig))
+          tokens.add(token)
+      }
+      i = j
+    }
+    else {
+      i++
+    }
+  }
+
+  return tokens
 }
 
 /**

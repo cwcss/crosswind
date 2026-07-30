@@ -32,6 +32,7 @@ export async function build(config: CrosswindConfig): Promise<BuildResult> {
   const scanner = new Scanner(config.content, transformer, {
     attributify: config.attributify,
     bracketSyntax: config.bracketSyntax,
+    codeStrings: config.codeStrings,
   })
   const { classes, transformedFiles, unmatchedPatterns } = await scanner.scan()
 
