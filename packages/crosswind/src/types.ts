@@ -1,3 +1,5 @@
+import type { CodeStringsConfig } from './parser'
+
 export interface CompileClassConfig {
   /**
    * Enable compile class transformer
@@ -109,6 +111,11 @@ export interface CrosswindConfig {
   compileClass?: CompileClassConfig
   attributify?: AttributifyConfig
   bracketSyntax?: BracketSyntaxConfig
+  /**
+   * Extraction from string literals in code, not just class attributes.
+   * Enabled by default; see `CodeStringsConfig` in the parser.
+   */
+  codeStrings?: CodeStringsConfig
   /** Generate :root CSS variables from theme colors (e.g., --monokai-bg: #2d2a2e) */
   cssVariables?: boolean
 }
