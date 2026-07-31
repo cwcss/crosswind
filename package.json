@@ -60,7 +60,7 @@
     "packages/*"
   ],
   "overrides": {
-    "bunfig": "0.15.15",
+    "bunfig": "0.15.17",
     "typescript": "^7.0.2"
   }
 }
