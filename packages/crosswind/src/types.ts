@@ -216,6 +216,8 @@ export interface ParsedClass {
   value?: string
   important: boolean
   arbitrary: boolean
+  /** The slash modifier originated from bracket syntax such as `/[0.5]`. */
+  modifierArbitrary?: boolean
   typeHint?: string // Type hint for arbitrary values, e.g., 'color' in text-[color:var(--muted)]
 }
 

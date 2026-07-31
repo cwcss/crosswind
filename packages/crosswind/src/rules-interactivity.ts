@@ -332,7 +332,7 @@ export const captionSideRule: UtilityRule = (parsed) => {
 // Interactivity utilities
 export const accentColorRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'accent' && parsed.value) {
-    const color = resolveColorValue(parsed.value, config)
+    const color = resolveColorValue(parsed.value, config, parsed.modifierArbitrary)
     if (color) return { 'accent-color': color }
   }
 }
@@ -350,7 +350,7 @@ export const appearanceRule: UtilityRule = (parsed) => {
 
 export const caretColorRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'caret' && parsed.value) {
-    const color = resolveColorValue(parsed.value, config)
+    const color = resolveColorValue(parsed.value, config, parsed.modifierArbitrary)
     if (color) return { 'caret-color': color }
   }
 }
@@ -497,7 +497,7 @@ export const willChangeRule: UtilityRule = (parsed) => {
 export const fillRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'fill' && parsed.value) {
     if (parsed.value === 'none') return { fill: 'none' }
-    const color = resolveColorValue(parsed.value, config)
+    const color = resolveColorValue(parsed.value, config, parsed.modifierArbitrary)
     if (color) return { fill: color }
   }
 }
@@ -505,7 +505,7 @@ export const fillRule: UtilityRule = (parsed, config) => {
 export const strokeRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'stroke' && parsed.value) {
     if (parsed.value === 'none') return { stroke: 'none' }
-    const color = resolveColorValue(parsed.value, config)
+    const color = resolveColorValue(parsed.value, config, parsed.modifierArbitrary)
     if (color) return { stroke: color }
   }
 }

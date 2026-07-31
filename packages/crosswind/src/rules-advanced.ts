@@ -1,4 +1,5 @@
 import type { UtilityRule } from './rules'
+import { colorModifierSlashIndex } from './color-modifier'
 import { resolveColorValue, resolveSizeToken } from './rules'
 
 const MIN_MAX_SIZING_MINMAXMAP: Record<string, string> = {
@@ -78,7 +79,7 @@ export const ringRule: UtilityRule = (parsed, config) => {
 
     // Check if this is a ring color (e.g., ring-sky-500, ring-white/50)
     if (parsed.value) {
-      const color = resolveColorValue(parsed.value, config)
+      const color = resolveColorValue(parsed.value, config, parsed.modifierArbitrary)
       if (color) {
         return { '--cw-ring-color': color } as Record<string, string>
       }
@@ -131,7 +132,7 @@ export const ringRule: UtilityRule = (parsed, config) => {
     }
 
     // Otherwise, treat as a color (e.g., ring-offset-white, ring-offset-blue-500/50)
-    const color = resolveColorValue(parsed.value, config)
+    const color = resolveColorValue(parsed.value, config, parsed.modifierArbitrary)
     if (color) {
       return { '--cw-ring-offset-color': color } as Record<string, string>
     }
@@ -330,7 +331,7 @@ export const divideRule: UtilityRule = (parsed, config) => {
 
   if (parsed.utility === 'divide' && parsed.value) {
     // Handle opacity modifier: divide-white/10, divide-blue-500/50
-    const slashIdx = parsed.value.indexOf('/')
+    const slashIdx = colorModifierSlashIndex(parsed.value)
     let colorKey = parsed.value
     let opacity: number | undefined
 
@@ -339,6 +340,10 @@ export const divideRule: UtilityRule = (parsed, config) => {
       const opacityStr = parsed.value.slice(slashIdx + 1)
       if (opacityStr.charCodeAt(0) === 91 && opacityStr.charCodeAt(opacityStr.length - 1) === 93) {
         opacity = Number.parseFloat(opacityStr.slice(1, -1))
+        if (Number.isNaN(opacity) || opacity < 0 || opacity > 1) return undefined
+      }
+      else if (parsed.modifierArbitrary) {
+        opacity = Number.parseFloat(opacityStr)
         if (Number.isNaN(opacity) || opacity < 0 || opacity > 1) return undefined
       }
       else {
@@ -406,12 +411,17 @@ export const gradientStopsRule: UtilityRule = (parsed, config) => {
     // through the same lookup table used without an alpha.
     let alpha: string | null = null
     let lookup = value
-    const slashIdx = value.indexOf('/')
+    const slashIdx = colorModifierSlashIndex(value)
     if (slashIdx !== -1) {
       lookup = value.slice(0, slashIdx)
       const rawAlpha = value.slice(slashIdx + 1)
       if (rawAlpha.startsWith('[') && rawAlpha.endsWith(']')) {
         alpha = rawAlpha.slice(1, -1)
+      }
+      else if (parsed.modifierArbitrary) {
+        const fraction = Number.parseFloat(rawAlpha)
+        if (!Number.isNaN(fraction) && fraction >= 0 && fraction <= 1)
+          alpha = fraction.toString()
       }
       else {
         const pct = Number.parseInt(rawAlpha, 10)

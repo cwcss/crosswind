@@ -281,7 +281,7 @@ export const textDecorationRule: UtilityRule = (parsed, config) => {
     }
 
     // Otherwise treat it as a color: decoration-blue-500, decoration-white/50
-    const color = resolveColorValue(parsed.value, config)
+    const color = resolveColorValue(parsed.value, config, parsed.modifierArbitrary)
     if (color) {
       return { 'text-decoration-color': color } as Record<string, string>
     }

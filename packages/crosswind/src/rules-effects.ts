@@ -1,4 +1,5 @@
 import type { UtilityRule } from './rules'
+import { colorModifierSlashIndex } from './color-modifier'
 import { resolveColorValue } from './rules'
 
 const BACKGROUND_ORIGIN_VALUES: Record<string, string> = {
@@ -252,7 +253,7 @@ export const outlineRule: UtilityRule = (parsed, config) => {
     }
 
     // Check for colors (e.g., outline-blue-500, outline-white/50)
-    const color = resolveColorValue(parsed.value, config)
+    const color = resolveColorValue(parsed.value, config, parsed.modifierArbitrary)
     if (color) {
       return { 'outline-color': color } as Record<string, string>
     }
@@ -338,7 +339,7 @@ export const shadowColorRule: UtilityRule = (parsed, config) => {
   }
 
   const value = parsed.value
-  const slashIdx = value.indexOf('/')
+  const slashIdx = colorModifierSlashIndex(value)
 
   let colorName: string
   let opacity: number | undefined
@@ -350,6 +351,12 @@ export const shadowColorRule: UtilityRule = (parsed, config) => {
     // Handle arbitrary opacity: /[0.04], /[0.5]
     if (opacityStr.charCodeAt(0) === 91 && opacityStr.charCodeAt(opacityStr.length - 1) === 93) {
       const arbitraryOpacity = Number.parseFloat(opacityStr.slice(1, -1))
+      if (Number.isNaN(arbitraryOpacity) || arbitraryOpacity < 0 || arbitraryOpacity > 1)
+        return undefined
+      opacity = arbitraryOpacity
+    }
+    else if (parsed.modifierArbitrary) {
+      const arbitraryOpacity = Number.parseFloat(opacityStr)
       if (Number.isNaN(arbitraryOpacity) || arbitraryOpacity < 0 || arbitraryOpacity > 1)
         return undefined
       opacity = arbitraryOpacity

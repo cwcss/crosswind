@@ -836,6 +836,7 @@ describe('parseClass - arbitrary value with arbitrary modifier (regression)', ()
     const r = parseClass('bg-[#FF3E54]/[0.33]')
     expect(r.utility).toBe('bg')
     expect(r.value).toBe('#FF3E54/0.33')
+    expect(r.modifierArbitrary).toBe(true)
   })
 
   it('parses text-[size]/[lh] through variants', () => {

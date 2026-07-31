@@ -1395,6 +1395,7 @@ function parseClassImpl(className: string): Omit<ParsedClass, 'base'> {
       value: `${value}/${modifier}`,
       important,
       arbitrary: true,
+      modifierArbitrary: true,
     }
   }
 
