@@ -2041,6 +2041,7 @@ function extractCodeStringCandidates(content: string, bracketConfig?: BracketSyn
       continue
     }
 
+    const markupAttribute = isMarkupAttributeString(content, i)
     const multiline = quote === '`'
     let j = i + 1
     let literal = ''
@@ -2086,6 +2087,14 @@ function extractCodeStringCandidates(content: string, bracketConfig?: BracketSyn
     }
 
     if (closed) {
+      // Attribute extraction above owns every quoted value inside a markup
+      // tag. Treating unrelated values such as CSRF tokens, URLs, or v-html
+      // payloads as code strings creates phantom utility classes and can make
+      // a classless fragment emit an entire preflight stylesheet.
+      if (markupAttribute) {
+        i = j
+        continue
+      }
       for (const token of splitClassString(literal)) {
         if (isCodeStringCandidate(token, bracketConfig))
           tokens.add(token)
@@ -2098,6 +2107,35 @@ function extractCodeStringCandidates(content: string, bracketConfig?: BracketSyn
   }
 
   return tokens
+}
+
+function isMarkupAttributeString(content: string, quoteIndex: number): boolean {
+  const tagStart = content.lastIndexOf('<', quoteIndex)
+  const tagEnd = content.lastIndexOf('>', quoteIndex)
+  if (tagStart <= tagEnd)
+    return false
+
+  const firstTagChar = content[tagStart + 1]
+  if (!firstTagChar || !/[A-Za-z!/]/.test(firstTagChar))
+    return false
+
+  let cursor = quoteIndex - 1
+  while (cursor > tagStart && /\s/.test(content[cursor]))
+    cursor--
+
+  if (content[cursor] === '=')
+    return true
+
+  // JSX template literals use className={`...`}; the backtick is wrapped by
+  // a single expression brace immediately after the assignment.
+  if (content[cursor] === '{') {
+    cursor--
+    while (cursor > tagStart && /\s/.test(content[cursor]))
+      cursor--
+    return content[cursor] === '='
+  }
+
+  return false
 }
 
 /**
