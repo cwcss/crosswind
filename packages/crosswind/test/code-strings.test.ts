@@ -131,4 +131,32 @@ describe('code-string extraction', () => {
     expect(classes.has('bg-white')).toBe(true)
     expect(classes.has('bg-black')).toBe(true)
   })
+
+  it('does not treat unrelated markup attributes as code strings', () => {
+    const markup = `
+      <form>
+        <input type="hidden" name="_token" value="test-csrf-token">
+        <div data-state="bg-blue-500" v-html="'<strong>Bold text</strong>'"></div>
+      </form>
+    `
+    const classes = extractClasses(markup)
+
+    expect(classes.has('test-csrf-token')).toBe(false)
+    expect(classes.has('bg-blue-500')).toBe(false)
+    expect(classes.has('<strong>Bold')).toBe(false)
+  })
+
+  it('keeps extracting utility strings from code beside markup', () => {
+    const source = `
+      const token = 'test-csrf-token'
+      const classes = 'bg-blue-500 text-white'
+      const view = <input value="test-csrf-token" className={\`px-4 \${classes}\`} />
+    `
+    const classes = extractClasses(source)
+
+    expect(classes.has('test-csrf-token')).toBe(true)
+    expect(classes.has('bg-blue-500')).toBe(true)
+    expect(classes.has('text-white')).toBe(true)
+    expect(classes.has('px-4')).toBe(true)
+  })
 })
