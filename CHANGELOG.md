@@ -1,3 +1,40 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.12...v0.2.13)
+
+## 🚀 Features
+
+- extract utility classes from string literals in code ([3f48fe5](https://github.com/cwcss/crosswind/commit/3f48fe5)) _(by Chris <chrisbreuer93@gmail.com>)_
+- fill in missing Tailwind v4 utility families ([8f228fb](https://github.com/cwcss/crosswind/commit/8f228fb)) _(by Chris <chrisbreuer93@gmail.com>)_
+- support the v4 bg-linear-* gradient spelling ([79cead8](https://github.com/cwcss/crosswind/commit/79cead8)) _(by Chris <chrisbreuer93@gmail.com>)_
+- add CSS containment utilities ([19806d6](https://github.com/cwcss/crosswind/commit/19806d6)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🐛 Bug Fixes
+
+- **types**: declare transform constants ([21b9336](https://github.com/cwcss/crosswind/commit/21b9336)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **colors**: preserve functional slash alpha ([c59a59b](https://github.com/cwcss/crosswind/commit/c59a59b)) _(by Chris <chrisbreuer93@gmail.com>)_
+- normalize arbitrary math operators ([6145562](https://github.com/cwcss/crosswind/commit/6145562)) _(by Chris <chrisbreuer93@gmail.com>)_
+- rank stateful utilities by their class, not their pseudo-class ([93ad42a](https://github.com/cwcss/crosswind/commit/93ad42a)) _(by Chris <chrisbreuer93@gmail.com>)_
+- bring the scroll-snap fallback rule back in step with the fast path ([f2755ef](https://github.com/cwcss/crosswind/commit/f2755ef)) _(by Chris <chrisbreuer93@gmail.com>)_
+- register font-stretch and list-image as compound utilities ([968c937](https://github.com/cwcss/crosswind/commit/968c937)) _(by Chris <chrisbreuer93@gmail.com>)_
+- cap generated percentages at six decimals ([9f19da7](https://github.com/cwcss/crosswind/commit/9f19da7)) _(by Chris <chrisbreuer93@gmail.com>)_
+- match whole-class utilities on the variant-stripped class ([1fa45c5](https://github.com/cwcss/crosswind/commit/1fa45c5)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## ⚡ Performance Improvements
+
+- read scanned files through a bounded pool ([868e2fc](https://github.com/cwcss/crosswind/commit/868e2fc)) _(by Chris <chrisbreuer93@gmail.com>)_
+- split utility and value in linear time ([284a0cd](https://github.com/cwcss/crosswind/commit/284a0cd)) _(by Chris <chrisbreuer93@gmail.com>)_
+- hoist rule lookup tables to module scope ([2bc83a8](https://github.com/cwcss/crosswind/commit/2bc83a8)) _(by Chris <chrisbreuer93@gmail.com>)_
+- memoize utility cascade ranking per selector ([a81d4f2](https://github.com/cwcss/crosswind/commit/a81d4f2)) _(by Chris <chrisbreuer93@gmail.com>)_
+- bound the parse caches and memoize bracket alias resolution ([af5da84](https://github.com/cwcss/crosswind/commit/af5da84)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.2.13 ([31661e2](https://github.com/cwcss/crosswind/commit/31661e2)) _(by Chris <chrisbreuer93@gmail.com>)_
+- drop a scratch probe script committed by accident ([26a3b10](https://github.com/cwcss/crosswind/commit/26a3b10)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.11...v0.2.12)
 
 ## 🐛 Bug Fixes
