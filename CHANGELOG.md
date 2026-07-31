@@ -1,3 +1,17 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.13...v0.2.14)
+
+## 🐛 Bug Fixes
+
+- **parser**: ignore unrelated markup attributes ([1d46197](https://github.com/cwcss/crosswind/commit/1d46197)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.2.14 ([73eb5bc](https://github.com/cwcss/crosswind/commit/73eb5bc)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.12...v0.2.13)
 
 ## 🚀 Features
