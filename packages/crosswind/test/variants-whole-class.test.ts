@@ -32,6 +32,7 @@ describe('whole-class utilities under variants', () => {
     ['column-span-all', 'column-span: all'],
     ['direction-rtl', 'direction: rtl'],
     ['animate-paused', 'animation-play-state: paused'],
+    ['cursor-not-allowed', 'cursor: not-allowed'],
   ] as const
 
   for (const [utility, declaration] of utilities) {
@@ -49,6 +50,19 @@ describe('whole-class utilities under variants', () => {
       expect(css(`${utility}!`)).toContain(`${declaration} !important`)
     })
   }
+
+  /**
+   * The cursor family is the one people hit first: a disabled button that
+   * still shows a pointer is the canonical symptom of this whole bug class,
+   * and `disabled:`/`hover:` cursors appear in almost every real UI.
+   */
+  it('generates the cursor family under interaction variants', () => {
+    expect(css('disabled:cursor-not-allowed')).toContain('cursor: not-allowed')
+    expect(css('disabled:cursor-not-allowed')).toContain(':disabled')
+    expect(css('hover:cursor-pointer')).toContain('cursor: pointer')
+    expect(css('hover:cursor-pointer')).toContain(':hover')
+    expect(css('group-hover:cursor-grab')).toContain('cursor: grab')
+  })
 
   it('stacks variants without losing the utility', () => {
     const out = css('dark:md:hover:backface-hidden')
