@@ -119,6 +119,18 @@ describe('Edge Cases', () => {
       expect(gen.toCSS(false)).toContain('background-color: rgb(255,0,0);')
     })
 
+    it('should preserve slash alpha inside arbitrary CSS color functions', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('bg-[rgb(242_242_244_/_0.9)]')
+      expect(gen.toCSS(false)).toContain('background-color: rgb(242 242 244 / 0.9);')
+    })
+
+    it('should distinguish a color function alpha from an opacity modifier', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('bg-[rgb(242_242_244_/_0.9)]/[0.5]')
+      expect(gen.toCSS(false)).toContain('background-color: rgb(242 242 244 / 0.5);')
+    })
+
     it('should handle rgba() colors', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('bg-[rgba(255,0,0,0.5)]')

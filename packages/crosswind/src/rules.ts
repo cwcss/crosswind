@@ -1,4 +1,5 @@
 import type { CrosswindConfig, ParsedClass, UtilityRuleResult } from './types'
+import { colorModifierSlashIndex } from './color-modifier'
 import { advancedRules } from './rules-advanced'
 import { effectsRules } from './rules-effects'
 import { formsRules } from './rules-forms'
@@ -456,7 +457,7 @@ export const colorRule: UtilityRule = (parsed, config) => {
 
   // Fast path: Most common case - direct lookup in flat cache (no string parsing)
   // Check for slash (opacity modifier) first
-  const slashIdx = value.indexOf('/')
+  const slashIdx = colorModifierSlashIndex(value)
   if (slashIdx === -1) {
     // No opacity - direct lookup
     const colorVal = flatColorCache.get(value)
@@ -478,6 +479,13 @@ export const colorRule: UtilityRule = (parsed, config) => {
     // Handle arbitrary opacity: /[0.04], /[0.5], /[.15]
     if (opacityStr.charCodeAt(0) === 91 && opacityStr.charCodeAt(opacityStr.length - 1) === 93) { // '[' and ']'
       const arbitraryOpacity = Number.parseFloat(opacityStr.slice(1, -1))
+      if (Number.isNaN(arbitraryOpacity) || arbitraryOpacity < 0 || arbitraryOpacity > 1) {
+        return undefined
+      }
+      opacity = arbitraryOpacity
+    }
+    else if (parsed.modifierArbitrary) {
+      const arbitraryOpacity = Number.parseFloat(opacityStr)
       if (Number.isNaN(arbitraryOpacity) || arbitraryOpacity < 0 || arbitraryOpacity > 1) {
         return undefined
       }
@@ -580,8 +588,12 @@ export function applyOpacity(color: string, opacity: number): string {
  * Handles: special keywords, direct colors, color-shade, opacity modifiers (/50, /[0.04]).
  * Returns the resolved CSS color string or undefined if not found.
  */
-export function resolveColorValue(value: string, config: { theme: { colors: Record<string, any> } }): string | undefined {
-  const slashIdx = value.indexOf('/')
+export function resolveColorValue(
+  value: string,
+  config: { theme: { colors: Record<string, any> } },
+  modifierArbitrary = false,
+): string | undefined {
+  const slashIdx = colorModifierSlashIndex(value)
   let colorKey = value
   let opacity: number | undefined
 
@@ -590,6 +602,10 @@ export function resolveColorValue(value: string, config: { theme: { colors: Reco
     const opacityStr = value.slice(slashIdx + 1)
     if (opacityStr.charCodeAt(0) === 91 && opacityStr.charCodeAt(opacityStr.length - 1) === 93) {
       opacity = Number.parseFloat(opacityStr.slice(1, -1))
+      if (Number.isNaN(opacity) || opacity < 0 || opacity > 1) return undefined
+    }
+    else if (modifierArbitrary) {
+      opacity = Number.parseFloat(opacityStr)
       if (Number.isNaN(opacity) || opacity < 0 || opacity > 1) return undefined
     }
     else {
@@ -666,7 +682,7 @@ export const placeholderColorRule: UtilityRule = (parsed, config) => {
   }
 
   const value = parsed.value
-  const slashIdx = value.indexOf('/')
+  const slashIdx = colorModifierSlashIndex(value)
 
   if (slashIdx === -1) {
     // No opacity
@@ -687,6 +703,12 @@ export const placeholderColorRule: UtilityRule = (parsed, config) => {
     // Handle arbitrary opacity: /[0.04], /[0.5]
     if (opacityStr.charCodeAt(0) === 91 && opacityStr.charCodeAt(opacityStr.length - 1) === 93) {
       const arbitraryOpacity = Number.parseFloat(opacityStr.slice(1, -1))
+      if (Number.isNaN(arbitraryOpacity) || arbitraryOpacity < 0 || arbitraryOpacity > 1)
+        return undefined
+      opacity = arbitraryOpacity
+    }
+    else if (parsed.modifierArbitrary) {
+      const arbitraryOpacity = Number.parseFloat(opacityStr)
       if (Number.isNaN(arbitraryOpacity) || arbitraryOpacity < 0 || arbitraryOpacity > 1)
         return undefined
       opacity = arbitraryOpacity
