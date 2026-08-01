@@ -138,21 +138,49 @@ function svgToDataUrl(svg: string): string {
 }
 
 /**
- * Match `i-{collection}-{name}`. Collection is a single segment of
- * lowercase letters/digits (matches every `@iconify-json/*` package).
- * Name is everything after the second hyphen (icon names contain hyphens).
+ * Match `i-{collection}-{name}`.
+ *
+ * The collection is NOT a single segment: plenty of `@iconify-json/*` packages
+ * are hyphenated (`simple-icons`, `material-symbols`, `fa6-brands`, `line-md`,
+ * `vscode-icons`). Splitting on the first hyphen read `i-simple-icons-bluesky`
+ * as collection `simple`, which does not exist, so every brand icon silently
+ * produced no CSS at all.
+ *
+ * Icon names contain hyphens too, so the split is genuinely ambiguous. Walk the
+ * candidate split points and take the first that resolves to a collection that
+ * actually holds the icon. `loadCollection` is memoised, so a miss is cheap.
  */
-const ICON_RE = /^i-([a-z][a-z0-9]*)-(.+)$/
+const ICON_RE = /^i-([a-z][a-z0-9]*(?:-[a-z0-9]+)*)-(.+)$/
+
+function resolveIcon(base: string): { collection: IconifyJSONCollection, icon: IconifyJSONIcon } | undefined {
+  if (!base.startsWith('i-'))
+    return undefined
+
+  const rest = base.slice(2)
+  // Split after each hyphen, shortest collection first: `hugeicons` before
+  // `hugeicons-arrow`, so the common single-segment case stays the fast path.
+  for (let i = rest.indexOf('-'); i !== -1; i = rest.indexOf('-', i + 1)) {
+    const collectionName = rest.slice(0, i)
+    const iconName = rest.slice(i + 1)
+    if (!/^[a-z][a-z0-9-]*$/.test(collectionName))
+      continue
+
+    const collection = loadCollection(collectionName)
+    if (!collection)
+      continue
+    const icon = lookupIcon(collection, iconName)
+    if (icon)
+      return { collection, icon }
+  }
+
+  return undefined
+}
 
 export const iconRule: UtilityRule = (parsed: ParsedClass, _config: CrosswindConfig) => {
-  const m = parsed.base.match(ICON_RE)
-  if (!m) return undefined
-  const [, collectionName, iconName] = m
-
-  const collection = loadCollection(collectionName)
-  if (!collection) return undefined
-  const icon = lookupIcon(collection, iconName)
-  if (!icon) return undefined
+  if (!ICON_RE.test(parsed.base)) return undefined
+  const resolved = resolveIcon(parsed.base)
+  if (!resolved) return undefined
+  const { collection, icon } = resolved
 
   const url = svgToDataUrl(svgFor(collection, icon))
   // Antfu's pattern — every property is set so the class is fully self-
