@@ -2,7 +2,7 @@
   "name": "@cwcss/crosswind",
   "type": "module",
   "sideEffects": false,
-  "version": "0.2.14",
+  "version": "0.2.15",
   "description": "A performant Utility-First CSS framework. Similar to Tailwind or UnoCSS.",
   "author": "Chris Breuer <chris@stacksjs.org>",
   "license": "MIT",
