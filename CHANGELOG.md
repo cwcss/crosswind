@@ -1,3 +1,17 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.15...v0.2.16)
+
+## 🐛 Bug Fixes
+
+- **preflight**: default uncoloured borders to grey, not currentColor ([d1ec7a0](https://github.com/cwcss/crosswind/commit/d1ec7a0)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.2.16 ([1c87195](https://github.com/cwcss/crosswind/commit/1c87195)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.13...v0.2.14)
 
 ## 🐛 Bug Fixes
