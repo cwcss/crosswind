@@ -3,13 +3,31 @@
 ! Tailwind CSS Preflight | MIT License | https://tailwindcss.com
 */
 
+/*
+  The fallback is a neutral grey, not currentColor.
+
+  currentColor makes every border whose colour was never set take the TEXT
+  colour, which is near-black on a light page and near-white on a dark one.
+  That is never what an author means by a divider: the divide-* and
+  border-width utilities set a width and no colour, so a plain divide-y
+  rendered as a heavy black rule instead of a hairline.
+
+  It also punished the obvious workaround. Setting border-color on a parent
+  does not reach divide-* children, because divide targets
+  "> :not([hidden]) ~ :not([hidden])" and the child declaration from this
+  block wins.
+
+  Tailwind preflight resolves this the same way (its default is gray-200).
+  --border-color stays the escape hatch: set it once on :root, or per
+  theme, and every uncoloured border follows.
+*/
 *,
 ::before,
 ::after {
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
-  border-color: var(--border-color, currentColor);
+  border-color: var(--border-color, #e5e7eb);
 }
 
 ::before,
