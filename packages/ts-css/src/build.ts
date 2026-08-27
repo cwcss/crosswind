@@ -1,6 +1,8 @@
 import type { TsCssConfig } from './types'
 import { CSSGenerator } from './generator'
 import { Scanner } from './scanner'
+import { collectStyles } from './style/collect'
+import { resetStyles } from './style/registry'
 import { CompileClassTransformer } from './transformer-compile-class'
 
 export interface BuildResult {
@@ -11,6 +13,8 @@ export interface BuildResult {
   transformedFiles?: Map<string, string>
   /** Content patterns that matched no files (likely config typos). */
   unmatchedPatterns?: string[]
+  /** Absolute paths of the `css.create()` modules that were evaluated. */
+  styleModules?: string[]
 }
 
 /**
@@ -68,7 +72,25 @@ export async function build(config: TsCssConfig): Promise<BuildResult> {
   }
 
   // Preflight CSS is now added by generator.toCSS()
-  const css = generator.toCSS(config.includePreflight !== false, config.minify)
+  let css = generator.toCSS(config.includePreflight !== false, config.minify)
+
+  // Styles declared through the `css.create()` API live in modules, not in
+  // class attributes, so the scanner never sees them. Evaluating those modules
+  // registers their atomic rules; append the result after the utilities so a
+  // style object wins over a utility of equal specificity.
+  let styleModules: string[] | undefined
+  if (config.styles && config.styles.length > 0) {
+    // Reset first so a rebuild reflects the current source exactly. Without it
+    // a watch session would keep emitting rules for declarations the author
+    // has since deleted.
+    resetStyles()
+    const collected = await collectStyles(config.styles, { minify: config.minify })
+    styleModules = collected.modules
+    if (collected.css)
+      css += (config.minify ? '' : '\n') + collected.css
+    unmatchedPatterns.push(...collected.unmatchedPatterns)
+  }
+
   const duration = performance.now() - startTime
 
   return {
@@ -78,6 +100,7 @@ export async function build(config: TsCssConfig): Promise<BuildResult> {
     compiledClasses: transformer?.getCompiledClasses(),
     transformedFiles,
     unmatchedPatterns,
+    styleModules,
   }
 }
 
