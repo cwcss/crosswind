@@ -1945,15 +1945,23 @@ export function extractClasses(content: string, options?: ExtractClassesOptions)
   }
 
   // Expression-valued class attributes: className={clsx('a', cond && 'b')},
-  // className={['a', 'b']}, Astro's class:list={[...]}, Vue's :class="[...]".
-  // None of these start with a quote right after `={`, so the patterns above
-  // miss them entirely and their classes silently never generate. Only
-  // quoted string literals inside the expression are extracted — bare
-  // identifiers there are code (clsx, cond, &&), not class names.
+  // className={['a', 'b']}, Astro's class:list={[...]}, Vue's :class="[...]",
+  // stx's x-class="cond ? 'a' : 'b'". None of these start with a quote right
+  // after `={`, so the patterns above miss them entirely and their classes
+  // silently never generate. Only quoted string literals inside the expression
+  // are extracted — bare identifiers there are code (clsx, cond, &&), not
+  // class names.
+  //
+  // `x-class` is the same shape as `:class` and needs the same treatment: an
+  // stx template that picks its active-state colour in an `x-class` ternary
+  // gets no rule for it, so the element renders with the layout applied and
+  // the colour missing — white text on nothing.
   const expressionPatterns = [
     /class(?:Name|:list)?=\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g,
     /:class="([^"]*)"/g,
     /:class='([^']*)'/g,
+    /\bx-class="([^"]*)"/g,
+    /\bx-class='([^']*)'/g,
   ]
   for (const pattern of expressionPatterns) {
     let match
