@@ -1723,6 +1723,19 @@ export class CSSGenerator {
   private shortcutSelectorRaw: string | null = null
   private extendColors: Record<string, string | Record<string, string>> | null = null
   private processed: ProcessedConfig
+  /**
+   * Bumped by every mutation that can change the emitted stylesheet, so
+   * `toCSS()` can tell whether its previous answer is still valid.
+   */
+  private revision = 0
+  /**
+   * Memoised `toCSS()` output. Held as separate fields rather than a composed
+   * key so that a cache hit costs three comparisons and no allocation.
+   */
+  private cssCache: string | null = null
+  private cssCacheRevision = -1
+  private cssCachePreflight = false
+  private cssCacheMinify = false
 
   constructor(private config: TsCssConfig) {
     this.processed = processConfig(config)
@@ -1871,6 +1884,7 @@ export class CSSGenerator {
         const animName = staticResult.animation.split(' ')[0]
         if (animName && animName !== 'none') {
           this.usedKeyframes.add(animName)
+          this.revision++
         }
       }
       return
@@ -2406,6 +2420,7 @@ export class CSSGenerator {
       this.rules.set(key, [])
     }
 
+    this.revision++
     this.rules.get(key)!.push({
       selector,
       properties,
@@ -2806,6 +2821,18 @@ export class CSSGenerator {
    * Generate final CSS output
   */
   toCSS(includePreflight = true, minify = false): string {
+    // Serialising the sheet is O(rules), and a watch rebuild calls this on
+    // every pass — usually with nothing new to say. Memoising on the revision
+    // counter turns an unchanged rebuild into three integer comparisons.
+    if (
+      this.cssCache !== null
+      && this.cssCacheRevision === this.revision
+      && this.cssCachePreflight === includePreflight
+      && this.cssCacheMinify === minify
+    ) {
+      return this.cssCache
+    }
+
     const parts: string[] = []
 
     // Web fonts first — an @import must precede every other rule in the
@@ -2888,7 +2915,12 @@ export class CSSGenerator {
       parts.push(css)
     }
 
-    return minify ? parts.join('') : parts.join('\n\n')
+    const css = minify ? parts.join('') : parts.join('\n\n')
+    this.cssCache = css
+    this.cssCacheRevision = this.revision
+    this.cssCachePreflight = includePreflight
+    this.cssCacheMinify = minify
+    return css
   }
 
   /**
@@ -3024,6 +3056,7 @@ export class CSSGenerator {
    * Reset the generator state (clears all generated CSS and caches)
   */
   reset(): void {
+    this.revision++
     this.rules.clear()
     this.classCache.clear()
     this.selectorCache.clear()
