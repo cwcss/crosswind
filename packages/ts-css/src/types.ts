@@ -8,12 +8,12 @@ export interface CompileClassConfig {
   enabled?: boolean
   /**
    * Trigger string to mark classes for compilation
-   * @default ':cw:'
+   * @default ':tc:'
   */
   trigger?: string
   /**
    * Prefix for generated class names
-   * @default 'cw-'
+   * @default 'tc-'
   */
   classPrefix?: string
   /**
@@ -27,14 +27,14 @@ export interface AttributifyConfig {
   /**
    * Enable attributify mode
    * Allows using HTML attributes instead of class names
-   * e.g., <div cw-flex cw-bg="blue-500">
+   * e.g., <div tc-flex tc-bg="blue-500">
    * @default false
   */
   enabled?: boolean
   /**
    * Prefix for attributify attributes (to avoid conflicts with HTML attributes)
-   * e.g., with prefix 'cw-': <div cw-flex cw-bg="blue-500">
-   * @default 'cw-'
+   * e.g., with prefix 'tc-': <div tc-flex tc-bg="blue-500">
+   * @default 'tc-'
   */
   prefix?: string
   /**

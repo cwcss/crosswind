@@ -1039,13 +1039,13 @@ describe('Nested color DEFAULT key (issue #17)', () => {
   it('resolves ring-{color} to the DEFAULT value', () => {
     const gen = makeGen()
     gen.generate('ring-brand')
-    expect(gen.toCSS(false)).toContain('--cw-ring-color: var(--brand);')
+    expect(gen.toCSS(false)).toContain('--tc-ring-color: var(--brand);')
   })
 
   it('resolves gradient from-{color} to the DEFAULT value', () => {
     const gen = makeGen()
     gen.generate('from-brand')
-    expect(gen.toCSS(false)).toContain('--cw-gradient-from: var(--brand);')
+    expect(gen.toCSS(false)).toContain('--tc-gradient-from: var(--brand);')
   })
 
   it('resolves divide-{color} to the DEFAULT value', () => {
@@ -1075,7 +1075,7 @@ describe('Nested color DEFAULT key (issue #17)', () => {
       },
     })
     gen.generate('shadow-brand')
-    expect(gen.toCSS(false)).toContain('--cw-shadow-color: #ff0000;')
+    expect(gen.toCSS(false)).toContain('--tc-shadow-color: #ff0000;')
   })
 
   it('resolves text-emphasis-color-{color} to the DEFAULT value', () => {

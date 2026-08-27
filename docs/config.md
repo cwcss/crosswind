@@ -146,23 +146,23 @@ When enabled, the output CSS is minified by removing:
 const config = {
   compileClass: {
     enabled: true, // Enable the transformer
-    trigger: ':cw:', // Trigger string (default)
-    classPrefix: 'cw-', // Prefix for generated names (default)
+    trigger: ':tc:', // Trigger string (default)
+    classPrefix: 'tc-', // Prefix for generated names (default)
     layer: 'shortcuts', // Layer name (default)
   },
 } satisfies TsCssOptions
 
 ```**Options:**-**enabled**- Enable or disable the transformer
--**trigger**- String to mark classes for compilation (e.g., `:cw:`)
--**classPrefix**- Prefix for generated class names (e.g., `cw-`)
+-**trigger**- String to mark classes for compilation (e.g., `:tc:`)
+-**classPrefix**- Prefix for generated class names (e.g., `tc-`)
 -**layer**- CSS layer name for future CSS layers support**Usage:**```html
 <!-- Before compilation -->
-<div class=":cw: flex items-center justify-between px-4 py-2">
+<div class=":tc: flex items-center justify-between px-4 py-2">
   Content
 </div>
 
 <!-- After compilation -->
-<div class="cw-abc123">
+<div class="tc-abc123">
   Content
 </div>
 ```
@@ -281,8 +281,8 @@ const config = {
   // Compile class transformer
   compileClass: {
     enabled: true,
-    trigger: ':cw:',
-    classPrefix: 'cw-',
+    trigger: ':tc:',
+    classPrefix: 'tc-',
   },
 
   // Shortcuts

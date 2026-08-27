@@ -1,4 +1,4 @@
-@layer cw-base {
+@layer tc-base {
 /*
 ! Tailwind CSS Preflight | MIT License | https://tailwindcss.com
 */
@@ -32,7 +32,7 @@
 
 ::before,
 ::after {
-  --cw-content: '';
+  --tc-content: '';
 }
 
 html,

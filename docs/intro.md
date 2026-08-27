@@ -68,12 +68,12 @@ If you know Tailwind, you already know Crosswind:```html
 
 Crosswind includes a compile class transformer that optimizes your HTML by compiling groups of utilities into single class names:```html
 <!-- Before compilation -->
-<div class=":cw: flex items-center justify-between px-4 py-2 bg-white rounded-lg shadow-md">
+<div class=":tc: flex items-center justify-between px-4 py-2 bg-white rounded-lg shadow-md">
   Content
 </div>
 
 <!-- After compilation -->
-<div class="cw-abc123">
+<div class="tc-abc123">
   Content
 </div>
 

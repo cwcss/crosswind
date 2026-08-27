@@ -393,7 +393,7 @@ export const defaultConfig: TsCssConfig = {
   rules: [],
   attributify: {
     enabled: false,
-    prefix: 'cw-',
+    prefix: 'tc-',
     ignoreAttributes: [
       'class',
       'className',

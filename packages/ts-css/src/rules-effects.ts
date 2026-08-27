@@ -78,11 +78,11 @@ function applyShadowOpacity(color: string, opacity: number): string {
 }
 
 /**
- * Replace color values in a shadow string with var(--cw-shadow-color)
- * e.g., '0 10px 15px -3px rgb(0 0 0 / 0.1)' -> '0 10px 15px -3px var(--cw-shadow-color)'
+ * Replace color values in a shadow string with var(--tc-shadow-color)
+ * e.g., '0 10px 15px -3px rgb(0 0 0 / 0.1)' -> '0 10px 15px -3px var(--tc-shadow-color)'
 */
 function createColoredShadow(shadow: string): string {
-  return shadow.replace(/rgba?\([^)]+\)/g, 'var(--cw-shadow-color)')
+  return shadow.replace(/rgba?\([^)]+\)/g, 'var(--tc-shadow-color)')
 }
 
 // =============================================================================
@@ -162,16 +162,16 @@ export const backgroundImageRule: UtilityRule = (parsed) => {
   if (angle.startsWith('to-')) {
     const direction = GRADIENT_DIRECTIONS[angle.slice(3)]
     return direction
-      ? { 'background-image': `linear-gradient(${direction}, var(--cw-gradient-stops))` }
+      ? { 'background-image': `linear-gradient(${direction}, var(--tc-gradient-stops))` }
       : undefined
   }
 
   // Angle form (v4 only). A bare number is degrees; anything else must be an
   // arbitrary value carrying its own unit.
   if (parsed.arbitrary)
-    return { 'background-image': `linear-gradient(${angle}, var(--cw-gradient-stops))` }
+    return { 'background-image': `linear-gradient(${angle}, var(--tc-gradient-stops))` }
   if (/^-?\d+(?:\.\d+)?$/.test(angle))
-    return { 'background-image': `linear-gradient(${angle}deg, var(--cw-gradient-stops))` }
+    return { 'background-image': `linear-gradient(${angle}deg, var(--tc-gradient-stops))` }
 
   return undefined
 }
@@ -303,17 +303,17 @@ export const boxShadowThemeRule: UtilityRule = (parsed, config) => {
     // shadow-none is a simple reset — no CSS variables needed
     if (shadow === 'none') {
       return {
-        '--cw-shadow': '0 0 #0000',
-        'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
+        '--tc-shadow': '0 0 #0000',
+        'box-shadow': 'var(--tc-ring-offset-shadow, 0 0 #0000), var(--tc-ring-shadow, 0 0 #0000), var(--tc-shadow)',
       } as Record<string, string>
     }
 
     // Generate CSS variable-based shadow for color support
     const colored = createColoredShadow(shadow)
     return {
-      '--cw-shadow': shadow,
-      '--cw-shadow-colored': colored,
-      'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
+      '--tc-shadow': shadow,
+      '--tc-shadow-colored': colored,
+      'box-shadow': 'var(--tc-ring-offset-shadow, 0 0 #0000), var(--tc-ring-shadow, 0 0 #0000), var(--tc-shadow)',
     } as Record<string, string>
   }
 }
@@ -384,8 +384,8 @@ export const shadowColorRule: UtilityRule = (parsed, config) => {
     : resolvedColor
 
   return {
-    '--cw-shadow-color': finalColor,
-    '--cw-shadow': 'var(--cw-shadow-colored)',
+    '--tc-shadow-color': finalColor,
+    '--tc-shadow': 'var(--tc-shadow-colored)',
   } as Record<string, string>
 }
 

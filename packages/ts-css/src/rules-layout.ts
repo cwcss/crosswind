@@ -293,7 +293,7 @@ export const isolationRule: UtilityRule = (parsed) => {
  * simply replace the property.
  */
 const CONTAIN_KEYWORDS = ['size', 'inline-size', 'layout', 'paint', 'style']
-const CONTAIN_COMPOSED = CONTAIN_KEYWORDS.map(keyword => `var(--cw-contain-${keyword}, )`).join(' ')
+const CONTAIN_COMPOSED = CONTAIN_KEYWORDS.map(keyword => `var(--tc-contain-${keyword}, )`).join(' ')
 const CONTAIN_STANDALONE = ['none', 'content', 'strict']
 
 export const containRule: UtilityRule = (parsed) => {
@@ -308,7 +308,7 @@ export const containRule: UtilityRule = (parsed) => {
 
   if (CONTAIN_KEYWORDS.includes(parsed.value)) {
     return {
-      [`--cw-contain-${parsed.value}`]: parsed.value,
+      [`--tc-contain-${parsed.value}`]: parsed.value,
       contain: CONTAIN_COMPOSED,
     }
   }

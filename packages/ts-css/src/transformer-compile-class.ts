@@ -3,12 +3,12 @@ import type { TsCssConfig } from './types'
 export interface CompileClassOptions {
   /**
    * Trigger string to mark classes for compilation
-   * @default ':cw:'
+   * @default ':tc:'
   */
   trigger?: string
   /**
    * Prefix for generated class names
-   * @default 'cw-'
+   * @default 'tc-'
   */
   classPrefix?: string
   /**
@@ -42,7 +42,7 @@ export function extractCompileClasses(
   content: string,
   options: CompileClassOptions = {},
 ): Map<string, string[]> {
-  const trigger = options.trigger || ':cw:'
+  const trigger = options.trigger || ':tc:'
   const compiledClasses = new Map<string, string[]>()
 
   // Match class attributes with the trigger
@@ -84,7 +84,7 @@ export function transformContent(
   compiledClassMap: Map<string, string>,
   options: CompileClassOptions = {},
 ): string {
-  const trigger = options.trigger || ':cw:'
+  const trigger = options.trigger || ':tc:'
   let transformed = content
 
   const classRegex = /(?:class|className)=["']([^"']*)["']/g
@@ -137,7 +137,7 @@ export function generateCompiledClassNames(
   compiledClasses: Map<string, string[]>,
   options: CompileClassOptions = {},
 ): Map<string, string> {
-  const classPrefix = options.classPrefix || 'cw-'
+  const classPrefix = options.classPrefix || 'tc-'
   const hashFn = options.hashFn || simpleHash
 
   const classMap = new Map<string, string>()
@@ -161,8 +161,8 @@ export class CompileClassTransformer {
 
   constructor(options: CompileClassOptions = {}) {
     this.options = {
-      trigger: ':cw:',
-      classPrefix: 'cw-',
+      trigger: ':tc:',
+      classPrefix: 'tc-',
       layer: 'shortcuts',
       ...options,
     }

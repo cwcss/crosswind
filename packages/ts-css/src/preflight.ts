@@ -173,7 +173,7 @@ export const tailwindPreflight: Preflight = {
 
 ::before,
 ::after {
-  --cw-content: '';
+  --tc-content: '';
 }
 
 html,

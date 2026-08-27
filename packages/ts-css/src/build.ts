@@ -55,10 +55,10 @@ export async function build(config: TsCssConfig): Promise<BuildResult> {
     generator.generate(className)
   }
 
-  // Compiled class groups (:cw: markers) emit under their own hashed
+  // Compiled class groups (:tc: markers) emit under their own hashed
   // selector. Previously the group's utilities were dumped into the main
   // class set instead — but the transformer had just REMOVED those class
-  // names from the markup, so the rewritten `class="cw-<hash>"` matched
+  // names from the markup, so the rewritten `class="tc-<hash>"` matched
   // nothing and elements rendered unstyled.
   if (transformer) {
     const compiledClasses = transformer.getCompiledClasses()

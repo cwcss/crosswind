@@ -1047,12 +1047,12 @@ describe('presets', () => {
 describe('reset', () => {
   it('clears compiled-class state so groups regenerate after reset', () => {
     const gen = new CSSGenerator(defaultConfig)
-    gen.generateCompiledClass('cw-x1', ['p-4'])
-    expect(gen.toCSS(false)).toContain('.cw-x1 {')
+    gen.generateCompiledClass('tc-x1', ['p-4'])
+    expect(gen.toCSS(false)).toContain('.tc-x1 {')
     gen.reset()
-    expect(gen.toCSS(false)).not.toContain('.cw-x1')
-    gen.generateCompiledClass('cw-x1', ['p-4'])
-    expect(gen.toCSS(false)).toContain('.cw-x1 {')
+    expect(gen.toCSS(false)).not.toContain('.tc-x1')
+    gen.generateCompiledClass('tc-x1', ['p-4'])
+    expect(gen.toCSS(false)).toContain('.tc-x1 {')
   })
 })
 
@@ -1213,9 +1213,9 @@ describe('touch-action composition', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generateBatch(['touch-pan-x', 'touch-pan-y'])
     const out = gen.toCSS(false)
-    expect(out).toContain('--cw-pan-x: pan-x;')
-    expect(out).toContain('--cw-pan-y: pan-y;')
-    expect(out).toContain('touch-action: var(--cw-pan-x,) var(--cw-pan-y,) var(--cw-pinch-zoom,);')
+    expect(out).toContain('--tc-pan-x: pan-x;')
+    expect(out).toContain('--tc-pan-y: pan-y;')
+    expect(out).toContain('touch-action: var(--tc-pan-x,) var(--tc-pan-y,) var(--tc-pinch-zoom,);')
   })
 
   it('touch-none stays a direct value', () => {
