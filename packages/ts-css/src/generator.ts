@@ -289,15 +289,15 @@ const PLACE_CONTENT_VALUES: Record<string, string> = {
 
 // Ring utilities - direct raw class to CSS
 // Ring utilities compose through the CSS variable system (like shadows do):
-// the previous flat `box-shadow: 0 0 0 Npx ...` ignored --cw-ring-inset and
-// --cw-ring-offset-width entirely (ring-inset / ring-offset-* were no-ops)
+// the previous flat `box-shadow: 0 0 0 Npx ...` ignored --tc-ring-inset and
+// --tc-ring-offset-width entirely (ring-inset / ring-offset-* were no-ops)
 // and clobbered shadow-* instead of layering with it. Every var carries a
 // fallback because no preflight defines the ring variables.
 function ringWidth(width: string): Record<string, string> {
   return {
-    '--cw-ring-offset-shadow': 'var(--cw-ring-inset,) 0 0 0 var(--cw-ring-offset-width, 0px) var(--cw-ring-offset-color, #fff)',
-    '--cw-ring-shadow': `var(--cw-ring-inset,) 0 0 0 calc(${width} + var(--cw-ring-offset-width, 0px)) var(--cw-ring-color, rgba(59, 130, 246, 0.5))`,
-    'box-shadow': 'var(--cw-ring-offset-shadow), var(--cw-ring-shadow), var(--cw-shadow, 0 0 #0000)',
+    '--tc-ring-offset-shadow': 'var(--tc-ring-inset,) 0 0 0 var(--tc-ring-offset-width, 0px) var(--tc-ring-offset-color, #fff)',
+    '--tc-ring-shadow': `var(--tc-ring-inset,) 0 0 0 calc(${width} + var(--tc-ring-offset-width, 0px)) var(--tc-ring-color, rgba(59, 130, 246, 0.5))`,
+    'box-shadow': 'var(--tc-ring-offset-shadow), var(--tc-ring-shadow), var(--tc-shadow, 0 0 #0000)',
   }
 }
 const RING_MAP: Record<string, Record<string, string>> = {
@@ -307,61 +307,61 @@ const RING_MAP: Record<string, Record<string, string>> = {
   'ring-2': ringWidth('2px'),
   'ring-4': ringWidth('4px'),
   'ring-8': ringWidth('8px'),
-  'ring-inset': { '--cw-ring-inset': 'inset' },
+  'ring-inset': { '--tc-ring-inset': 'inset' },
 }
 
 // Shadow utilities - use CSS variable system for shadow color support
-// --cw-shadow holds the default shadow, --cw-shadow-colored replaces colors with var(--cw-shadow-color)
-// box-shadow references --cw-shadow which can be swapped to --cw-shadow-colored by a shadow-{color} utility
+// --tc-shadow holds the default shadow, --tc-shadow-colored replaces colors with var(--tc-shadow-color)
+// box-shadow references --tc-shadow which can be swapped to --tc-shadow-colored by a shadow-{color} utility
 const SHADOW_MAP: Record<string, Record<string, string>> = {
   'shadow-2xs': {
-    '--cw-shadow': '0 1px rgb(0 0 0 / 0.05)',
-    '--cw-shadow-colored': '0 1px var(--cw-shadow-color)',
-    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
+    '--tc-shadow': '0 1px rgb(0 0 0 / 0.05)',
+    '--tc-shadow-colored': '0 1px var(--tc-shadow-color)',
+    'box-shadow': 'var(--tc-ring-offset-shadow, 0 0 #0000), var(--tc-ring-shadow, 0 0 #0000), var(--tc-shadow)',
   },
   'shadow-xs': {
-    '--cw-shadow': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-    '--cw-shadow-colored': '0 1px 2px 0 var(--cw-shadow-color)',
-    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
+    '--tc-shadow': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+    '--tc-shadow-colored': '0 1px 2px 0 var(--tc-shadow-color)',
+    'box-shadow': 'var(--tc-ring-offset-shadow, 0 0 #0000), var(--tc-ring-shadow, 0 0 #0000), var(--tc-shadow)',
   },
   'shadow-sm': {
-    '--cw-shadow': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-    '--cw-shadow-colored': '0 1px 3px 0 var(--cw-shadow-color), 0 1px 2px -1px var(--cw-shadow-color)',
-    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
+    '--tc-shadow': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+    '--tc-shadow-colored': '0 1px 3px 0 var(--tc-shadow-color), 0 1px 2px -1px var(--tc-shadow-color)',
+    'box-shadow': 'var(--tc-ring-offset-shadow, 0 0 #0000), var(--tc-ring-shadow, 0 0 #0000), var(--tc-shadow)',
   },
   'shadow': {
-    '--cw-shadow': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-    '--cw-shadow-colored': '0 1px 3px 0 var(--cw-shadow-color), 0 1px 2px -1px var(--cw-shadow-color)',
-    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
+    '--tc-shadow': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+    '--tc-shadow-colored': '0 1px 3px 0 var(--tc-shadow-color), 0 1px 2px -1px var(--tc-shadow-color)',
+    'box-shadow': 'var(--tc-ring-offset-shadow, 0 0 #0000), var(--tc-ring-shadow, 0 0 #0000), var(--tc-shadow)',
   },
   'shadow-md': {
-    '--cw-shadow': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-    '--cw-shadow-colored': '0 4px 6px -1px var(--cw-shadow-color), 0 2px 4px -2px var(--cw-shadow-color)',
-    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
+    '--tc-shadow': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+    '--tc-shadow-colored': '0 4px 6px -1px var(--tc-shadow-color), 0 2px 4px -2px var(--tc-shadow-color)',
+    'box-shadow': 'var(--tc-ring-offset-shadow, 0 0 #0000), var(--tc-ring-shadow, 0 0 #0000), var(--tc-shadow)',
   },
   'shadow-lg': {
-    '--cw-shadow': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-    '--cw-shadow-colored': '0 10px 15px -3px var(--cw-shadow-color), 0 4px 6px -4px var(--cw-shadow-color)',
-    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
+    '--tc-shadow': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+    '--tc-shadow-colored': '0 10px 15px -3px var(--tc-shadow-color), 0 4px 6px -4px var(--tc-shadow-color)',
+    'box-shadow': 'var(--tc-ring-offset-shadow, 0 0 #0000), var(--tc-ring-shadow, 0 0 #0000), var(--tc-shadow)',
   },
   'shadow-xl': {
-    '--cw-shadow': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-    '--cw-shadow-colored': '0 20px 25px -5px var(--cw-shadow-color), 0 8px 10px -6px var(--cw-shadow-color)',
-    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
+    '--tc-shadow': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+    '--tc-shadow-colored': '0 20px 25px -5px var(--tc-shadow-color), 0 8px 10px -6px var(--tc-shadow-color)',
+    'box-shadow': 'var(--tc-ring-offset-shadow, 0 0 #0000), var(--tc-ring-shadow, 0 0 #0000), var(--tc-shadow)',
   },
   'shadow-2xl': {
-    '--cw-shadow': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
-    '--cw-shadow-colored': '0 25px 50px -12px var(--cw-shadow-color)',
-    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
+    '--tc-shadow': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
+    '--tc-shadow-colored': '0 25px 50px -12px var(--tc-shadow-color)',
+    'box-shadow': 'var(--tc-ring-offset-shadow, 0 0 #0000), var(--tc-ring-shadow, 0 0 #0000), var(--tc-shadow)',
   },
   'shadow-inner': {
-    '--cw-shadow': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
-    '--cw-shadow-colored': 'inset 0 2px 4px 0 var(--cw-shadow-color)',
-    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
+    '--tc-shadow': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
+    '--tc-shadow-colored': 'inset 0 2px 4px 0 var(--tc-shadow-color)',
+    'box-shadow': 'var(--tc-ring-offset-shadow, 0 0 #0000), var(--tc-ring-shadow, 0 0 #0000), var(--tc-shadow)',
   },
   'shadow-none': {
-    '--cw-shadow': '0 0 #0000',
-    'box-shadow': 'var(--cw-ring-offset-shadow, 0 0 #0000), var(--cw-ring-shadow, 0 0 #0000), var(--cw-shadow)',
+    '--tc-shadow': '0 0 #0000',
+    'box-shadow': 'var(--tc-ring-offset-shadow, 0 0 #0000), var(--tc-ring-shadow, 0 0 #0000), var(--tc-shadow)',
   },
 }
 
@@ -425,11 +425,11 @@ const BORDER_WIDTH_MAP: Record<string, Record<string, string>> = {
 
 // Ring offset - direct raw class to CSS
 const RING_OFFSET_MAP: Record<string, Record<string, string>> = {
-  'ring-offset-0': { '--cw-ring-offset-width': '0px' },
-  'ring-offset-1': { '--cw-ring-offset-width': '1px' },
-  'ring-offset-2': { '--cw-ring-offset-width': '2px' },
-  'ring-offset-4': { '--cw-ring-offset-width': '4px' },
-  'ring-offset-8': { '--cw-ring-offset-width': '8px' },
+  'ring-offset-0': { '--tc-ring-offset-width': '0px' },
+  'ring-offset-1': { '--tc-ring-offset-width': '1px' },
+  'ring-offset-2': { '--tc-ring-offset-width': '2px' },
+  'ring-offset-4': { '--tc-ring-offset-width': '4px' },
+  'ring-offset-8': { '--tc-ring-offset-width': '8px' },
 }
 
 // Opacity utilities - direct raw class to CSS
@@ -902,35 +902,35 @@ const BG_SIZE_MAP: Record<string, Record<string, string>> = {
 // Gradient direction - direct raw class to CSS
 const GRADIENT_MAP: Record<string, Record<string, string>> = {
   'bg-none': { 'background-image': 'none' },
-  'bg-gradient-to-t': { 'background-image': 'linear-gradient(to top, var(--cw-gradient-stops))' },
-  'bg-gradient-to-tr': { 'background-image': 'linear-gradient(to top right, var(--cw-gradient-stops))' },
-  'bg-gradient-to-r': { 'background-image': 'linear-gradient(to right, var(--cw-gradient-stops))' },
-  'bg-gradient-to-br': { 'background-image': 'linear-gradient(to bottom right, var(--cw-gradient-stops))' },
-  'bg-gradient-to-b': { 'background-image': 'linear-gradient(to bottom, var(--cw-gradient-stops))' },
-  'bg-gradient-to-bl': { 'background-image': 'linear-gradient(to bottom left, var(--cw-gradient-stops))' },
-  'bg-gradient-to-l': { 'background-image': 'linear-gradient(to left, var(--cw-gradient-stops))' },
-  'bg-gradient-to-tl': { 'background-image': 'linear-gradient(to top left, var(--cw-gradient-stops))' },
+  'bg-gradient-to-t': { 'background-image': 'linear-gradient(to top, var(--tc-gradient-stops))' },
+  'bg-gradient-to-tr': { 'background-image': 'linear-gradient(to top right, var(--tc-gradient-stops))' },
+  'bg-gradient-to-r': { 'background-image': 'linear-gradient(to right, var(--tc-gradient-stops))' },
+  'bg-gradient-to-br': { 'background-image': 'linear-gradient(to bottom right, var(--tc-gradient-stops))' },
+  'bg-gradient-to-b': { 'background-image': 'linear-gradient(to bottom, var(--tc-gradient-stops))' },
+  'bg-gradient-to-bl': { 'background-image': 'linear-gradient(to bottom left, var(--tc-gradient-stops))' },
+  'bg-gradient-to-l': { 'background-image': 'linear-gradient(to left, var(--tc-gradient-stops))' },
+  'bg-gradient-to-tl': { 'background-image': 'linear-gradient(to top left, var(--tc-gradient-stops))' },
   // Radial gradients
-  'bg-radial': { 'background-image': 'radial-gradient(var(--cw-gradient-stops))' },
-  'bg-radial-at-t': { 'background-image': 'radial-gradient(at top, var(--cw-gradient-stops))' },
-  'bg-radial-at-tr': { 'background-image': 'radial-gradient(at top right, var(--cw-gradient-stops))' },
-  'bg-radial-at-r': { 'background-image': 'radial-gradient(at right, var(--cw-gradient-stops))' },
-  'bg-radial-at-br': { 'background-image': 'radial-gradient(at bottom right, var(--cw-gradient-stops))' },
-  'bg-radial-at-b': { 'background-image': 'radial-gradient(at bottom, var(--cw-gradient-stops))' },
-  'bg-radial-at-bl': { 'background-image': 'radial-gradient(at bottom left, var(--cw-gradient-stops))' },
-  'bg-radial-at-l': { 'background-image': 'radial-gradient(at left, var(--cw-gradient-stops))' },
-  'bg-radial-at-tl': { 'background-image': 'radial-gradient(at top left, var(--cw-gradient-stops))' },
-  'bg-radial-at-c': { 'background-image': 'radial-gradient(at center, var(--cw-gradient-stops))' },
+  'bg-radial': { 'background-image': 'radial-gradient(var(--tc-gradient-stops))' },
+  'bg-radial-at-t': { 'background-image': 'radial-gradient(at top, var(--tc-gradient-stops))' },
+  'bg-radial-at-tr': { 'background-image': 'radial-gradient(at top right, var(--tc-gradient-stops))' },
+  'bg-radial-at-r': { 'background-image': 'radial-gradient(at right, var(--tc-gradient-stops))' },
+  'bg-radial-at-br': { 'background-image': 'radial-gradient(at bottom right, var(--tc-gradient-stops))' },
+  'bg-radial-at-b': { 'background-image': 'radial-gradient(at bottom, var(--tc-gradient-stops))' },
+  'bg-radial-at-bl': { 'background-image': 'radial-gradient(at bottom left, var(--tc-gradient-stops))' },
+  'bg-radial-at-l': { 'background-image': 'radial-gradient(at left, var(--tc-gradient-stops))' },
+  'bg-radial-at-tl': { 'background-image': 'radial-gradient(at top left, var(--tc-gradient-stops))' },
+  'bg-radial-at-c': { 'background-image': 'radial-gradient(at center, var(--tc-gradient-stops))' },
   // Conic gradients
-  'bg-conic': { 'background-image': 'conic-gradient(var(--cw-gradient-stops))' },
-  'bg-conic-from-t': { 'background-image': 'conic-gradient(from 0deg at center, var(--cw-gradient-stops))' },
-  'bg-conic-from-tr': { 'background-image': 'conic-gradient(from 45deg at center, var(--cw-gradient-stops))' },
-  'bg-conic-from-r': { 'background-image': 'conic-gradient(from 90deg at center, var(--cw-gradient-stops))' },
-  'bg-conic-from-br': { 'background-image': 'conic-gradient(from 135deg at center, var(--cw-gradient-stops))' },
-  'bg-conic-from-b': { 'background-image': 'conic-gradient(from 180deg at center, var(--cw-gradient-stops))' },
-  'bg-conic-from-bl': { 'background-image': 'conic-gradient(from 225deg at center, var(--cw-gradient-stops))' },
-  'bg-conic-from-l': { 'background-image': 'conic-gradient(from 270deg at center, var(--cw-gradient-stops))' },
-  'bg-conic-from-tl': { 'background-image': 'conic-gradient(from 315deg at center, var(--cw-gradient-stops))' },
+  'bg-conic': { 'background-image': 'conic-gradient(var(--tc-gradient-stops))' },
+  'bg-conic-from-t': { 'background-image': 'conic-gradient(from 0deg at center, var(--tc-gradient-stops))' },
+  'bg-conic-from-tr': { 'background-image': 'conic-gradient(from 45deg at center, var(--tc-gradient-stops))' },
+  'bg-conic-from-r': { 'background-image': 'conic-gradient(from 90deg at center, var(--tc-gradient-stops))' },
+  'bg-conic-from-br': { 'background-image': 'conic-gradient(from 135deg at center, var(--tc-gradient-stops))' },
+  'bg-conic-from-b': { 'background-image': 'conic-gradient(from 180deg at center, var(--tc-gradient-stops))' },
+  'bg-conic-from-bl': { 'background-image': 'conic-gradient(from 225deg at center, var(--tc-gradient-stops))' },
+  'bg-conic-from-l': { 'background-image': 'conic-gradient(from 270deg at center, var(--tc-gradient-stops))' },
+  'bg-conic-from-tl': { 'background-image': 'conic-gradient(from 315deg at center, var(--tc-gradient-stops))' },
 }
 
 // Content utility - direct raw class to CSS
@@ -1020,17 +1020,17 @@ const SCROLL_BEHAVIOR_MAP: Record<string, Record<string, string>> = {
 
 // Scroll snap type - direct raw class to CSS.
 // The strictness var carries a `proximity` fallback (Tailwind's default):
-// nothing declares --cw-scroll-snap-strictness unless snap-mandatory /
+// nothing declares --tc-scroll-snap-strictness unless snap-mandatory /
 // snap-proximity is also used, and an unresolved var makes the whole
 // declaration invalid at computed-value time — `snap-x` on its own snapped
 // nothing at all.
 const SCROLL_SNAP_MAP: Record<string, Record<string, string>> = {
   'snap-none': { 'scroll-snap-type': 'none' },
-  'snap-x': { 'scroll-snap-type': 'x var(--cw-scroll-snap-strictness, proximity)' },
-  'snap-y': { 'scroll-snap-type': 'y var(--cw-scroll-snap-strictness, proximity)' },
-  'snap-both': { 'scroll-snap-type': 'both var(--cw-scroll-snap-strictness, proximity)' },
-  'snap-mandatory': { '--cw-scroll-snap-strictness': 'mandatory' },
-  'snap-proximity': { '--cw-scroll-snap-strictness': 'proximity' },
+  'snap-x': { 'scroll-snap-type': 'x var(--tc-scroll-snap-strictness, proximity)' },
+  'snap-y': { 'scroll-snap-type': 'y var(--tc-scroll-snap-strictness, proximity)' },
+  'snap-both': { 'scroll-snap-type': 'both var(--tc-scroll-snap-strictness, proximity)' },
+  'snap-mandatory': { '--tc-scroll-snap-strictness': 'mandatory' },
+  'snap-proximity': { '--tc-scroll-snap-strictness': 'proximity' },
   'snap-start': { 'scroll-snap-align': 'start' },
   'snap-end': { 'scroll-snap-align': 'end' },
   'snap-center': { 'scroll-snap-align': 'center' },
@@ -1044,17 +1044,17 @@ const SCROLL_SNAP_MAP: Record<string, Record<string, string>> = {
 // its own axis variable and rebuilds touch-action from all three, so
 // `touch-pan-x touch-pan-y` yields `pan-x pan-y` instead of the last class
 // clobbering the first. Empty fallbacks keep unused slots blank.
-const TOUCH_COMPOSED = 'var(--cw-pan-x,) var(--cw-pan-y,) var(--cw-pinch-zoom,)'
+const TOUCH_COMPOSED = 'var(--tc-pan-x,) var(--tc-pan-y,) var(--tc-pinch-zoom,)'
 const TOUCH_ACTION_MAP: Record<string, Record<string, string>> = {
   'touch-auto': { 'touch-action': 'auto' },
   'touch-none': { 'touch-action': 'none' },
-  'touch-pan-x': { '--cw-pan-x': 'pan-x', 'touch-action': TOUCH_COMPOSED },
-  'touch-pan-left': { '--cw-pan-x': 'pan-left', 'touch-action': TOUCH_COMPOSED },
-  'touch-pan-right': { '--cw-pan-x': 'pan-right', 'touch-action': TOUCH_COMPOSED },
-  'touch-pan-y': { '--cw-pan-y': 'pan-y', 'touch-action': TOUCH_COMPOSED },
-  'touch-pan-up': { '--cw-pan-y': 'pan-up', 'touch-action': TOUCH_COMPOSED },
-  'touch-pan-down': { '--cw-pan-y': 'pan-down', 'touch-action': TOUCH_COMPOSED },
-  'touch-pinch-zoom': { '--cw-pinch-zoom': 'pinch-zoom', 'touch-action': TOUCH_COMPOSED },
+  'touch-pan-x': { '--tc-pan-x': 'pan-x', 'touch-action': TOUCH_COMPOSED },
+  'touch-pan-left': { '--tc-pan-x': 'pan-left', 'touch-action': TOUCH_COMPOSED },
+  'touch-pan-right': { '--tc-pan-x': 'pan-right', 'touch-action': TOUCH_COMPOSED },
+  'touch-pan-y': { '--tc-pan-y': 'pan-y', 'touch-action': TOUCH_COMPOSED },
+  'touch-pan-up': { '--tc-pan-y': 'pan-up', 'touch-action': TOUCH_COMPOSED },
+  'touch-pan-down': { '--tc-pan-y': 'pan-down', 'touch-action': TOUCH_COMPOSED },
+  'touch-pinch-zoom': { '--tc-pinch-zoom': 'pinch-zoom', 'touch-action': TOUCH_COMPOSED },
   'touch-manipulation': { 'touch-action': 'manipulation' },
 }
 
@@ -1174,16 +1174,16 @@ const STROKE_LINEJOIN_MAP: Record<string, Record<string, string>> = {
 // `backdrop-filter` and clobber any other filter set on the same element.
 const CW_FILTER_FUNCTIONS = ['blur', 'brightness', 'contrast', 'grayscale', 'hue-rotate', 'invert', 'saturate', 'sepia', 'drop-shadow']
 const CW_BACKDROP_FUNCTIONS = ['blur', 'brightness', 'contrast', 'grayscale', 'hue-rotate', 'invert', 'opacity', 'saturate', 'sepia']
-const CW_FILTER_COMPOSED = CW_FILTER_FUNCTIONS.map(fn => `var(--cw-${fn}, )`).join(' ')
-const CW_BACKDROP_COMPOSED = CW_BACKDROP_FUNCTIONS.map(fn => `var(--cw-backdrop-${fn}, )`).join(' ')
+const CW_FILTER_COMPOSED = CW_FILTER_FUNCTIONS.map(fn => `var(--tc-${fn}, )`).join(' ')
+const CW_BACKDROP_COMPOSED = CW_BACKDROP_FUNCTIONS.map(fn => `var(--tc-backdrop-${fn}, )`).join(' ')
 
 function cwFilter(fn: string, value: string): Record<string, string> {
-  return { [`--cw-${fn}`]: value, filter: CW_FILTER_COMPOSED }
+  return { [`--tc-${fn}`]: value, filter: CW_FILTER_COMPOSED }
 }
 
 function cwBackdrop(fn: string, value: string): Record<string, string> {
   return {
-    [`--cw-backdrop-${fn}`]: value,
+    [`--tc-backdrop-${fn}`]: value,
     '-webkit-backdrop-filter': CW_BACKDROP_COMPOSED,
     'backdrop-filter': CW_BACKDROP_COMPOSED,
   }
@@ -1573,7 +1573,7 @@ function processConfig(config: TsCssConfig): ProcessedConfig {
   })
   const skipStaticShadow = Object.entries(config.theme.boxShadow).some(([k, v]) => {
     const cls = k === 'DEFAULT' ? 'shadow' : `shadow-${k}`
-    return SHADOW_MAP[cls] !== undefined && SHADOW_MAP[cls]['--cw-shadow'] !== v
+    return SHADOW_MAP[cls] !== undefined && SHADOW_MAP[cls]['--tc-shadow'] !== v
   })
 
   const result: ProcessedConfig = {
@@ -1812,7 +1812,7 @@ export class CSSGenerator {
    * Generate rules for a compiled class group (compile-class transformer):
    * every utility in the group emits under the compiled class's own
    * selector, exactly like a shortcut. Without this the transformer
-   * rewrote markup to `class="cw-<hash>"` while the CSS only contained the
+   * rewrote markup to `class="tc-<hash>"` while the CSS only contained the
    * original utility selectors — the compiled class had no styles at all.
   */
   generateCompiledClass(className: string, utilities: string[]): void {
@@ -2837,7 +2837,7 @@ export class CSSGenerator {
         // silently overrode author styles (form inputs lost their padding —
         // placeholders sitting flush against the border). Utilities stay
         // unlayered, so they still win over author styles as before.
-        const layered = `@layer cw-base {\n${preflightCSS}\n}`
+        const layered = `@layer tc-base {\n${preflightCSS}\n}`
         parts.push(minify ? minifyCSSBlock(layered) : layered)
       }
     }

@@ -79,9 +79,9 @@ const SCROLL_BEHAVIOR_VALUES: Record<string, string> = {
 // mandatory` on its own is not a valid declaration.
 const SCROLL_SNAP_TYPES: Record<string, string> = {
   'snap-none': 'none',
-  'snap-x': 'x var(--cw-scroll-snap-strictness, proximity)',
-  'snap-y': 'y var(--cw-scroll-snap-strictness, proximity)',
-  'snap-both': 'both var(--cw-scroll-snap-strictness, proximity)',
+  'snap-x': 'x var(--tc-scroll-snap-strictness, proximity)',
+  'snap-y': 'y var(--tc-scroll-snap-strictness, proximity)',
+  'snap-both': 'both var(--tc-scroll-snap-strictness, proximity)',
 }
 
 const SCROLL_SNAP_STRICTNESS: Record<string, string> = {
@@ -201,13 +201,13 @@ const PERCENT_FILTERS = ['brightness', 'contrast', 'grayscale', 'invert', 'satur
 const FILTER_FUNCTIONS = ['blur', 'brightness', 'contrast', 'grayscale', 'hue-rotate', 'invert', 'saturate', 'sepia', 'drop-shadow']
 const BACKDROP_FUNCTIONS = ['blur', 'brightness', 'contrast', 'grayscale', 'hue-rotate', 'invert', 'opacity', 'saturate', 'sepia']
 
-const FILTER_COMPOSED = FILTER_FUNCTIONS.map(fn => `var(--cw-${fn}, )`).join(' ')
-const BACKDROP_COMPOSED = BACKDROP_FUNCTIONS.map(fn => `var(--cw-backdrop-${fn}, )`).join(' ')
+const FILTER_COMPOSED = FILTER_FUNCTIONS.map(fn => `var(--tc-${fn}, )`).join(' ')
+const BACKDROP_COMPOSED = BACKDROP_FUNCTIONS.map(fn => `var(--tc-backdrop-${fn}, )`).join(' ')
 
 /** One filter function, plus the composed `filter` that includes it. */
 function filterDecl(fn: string, value: string): Record<string, string> {
   return {
-    [`--cw-${fn}`]: value,
+    [`--tc-${fn}`]: value,
     filter: FILTER_COMPOSED,
   }
 }
@@ -215,7 +215,7 @@ function filterDecl(fn: string, value: string): Record<string, string> {
 /** One backdrop function, plus the composed `backdrop-filter`. */
 function backdropDecl(fn: string, value: string): Record<string, string> {
   return {
-    [`--cw-backdrop-${fn}`]: value,
+    [`--tc-backdrop-${fn}`]: value,
     '-webkit-backdrop-filter': BACKDROP_COMPOSED,
     'backdrop-filter': BACKDROP_COMPOSED,
   }
@@ -469,7 +469,7 @@ export const scrollSnapRule: UtilityRule = (parsed) => {
   }
 
   if (SCROLL_SNAP_STRICTNESS[parsed.base]) {
-    return { '--cw-scroll-snap-strictness': SCROLL_SNAP_STRICTNESS[parsed.base] }
+    return { '--tc-scroll-snap-strictness': SCROLL_SNAP_STRICTNESS[parsed.base] }
   }
 
   if (SCROLL_SNAP_ALIGNS[parsed.base]) {

@@ -8,7 +8,7 @@ describe('Gradient Utilities', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('bg-radial')
       const css = gen.toCSS(false)
-      expect(css).toContain('background-image: radial-gradient(var(--cw-gradient-stops))')
+      expect(css).toContain('background-image: radial-gradient(var(--tc-gradient-stops))')
     })
 
     it('should generate bg-radial-at-t', () => {
@@ -39,7 +39,7 @@ describe('Gradient Utilities', () => {
       gen.generate('to-purple-500')
       const css = gen.toCSS(false)
       expect(css).toContain('radial-gradient')
-      expect(css).toContain('--cw-gradient-from')
+      expect(css).toContain('--tc-gradient-from')
     })
   })
 
@@ -48,7 +48,7 @@ describe('Gradient Utilities', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('bg-conic')
       const css = gen.toCSS(false)
-      expect(css).toContain('background-image: conic-gradient(var(--cw-gradient-stops))')
+      expect(css).toContain('background-image: conic-gradient(var(--tc-gradient-stops))')
     })
 
     it('should generate bg-conic-from-t', () => {
@@ -86,11 +86,11 @@ describe('Gradient Utilities', () => {
   // generic parsing and produced no CSS at all — every Tailwind-style
   // translucent gradient was silently broken.
   describe('Gradient stops with opacity modifier (regression)', () => {
-    it('from-<color>/<alpha> emits --cw-gradient-from with alpha', () => {
+    it('from-<color>/<alpha> emits --tc-gradient-from with alpha', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('from-red-500/50')
       const css = gen.toCSS(false)
-      expect(css).toContain('--cw-gradient-from:')
+      expect(css).toContain('--tc-gradient-from:')
       expect(css).toContain('/ 0.5')
     })
 
@@ -98,7 +98,7 @@ describe('Gradient Utilities', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('via-purple-500/75')
       const css = gen.toCSS(false)
-      expect(css).toContain('--cw-gradient-stops:')
+      expect(css).toContain('--tc-gradient-stops:')
       expect(css).toContain('/ 0.75')
     })
 
@@ -106,7 +106,7 @@ describe('Gradient Utilities', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('to-blue-500/25')
       const css = gen.toCSS(false)
-      expect(css).toContain('--cw-gradient-to:')
+      expect(css).toContain('--tc-gradient-to:')
       expect(css).toContain('/ 0.25')
     })
 
@@ -118,7 +118,7 @@ describe('Gradient Utilities', () => {
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('from-[#FF3E54]/60')
       const css = gen.toCSS(false)
-      expect(css).toContain('--cw-gradient-from:')
+      expect(css).toContain('--tc-gradient-from:')
       expect(css).toContain('rgb(255 62 84 / 0.6)')
       expect(css).not.toContain('[#FF3E54]')
     })
@@ -127,7 +127,7 @@ describe('Gradient Utilities', () => {
       // Guardrail — the regression fix must not break the simple form.
       const gen = new CSSGenerator(defaultConfig)
       gen.generate('from-red-500')
-      expect(gen.toCSS(false)).toContain('--cw-gradient-from: oklch(')
+      expect(gen.toCSS(false)).toContain('--tc-gradient-from: oklch(')
     })
   })
 })
@@ -150,23 +150,23 @@ describe('bg-linear (Tailwind v4 naming)', () => {
       ['l', 'to left'],
       ['tl', 'to top left'],
     ] as const) {
-      const expected = `linear-gradient(${direction}, var(--cw-gradient-stops))`
+      const expected = `linear-gradient(${direction}, var(--tc-gradient-stops))`
       expect(css(`bg-linear-to-${suffix}`)).toContain(expected)
       expect(css(`bg-gradient-to-${suffix}`)).toContain(expected)
     }
   })
 
   it('supports angles, including negative and arbitrary ones', () => {
-    expect(css('bg-linear-45')).toContain('linear-gradient(45deg, var(--cw-gradient-stops))')
-    expect(css('-bg-linear-45')).toContain('linear-gradient(-45deg, var(--cw-gradient-stops))')
-    expect(css('bg-linear-[0.25turn]')).toContain('linear-gradient(0.25turn, var(--cw-gradient-stops))')
+    expect(css('bg-linear-45')).toContain('linear-gradient(45deg, var(--tc-gradient-stops))')
+    expect(css('-bg-linear-45')).toContain('linear-gradient(-45deg, var(--tc-gradient-stops))')
+    expect(css('bg-linear-[0.25turn]')).toContain('linear-gradient(0.25turn, var(--tc-gradient-stops))')
   })
 
   it('composes with the gradient stop utilities', () => {
     const out = css('bg-linear-to-r', 'from-blue-500', 'to-green-500')
-    expect(out).toContain('linear-gradient(to right, var(--cw-gradient-stops))')
-    expect(out).toContain('--cw-gradient-from:')
-    expect(out).toContain('--cw-gradient-to:')
+    expect(out).toContain('linear-gradient(to right, var(--tc-gradient-stops))')
+    expect(out).toContain('--tc-gradient-from:')
+    expect(out).toContain('--tc-gradient-to:')
   })
 
   it('rejects unknown directions and leaves other bg-* utilities alone', () => {
@@ -179,6 +179,6 @@ describe('bg-linear (Tailwind v4 naming)', () => {
   it('works under variants', () => {
     const out = css('md:bg-linear-to-r')
     expect(out).toContain('@media (min-width: 768px)')
-    expect(out).toContain('linear-gradient(to right, var(--cw-gradient-stops))')
+    expect(out).toContain('linear-gradient(to right, var(--tc-gradient-stops))')
   })
 })

@@ -374,12 +374,12 @@ const config = {
 ```html
 
 <!-- Use shortcut with compile class -->
-<button class=":cw: btn-primary">
+<button class=":tc: btn-primary">
   Click Me
 </button>
 
 <!-- After compilation -->
-<button class="cw-abc123">
+<button class="tc-abc123">
   Click Me
 </button>
 

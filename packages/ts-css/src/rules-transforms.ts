@@ -93,9 +93,9 @@ const ANIMATION_TIMING_VALUES: Record<string, string> = {
  * `transform-gpu` used to be dropped entirely by the browser instead of
  * establishing the containing block / stacking context they exist for.
  */
-const TRANSFORM_FUNCTIONS = 'rotate(var(--cw-rotate, 0deg)) skewX(var(--cw-skew-x, 0deg)) skewY(var(--cw-skew-y, 0deg)) scaleX(var(--cw-scale-x, 1)) scaleY(var(--cw-scale-y, 1))'
-export const TRANSFORM_2D: string = `translate(var(--cw-translate-x, 0), var(--cw-translate-y, 0)) ${TRANSFORM_FUNCTIONS}`
-export const TRANSFORM_3D: string = `translate3d(var(--cw-translate-x, 0), var(--cw-translate-y, 0), 0) ${TRANSFORM_FUNCTIONS}`
+const TRANSFORM_FUNCTIONS = 'rotate(var(--tc-rotate, 0deg)) skewX(var(--tc-skew-x, 0deg)) skewY(var(--tc-skew-y, 0deg)) scaleX(var(--tc-scale-x, 1)) scaleY(var(--tc-scale-y, 1))'
+export const TRANSFORM_2D: string = `translate(var(--tc-translate-x, 0), var(--tc-translate-y, 0)) ${TRANSFORM_FUNCTIONS}`
+export const TRANSFORM_3D: string = `translate3d(var(--tc-translate-x, 0), var(--tc-translate-y, 0), 0) ${TRANSFORM_FUNCTIONS}`
 
 const TRANSFORM_VALUES: Record<string, string> = {
   'transform': TRANSFORM_2D,

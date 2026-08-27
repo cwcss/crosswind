@@ -3,23 +3,23 @@ import { extractAttributifyClasses, extractClasses } from '../src/parser'
 
 describe('Attributify Mode', () => {
   describe('extractAttributifyClasses', () => {
-    describe('with cw- prefix (default)', () => {
+    describe('with tc- prefix (default)', () => {
       it('should extract prefixed boolean utility attributes', () => {
-        const html = '<div cw-flex cw-items-center></div>'
+        const html = '<div tc-flex tc-items-center></div>'
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('flex')).toBe(true)
         expect(result.has('items-center')).toBe(true)
       })
 
       it('should extract prefixed value attributes', () => {
-        const html = '<div cw-bg="blue-500" cw-text="white"></div>'
+        const html = '<div tc-bg="blue-500" tc-text="white"></div>'
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('bg-blue-500')).toBe(true)
         expect(result.has('text-white')).toBe(true)
       })
 
       it('should extract multiple prefixed attributes', () => {
-        const html = '<div cw-flex cw-grid cw-block></div>'
+        const html = '<div tc-flex tc-grid tc-block></div>'
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('flex')).toBe(true)
         expect(result.has('grid')).toBe(true)
@@ -27,7 +27,7 @@ describe('Attributify Mode', () => {
       })
 
       it('should extract prefixed padding and margin attributes', () => {
-        const html = '<div cw-p="4" cw-m="2" cw-px="8" cw-py="4"></div>'
+        const html = '<div tc-p="4" tc-m="2" tc-px="8" tc-py="4"></div>'
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('p-4')).toBe(true)
         expect(result.has('m-2')).toBe(true)
@@ -36,14 +36,14 @@ describe('Attributify Mode', () => {
       })
 
       it('should extract prefixed width and height attributes', () => {
-        const html = '<div cw-w="full" cw-h="screen"></div>'
+        const html = '<div tc-w="full" tc-h="screen"></div>'
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('w-full')).toBe(true)
         expect(result.has('h-screen')).toBe(true)
       })
 
       it('should extract multiple values from single attribute', () => {
-        const html = '<div cw-p="4 8"></div>'
+        const html = '<div tc-p="4 8"></div>'
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('p-4')).toBe(true)
         expect(result.has('p-8')).toBe(true)
@@ -73,7 +73,7 @@ describe('Attributify Mode', () => {
       })
 
       it('should not extract wrong prefix', () => {
-        const html = '<div cw-flex y-bg="blue-500"></div>'
+        const html = '<div tc-flex y-bg="blue-500"></div>'
         const result = extractAttributifyClasses(html, { enabled: true, prefix: 'x-' })
         expect(result.has('flex')).toBe(false)
         expect(result.has('bg-blue-500')).toBe(false)
@@ -107,13 +107,13 @@ describe('Attributify Mode', () => {
 
     describe('disabled mode', () => {
       it('should not extract when disabled', () => {
-        const html = '<div cw-flex cw-items-center></div>'
+        const html = '<div tc-flex tc-items-center></div>'
         const result = extractAttributifyClasses(html, { enabled: false })
         expect(result.size).toBe(0)
       })
 
       it('should not extract with undefined config', () => {
-        const html = '<div cw-flex cw-items-center></div>'
+        const html = '<div tc-flex tc-items-center></div>'
         const result = extractAttributifyClasses(html, undefined)
         expect(result.size).toBe(0)
       })
@@ -157,7 +157,7 @@ describe('Attributify Mode', () => {
       })
 
       it('should use custom ignore list', () => {
-        const html = '<div custom="value" cw-flex></div>'
+        const html = '<div custom="value" tc-flex></div>'
         const result = extractAttributifyClasses(html, {
           enabled: true,
           ignoreAttributes: ['custom'],
@@ -170,9 +170,9 @@ describe('Attributify Mode', () => {
     describe('complex scenarios', () => {
       it('should extract from multiple elements', () => {
         const html = `
-          <div cw-flex cw-p="4">
-            <span cw-text="white" cw-font="bold"></span>
-            <p cw-bg="gray-100"></p>
+          <div tc-flex tc-p="4">
+            <span tc-text="white" tc-font="bold"></span>
+            <p tc-bg="gray-100"></p>
           </div>
         `
         const result = extractAttributifyClasses(html, { enabled: true })
@@ -184,14 +184,14 @@ describe('Attributify Mode', () => {
       })
 
       it('should handle self-closing tags', () => {
-        const html = '<input cw-w="full" cw-p="2" />'
+        const html = '<input tc-w="full" tc-p="2" />'
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('w-full')).toBe(true)
         expect(result.has('p-2')).toBe(true)
       })
 
       it('should handle mixed prefixed and standard attributes', () => {
-        const html = '<div class="container" id="main" cw-flex cw-bg="blue-500"></div>'
+        const html = '<div class="container" id="main" tc-flex tc-bg="blue-500"></div>'
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('flex')).toBe(true)
         expect(result.has('bg-blue-500')).toBe(true)
@@ -200,7 +200,7 @@ describe('Attributify Mode', () => {
       })
 
       it('should handle compound utility names', () => {
-        const html = '<div cw-justify-center cw-items-start cw-gap="4"></div>'
+        const html = '<div tc-justify-center tc-items-start tc-gap="4"></div>'
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('justify-center')).toBe(true)
         expect(result.has('items-start')).toBe(true)
@@ -208,7 +208,7 @@ describe('Attributify Mode', () => {
       })
 
       it('should handle color values', () => {
-        const html = '<div cw-bg="blue-500" cw-text="gray-700" cw-border="red-300"></div>'
+        const html = '<div tc-bg="blue-500" tc-text="gray-700" tc-border="red-300"></div>'
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('bg-blue-500')).toBe(true)
         expect(result.has('text-gray-700')).toBe(true)
@@ -216,7 +216,7 @@ describe('Attributify Mode', () => {
       })
 
       it('should handle spacing values', () => {
-        const html = '<div cw-m="4" cw-p="8" cw-gap="2"></div>'
+        const html = '<div tc-m="4" tc-p="8" tc-gap="2"></div>'
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('m-4')).toBe(true)
         expect(result.has('p-8')).toBe(true)
@@ -226,21 +226,21 @@ describe('Attributify Mode', () => {
 
     describe('edge cases', () => {
       it('should handle empty attribute values', () => {
-        const html = '<div cw-flex="" cw-grid=""></div>'
+        const html = '<div tc-flex="" tc-grid=""></div>'
         const result = extractAttributifyClasses(html, { enabled: true })
         // Empty values should not create invalid classes
         expect(result.has('flex-')).toBe(false)
       })
 
       it('should handle attributes with special characters in values', () => {
-        const html = '<div cw-w="1/2" cw-h="3/4"></div>'
+        const html = '<div tc-w="1/2" tc-h="3/4"></div>'
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('w-1/2')).toBe(true)
         expect(result.has('h-3/4')).toBe(true)
       })
 
       it('should handle single quotes', () => {
-        const html = `<div cw-bg='blue-500' cw-text='white'></div>`
+        const html = `<div tc-bg='blue-500' tc-text='white'></div>`
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('bg-blue-500')).toBe(true)
         expect(result.has('text-white')).toBe(true)
@@ -248,9 +248,9 @@ describe('Attributify Mode', () => {
 
       it('should handle newlines in HTML', () => {
         const html = `<div
-          cw-flex
-          cw-items-center
-          cw-bg="blue-500"
+          tc-flex
+          tc-items-center
+          tc-bg="blue-500"
         ></div>`
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('flex')).toBe(true)
@@ -259,7 +259,7 @@ describe('Attributify Mode', () => {
       })
 
       it('should handle tabs in HTML', () => {
-        const html = '<div\tcw-flex\tcw-items-center\tcw-bg="blue-500"></div>'
+        const html = '<div\ttc-flex\ttc-items-center\ttc-bg="blue-500"></div>'
         const result = extractAttributifyClasses(html, { enabled: true })
         expect(result.has('flex')).toBe(true)
         expect(result.has('items-center')).toBe(true)
@@ -270,7 +270,7 @@ describe('Attributify Mode', () => {
 
   describe('extractClasses with attributify', () => {
     it('should extract both class and attributify utilities', () => {
-      const html = '<div class="flex p-4" cw-bg="blue-500" cw-items-center></div>'
+      const html = '<div class="flex p-4" tc-bg="blue-500" tc-items-center></div>'
       const result = extractClasses(html, {
         attributify: { enabled: true },
       })
@@ -284,12 +284,12 @@ describe('Attributify Mode', () => {
 
     it('should work with complex HTML', () => {
       const html = `
-        <div class="container mx-auto" cw-p="4" cw-bg="gray-100">
-          <header cw-flex cw-items-center cw-justify-between cw-p="2">
+        <div class="container mx-auto" tc-p="4" tc-bg="gray-100">
+          <header tc-flex tc-items-center tc-justify-between tc-p="2">
             <h1 class="text-2xl font-bold">Title</h1>
-            <nav cw-flex cw-gap="4">
-              <a href="/" cw-text="blue-500">Home</a>
-              <a href="/about" cw-text="gray-700">About</a>
+            <nav tc-flex tc-gap="4">
+              <a href="/" tc-text="blue-500">Home</a>
+              <a href="/about" tc-text="gray-700">About</a>
             </nav>
           </header>
         </div>
@@ -317,7 +317,7 @@ describe('Attributify Mode', () => {
     })
 
     it('should not extract attributify when disabled', () => {
-      const html = '<div cw-flex cw-bg="blue-500"></div>'
+      const html = '<div tc-flex tc-bg="blue-500"></div>'
       const result = extractClasses(html)
       expect(result.has('flex')).toBe(false)
       expect(result.has('bg-blue-500')).toBe(false)
@@ -334,7 +334,7 @@ describe('Attributify Mode', () => {
     })
 
     it('should work in JSX/TSX files', () => {
-      const jsx = '<Button className="btn" cw-px="4" cw-py="2" cw-bg="blue-500" />'
+      const jsx = '<Button className="btn" tc-px="4" tc-py="2" tc-bg="blue-500" />'
       const result = extractClasses(jsx, {
         attributify: { enabled: true },
       })
@@ -345,7 +345,7 @@ describe('Attributify Mode', () => {
     })
 
     it('should work with template literals', () => {
-      const jsx = '<div className={`container ${active && "active"}`} cw-flex cw-p="4"></div>'
+      const jsx = '<div className={`container ${active && "active"}`} tc-flex tc-p="4"></div>'
       const result = extractClasses(jsx, {
         attributify: { enabled: true },
       })
@@ -358,7 +358,7 @@ describe('Attributify Mode', () => {
   describe('attributify + bracket syntax combined', () => {
     it('should support both features together', () => {
       const html = `
-        <div class="flex[col jc-center] bg:black" cw-p="4" cw-items-center>
+        <div class="flex[col jc-center] bg:black" tc-p="4" tc-items-center>
           <span class="text[white 2rem]">Content</span>
         </div>
       `
@@ -382,9 +382,9 @@ describe('Attributify Mode', () => {
     it('should handle complex combined usage', () => {
       const html = `
         <main class="reset:meyer">
-          <div class="flex[col jc-center ai-center]" cw-bg="slate-900" cw-w="full" cw-h="screen">
-            <h1 class="text[4rem 700]" cw-text="white">Hello Crosswind!</h1>
-            <p class="text[lg]" cw-text="gray-400" cw-mt="4">Welcome to the future of CSS</p>
+          <div class="flex[col jc-center ai-center]" tc-bg="slate-900" tc-w="full" tc-h="screen">
+            <h1 class="text[4rem 700]" tc-text="white">Hello Crosswind!</h1>
+            <p class="text[lg]" tc-text="gray-400" tc-mt="4">Welcome to the future of CSS</p>
           </div>
         </main>
       `
@@ -414,67 +414,67 @@ describe('Attributify Mode', () => {
 
   describe('state variants in attributify', () => {
     it('should extract hover:bg attribute', () => {
-      const html = '<div cw-hover:bg="blue-600"></div>'
+      const html = '<div tc-hover:bg="blue-600"></div>'
       const result = extractAttributifyClasses(html, { enabled: true })
       expect(result.has('hover:bg-blue-600')).toBe(true)
     })
 
     it('should extract dark:text attribute', () => {
-      const html = '<div cw-dark:text="white"></div>'
+      const html = '<div tc-dark:text="white"></div>'
       const result = extractAttributifyClasses(html, { enabled: true })
       expect(result.has('dark:text-white')).toBe(true)
     })
 
     it('should extract focus:ring attribute', () => {
-      const html = '<div cw-focus:ring="2"></div>'
+      const html = '<div tc-focus:ring="2"></div>'
       const result = extractAttributifyClasses(html, { enabled: true })
       expect(result.has('focus:ring-2')).toBe(true)
     })
 
     it('should extract sm:flex attribute', () => {
-      const html = '<div cw-sm:flex></div>'
+      const html = '<div tc-sm:flex></div>'
       const result = extractAttributifyClasses(html, { enabled: true })
       expect(result.has('sm:flex')).toBe(true)
     })
 
     it('should extract md:grid attribute', () => {
-      const html = '<div cw-md:grid></div>'
+      const html = '<div tc-md:grid></div>'
       const result = extractAttributifyClasses(html, { enabled: true })
       expect(result.has('md:grid')).toBe(true)
     })
 
     it('should extract dark:hover:bg attribute (multiple variants)', () => {
-      const html = '<div cw-dark:hover:bg="gray-800"></div>'
+      const html = '<div tc-dark:hover:bg="gray-800"></div>'
       const result = extractAttributifyClasses(html, { enabled: true })
       expect(result.has('dark:hover:bg-gray-800')).toBe(true)
     })
 
     it('should extract focus-visible:outline attribute', () => {
-      const html = '<div cw-focus-visible:outline="none"></div>'
+      const html = '<div tc-focus-visible:outline="none"></div>'
       const result = extractAttributifyClasses(html, { enabled: true })
       expect(result.has('focus-visible:outline-none')).toBe(true)
     })
 
     it('should extract active:scale attribute', () => {
-      const html = '<div cw-active:scale="95"></div>'
+      const html = '<div tc-active:scale="95"></div>'
       const result = extractAttributifyClasses(html, { enabled: true })
       expect(result.has('active:scale-95')).toBe(true)
     })
 
     it('should extract disabled:opacity attribute', () => {
-      const html = '<div cw-disabled:opacity="50"></div>'
+      const html = '<div tc-disabled:opacity="50"></div>'
       const result = extractAttributifyClasses(html, { enabled: true })
       expect(result.has('disabled:opacity-50')).toBe(true)
     })
 
     it('should extract group-hover:text attribute', () => {
-      const html = '<div cw-group-hover:text="blue-500"></div>'
+      const html = '<div tc-group-hover:text="blue-500"></div>'
       const result = extractAttributifyClasses(html, { enabled: true })
       expect(result.has('group-hover:text-blue-500')).toBe(true)
     })
 
     it('should extract multiple variant attributes from same element', () => {
-      const html = '<div cw-bg="gray-100" cw-hover:bg="gray-200" cw-dark:bg="gray-800" cw-dark:hover:bg="gray-700"></div>'
+      const html = '<div tc-bg="gray-100" tc-hover:bg="gray-200" tc-dark:bg="gray-800" tc-dark:hover:bg="gray-700"></div>'
       const result = extractAttributifyClasses(html, { enabled: true })
       expect(result.has('bg-gray-100')).toBe(true)
       expect(result.has('hover:bg-gray-200')).toBe(true)
@@ -483,14 +483,14 @@ describe('Attributify Mode', () => {
     })
 
     it('should extract boolean variant attributes', () => {
-      const html = '<div cw-hover:underline cw-focus:outline-none></div>'
+      const html = '<div tc-hover:underline tc-focus:outline-none></div>'
       const result = extractAttributifyClasses(html, { enabled: true })
       expect(result.has('hover:underline')).toBe(true)
       expect(result.has('focus:outline-none')).toBe(true)
     })
 
     it('should work with extractClasses', () => {
-      const html = '<div class="p-4" cw-hover:bg="blue-500" cw-dark:text="white"></div>'
+      const html = '<div class="p-4" tc-hover:bg="blue-500" tc-dark:text="white"></div>'
       const result = extractClasses(html, {
         attributify: { enabled: true },
       })
@@ -512,20 +512,20 @@ describe('Attributify Mode', () => {
       const html = `
         <button
           class="flex items-center"
-          cw-px="4"
-          cw-py="2"
-          cw-bg="blue-500"
-          cw-hover:bg="blue-600"
-          cw-active:bg="blue-700"
-          cw-text="white"
-          cw-rounded="lg"
-          cw-font="semibold"
-          cw-transition="colors"
-          cw-duration="150"
-          cw-focus:ring="2"
-          cw-focus:ring-offset="2"
-          cw-disabled:opacity="50"
-          cw-disabled:cursor="not-allowed"
+          tc-px="4"
+          tc-py="2"
+          tc-bg="blue-500"
+          tc-hover:bg="blue-600"
+          tc-active:bg="blue-700"
+          tc-text="white"
+          tc-rounded="lg"
+          tc-font="semibold"
+          tc-transition="colors"
+          tc-duration="150"
+          tc-focus:ring="2"
+          tc-focus:ring-offset="2"
+          tc-disabled:opacity="50"
+          tc-disabled:cursor="not-allowed"
         >
           Click me
         </button>
@@ -555,17 +555,17 @@ describe('Attributify Mode', () => {
     it('should handle a dark mode card component', () => {
       const html = `
         <div
-          cw-bg="white"
-          cw-dark:bg="gray-800"
-          cw-p="6"
-          cw-rounded="xl"
-          cw-shadow="lg"
-          cw-dark:shadow="none"
-          cw-border="gray-200"
-          cw-dark:border="gray-700"
+          tc-bg="white"
+          tc-dark:bg="gray-800"
+          tc-p="6"
+          tc-rounded="xl"
+          tc-shadow="lg"
+          tc-dark:shadow="none"
+          tc-border="gray-200"
+          tc-dark:border="gray-700"
         >
-          <h2 cw-text="gray-900" cw-dark:text="white" cw-font="bold" cw-text="xl">Card Title</h2>
-          <p cw-text="gray-600" cw-dark:text="gray-300" cw-mt="2">Card content goes here.</p>
+          <h2 tc-text="gray-900" tc-dark:text="white" tc-font="bold" tc-text="xl">Card Title</h2>
+          <p tc-text="gray-600" tc-dark:text="gray-300" tc-mt="2">Card content goes here.</p>
         </div>
       `
       const result = extractClasses(html, {

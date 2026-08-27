@@ -243,21 +243,21 @@ describe('visual utilities value validation', () => {
   it('keeps named scales, numbers, and arbitrary values', () => {
     // Each filter function is named so several can compose on one element;
     // the shared `filter` declaration lists them all.
-    expect(css('blur-sm')).toContain('--cw-blur: blur(4px);')
-    expect(css('blur-12')).toContain('--cw-blur: blur(12px);')
-    expect(css('blur-[5em]')).toContain('--cw-blur: blur(5em);')
-    expect(css('brightness-150')).toContain('--cw-brightness: brightness(1.5);')
-    expect(css('hue-rotate-90')).toContain('--cw-hue-rotate: hue-rotate(90deg);')
-    expect(css('backdrop-blur-md')).toContain('--cw-backdrop-blur: blur(12px);')
-    expect(css('backdrop-saturate-200')).toContain('--cw-backdrop-saturate: saturate(2);')
+    expect(css('blur-sm')).toContain('--tc-blur: blur(4px);')
+    expect(css('blur-12')).toContain('--tc-blur: blur(12px);')
+    expect(css('blur-[5em]')).toContain('--tc-blur: blur(5em);')
+    expect(css('brightness-150')).toContain('--tc-brightness: brightness(1.5);')
+    expect(css('hue-rotate-90')).toContain('--tc-hue-rotate: hue-rotate(90deg);')
+    expect(css('backdrop-blur-md')).toContain('--tc-backdrop-blur: blur(12px);')
+    expect(css('backdrop-saturate-200')).toContain('--tc-backdrop-saturate: saturate(2);')
     expect(css('columns-3')).toContain('columns: 3;')
     expect(css('columns-13')).toContain('columns: 13;')
     expect(css('aspect-video')).toContain('aspect-ratio: 16 / 9;')
     expect(css('aspect-16/9')).toContain('aspect-ratio: 16 / 9;')
     expect(css('aspect-[4/3]')).toContain('aspect-ratio: 4/3;')
     expect(css('self-center')).toContain('align-self: center;')
-    expect(css('ring-2')).toContain('calc(2px + var(--cw-ring-offset-width, 0px))')
-    expect(css('ring-[6px]')).toContain('calc(6px + var(--cw-ring-offset-width, 0px))')
+    expect(css('ring-2')).toContain('calc(2px + var(--tc-ring-offset-width, 0px))')
+    expect(css('ring-[6px]')).toContain('calc(6px + var(--tc-ring-offset-width, 0px))')
     expect(css('border-spacing-2')).toContain('border-spacing: 0.5rem 0.5rem;')
   })
 })
@@ -273,18 +273,18 @@ describe('between-element utilities value validation', () => {
   })
 
   it('keeps scale values, numbers, negatives, reverse, and arbitrary', () => {
-    expect(css('space-x-2')).toContain('calc(0.5rem * var(--cw-space-x-reverse))')
+    expect(css('space-x-2')).toContain('calc(0.5rem * var(--tc-space-x-reverse))')
     expect(css('space-y-4.5')).toContain('calc(1.125rem * ')
     expect(css('-space-x-2')).toContain('calc(-0.5rem * ')
-    expect(css('space-x-reverse')).toContain('--cw-space-x-reverse: 1;')
+    expect(css('space-x-reverse')).toContain('--tc-space-x-reverse: 1;')
     expect(css('space-x-[3ch]')).toContain('calc(3ch * ')
     expect(css('divide-y-2')).toContain('calc(2px * ')
     expect(css('divide-x-3')).toContain('calc(3px * ')
     expect(css('divide-x-[1.5px]')).toContain('calc(1.5px * ')
     expect(css('divide-y')).toContain('calc(1px * ')
-    expect(css('ring-opacity-50')).toContain('--cw-ring-opacity: 0.5;')
-    expect(css('ring-opacity-33')).toContain('--cw-ring-opacity: 0.33;')
-    expect(css('border-opacity-75')).toContain('--cw-border-opacity: 0.75;')
+    expect(css('ring-opacity-50')).toContain('--tc-ring-opacity: 0.5;')
+    expect(css('ring-opacity-33')).toContain('--tc-ring-opacity: 0.33;')
+    expect(css('border-opacity-75')).toContain('--tc-border-opacity: 0.75;')
   })
 })
 
@@ -296,11 +296,11 @@ describe('gradient stop value validation', () => {
   })
 
   it('keeps theme colors, opacity modifiers, and arbitrary values', () => {
-    expect(css('from-blue-500')).toContain('--cw-gradient-from: oklch(62.3% 0.214 259.815);')
+    expect(css('from-blue-500')).toContain('--tc-gradient-from: oklch(62.3% 0.214 259.815);')
     expect(css('from-blue-500/50')).toContain('/ 0.5)')
     expect(css('via-transparent')).toContain('transparent')
-    expect(css('to-[#ff3e54]')).toContain('--cw-gradient-to: #ff3e54;')
-    expect(css('from-[var(--brand)]')).toContain('--cw-gradient-from: var(--brand);')
+    expect(css('to-[#ff3e54]')).toContain('--tc-gradient-to: #ff3e54;')
+    expect(css('from-[var(--brand)]')).toContain('--tc-gradient-from: var(--brand);')
   })
 })
 
@@ -456,11 +456,11 @@ describe('ring composition', () => {
     gen.generateBatch(['ring-2', 'ring-inset', 'ring-offset-2', 'shadow-md'])
     const out = gen.toCSS(false)
     // ring sets the ring var and composes with the shadow slot
-    expect(out).toContain('--cw-ring-shadow: var(--cw-ring-inset,) 0 0 0 calc(2px + var(--cw-ring-offset-width, 0px))')
-    expect(out).toContain('box-shadow: var(--cw-ring-offset-shadow), var(--cw-ring-shadow), var(--cw-shadow, 0 0 #0000);')
+    expect(out).toContain('--tc-ring-shadow: var(--tc-ring-inset,) 0 0 0 calc(2px + var(--tc-ring-offset-width, 0px))')
+    expect(out).toContain('box-shadow: var(--tc-ring-offset-shadow), var(--tc-ring-shadow), var(--tc-shadow, 0 0 #0000);')
     // ring-inset and ring-offset feed the same variables
-    expect(out).toContain('--cw-ring-inset: inset;')
-    expect(out).toContain('--cw-ring-offset-width: 2px;')
+    expect(out).toContain('--tc-ring-inset: inset;')
+    expect(out).toContain('--tc-ring-offset-width: 2px;')
   })
 })
 
@@ -472,8 +472,8 @@ describe('Tailwind v4 radius and shadow scales', () => {
   })
 
   it('supports the full v4 shadow scale', () => {
-    expect(css('shadow-2xs')).toContain('--cw-shadow: 0 1px rgb(0 0 0 / 0.05);')
-    expect(css('shadow-xs')).toContain('--cw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);')
-    expect(css('shadow-sm')).toContain('--cw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);')
+    expect(css('shadow-2xs')).toContain('--tc-shadow: 0 1px rgb(0 0 0 / 0.05);')
+    expect(css('shadow-xs')).toContain('--tc-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);')
+    expect(css('shadow-sm')).toContain('--tc-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);')
   })
 })

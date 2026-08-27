@@ -18,8 +18,8 @@ describe('CSS containment utilities', () => {
   it('generates each combinable keyword', () => {
     for (const keyword of ['size', 'inline-size', 'layout', 'paint', 'style']) {
       const out = css(`contain-${keyword}`)
-      expect(out).toContain(`--cw-contain-${keyword}: ${keyword};`)
-      expect(out).toContain('contain: var(--cw-contain-size, )')
+      expect(out).toContain(`--tc-contain-${keyword}: ${keyword};`)
+      expect(out).toContain('contain: var(--tc-contain-size, )')
     }
   })
 
@@ -27,8 +27,8 @@ describe('CSS containment utilities', () => {
     // Both utilities land on the same element in real markup, so each must
     // contribute its own keyword to a shared `contain` declaration.
     const out = css('contain-layout', 'contain-paint')
-    expect(out).toContain('--cw-contain-layout: layout;')
-    expect(out).toContain('--cw-contain-paint: paint;')
+    expect(out).toContain('--tc-contain-layout: layout;')
+    expect(out).toContain('--tc-contain-paint: paint;')
   })
 
   it('accepts arbitrary values', () => {
@@ -43,6 +43,6 @@ describe('CSS containment utilities', () => {
   it('works under variants', () => {
     const out = css('md:contain-layout')
     expect(out).toContain('@media (min-width: 768px)')
-    expect(out).toContain('--cw-contain-layout: layout;')
+    expect(out).toContain('--tc-contain-layout: layout;')
   })
 })

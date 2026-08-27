@@ -398,9 +398,9 @@ describe('Advanced Features', () => {
       gen.generate('snap-y')
       gen.generate('snap-both')
       const css = gen.toCSS(false)
-      expect(css).toContain('scroll-snap-type: x var(--cw-scroll-snap-strictness, proximity)')
-      expect(css).toContain('scroll-snap-type: y var(--cw-scroll-snap-strictness, proximity)')
-      expect(css).toContain('scroll-snap-type: both var(--cw-scroll-snap-strictness, proximity)')
+      expect(css).toContain('scroll-snap-type: x var(--tc-scroll-snap-strictness, proximity)')
+      expect(css).toContain('scroll-snap-type: y var(--tc-scroll-snap-strictness, proximity)')
+      expect(css).toContain('scroll-snap-type: both var(--tc-scroll-snap-strictness, proximity)')
     })
 
     it('should handle scroll-snap-align', () => {
@@ -430,7 +430,7 @@ describe('Advanced Features', () => {
       gen.generate('space-x-8')
       gen.generate('space-x-reverse')
       const css = gen.toCSS(false)
-      expect(css).toContain('--cw-space-x-reverse')
+      expect(css).toContain('--tc-space-x-reverse')
       expect(css).toContain('margin-right')
       expect(css).toContain('margin-left')
     })
@@ -442,7 +442,7 @@ describe('Advanced Features', () => {
       gen.generate('space-y-8')
       gen.generate('space-y-reverse')
       const css = gen.toCSS(false)
-      expect(css).toContain('--cw-space-y-reverse')
+      expect(css).toContain('--tc-space-y-reverse')
       expect(css).toContain('margin-top')
       expect(css).toContain('margin-bottom')
     })
@@ -802,7 +802,7 @@ describe('Advanced Features', () => {
       gen.generate('ring-offset-2')
       gen.generate('ring-offset-4')
       const css = gen.toCSS(false)
-      expect(css).toContain('--cw-ring-offset-width')
+      expect(css).toContain('--tc-ring-offset-width')
       expect(css).toContain('0px')
       expect(css).toContain('1px')
       expect(css).toContain('2px')
@@ -814,7 +814,7 @@ describe('Advanced Features', () => {
       gen.generate('ring-offset-black')
       gen.generate('ring-offset-white')
       const css = gen.toCSS(false)
-      expect(css).toContain('--cw-ring-offset-color')
+      expect(css).toContain('--tc-ring-offset-color')
       expect(css).toContain('#000')
       expect(css).toContain('#fff')
     })
@@ -825,7 +825,7 @@ describe('Advanced Features', () => {
       gen.generate('ring-offset-red-500')
       gen.generate('ring-offset-gray-300')
       const css = gen.toCSS(false)
-      expect(css).toContain('--cw-ring-offset-color')
+      expect(css).toContain('--tc-ring-offset-color')
       expect(css).toContain('oklch(62.3% 0.214 259.815)') // blue-500
       expect(css).toContain('oklch(63.7% 0.237 25.331)') // red-500
       expect(css).toContain('oklch(87.2% 0.01 258.338)') // gray-300
@@ -836,7 +836,7 @@ describe('Advanced Features', () => {
       gen.generate('ring-offset-sky-400')
       gen.generate('ring-offset-cyan-600')
       const css = gen.toCSS(false)
-      expect(css).toContain('--cw-ring-offset-color')
+      expect(css).toContain('--tc-ring-offset-color')
       expect(css).toContain('oklch(74.6% 0.16 232.661)') // sky-400
       expect(css).toContain('oklch(60.9% 0.126 221.723)') // cyan-600
     })
@@ -867,9 +867,9 @@ describe('Advanced Features', () => {
       gen.generate('via-gray-300')
       gen.generate('to-red-500')
       const css = gen.toCSS(false)
-      expect(css).toContain('--cw-gradient-from')
-      expect(css).toContain('--cw-gradient-to')
-      expect(css).toContain('--cw-gradient-stops')
+      expect(css).toContain('--tc-gradient-from')
+      expect(css).toContain('--tc-gradient-to')
+      expect(css).toContain('--tc-gradient-stops')
       expect(css).toContain('oklch(62.3% 0.214 259.815)') // blue-500
       expect(css).toContain('oklch(63.7% 0.237 25.331)') // red-500
     })
@@ -879,8 +879,8 @@ describe('Advanced Features', () => {
       gen.generate('via-sky-400')
       gen.generate('to-cyan-600')
       const css = gen.toCSS(false)
-      expect(css).toContain('--cw-gradient-to')
-      expect(css).toContain('--cw-gradient-stops')
+      expect(css).toContain('--tc-gradient-to')
+      expect(css).toContain('--tc-gradient-stops')
       expect(css).toContain('oklch(74.6% 0.16 232.661)') // sky-400
       expect(css).toContain('oklch(60.9% 0.126 221.723)') // cyan-600
     })
@@ -892,8 +892,8 @@ describe('Advanced Features', () => {
       gen.generate('hover:via-blue-500')
       const css = gen.toCSS(false)
       expect(css).toContain(':hover')
-      expect(css).toContain('--cw-gradient-from')
-      expect(css).toContain('--cw-gradient-to')
+      expect(css).toContain('--tc-gradient-from')
+      expect(css).toContain('--tc-gradient-to')
       expect(css).toContain('oklch(68.5% 0.169 237.323)') // sky-500
       expect(css).toContain('oklch(71.5% 0.143 215.221)') // cyan-500
     })
@@ -904,9 +904,9 @@ describe('Advanced Features', () => {
       gen.generate('from-sky-500')
       gen.generate('to-cyan-500')
       const css = gen.toCSS(false)
-      expect(css).toContain('linear-gradient(to right, var(--cw-gradient-stops))')
-      expect(css).toContain('--cw-gradient-from: oklch(68.5% 0.169 237.323)') // sky-500
-      expect(css).toContain('--cw-gradient-to: oklch(71.5% 0.143 215.221)') // cyan-500
+      expect(css).toContain('linear-gradient(to right, var(--tc-gradient-stops))')
+      expect(css).toContain('--tc-gradient-from: oklch(68.5% 0.169 237.323)') // sky-500
+      expect(css).toContain('--tc-gradient-to: oklch(71.5% 0.143 215.221)') // cyan-500
     })
 
     it('should properly update gradient stops when using to-{color}', () => {
@@ -914,13 +914,13 @@ describe('Advanced Features', () => {
       gen.generate('from-blue-500')
       gen.generate('to-red-500')
       const css = gen.toCSS(false)
-      // Both from and to should set --cw-gradient-stops
+      // Both from and to should set --tc-gradient-stops
       const fromMatch = css.match(/\.from-blue-500\s*\{[^}]*\}/)
       const toMatch = css.match(/\.to-red-500\s*\{[^}]*\}/)
       expect(fromMatch).toBeTruthy()
       expect(toMatch).toBeTruthy()
-      expect(fromMatch![0]).toContain('--cw-gradient-stops')
-      expect(toMatch![0]).toContain('--cw-gradient-stops')
+      expect(fromMatch![0]).toContain('--tc-gradient-stops')
+      expect(toMatch![0]).toContain('--tc-gradient-stops')
     })
   })
 

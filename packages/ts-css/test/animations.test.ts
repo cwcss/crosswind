@@ -65,9 +65,9 @@ describe('Backdrop Filter Vendor Prefix', () => {
     // The prefixed property still ships; the value now composes every
     // backdrop function through custom properties so two backdrop utilities
     // on one element no longer overwrite each other.
-    expect(css).toContain('--cw-backdrop-blur: blur(4px)')
-    expect(css).toContain('-webkit-backdrop-filter: var(--cw-backdrop-blur, )')
-    expect(css).toContain('backdrop-filter: var(--cw-backdrop-blur, )')
+    expect(css).toContain('--tc-backdrop-blur: blur(4px)')
+    expect(css).toContain('-webkit-backdrop-filter: var(--tc-backdrop-blur, )')
+    expect(css).toContain('backdrop-filter: var(--tc-backdrop-blur, )')
   })
 
   it('should include -webkit-backdrop-filter for backdrop-brightness', () => {
@@ -82,8 +82,8 @@ describe('Backdrop Filter Vendor Prefix', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('backdrop-grayscale')
     const css = gen.toCSS(false)
-    expect(css).toContain('--cw-backdrop-grayscale: grayscale(100%)')
-    expect(css).toContain('-webkit-backdrop-filter: var(--cw-backdrop-blur, )')
+    expect(css).toContain('--tc-backdrop-grayscale: grayscale(100%)')
+    expect(css).toContain('-webkit-backdrop-filter: var(--tc-backdrop-blur, )')
   })
 })
 
@@ -132,7 +132,7 @@ describe('Color Opacity on All Utilities', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('ring-blue-500/50')
     const css = gen.toCSS(false)
-    expect(css).toContain('--cw-ring-color')
+    expect(css).toContain('--tc-ring-color')
     expect(css).toContain('0.5')
   })
 
@@ -148,7 +148,7 @@ describe('Color Opacity on All Utilities', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('ring-offset-blue-500/50')
     const css = gen.toCSS(false)
-    expect(css).toContain('--cw-ring-offset-color')
+    expect(css).toContain('--tc-ring-offset-color')
     expect(css).toContain('0.5')
   })
 
@@ -166,27 +166,27 @@ describe('Reverse Utilities', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('space-x-reverse')
     const css = gen.toCSS(false)
-    expect(css).toContain('--cw-space-x-reverse: 1')
+    expect(css).toContain('--tc-space-x-reverse: 1')
   })
 
   it('should generate space-y-reverse', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('space-y-reverse')
     const css = gen.toCSS(false)
-    expect(css).toContain('--cw-space-y-reverse: 1')
+    expect(css).toContain('--tc-space-y-reverse: 1')
   })
 
   it('should generate divide-x-reverse', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('divide-x-reverse')
     const css = gen.toCSS(false)
-    expect(css).toContain('--cw-divide-x-reverse: 1')
+    expect(css).toContain('--tc-divide-x-reverse: 1')
   })
 
   it('should generate divide-y-reverse', () => {
     const gen = new CSSGenerator(defaultConfig)
     gen.generate('divide-y-reverse')
     const css = gen.toCSS(false)
-    expect(css).toContain('--cw-divide-y-reverse: 1')
+    expect(css).toContain('--tc-divide-y-reverse: 1')
   })
 })

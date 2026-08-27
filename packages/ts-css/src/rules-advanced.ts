@@ -74,14 +74,14 @@ export const ringRule: UtilityRule = (parsed, config) => {
   if (parsed.utility === 'ring') {
     // Handle ring-inset
     if (parsed.value === 'inset') {
-      return { '--cw-ring-inset': 'inset' } as Record<string, string>
+      return { '--tc-ring-inset': 'inset' } as Record<string, string>
     }
 
     // Check if this is a ring color (e.g., ring-sky-500, ring-white/50)
     if (parsed.value) {
       const color = resolveColorValue(parsed.value, config, parsed.modifierArbitrary)
       if (color) {
-        return { '--cw-ring-color': color } as Record<string, string>
+        return { '--tc-ring-color': color } as Record<string, string>
       }
     }
 
@@ -112,9 +112,9 @@ export const ringRule: UtilityRule = (parsed, config) => {
     // var() without fallback that resolves to nothing invalidates the whole
     // box-shadow at computed-value time.
     return {
-      '--cw-ring-offset-shadow': 'var(--cw-ring-inset,) 0 0 0 var(--cw-ring-offset-width, 0px) var(--cw-ring-offset-color, #fff)',
-      '--cw-ring-shadow': `var(--cw-ring-inset,) 0 0 0 calc(${width} + var(--cw-ring-offset-width, 0px)) var(--cw-ring-color, rgba(59, 130, 246, 0.5))`,
-      'box-shadow': 'var(--cw-ring-offset-shadow), var(--cw-ring-shadow), var(--cw-shadow, 0 0 #0000)',
+      '--tc-ring-offset-shadow': 'var(--tc-ring-inset,) 0 0 0 var(--tc-ring-offset-width, 0px) var(--tc-ring-offset-color, #fff)',
+      '--tc-ring-shadow': `var(--tc-ring-inset,) 0 0 0 calc(${width} + var(--tc-ring-offset-width, 0px)) var(--tc-ring-color, rgba(59, 130, 246, 0.5))`,
+      'box-shadow': 'var(--tc-ring-offset-shadow), var(--tc-ring-shadow), var(--tc-shadow, 0 0 #0000)',
     } as Record<string, string>
   }
 
@@ -128,13 +128,13 @@ export const ringRule: UtilityRule = (parsed, config) => {
       8: '8px',
     }
     if (widths[parsed.value]) {
-      return { '--cw-ring-offset-width': widths[parsed.value] } as Record<string, string>
+      return { '--tc-ring-offset-width': widths[parsed.value] } as Record<string, string>
     }
 
     // Otherwise, treat as a color (e.g., ring-offset-white, ring-offset-blue-500/50)
     const color = resolveColorValue(parsed.value, config, parsed.modifierArbitrary)
     if (color) {
-      return { '--cw-ring-offset-color': color } as Record<string, string>
+      return { '--tc-ring-offset-color': color } as Record<string, string>
     }
   }
 
@@ -145,7 +145,7 @@ export const ringRule: UtilityRule = (parsed, config) => {
       30: '0.3', 40: '0.4', 50: '0.5', 60: '0.6', 70: '0.7',
       75: '0.75', 80: '0.8', 90: '0.9', 95: '0.95', 100: '1',
     }
-    return resolveOpacityToken(parsed, opacityMap, '--cw-ring-opacity')
+    return resolveOpacityToken(parsed, opacityMap, '--tc-ring-opacity')
   }
 }
 
@@ -157,7 +157,7 @@ export const borderOpacityRule: UtilityRule = (parsed) => {
       30: '0.3', 40: '0.4', 50: '0.5', 60: '0.6', 70: '0.7',
       75: '0.75', 80: '0.8', 90: '0.9', 95: '0.95', 100: '1',
     }
-    return resolveOpacityToken(parsed, opacityMap, '--cw-border-opacity')
+    return resolveOpacityToken(parsed, opacityMap, '--tc-border-opacity')
   }
 }
 
@@ -187,7 +187,7 @@ export const spaceRule: UtilityRule = (parsed, config) => {
     // space-x-reverse toggles the CSS variable
     if (parsed.value === 'reverse') {
       return {
-        properties: { '--cw-space-x-reverse': '1' } as Record<string, string>,
+        properties: { '--tc-space-x-reverse': '1' } as Record<string, string>,
         childSelector: '> :not([hidden]) ~ :not([hidden])',
       }
     }
@@ -198,9 +198,9 @@ export const spaceRule: UtilityRule = (parsed, config) => {
 
     return {
       properties: {
-        '--cw-space-x-reverse': '0',
-        'margin-right': `calc(${spacing} * var(--cw-space-x-reverse))`,
-        'margin-left': `calc(${spacing} * calc(1 - var(--cw-space-x-reverse)))`,
+        '--tc-space-x-reverse': '0',
+        'margin-right': `calc(${spacing} * var(--tc-space-x-reverse))`,
+        'margin-left': `calc(${spacing} * calc(1 - var(--tc-space-x-reverse)))`,
       } as Record<string, string>,
       childSelector: '> :not([hidden]) ~ :not([hidden])',
     }
@@ -210,7 +210,7 @@ export const spaceRule: UtilityRule = (parsed, config) => {
     // space-y-reverse toggles the CSS variable
     if (parsed.value === 'reverse') {
       return {
-        properties: { '--cw-space-y-reverse': '1' } as Record<string, string>,
+        properties: { '--tc-space-y-reverse': '1' } as Record<string, string>,
         childSelector: '> :not([hidden]) ~ :not([hidden])',
       }
     }
@@ -221,9 +221,9 @@ export const spaceRule: UtilityRule = (parsed, config) => {
 
     return {
       properties: {
-        '--cw-space-y-reverse': '0',
-        'margin-top': `calc(${spacing} * calc(1 - var(--cw-space-y-reverse)))`,
-        'margin-bottom': `calc(${spacing} * var(--cw-space-y-reverse))`,
+        '--tc-space-y-reverse': '0',
+        'margin-top': `calc(${spacing} * calc(1 - var(--tc-space-y-reverse)))`,
+        'margin-bottom': `calc(${spacing} * var(--tc-space-y-reverse))`,
       } as Record<string, string>,
       childSelector: '> :not([hidden]) ~ :not([hidden])',
     }
@@ -300,7 +300,7 @@ export const divideRule: UtilityRule = (parsed, config) => {
     // divide-x-reverse toggles the CSS variable
     if (parsed.value === 'reverse') {
       return {
-        properties: { '--cw-divide-x-reverse': '1' } as Record<string, string>,
+        properties: { '--tc-divide-x-reverse': '1' } as Record<string, string>,
         childSelector: '> :not([hidden]) ~ :not([hidden])',
       }
     }
@@ -311,9 +311,9 @@ export const divideRule: UtilityRule = (parsed, config) => {
 
     return {
       properties: {
-        '--cw-divide-x-reverse': '0',
-        'border-right-width': `calc(${width} * var(--cw-divide-x-reverse))`,
-        'border-left-width': `calc(${width} * calc(1 - var(--cw-divide-x-reverse)))`,
+        '--tc-divide-x-reverse': '0',
+        'border-right-width': `calc(${width} * var(--tc-divide-x-reverse))`,
+        'border-left-width': `calc(${width} * calc(1 - var(--tc-divide-x-reverse)))`,
       } as Record<string, string>,
       childSelector: '> :not([hidden]) ~ :not([hidden])',
     }
@@ -323,7 +323,7 @@ export const divideRule: UtilityRule = (parsed, config) => {
     // divide-y-reverse toggles the CSS variable
     if (parsed.value === 'reverse') {
       return {
-        properties: { '--cw-divide-y-reverse': '1' } as Record<string, string>,
+        properties: { '--tc-divide-y-reverse': '1' } as Record<string, string>,
         childSelector: '> :not([hidden]) ~ :not([hidden])',
       }
     }
@@ -334,9 +334,9 @@ export const divideRule: UtilityRule = (parsed, config) => {
 
     return {
       properties: {
-        '--cw-divide-y-reverse': '0',
-        'border-top-width': `calc(${width} * calc(1 - var(--cw-divide-y-reverse)))`,
-        'border-bottom-width': `calc(${width} * var(--cw-divide-y-reverse))`,
+        '--tc-divide-y-reverse': '0',
+        'border-top-width': `calc(${width} * calc(1 - var(--tc-divide-y-reverse)))`,
+        'border-bottom-width': `calc(${width} * var(--tc-divide-y-reverse))`,
       } as Record<string, string>,
       childSelector: '> :not([hidden]) ~ :not([hidden])',
     }
@@ -421,7 +421,7 @@ export const gradientStopsRule: UtilityRule = (parsed, config) => {
 
     // Arbitrary color like `[#FF3E54]` — strip the square brackets before
     // alpha handling. Without this the CSS variable picks up the raw
-    // bracketed token, producing invalid `var(--cw-gradient-from: [#...]`.
+    // bracketed token, producing invalid `var(--tc-gradient-from: [#...]`.
     if (lookup.startsWith('[') && lookup.endsWith(']')) {
       lookup = lookup.slice(1, -1)
     }
@@ -450,7 +450,7 @@ export const gradientStopsRule: UtilityRule = (parsed, config) => {
 
     // Arbitrary values and CSS color expressions pass through the alpha
     // path; unknown bare words are rejected — they previously leaked into
-    // the gradient variables (`from-foo` -> --cw-gradient-from: foo).
+    // the gradient variables (`from-foo` -> --tc-gradient-from: foo).
     if (
       parsed.arbitrary
       || lookup.startsWith('#')
@@ -467,9 +467,9 @@ export const gradientStopsRule: UtilityRule = (parsed, config) => {
     if (color === undefined)
       return undefined
     return {
-      '--cw-gradient-from': color,
-      '--cw-gradient-to': 'rgb(255 255 255 / 0)',
-      '--cw-gradient-stops': 'var(--cw-gradient-from), var(--cw-gradient-to)',
+      '--tc-gradient-from': color,
+      '--tc-gradient-to': 'rgb(255 255 255 / 0)',
+      '--tc-gradient-stops': 'var(--tc-gradient-from), var(--tc-gradient-to)',
     } as Record<string, string>
   }
 
@@ -478,8 +478,8 @@ export const gradientStopsRule: UtilityRule = (parsed, config) => {
     if (color === undefined)
       return undefined
     return {
-      '--cw-gradient-to': 'rgb(255 255 255 / 0)',
-      '--cw-gradient-stops': `var(--cw-gradient-from), ${color}, var(--cw-gradient-to)`,
+      '--tc-gradient-to': 'rgb(255 255 255 / 0)',
+      '--tc-gradient-stops': `var(--tc-gradient-from), ${color}, var(--tc-gradient-to)`,
     } as Record<string, string>
   }
 
@@ -488,8 +488,8 @@ export const gradientStopsRule: UtilityRule = (parsed, config) => {
     if (color === undefined)
       return undefined
     return {
-      '--cw-gradient-to': color,
-      '--cw-gradient-stops': 'var(--cw-gradient-from), var(--cw-gradient-to)',
+      '--tc-gradient-to': color,
+      '--tc-gradient-stops': 'var(--tc-gradient-from), var(--tc-gradient-to)',
     } as Record<string, string>
   }
 }

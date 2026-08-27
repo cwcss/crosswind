@@ -94,11 +94,11 @@ describe('scroll-snap rule fallback', () => {
     // strictness to `mandatory` instead of proximity, and emitted the invalid
     // `scroll-snap-type: mandatory` for snap-mandatory.
     expect(scrollSnapRule(parseClass('snap-x'), defaultConfig))
-      .toEqual({ 'scroll-snap-type': 'x var(--cw-scroll-snap-strictness, proximity)' })
+      .toEqual({ 'scroll-snap-type': 'x var(--tc-scroll-snap-strictness, proximity)' })
     expect(scrollSnapRule(parseClass('snap-mandatory'), defaultConfig))
-      .toEqual({ '--cw-scroll-snap-strictness': 'mandatory' })
+      .toEqual({ '--tc-scroll-snap-strictness': 'mandatory' })
     expect(scrollSnapRule(parseClass('snap-proximity'), defaultConfig))
-      .toEqual({ '--cw-scroll-snap-strictness': 'proximity' })
+      .toEqual({ '--tc-scroll-snap-strictness': 'proximity' })
     expect(scrollSnapRule(parseClass('snap-none'), defaultConfig))
       .toEqual({ 'scroll-snap-type': 'none' })
   })

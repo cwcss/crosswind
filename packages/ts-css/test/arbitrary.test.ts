@@ -720,26 +720,26 @@ describe('arbitrary box shadows', () => {
   }
 
   it('emits a full arbitrary shadow definition', () => {
-    expect(css('shadow-[0_1px_4px_rgba(0,0,0,0.12)]')).toContain('--cw-shadow: 0 1px 4px rgba(0,0,0,0.12);')
+    expect(css('shadow-[0_1px_4px_rgba(0,0,0,0.12)]')).toContain('--tc-shadow: 0 1px 4px rgba(0,0,0,0.12);')
   })
 
   it('supports inset and multi-part arbitrary shadows', () => {
-    expect(css('shadow-[inset_0_1px_0_white]')).toContain('--cw-shadow: inset 0 1px 0 white;')
+    expect(css('shadow-[inset_0_1px_0_white]')).toContain('--tc-shadow: inset 0 1px 0 white;')
   })
 
   it('routes a bare arbitrary colour to the shadow-colour rule', () => {
     const out = css('shadow-[#ff0000]')
-    expect(out).toContain('--cw-shadow-color: #ff0000;')
+    expect(out).toContain('--tc-shadow-color: #ff0000;')
     // A colour must not be emitted as the shadow itself.
-    expect(out).not.toContain('--cw-shadow: #ff0000;')
+    expect(out).not.toContain('--tc-shadow: #ff0000;')
   })
 
   it('keeps the named scale working', () => {
-    expect(css('shadow-lg')).toContain('--cw-shadow: 0 10px 15px -3px')
+    expect(css('shadow-lg')).toContain('--tc-shadow: 0 10px 15px -3px')
   })
 
   it('treats shadow-[none] as a reset', () => {
-    expect(css('shadow-[none]')).toContain('--cw-shadow: 0 0 #0000;')
+    expect(css('shadow-[none]')).toContain('--tc-shadow: 0 0 #0000;')
   })
 })
 
@@ -758,13 +758,13 @@ describe('arbitrary filter amounts', () => {
   }
 
   it('does not double the unit on arbitrary blur', () => {
-    expect(css('blur-[50px]')).toContain('--cw-blur: blur(50px);')
-    expect(css('backdrop-blur-[50px]')).toContain('--cw-backdrop-blur: blur(50px);')
+    expect(css('blur-[50px]')).toContain('--tc-blur: blur(50px);')
+    expect(css('backdrop-blur-[50px]')).toContain('--tc-backdrop-blur: blur(50px);')
   })
 
   it('does not rescale arbitrary percentage filters', () => {
-    expect(css('backdrop-saturate-[180%]')).toContain('--cw-backdrop-saturate: saturate(180%);')
-    expect(css('backdrop-saturate-[1.7]')).toContain('--cw-backdrop-saturate: saturate(1.7);')
+    expect(css('backdrop-saturate-[180%]')).toContain('--tc-backdrop-saturate: saturate(180%);')
+    expect(css('backdrop-saturate-[1.7]')).toContain('--tc-backdrop-saturate: saturate(1.7);')
   })
 
   it('lets several filter functions compose on one element', () => {
@@ -772,9 +772,9 @@ describe('arbitrary filter amounts', () => {
     // the sheet won and the other silently did nothing.
     const blur = css('backdrop-blur-[50px]')
     const saturate = css('backdrop-saturate-[180%]')
-    expect(blur).toContain('--cw-backdrop-blur: blur(50px);')
-    expect(blur).toContain('var(--cw-backdrop-saturate, )')
-    expect(saturate).toContain('--cw-backdrop-saturate: saturate(180%);')
-    expect(saturate).toContain('var(--cw-backdrop-blur, )')
+    expect(blur).toContain('--tc-backdrop-blur: blur(50px);')
+    expect(blur).toContain('var(--tc-backdrop-saturate, )')
+    expect(saturate).toContain('--tc-backdrop-saturate: saturate(180%);')
+    expect(saturate).toContain('var(--tc-backdrop-blur, )')
   })
 })
