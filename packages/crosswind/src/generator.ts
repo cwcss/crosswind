@@ -1661,10 +1661,35 @@ const AXIS_UTILITY_RE = /^(?:mx|my|px|py|inset-x|inset-y|border-x|border-y|scrol
 const AXIS_RADIUS_RE = /^rounded-[tlbr](?:-|$)/
 const SIDE_UTILITY_RE = /^(?:mt|mr|mb|ml|pt|pr|pb|pl|top|right|bottom|left|border-t|border-r|border-b|border-l|scroll-mt|scroll-mr|scroll-mb|scroll-ml|scroll-pt|scroll-pr|scroll-pb|scroll-pl)-/
 const SIDE_RADIUS_RE = /^rounded-(?:tl|tr|bl|br)(?:-|$)/
+/**
+ * `i-{collection}-{name}`, matching the shape `iconRule` itself accepts.
+ *
+ * Deliberately syntactic: ranking runs on a selector string and must not
+ * depend on whether the icon collection is installed, or an icon and its
+ * sizing utility would rank differently on a machine missing the package.
+ */
+const ICON_UTILITY_RE = /^i-[a-z][a-z0-9]*(?:-[a-z0-9]+)*-.+/
 
-function computeUtilityRank(selector: string): number {
+// Exported for tests: ranking is pure and selector-driven, and asserting it
+// through generated CSS would need an @iconify-json collection installed —
+// without one an icon emits nothing, `indexOf` returns -1, and an ordering
+// assertion passes for the wrong reason.
+export function computeUtilityRank(selector: string): number {
   const cls = selectorClassToken(selector)
   if (!cls) return 0
+  // An icon utility's `width`/`height`/`display`/`background-color` are
+  // DEFAULTS — `width: 1em` exists so a bare `i-lucide-check` has a size at
+  // all, not to outrank the `w-5` sitting beside it in the same class list.
+  // Both are single-class selectors, so specificity is tied and source order
+  // decides; emitted last, the icon won and every explicit size was ignored.
+  // The visible failure is an icon next to text in a flex row: it kept `1em`,
+  // could not hold its width against a greedy sibling, and collapsed to a
+  // few pixels. Ranking icons below every other utility restores the
+  // intended precedence — the same ordering UnoCSS gets by putting its icon
+  // preset in an earlier layer — and lets `text-*`, `bg-*`, and `align-*`
+  // override the icon's other defaults too.
+  if (ICON_UTILITY_RE.test(cls))
+    return -1
   if (AXIS_UTILITY_RE.test(cls) || AXIS_RADIUS_RE.test(cls))
     return 1
   if (SIDE_UTILITY_RE.test(cls) || SIDE_RADIUS_RE.test(cls))
@@ -2867,10 +2892,12 @@ export class CSSGenerator {
   }
 
   /**
-   * Rank a rule by utility specificity so shorthands emit BEFORE directional
-   * utilities. Without this, class authoring order decides the cascade and
-   * combinations like `m-0 mx-auto` silently break (the shorthand resets
-   * the auto margins). Matches Tailwind's own stylesheet ordering.
+   * Rank a rule by utility specificity so broader utilities emit BEFORE the
+   * narrower ones that should win. Without this, class authoring order
+   * decides the cascade and combinations like `m-0 mx-auto` silently break
+   * (the shorthand resets the auto margins), and an icon's default `1em`
+   * outranks the `w-5` beside it. Matches Tailwind's own stylesheet ordering,
+   * plus an icon layer below it.
    *
    * See computeUtilityRank for the ranks themselves.
    */

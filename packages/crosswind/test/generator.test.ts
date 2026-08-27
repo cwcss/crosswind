@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test'
 import { defaultConfig } from '../src/config'
-import { CSSGenerator } from '../src/generator'
+import { computeUtilityRank, CSSGenerator } from '../src/generator'
 
 describe('CSSGenerator', () => {
   describe('Display utilities', () => {
@@ -1123,6 +1123,61 @@ describe('utility cascade ranking', () => {
   it('ranks gap shorthand before gap-x/gap-y', () => {
     const [gx, g] = emitOrder(['gap-x-8', 'gap-4'])
     expect(g).toBeLessThan(gx)
+  })
+
+})
+
+/**
+ * Icon utilities rank below every other utility.
+ *
+ * An `i-{collection}-{name}` rule's width, height, display and
+ * background-color are DEFAULTS — `width: 1em` exists so a bare icon has a
+ * size at all, not to outrank the `w-5` beside it in the same class list.
+ * Both are single-class selectors, so specificity ties and source order
+ * decides; emitted last, the icon won and every explicit size was ignored.
+ * The visible failure is an icon next to text in a flex row: it kept `1em`,
+ * could not hold its width against a greedy sibling, and collapsed to a few
+ * pixels.
+ *
+ * Asserted against `computeUtilityRank` rather than through generated CSS on
+ * purpose. Emitting an icon needs its `@iconify-json` collection installed,
+ * and without one the icon produces no CSS at all — an ordering assertion
+ * over `indexOf` then passes because the missing selector returns -1, which
+ * is a green test that proves nothing.
+ */
+describe('icon utility ranking', () => {
+  it('ranks an icon below a plain utility', () => {
+    expect(computeUtilityRank('.i-lucide-check')).toBeLessThan(computeUtilityRank('.w-5'))
+    expect(computeUtilityRank('.i-lucide-check')).toBeLessThan(computeUtilityRank('.block'))
+    expect(computeUtilityRank('.i-lucide-check')).toBeLessThan(computeUtilityRank('.bg-red-500'))
+    expect(computeUtilityRank('.i-lucide-check')).toBeLessThan(computeUtilityRank('.align-middle'))
+  })
+
+  it('ranks an icon below axis and side utilities', () => {
+    expect(computeUtilityRank('.i-lucide-check')).toBeLessThan(computeUtilityRank('.mx-auto'))
+    expect(computeUtilityRank('.i-lucide-check')).toBeLessThan(computeUtilityRank('.mt-2'))
+  })
+
+  it('ranks a hyphenated collection the same as a single-segment one', () => {
+    expect(computeUtilityRank('.i-simple-icons-bluesky')).toBe(computeUtilityRank('.i-lucide-check'))
+    expect(computeUtilityRank('.i-material-symbols-home-outline')).toBe(computeUtilityRank('.i-lucide-check'))
+  })
+
+  it('ranks a variant-prefixed icon the same as a bare one', () => {
+    expect(computeUtilityRank(String.raw`.md\:i-lucide-check`)).toBe(computeUtilityRank('.i-lucide-check'))
+    expect(computeUtilityRank(String.raw`.dark\:i-lucide-check`)).toBe(computeUtilityRank('.i-lucide-check'))
+  })
+
+  // The ranker sees only a selector, so it must not read a utility as an icon
+  // on the strength of a leading `i`.
+  it('does not mistake a non-icon utility for an icon', () => {
+    for (const cls of ['.items-center', '.inset-x-0', '.inline-block', '.invisible', '.italic', '.isolate'])
+      expect(computeUtilityRank(cls)).toBeGreaterThanOrEqual(0)
+  })
+
+  it('leaves the existing shorthand-before-axis order intact', () => {
+    expect(computeUtilityRank('.m-0')).toBeLessThan(computeUtilityRank('.mx-auto'))
+    expect(computeUtilityRank('.mx-auto')).toBeLessThan(computeUtilityRank('.mt-2'))
   })
 })
 
