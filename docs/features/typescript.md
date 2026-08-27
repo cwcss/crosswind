@@ -1,18 +1,18 @@
 # TypeScript Support
 
-Crosswind is built with TypeScript and provides full type safety for configuration, APIs, and custom extensions.
+ts-css is built with TypeScript and provides full type safety for configuration, APIs, and custom extensions.
 
 ## Type-Safe Configuration
 
 Use TypeScript for your configuration file to get autocompletion and type checking:
 
 ```typescript
-// crosswind.config.ts
-import type { TsCssOptions } from 'crosswind'
+// css.config.ts
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
   minify: false,
 
   theme: {
@@ -31,19 +31,19 @@ export default config
 ```## Type Checking
 
 The`satisfies`keyword provides type checking while preserving literal types:```typescript
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 // ✅ Type-safe with autocompletion
 const config = {
   content: ['./src/**/*.tsx'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
   minify: true,
 } satisfies TsCssOptions
 
 // ❌ Type error - unknown property
 const badConfig = {
   content: ['./src/**/*.tsx'],
-  outputPath: './dist/crosswind.css', // Error: 'outputPath' does not exist
+  outputPath: './dist/styles.css', // Error: 'outputPath' does not exist
   // ^^^^^^^^ Property error
 } satisfies TsCssOptions
 
@@ -105,9 +105,9 @@ Get IntelliSense and autocompletion in your IDE:
 ### VSCode
 
 1. Install the TypeScript extension (comes pre-installed)
-2. Create`crosswind.config.ts`with the type import:```typescript
+2. Create`css.config.ts`with the type import:```typescript
 
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   // Press Ctrl+Space here for autocompletion
@@ -161,12 +161,12 @@ const config = {
 
 ### Build Function```typescript
 
-import type { BuildResult, TsCssConfig } from 'crosswind'
-import { build } from 'crosswind'
+import type { BuildResult, TsCssConfig } from 'ts-css'
+import { build } from 'ts-css'
 
 const result: BuildResult = await build({
   content: ['./src/**/*.tsx'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
 } as TsCssConfig)
 
 // result.css: string
@@ -185,13 +185,13 @@ interface BuildResult {
 }
 
 ```### Using with async/await```typescript
-import { build, buildAndWrite } from 'crosswind'
+import { build, buildAndWrite } from 'ts-css'
 
 async function buildStyles() {
   // With build
   const result = await build({
     content: ['./src/**/*.tsx'],
-    output: './dist/crosswind.css',
+    output: './dist/styles.css',
     minify: true,
   })
 
@@ -200,14 +200,14 @@ async function buildStyles() {
   // With buildAndWrite
   await buildAndWrite({
     content: ['./src/**/*.tsx'],
-    output: './dist/crosswind.css',
+    output: './dist/styles.css',
     minify: true,
   })
 }
 ```## Custom Rules with Types
 
 Define type-safe custom rules:```typescript
-import type { CustomRule, TsCssConfig } from 'crosswind'
+import type { CustomRule, TsCssConfig } from 'ts-css'
 
 const customRules: CustomRule[] = [
   // Pattern and handler with types
@@ -229,7 +229,7 @@ const config = {
 ```## Preset Types
 
 Create type-safe presets:```typescript
-import type { Preset, Theme } from 'crosswind'
+import type { Preset, Theme } from 'ts-css'
 
 const myPreset: Preset = {
   name: 'my-design-system',
@@ -264,7 +264,7 @@ const config = {
 ### Custom Theme Values
 
 Extend the theme with custom properties:```typescript
-import type { TsCssOptions, Theme } from 'crosswind'
+import type { TsCssOptions, Theme } from 'ts-css'
 
 interface CustomTheme extends Theme {
   customSpacing: Record<string, string>
@@ -286,7 +286,7 @@ const config = {
 ```### Custom Config
 
 Create a custom config interface:```typescript
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 interface MyConfig extends Partial<TsCssConfig> {
   // Add custom properties
@@ -299,7 +299,7 @@ interface MyConfig extends Partial<TsCssConfig> {
 
 const config: MyConfig = {
   content: ['./src/**/*.tsx'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
 
   customOption: true,
   metadata: {
@@ -310,7 +310,7 @@ const config: MyConfig = {
 ```## Type Guards
 
 Use type guards for runtime type checking:```typescript
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 function isValidConfig(config: unknown): config is TsCssConfig {
   return (
@@ -333,7 +333,7 @@ if (isValidConfig(config)) {
 ```## Generics
 
 Use generics for flexible, type-safe functions:```typescript
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 function createConfig<T extends Partial<TsCssConfig>>(config: T): T {
   return {
@@ -354,14 +354,14 @@ const config = createConfig({
 // TypeScript infers the exact type
 ```## Module Augmentation
 
-Extend Crosswind types globally:```typescript
+Extend ts-css types globally:```typescript
 // Now use in config
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
-// types/crosswind.d.ts
-import 'crosswind'
+// types/ts-css.d.ts
+import 'ts-css'
 
-declare module 'crosswind' {
+declare module 'ts-css' {
   interface TsCssConfig {
     // Add your custom properties
     customFeature?: {
@@ -392,44 +392,44 @@ const config = {
 
 ### Vite```typescript
 
-import type { TsCssOptions } from 'crosswind'
-import { build } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
+import { build } from 'ts-css'
 // vite.config.ts
 import { defineConfig } from 'vite'
 
-const crosswindConfig: TsCssConfig = {
+const tsCssConfig: TsCssConfig = {
   content: ['./src/**/*.tsx'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
   minify: true,
 }
 
 export default defineConfig({
   plugins: [
     {
-      name: 'crosswind',
+      name: 'css',
       async buildStart() {
-        await build(crosswindConfig)
+        await build(tsCssConfig)
       },
     },
   ],
 })
 ```### Next.js```typescript
 
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 // next.config.ts
 import type { NextConfig } from 'next'
-import { buildAndWrite } from 'crosswind'
+import { buildAndWrite } from 'ts-css'
 
-const crosswindConfig: TsCssConfig = {
+const tsCssConfig: TsCssConfig = {
   content: ['./src/**/*.tsx', './app/**/*.tsx'],
-  output: './public/crosswind.css',
+  output: './public/styles.css',
   minify: process.env.NODE_ENV === 'production',
 }
 
 const nextConfig: NextConfig = {
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      buildAndWrite(crosswindConfig)
+      buildAndWrite(tsCssConfig)
     }
     return config
   },
@@ -439,14 +439,14 @@ export default nextConfig
 
 ```## Type Utilities
 
-Crosswind provides useful type utilities:```typescript
+ts-css provides useful type utilities:```typescript
 import type {
   CustomRule,
   TsCssConfig,
   ParsedClass,
   Preset,
   Theme,
-} from 'crosswind'
+} from 'ts-css'
 
 // Extract specific types
 type ConfigColors = Theme['colors']
@@ -460,10 +460,10 @@ type PartialTheme = Partial<Theme>
 ### 1. Always Use Type Imports```typescript
 
 // ✅ Type-only import
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 // ❌ Value import (unnecessary)
-import { TsCssConfig } from 'crosswind'
+import { TsCssConfig } from 'ts-css'
 
 ```### 2. Use`satisfies`for Validation```typescript
 // ✅ Validates types while preserving literals
@@ -477,11 +477,11 @@ const config: Partial<TsCssConfig> = {
 }
 ```### 3. Separate Type Definitions```typescript
 
-// types/crosswind.ts
-import type { TsCssOptions, Preset } from 'crosswind'
+// types/ts-css.ts
+import type { TsCssOptions, Preset } from 'ts-css'
 
-// crosswind.config.ts
-import type { MyConfig } from './types/crosswind'
+// css.config.ts
+import type { MyConfig } from './types/ts-css'
 
 export interface MyCustomPreset extends Preset {
   customOption: boolean
@@ -528,14 +528,14 @@ bun add --dev typescript
 
 # Ensure types are imported
 
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 ```### Autocomplete Not Working**Problem:**No autocompletion in IDE**Solutions:**1. Restart TypeScript server
 
 2. Check tsconfig.json includes the config file
 3. Ensure proper imports:```typescript
 
-   import type { TsCssOptions } from 'crosswind'
+   import type { TsCssOptions } from 'ts-css'
    ```
 
 ## Related*[Configuration](../config.md) - Full configuration guide*[Custom Rules](../advanced/custom-rules.md) - Creating custom utilities*[Presets](../advanced/presets.md) - Reusable configurations*[API Reference](../api-reference.md) - Programmatic API

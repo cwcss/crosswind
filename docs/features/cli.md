@@ -1,25 +1,25 @@
 # CLI Commands
 
-Crosswind provides a powerful command-line interface for building, watching, and analyzing your CSS.
+ts-css provides a powerful command-line interface for building, watching, and analyzing your CSS.
 
 ## Installation
 
-Install Crosswind globally or locally:
+Install ts-css globally or locally:
 
 ```bash
 
 # Global (use anywhere)
 
-bun add --global crosswind
+bun add --global ts-css
 
 # Local (project-specific)
 
-bun add --dev crosswind
+bun add ts-css
 ```## Commands
 
 ### `build`Build CSS from your content files.```bash
 
-crosswind build [options]
+cssx build [options]
 
 ```**Options:**- `--output <path>`- Output CSS file path
 -`--minify`- Minify CSS output
@@ -31,43 +31,43 @@ crosswind build [options]
 
 # Basic build
 
-crosswind build
+cssx build
 
 # Build with custom output
 
-crosswind build --output ./dist/styles.css
+cssx build --output ./dist/styles.css
 
 # Build and minify
 
-crosswind build --minify
+cssx build --minify
 
 # Build with specific content
 
-crosswind build --content "./src/**/*.tsx"
+cssx build --content "./src/**/*.tsx"
 
 # Build with custom config
 
-crosswind build --config ./custom.config.ts
+cssx build --config ./custom.config.ts
 
 # Build with verbose output
 
-crosswind build --verbose
+cssx build --verbose
 
 # Build without preflight CSS
 
-crosswind build --no-preflight
+cssx build --no-preflight
 ```**Output:**```bash
 
 🚀 Building CSS...
 ✅ Built 1243 classes in 8.45ms
-📝 Output: ./dist/crosswind.css
+📝 Output: ./dist/styles.css
 📦 File size: 24.35 KB
 
 ```###`watch`Build and watch for changes (equivalent to`build --watch`).
 
 ```bash
 
-crosswind watch [options]
+cssx watch [options]
 
 ```**Options:**- `--output <path>`- Output CSS file path
 -`--minify`- Minify CSS output
@@ -77,24 +77,24 @@ crosswind watch [options]
 
 # Basic watch mode
 
-crosswind watch
+cssx watch
 
 # Watch with custom output
 
-crosswind watch --output ./dist/styles.css
+cssx watch --output ./dist/styles.css
 
 # Watch with minification
 
-crosswind watch --minify
+cssx watch --minify
 
 # Watch with verbose output
 
-crosswind watch --verbose
+cssx watch --verbose
 ```**Output:**```bash
 
 🚀 Building CSS...
 ✅ Built 1243 classes in 8.45ms
-📝 Output: ./dist/crosswind.css
+📝 Output: ./dist/styles.css
 📦 File size: 24.35 KB
 👀 Watching for changes...
 
@@ -103,33 +103,33 @@ crosswind watch --verbose
 📝 src/App.tsx changed, rebuilding...
 ✅ Built 1245 classes in 7.23ms
 
-```###`init`Create a`crosswind.config.ts`configuration file.```bash
-crosswind init [options]
+```###`init`Create a`css.config.ts`configuration file.```bash
+cssx init [options]
 ```**Options:**- `--force` - Overwrite existing config file**Examples:**```bash
 
 # Create config
 
-crosswind init
+cssx init
 
 # Force overwrite
 
-crosswind init --force
+cssx init --force
 
 ```**Output:**```bash
-✅ Created crosswind.config.ts
+✅ Created css.config.ts
 
 Next steps:
 
-  1. Update the content paths in crosswind.config.ts
-  2. Run: crosswind build
+  1. Update the content paths in css.config.ts
+  2. Run: cssx build
 
 ```**Generated file:**```typescript
 
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
   minify: false,
   watch: false,
 } satisfies TsCssOptions
@@ -137,7 +137,7 @@ const config = {
 export default config
 
 ```###`analyze`Analyze utility class usage and show statistics.```bash
-crosswind analyze [options]
+cssx analyze [options]
 ```**Options:**- `--config <path>`- Path to config file
 
 -`--verbose`- Show detailed output
@@ -146,19 +146,19 @@ crosswind analyze [options]
 
 # Basic analysis
 
-crosswind analyze
+cssx analyze
 
 # Show top 20 utilities
 
-crosswind analyze --top 20
+cssx analyze --top 20
 
 # JSON output
 
-crosswind analyze --json
+cssx analyze --json
 
 # Detailed analysis
 
-crosswind analyze --verbose
+cssx analyze --verbose
 
 ```**Output:**```bash
 🔍 Analyzing utility classes...
@@ -198,54 +198,54 @@ crosswind analyze --verbose
 }
 ```###`clean`Remove the output CSS file.```bash
 
-crosswind clean [options]
+cssx clean [options]
 
 ```**Options:**- `--config <path>` - Path to config file**Examples:**```bash
 
 # Clean output
 
-crosswind clean
+cssx clean
 
 # Clean with custom config
 
-crosswind clean --config ./custom.config.ts
+cssx clean --config ./custom.config.ts
 ```**Output:**```bash
 
-✅ Removed ./dist/crosswind.css
+✅ Removed ./dist/styles.css
 
 ```###`preflight`Generate only the preflight (reset) CSS.```bash
-crosswind preflight [options]
+cssx preflight [options]
 ```**Options:**- `--output <path>`- Output CSS file path (default:`./preflight.css`)**Examples:**```bash
 
 # Generate preflight CSS
 
-crosswind preflight
+cssx preflight
 
 # Custom output path
 
-crosswind preflight --output ./reset.css
+cssx preflight --output ./reset.css
 
 ```**Output:**```bash
 ✅ Generated preflight CSS
 📝 Output: ./preflight.css
 📦 File size: 3.21 KB
-```###`version`Show the Crosswind version.```bash
+```###`version`Show the ts-css version.```bash
 
-crosswind version
+cssx version
 
 # or
 
-crosswind --version
+cssx --version
 
 ```**Output:**```bash
 1.0.0
 ```###`help`Show help information.```bash
 
-crosswind --help
+cssx --help
 
 # or
 
-crosswind [command] --help
+cssx [command] --help
 
 ```## Global Options
 
@@ -260,7 +260,7 @@ CLI options override configuration file settings:```bash
 
 # Config file specifies: output: './dist/styles.css'
 
-crosswind build --output ./public/app.css
+cssx build --output ./public/app.css
 
 # Actual output: ./public/app.css (CLI option wins)
 
@@ -276,7 +276,7 @@ crosswind build --output ./public/app.css
 
 # Run locally installed
 
-bunx crosswind build
+bunx cssx build
 
 # Run scripts
 
@@ -286,7 +286,7 @@ bun run build
 
 # Run locally installed
 
-npx crosswind build
+npx cssx build
 
 # Run scripts
 
@@ -295,7 +295,7 @@ npm run build
 
 # Run locally installed
 
-pnpm dlx crosswind build
+pnpm dlx cssx build
 
 # Run scripts
 
@@ -305,24 +305,24 @@ pnpm build
 
 # Run locally installed
 
-yarn crosswind build
+yarn cssx build
 
 # Run scripts
 
 yarn build
 ```## npm Scripts
 
-Add Crosswind commands to your`package.json`:
+Add ts-css commands to your`package.json`:
 
 ```json
 {
   "scripts": {
-    "dev": "crosswind watch & vite dev",
-    "build": "crosswind build --minify && vite build",
-    "css:build": "crosswind build",
-    "css:watch": "crosswind watch",
-    "css:analyze": "crosswind analyze --verbose",
-    "css:clean": "crosswind clean"
+    "dev": "cssx watch & vite dev",
+    "build": "cssx build --minify && vite build",
+    "css:build": "cssx build",
+    "css:watch": "cssx watch",
+    "css:analyze": "cssx analyze --verbose",
+    "css:clean": "cssx clean"
   }
 }
 ```## Continuous Integration
@@ -349,7 +349,7 @@ jobs:
 
       - name: Build CSS
 
-        run: bun run crosswind build --minify
+        run: bun run cssx build --minify
 
       - name: Run tests
 
@@ -364,23 +364,23 @@ build:
   script:
 
     - bun install
-    - bun run crosswind build --minify
+    - bun run cssx build --minify
 
   artifacts:
     paths:
 
-      - dist/crosswind.css
+      - dist/styles.css
 
 ```### Vercel```json
 
 {
-  "buildCommand": "crosswind build --minify && next build",
+  "buildCommand": "cssx build --minify && next build",
   "outputDirectory": ".next"
 }
 
 ```### Netlify```toml
 [build]
-command = "crosswind build --minify && npm run build"
+command = "cssx build --minify && npm run build"
 publish = "dist"
 ```## Advanced Usage
 
@@ -390,25 +390,25 @@ Specify different configs for different environments:```bash
 
 # Development
 
-crosswind build --config ./crosswind.dev.config.ts
+cssx build --config ./css.dev.config.ts
 
 # Production
 
-crosswind build --config ./crosswind.prod.config.ts --minify
+cssx build --config ./css.prod.config.ts --minify
 
 # Testing
 
-crosswind build --config ./crosswind.test.config.ts
+cssx build --config ./css.test.config.ts
 
 ```### Programmatic Usage
 
-While the CLI is convenient, you can also use Crosswind programmatically:```typescript
-import { build, buildAndWrite } from 'crosswind'
+While the CLI is convenient, you can also use ts-css programmatically:```typescript
+import { build, buildAndWrite } from 'ts-css'
 
 // Build only (get result)
 const result = await build({
   content: ['./src/**/*.tsx'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
   minify: true,
 })
 
@@ -417,18 +417,18 @@ console.log(`Built ${result.classes.size} classes in ${result.duration}ms`)
 // Build and write to file
 await buildAndWrite({
   content: ['./src/**/*.tsx'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
   minify: true,
 })
 ```### Combine Multiple Commands```bash
 
 # Clean, build, and analyze
 
-crosswind clean && crosswind build --minify && crosswind analyze
+cssx clean && cssx build --minify && cssx analyze
 
 # Watch in one terminal, dev server in another
 
-crosswind watch &
+cssx watch &
 npm run dev
 
 ```### Environment Variables
@@ -441,35 +441,35 @@ export NODE_ENV=production
 
 # Build with env-specific config
 
-crosswind build --minify
+cssx build --minify
 ```
 
 ```typescript
-// crosswind.config.ts
+// css.config.ts
 const isProd = process.env.NODE_ENV === 'production'
 
 const config = {
-  output: isProd ? './dist/crosswind.min.css' : './dist/crosswind.css',
+  output: isProd ? './dist/styles.min.css' : './dist/styles.css',
   minify: isProd,
 }
 ```
 
 ## Troubleshooting
 
-### Command Not Found**Problem:**`command not found: crosswind`**Solutions:**1. Install globally
+### Command Not Found**Problem:**`command not found: cssx`**Solutions:**1. Install globally
 
    ```bash
-   bun add --global crosswind
+   bun add --global ts-css
    ```2. Or use with package runner:```bash
-   bunx crosswind build
+   bunx cssx build
 
 # or
 
-   npx crosswind build
+   npx cssx build
    ```3. Or use npm scripts:```json
    {
      "scripts": {
-       "build": "crosswind build"
+       "build": "cssx build"
      }
    }
    ```### Permission Denied**Problem:**Permission errors when writing files**Solutions:**1. Check output directory permissions:```bash
@@ -479,14 +479,14 @@ const config = {
    ```3. Fix permissions:```bash
    chmod -R u+w ./dist
    ```### Config Not Loading**Problem:**Custom config not being used**Solutions:**1. Verify config path:```bash
-   crosswind build --config ./crosswind.config.ts --verbose
+   cssx build --config ./css.config.ts --verbose
    ```2. Check config file syntax:```typescript
    // Must have default export
    export default config
    ```3. Ensure TypeScript is installed:```bash
    bun add --dev typescript
    ```### Build Failures**Problem:**Build fails with errors**Solutions:**1. Run with verbose output:```bash
-   crosswind build --verbose
+   cssx build --verbose
    ```2. Check content patterns:```bash
 
 # Test if files exist
@@ -494,11 +494,11 @@ const config = {
    ls -la ./src/**/*.tsx
    ```3. Validate config:```typescript
    // Use type checking
-   import type { TsCssOptions } from 'crosswind'
+   import type { TsCssOptions } from 'ts-css'
 
    const config = {
      content: ['./src/**/*.tsx'],
-     output: './dist/crosswind.css',
+     output: './dist/styles.css',
    } satisfies TsCssOptions // Type error will show if invalid
    ```
 
@@ -508,11 +508,11 @@ const config = {
 
 # ❌ Slow
 
-   crosswind build --content "./**/*.tsx"
+   cssx build --content "./**/*.tsx"
 
 # ✅ Fast
 
-   crosswind build --content "./src/**/*.tsx"
+   cssx build --content "./src/**/*.tsx"
    ```
 
 2.**Exclude unnecessary files:**```typescript
@@ -526,22 +526,22 @@ const config = {
 
 # Faster than rebuilding manually
 
-   crosswind watch
+   cssx watch
    ```
 
 4.**Enable minify only in production:**```bash
 
 # Development (fast)
 
-   crosswind build
+   cssx build
 
 # Production (optimized)
 
-   crosswind build --minify
+   cssx build --minify
    ```
 
 ## Related
 
 - [Configuration](../config.md) - Configuration options
 - [Watch Mode](./watch-mode.md) - Automatic rebuilding
-- [Programmatic API](../api-reference.md) - Use Crosswind in code
+- [Programmatic API](../api-reference.md) - Use ts-css in code

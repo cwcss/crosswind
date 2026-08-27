@@ -108,7 +108,7 @@ const config: BunPressOptions = {
 
   sitemap: {
     enabled: true,
-    baseUrl: 'https://crosswind.sh',
+    baseUrl: 'https://crosswind.stacksjs.org',
     priorityMap: {
       '/': 1.0,
       '/intro': 0.9,

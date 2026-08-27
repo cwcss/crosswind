@@ -1,10 +1,10 @@
 # Custom Rules
 
-Custom rules allow you to extend Crosswind with your own utility patterns and CSS properties beyond the built-in utilities.
+Custom rules allow you to extend ts-css with your own utility patterns and CSS properties beyond the built-in utilities.
 
 ## Overview
 
-While Crosswind includes comprehensive built-in utilities, you can add custom rules to:
+While ts-css includes comprehensive built-in utilities, you can add custom rules to:
 
 - Create domain-specific utilities
 - Add vendor-prefixed properties
@@ -16,7 +16,7 @@ While Crosswind includes comprehensive built-in utilities, you can add custom ru
 Define custom rules in your configuration:
 
 ```typescript
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   rules: [
@@ -234,7 +234,7 @@ const config = {
 ```### Using Theme Values
 
 Access theme values in custom rules:```typescript
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   theme: {

@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "Crosswind"
+  name: "ts-css"
   text: "Blazingly Fast Utility-First CSS"
   tagline: "Built with Bun for exceptional performance. Generate only the CSS you need."
   image: /images/logo-white.png

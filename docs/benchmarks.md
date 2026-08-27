@@ -1,6 +1,6 @@
 # Performance Benchmarks
 
-Crosswind is built for speed. This page provides performance benchmarks comparing Crosswind with UnoCSS, Tailwind v4, and Tailwind v3.
+ts-css is built for speed. This page provides performance benchmarks comparing ts-css with UnoCSS, Tailwind v4, and Tailwind v3.
 
 ## Methodology
 
@@ -8,7 +8,7 @@ Crosswind is built for speed. This page provides performance benchmarks comparin
 - **Runtime**: Bun 1.3.11
 - **Hardware**: Apple M3 Pro
 - **Each framework uses its native API**:
-  - **Crosswind**: Pre-warmed `CSSGenerator` with `reset()` + `generateBatch()` + `toCSS()`
+  - **ts-css**: Pre-warmed `CSSGenerator` with `reset()` + `generateBatch()` + `toCSS()`
   - **UnoCSS**: Pre-warmed `createGenerator()` + `generate()` with joined class string
   - **Tailwind v4**: Pre-compiled `compile()` + `build(candidates)` — Oxide engine, no PostCSS
   - **Tailwind v3**: Pre-warmed `postcss.process()` — PostCSS is the only available API
@@ -16,7 +16,7 @@ Crosswind is built for speed. This page provides performance benchmarks comparin
 
 ## Results
 
-| Scenario | Crosswind | UnoCSS | Tailwind v4 | Tailwind v3 |
+| Scenario | ts-css | UnoCSS | Tailwind v4 | Tailwind v3 |
 |----------|----------|--------|-------------|-------------|
 | Simple Utilities (10 classes) | **1.76us** | 15.44us | 0.08us | 8.10ms |
 | Complex Variants (11 classes) | **6.27us** | 21.28us | 0.08us | 8.00ms |
@@ -37,9 +37,9 @@ Crosswind is built for speed. This page provides performance benchmarks comparin
 
 Tailwind v4's Oxide engine dominates warm generation benchmarks. After a one-time `compile()` step (~9ms), the `build()` API uses Rust-compiled code that processes candidates at native speed. This is a fundamentally different architecture — compiled machine code vs interpreted JavaScript.
 
-### Crosswind — Fastest TypeScript engine
+### ts-css — Fastest TypeScript engine
 
-Crosswind is the **fastest pure-TypeScript/JavaScript CSS engine**:
+ts-css is the **fastest pure-TypeScript/JavaScript CSS engine**:
 
 | vs UnoCSS | Speedup |
 |-----------|---------|
@@ -50,26 +50,26 @@ Crosswind is the **fastest pure-TypeScript/JavaScript CSS engine**:
 | CSS Output | **100x** faster |
 | Full project | **1.8x** faster |
 
-Crosswind also **beats Tailwind v4 on duplicate handling** (22us vs 33us) thanks to its multi-layer caching architecture.
+ts-css also **beats Tailwind v4 on duplicate handling** (22us vs 33us) thanks to its multi-layer caching architecture.
 
 ### Cold Start Advantage
 
-Crosswind has the fastest initialization of any framework:
+ts-css has the fastest initialization of any framework:
 
 | Framework | Init Cost |
 |-----------|-----------|
-| **Crosswind** | **~0.1ms** |
+| **ts-css** | **~0.1ms** |
 | UnoCSS | ~3ms |
 | Tailwind v4 | ~9ms |
 | Tailwind v3 | ~70ms |
 
-For dev servers, serverless functions, and on-demand generation, cold start matters. Crosswind's near-zero init means it can create a fresh generator, process classes, and output CSS faster end-to-end than frameworks that need expensive initialization.
+For dev servers, serverless functions, and on-demand generation, cold start matters. ts-css's near-zero init means it can create a fresh generator, process classes, and output CSS faster end-to-end than frameworks that need expensive initialization.
 
 ### Tailwind v3 — PostCSS overhead
 
 Tailwind v3 numbers (~8-17ms per invocation) reflect PostCSS pipeline overhead. There is no lower-level API available in v3 — this is the only way to use the framework.
 
-## Why Crosswind Is Fast
+## Why ts-css Is Fast
 
 1. **Pre-processed config singleton** — config merging, theme extension, blocklist compilation done once and cached via WeakMap
 2. **O(1) static utility map** — ~80% of common utilities resolve via a single hash lookup
@@ -81,7 +81,7 @@ Tailwind v3 numbers (~8-17ms per invocation) reflect PostCSS pipeline overhead. 
 
 ## JS/TS API vs Compiled Binary
 
-Crosswind can run as a JS/TS library (embedded in your app) or as a compiled standalone binary (`bun build --compile`).
+ts-css can run as a JS/TS library (embedded in your app) or as a compiled standalone binary (`bun build --compile`).
 
 ### JS/TS API (in-process)
 
@@ -108,7 +108,7 @@ The ~31ms overhead is process startup cost (Bun runtime initialization). The act
 ## Running Benchmarks
 
 ```bash
-# Framework comparison (Crosswind vs UnoCSS vs Tailwind)
+# Framework comparison (ts-css vs UnoCSS vs Tailwind)
 bun run benchmark
 
 # Binary vs API comparison
