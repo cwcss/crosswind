@@ -1,14 +1,14 @@
 # Theme Customization
 
-Crosswind's theme system allows you to customize every aspect of your design tokens including colors, spacing, typography, and more. The theme is fully compatible with Tailwind CSS, making migration seamless.
+ts-css's theme system allows you to customize every aspect of your design tokens including colors, spacing, typography, and more. The theme is fully compatible with Tailwind CSS, making migration seamless.
 
 ## Overview
 
-The theme configuration defines the design tokens that utilities are generated from. When you use a utility like `bg-blue-500`or`p-4`, Crosswind looks up the value in your theme configuration.
+The theme configuration defines the design tokens that utilities are generated from. When you use a utility like `bg-blue-500`or`p-4`, ts-css looks up the value in your theme configuration.
 
 ```typescript
-// crosswind.config.ts
-import type { TsCssOptions } from 'crosswind'
+// css.config.ts
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   theme: {
@@ -339,7 +339,7 @@ const config = {
 </div>
 ```## Complete Theme Example```typescript
 
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   theme: {
@@ -491,7 +491,7 @@ export default config
 
 Create different themes for different projects:```typescript
 // themes/light.ts
-// crosswind.config.ts
+// css.config.ts
 import { lightTheme } from './themes/light'
 
 export const lightTheme = {
@@ -530,7 +530,7 @@ const config = {
 ```### Extending Default Theme
 
 Merge with the default theme:```typescript
-import { defaultConfig } from 'crosswind'
+import { defaultConfig } from 'ts-css'
 
 const config = {
   theme: {
@@ -598,7 +598,7 @@ const config = {
 
 ```### 4. Organize Large Themes```typescript
 // theme/colors.ts
-// crosswind.config.ts
+// css.config.ts
 import { colors } from './theme/colors'
 import { spacing } from './theme/spacing'
 import { typography } from './theme/typography'
@@ -620,7 +620,7 @@ const config = {
 }
 ```## Migration from Tailwind
 
-Crosswind themes are 100% compatible with Tailwind CSS:```typescript
+ts-css themes are 100% compatible with Tailwind CSS:```typescript
 // Your existing Tailwind config works as-is
 const config = {
   theme: {

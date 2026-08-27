@@ -1,10 +1,10 @@
 # Introduction
 
-Crosswind is a blazingly fast utility-first CSS framework built with Bun for exceptional performance. It generates only the CSS you need, with a familiar Tailwind-compatible syntax and powerful optimization features.
+ts-css is a blazingly fast utility-first CSS framework built with Bun for exceptional performance. It generates only the CSS you need, with a familiar Tailwind-compatible syntax and powerful optimization features.
 
-## What is Crosswind
+## What is ts-css
 
-Crosswind is a modern CSS framework that provides utility classes for building user interfaces. Unlike traditional CSS frameworks that ship pre-built components, Crosswind gives you low-level utility classes that let you build completely custom designs without ever leaving your HTML.
+ts-css is a modern CSS framework that provides utility classes for building user interfaces. Unlike traditional CSS frameworks that ship pre-built components, ts-css gives you low-level utility classes that let you build completely custom designs without ever leaving your HTML.
 
 ### Key Features
 
@@ -19,26 +19,26 @@ Crosswind is a modern CSS framework that provides utility classes for building u
 -**🔨 Class Compilation**- Compile groups of utilities into single optimized class names for smaller HTML
 -**🧪 Thoroughly Tested**- 999+ tests including comprehensive performance benchmarks
 
-## Why Crosswind
+## Why ts-css
 
 ### Performance-First
 
-Crosswind is built with Bun, making it one of the fastest CSS frameworks available:
+ts-css is built with Bun, making it one of the fastest CSS frameworks available:
 
 ```bash
 
 # Generate 1000+ utilities in under 10ms
 
-crosswind build
+cssx build
 
 # ✅ Built 1243 classes in 8.45ms
 
 ```### On-Demand CSS Generation
 
-Unlike traditional frameworks that ship large CSS files, Crosswind scans your source files and generates only the CSS you use:```html
+Unlike traditional frameworks that ship large CSS files, ts-css scans your source files and generates only the CSS you use:```html
 <!-- Only these classes generate CSS -->
 <div class="flex items-center justify-between px-4 py-2">
-  <h1 class="text-2xl font-bold text-blue-500">Hello Crosswind!</h1>
+  <h1 class="text-2xl font-bold text-blue-500">Hello ts-css!</h1>
 </div>
 
 ```This approach results in:
@@ -49,7 +49,7 @@ Unlike traditional frameworks that ship large CSS files, Crosswind scans your so
 
 ### Tailwind-Compatible Syntax
 
-If you know Tailwind, you already know Crosswind:```html
+If you know Tailwind, you already know ts-css:```html
 <!-- Flexbox utilities -->
 <div class="flex items-center justify-between">
 
@@ -66,7 +66,7 @@ If you know Tailwind, you already know Crosswind:```html
 <button class="bg-blue-500 hover:bg-blue-600 focus:ring-2">
 ```### Advanced Optimization
 
-Crosswind includes a compile class transformer that optimizes your HTML by compiling groups of utilities into single class names:```html
+ts-css includes a compile class transformer that optimizes your HTML by compiling groups of utilities into single class names:```html
 <!-- Before compilation -->
 <div class=":tc: flex items-center justify-between px-4 py-2 bg-white rounded-lg shadow-md">
   Content
@@ -87,15 +87,15 @@ Crosswind includes a compile class transformer that optimizes your HTML by compi
 
 ### 1. Scan Your Files
 
-Crosswind scans your source files for utility classes:```typescript
-// crosswind.config.ts
+ts-css scans your source files for utility classes:```typescript
+// css.config.ts
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
 }
 ```### 2. Generate CSS
 
-For each utility class found, Crosswind generates the corresponding CSS:```html
+For each utility class found, ts-css generates the corresponding CSS:```html
 <!-- Input -->
 <div class="flex items-center p-4 bg-blue-500 text-white rounded">
   Hello!
@@ -115,8 +115,8 @@ For each utility class found, Crosswind generates the corresponding CSS:```html
 
 ```### 3. Watch for Changes
 
-During development, Crosswind watches your files and automatically rebuilds when changes are detected:```bash
-crosswind watch
+During development, ts-css watches your files and automatically rebuilds when changes are detected:```bash
+cssx watch
 
 # 👀 Watching for changes
 
@@ -126,31 +126,31 @@ crosswind watch
 
 ### Installation
 
-Install Crosswind via your package manager:```bash
+Install ts-css via your package manager:```bash
 
 # Using Bun (recommended)
 
-bun add --dev crosswind
+bun add ts-css
 
 # Using npm
 
-npm install --save-dev crosswind
+npm install ts-css
 
 # Using pnpm
 
-pnpm add --save-dev crosswind
+pnpm add ts-css
 
 ```### Configuration
 
 Create a configuration file:```bash
-crosswind init
-```This creates a`crosswind.config.ts`file:```typescript
+cssx init
+```This creates a`css.config.ts`file:```typescript
 
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
 } satisfies TsCssOptions
 
 export default config
@@ -161,22 +161,22 @@ Generate your CSS file:```bash
 
 # One-time build
 
-crosswind build
+cssx build
 
 # Watch mode for development
 
-crosswind watch
+cssx watch
 ```### Use in Your HTML
 
 Include the generated CSS in your project:```html
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="/dist/crosswind.css">
+  <link rel="stylesheet" href="/dist/styles.css">
 </head>
 <body>
   <div class="flex items-center justify-center h-screen">
-    <h1 class="text-4xl font-bold text-blue-500">Hello Crosswind!</h1>
+    <h1 class="text-4xl font-bold text-blue-500">Hello ts-css!</h1>
   </div>
 </body>
 </html>
@@ -291,7 +291,7 @@ const config = {
 
 ## Philosophy
 
-Crosswind is built on several core principles:
+ts-css is built on several core principles:
 
 1.**Performance First**- Built with Bun for maximum speed
 2.**Developer Experience**- TypeScript-first, fully typed APIs
@@ -303,10 +303,10 @@ Crosswind is built on several core principles:
 
 ## Next Steps
 
-Now that you understand what Crosswind is and how it works, explore:
+Now that you understand what ts-css is and how it works, explore:
 
-- [Installation Guide](./install.md) - Set up Crosswind in your project
-- [Configuration Guide](./config.md) - Customize Crosswind to your needs
+- [Installation Guide](./install.md) - Set up ts-css in your project
+- [Configuration Guide](./config.md) - Customize ts-css to your needs
 - [Usage Guide](./usage.md) - Learn all available utility classes
 - [CLI Reference](./features/cli.md) - Explore CLI commands and options
 - [Compile Class Transformer](./features/compile-class.md) - Optimize your HTML
@@ -320,4 +320,4 @@ Now that you understand what Crosswind is and how it works, explore:
 
 ## License
 
-Crosswind is open-source software licensed under the [MIT license](https://github.com/cwcss/crosswind/blob/main/LICENSE.md).
+ts-css is open-source software licensed under the [MIT license](https://github.com/cwcss/crosswind/blob/main/LICENSE.md).

@@ -14,14 +14,14 @@ Start watch mode using the CLI:
 
 # Using the watch command
 
-crosswind watch
+cssx watch
 
 # Or using build with --watch flag
 
-crosswind build --watch
+cssx build --watch
 ```## How It Works
 
-When you start watch mode, Crosswind:
+When you start watch mode, ts-css:
 
 1.**Performs Initial Build**- Generates CSS from your current files
 2.**Watches Content Directories**- Monitors all directories matching your content patterns
@@ -32,8 +32,8 @@ When you start watch mode, Crosswind:
 ## Configuration
 
 Watch mode uses the content patterns from your configuration file:```typescript
-// crosswind.config.ts
-import type { TsCssOptions } from 'crosswind'
+// css.config.ts
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   content: [
@@ -41,7 +41,7 @@ const config = {
     './components/**/*.vue',
     './pages/**/*.svelte',
   ],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
 } satisfies TsCssOptions
 
 export default config
@@ -63,7 +63,7 @@ Watch mode monitors these file extensions by default:
 
 ### Fast Rebuilds
 
-Crosswind's watch mode is optimized for speed:```bash
+ts-css's watch mode is optimized for speed:```bash
 📝 src/App.tsx changed, rebuilding...
 ✅ Built 1243 classes in 8.45ms
 ```Typical rebuild times are under 10ms for most projects.
@@ -71,7 +71,7 @@ Crosswind's watch mode is optimized for speed:```bash
 ### Verbose Output
 
 Use`--verbose`to see detailed information during watch mode:```bash
-crosswind watch --verbose
+cssx watch --verbose
 
 ```This shows:
 
@@ -96,23 +96,23 @@ Customize watch mode behavior with CLI options:```bash
 
 # Basic watch
 
-crosswind watch
+cssx watch
 
 # Watch with custom output
 
-crosswind watch --output ./dist/custom.css
+cssx watch --output ./dist/custom.css
 
 # Watch with minification
 
-crosswind watch --minify
+cssx watch --minify
 
 # Watch with verbose logging
 
-crosswind watch --verbose
+cssx watch --verbose
 
 # Watch with custom config
 
-crosswind watch --config ./custom.config.ts
+cssx watch --config ./custom.config.ts
 
 ```
 
@@ -121,7 +121,7 @@ crosswind watch --config ./custom.config.ts
 ### Recommended Setup
 
 1.**Terminal 1: Watch Mode**```bash
-   crosswind watch
+   cssx watch
    ```
 
 2.**Terminal 2: Dev Server**```bash
@@ -135,10 +135,10 @@ crosswind watch --config ./custom.config.ts
 Add watch mode to your npm scripts:```json
 {
   "scripts": {
-    "dev": "crosswind watch & vite dev",
-    "dev:crosswind": "crosswind watch",
+    "dev": "cssx watch & vite dev",
+    "dev:styles": "cssx watch",
     "dev:app": "vite dev",
-    "build": "crosswind build --minify && vite build"
+    "build": "cssx build --minify && vite build"
   }
 }
 ```### Parallel Development
@@ -147,15 +147,15 @@ Run watch mode alongside your development server:```bash
 
 # Using npm-run-all
 
-npm-run-all --parallel dev:crosswind dev:app
+npm-run-all --parallel dev:styles dev:app
 
 # Using concurrently
 
-concurrently "crosswind watch" "vite dev"
+concurrently "cssx watch" "vite dev"
 
 # Using &
 
-crosswind watch & npm run dev
+cssx watch & npm run dev
 
 ```
 
@@ -198,7 +198,7 @@ Watch mode is highly performant thanks to Bun:
 
 ### Watch Not Detecting Changes**Problem:**Files change but CSS doesn't rebuild**Solutions:**1. Check your content patterns:```bash
 
-   crosswind watch --verbose
+   cssx watch --verbose
    ```Look for the "👀 Watching:" output to see what's being monitored.
 
 2. Ensure file extensions are supported:```typescript
@@ -234,11 +234,11 @@ Watch mode is highly performant thanks to Bun:
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  // Vite will handle HMR, Crosswind handles CSS
+  // Vite will handle HMR, ts-css handles CSS
   server: {
     watch: {
-      // Don't watch crosswind output to avoid loops
-      ignored: ['**/dist/crosswind.css']
+      // Don't watch ts-css output to avoid loops
+      ignored: ['**/dist/styles.css']
     }
   }
 })
@@ -246,8 +246,8 @@ export default defineConfig({
 
 {
   "scripts": {
-    "dev": "crosswind watch & next dev",
-    "build": "crosswind build --minify && next build"
+    "dev": "cssx watch & next dev",
+    "build": "cssx build --minify && next build"
   }
 }
 
@@ -256,7 +256,7 @@ export default defineConfig({
 module.exports = {
   // Webpack config
   watchOptions: {
-    ignored: /dist\/crosswind\.css/, // Ignore Crosswind output
+    ignored: /dist\/styles\.css/, // Ignore ts-css output
   }
 }
 ```
@@ -272,16 +272,16 @@ module.exports = {
 
 # Development
 
-   crosswind watch
+   cssx watch
 
 # Production
 
-   crosswind build --minify
+   cssx build --minify
    ```
 
 3.**Combine with Hot Module Replacement (HMR)**- Let your dev server handle HMR
 
-   - Let Crosswind handle CSS generation
+   - Let ts-css handle CSS generation
    - Both work seamlessly together
 
 4.**Monitor Watch Output**- Check for errors during rebuilds

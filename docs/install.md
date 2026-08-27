@@ -1,39 +1,39 @@
 # Installation
 
-Get started with Crosswind by installing it via your package manager or using pre-built binaries.
+Get started with ts-css by installing it via your package manager or using pre-built binaries.
 
 ## Package Managers
 
-Install Crosswind as a development dependency in your project:
+Install ts-css as a development dependency in your project:
 
 ::: code-group
 
 ```sh [bun]
-bun add --dev crosswind
+bun add ts-css
 
 # or
 
-bun install --dev crosswind
+bun install --dev ts-css
 ```
 
 ```sh [npm]
-npm install --save-dev crosswind
+npm install ts-css
 
 # or
 
-npm i -D crosswind
+npm i -D ts-css
 ```
 
 ```sh [pnpm]
-pnpm add --save-dev crosswind
+pnpm add ts-css
 
 # or
 
-pnpm add -D crosswind
+pnpm add -D ts-css
 ```
 
 ```sh [yarn]
-yarn add --dev crosswind
+yarn add ts-css
 ```:::
 
 ### Global Installation
@@ -41,55 +41,55 @@ yarn add --dev crosswind
 For global installation (to use the CLI anywhere):
 
 ::: code-group```sh [bun]
-bun add --global crosswind
+bun add --global ts-css
 
 ```
 
 ```sh [npm]
 
-npm install --global crosswind
+npm install --global ts-css
 
 # or
 
-npm i -g crosswind
+npm i -g ts-css
 
 ```
 
 ```sh [pnpm]
 
-pnpm add --global crosswind
+pnpm add --global ts-css
 
 ```
 
 ```sh [yarn]
 
-yarn global add crosswind
+yarn global add ts-css
 
 ```:::
 
 ## Quick Start
 
-After installation, initialize a new Crosswind project:```bash
+After installation, initialize a new ts-css project:```bash
 
 # Create configuration file
 
-crosswind init
+cssx init
 
 # Build your CSS
 
-crosswind build
+cssx build
 
 # Or use watch mode for development
 
-crosswind watch
+cssx watch
 ```## Configuration
 
-The`crosswind init`command creates a basic`crosswind.config.ts`file:```typescript
-import type { TsCssOptions } from 'crosswind'
+The`cssx init`command creates a basic`css.config.ts`file:```typescript
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
 } satisfies TsCssOptions
 
 export default config
@@ -100,17 +100,17 @@ export default config
 
 ### React / Next.js```bash
 
-# Install Crosswind
+# Install ts-css
 
-bun add --dev crosswind
+bun add ts-css
 
 # Create config
 
-crosswind init
-```Update your`crosswind.config.ts`:
+cssx init
+```Update your`css.config.ts`:
 
 ```typescript
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   content: [
@@ -119,14 +119,14 @@ const config = {
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
   ],
-  output: './styles/crosswind.css',
+  output: './styles/styles.css',
 } satisfies TsCssOptions
 
 export default config
 ```Import the generated CSS in your app:```typescript
 
 // app/layout.tsx or pages/_app.tsx
-import './styles/crosswind.css'
+import './styles/styles.css'
 
 ```Add build scripts to`package.json`:
 
@@ -134,24 +134,24 @@ import './styles/crosswind.css'
 
 {
   "scripts": {
-    "dev": "crosswind watch & next dev",
-    "build": "crosswind build && next build"
+    "dev": "cssx watch & next dev",
+    "build": "cssx build && next build"
   }
 }
 
 ```### Vue / Nuxt```bash
 
-# Install Crosswind
+# Install ts-css
 
-bun add --dev crosswind
+bun add ts-css
 
 # Create config
 
-crosswind init
-```Update your`crosswind.config.ts`:
+cssx init
+```Update your`css.config.ts`:
 
 ```typescript
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   content: [
@@ -160,35 +160,35 @@ const config = {
     './pages/**/*.vue',
     './app.vue',
   ],
-  output: './assets/css/crosswind.css',
+  output: './assets/css/styles.css',
 } satisfies TsCssOptions
 
 export default config
 ```Import in your`app.vue`or main layout:```vue
 
 <style>
-@import './assets/css/crosswind.css';
+@import './assets/css/styles.css';
 </style>
 
 ```### Svelte / SvelteKit```bash
 
-# Install Crosswind
+# Install ts-css
 
-bun add --dev crosswind
+bun add ts-css
 
 # Create config
 
-crosswind init
-```Update your`crosswind.config.ts`:
+cssx init
+```Update your`css.config.ts`:
 
 ```typescript
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   content: [
     './src/**/*.{html,js,svelte,ts}',
   ],
-  output: './static/crosswind.css',
+  output: './static/styles.css',
 } satisfies TsCssOptions
 
 export default config
@@ -196,28 +196,28 @@ export default config
 
 <!-- src/routes/+layout.svelte -->
 <script>
-  import '/static/crosswind.css'
+  import '/static/styles.css'
 </script>
 
 ```### Astro```bash
 
-# Install Crosswind
+# Install ts-css
 
-bun add --dev crosswind
+bun add ts-css
 
 # Create config
 
-crosswind init
-```Update your`crosswind.config.ts`:
+cssx init
+```Update your`css.config.ts`:
 
 ```typescript
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   content: [
     './src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
   ],
-  output: './public/crosswind.css',
+  output: './public/styles.css',
 } satisfies TsCssOptions
 
 export default config
@@ -228,26 +228,26 @@ export default config
 
 // src/layouts/Layout.astro
 
-import '/crosswind.css'
+import '/styles.css'
 ---
 
 ```### Plain HTML```bash
 
-# Install Crosswind globally
+# Install ts-css globally
 
-bun add --global crosswind
+bun add --global ts-css
 
 # Create config
 
-crosswind init
-```Update your`crosswind.config.ts`:
+cssx init
+```Update your`css.config.ts`:
 
 ```typescript
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   content: ['./src/**/*.html'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
 } satisfies TsCssOptions
 
 export default config
@@ -256,11 +256,11 @@ export default config
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="/dist/crosswind.css">
+  <link rel="stylesheet" href="/dist/styles.css">
 </head>
 <body>
   <div class="flex items-center justify-center h-screen">
-    <h1 class="text-4xl font-bold text-blue-500">Hello Crosswind!</h1>
+    <h1 class="text-4xl font-bold text-blue-500">Hello ts-css!</h1>
   </div>
 </body>
 </html>
@@ -273,81 +273,81 @@ Pre-built binaries are available for different platforms. Download the binary th
 
 # Download the binary
 
-curl -L <https://github.com/cwcss/crosswind/releases/latest/download/crosswind-darwin-arm64> -o crosswind
+curl -L <https://github.com/cwcss/crosswind/releases/latest/download/cssx-darwin-arm64> -o crosswind
 
 # Make it executable
 
-chmod +x crosswind
+chmod +x cssx
 
 # Move it to your PATH
 
-sudo mv crosswind /usr/local/bin/crosswind
+sudo mv cssx /usr/local/bin/cssx
 ```
 
 ```sh [macOS (x64)]
 
 # Download the binary
 
-curl -L <https://github.com/cwcss/crosswind/releases/latest/download/crosswind-darwin-x64> -o crosswind
+curl -L <https://github.com/cwcss/crosswind/releases/latest/download/cssx-darwin-x64> -o crosswind
 
 # Make it executable
 
-chmod +x crosswind
+chmod +x cssx
 
 # Move it to your PATH
 
-sudo mv crosswind /usr/local/bin/crosswind
+sudo mv cssx /usr/local/bin/cssx
 ```
 
 ```sh [Linux (arm64)]
 
 # Download the binary
 
-curl -L <https://github.com/cwcss/crosswind/releases/latest/download/crosswind-linux-arm64> -o crosswind
+curl -L <https://github.com/cwcss/crosswind/releases/latest/download/cssx-linux-arm64> -o crosswind
 
 # Make it executable
 
-chmod +x crosswind
+chmod +x cssx
 
 # Move it to your PATH
 
-sudo mv crosswind /usr/local/bin/crosswind
+sudo mv cssx /usr/local/bin/cssx
 ```
 
 ```sh [Linux (x64)]
 
 # Download the binary
 
-curl -L <https://github.com/cwcss/crosswind/releases/latest/download/crosswind-linux-x64> -o crosswind
+curl -L <https://github.com/cwcss/crosswind/releases/latest/download/cssx-linux-x64> -o crosswind
 
 # Make it executable
 
-chmod +x crosswind
+chmod +x cssx
 
 # Move it to your PATH
 
-sudo mv crosswind /usr/local/bin/crosswind
+sudo mv cssx /usr/local/bin/cssx
 ```
 
 ```sh [Windows (x64)]
 
 # Download the binary
 
-curl -L <https://github.com/cwcss/crosswind/releases/latest/download/crosswind-windows-x64.exe> -o crosswind.exe
+curl -L <https://github.com/cwcss/crosswind/releases/latest/download/cssx-windows-x64.exe> -o cssx.exe
 
 # Move it to your PATH (adjust the path as needed)
 
-move crosswind.exe C:\Windows\System32\crosswind.exe
+move cssx.exe C:\Windows\System32\cssx.exe
 ```:::
 
 ::: tip
-You can also find Crosswind binaries in [GitHub releases](https://github.com/cwcss/crosswind/releases).
+You can also find ts-css binaries in [GitHub releases](https://github.com/cwcss/crosswind/releases).
 :::
 
 ## Verify Installation
 
-Verify that Crosswind is installed correctly:```bash
-crosswind --version
+Verify that ts-css is installed correctly:```bash
+cssx --version
 
 ```You should see the installed version number.
 
@@ -356,7 +356,7 @@ crosswind --version
 ### Watch Mode
 
 During development, use watch mode to automatically rebuild CSS when files change:```bash
-crosswind watch
+cssx watch
 ```This will:
 
 - Watch all files matching your content patterns
@@ -366,15 +366,15 @@ crosswind watch
 ### Build for Production
 
 When building for production:```bash
-crosswind build --minify
+cssx build --minify
 
-```Or configure minification in your`crosswind.config.ts`:
+```Or configure minification in your`css.config.ts`:
 
 ```typescript
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
   minify: process.env.NODE_ENV === 'production',
 } satisfies TsCssOptions
 
@@ -397,12 +397,12 @@ If you get permission errors when installing globally:```bash
 
 # Use sudo on macOS/Linux
 
-sudo bun add --global crosswind
+sudo bun add --global ts-css
 
 # Or install locally and use npx
 
-bun add --dev crosswind
-bunx crosswind build
+bun add ts-css
+bunx cssx build
 
 ```### TypeScript Errors
 
@@ -412,11 +412,11 @@ If you encounter TypeScript errors in your config file:
 
    bun add --dev typescript
    ```2. Use the`satisfies`keyword for type checking:```typescript
-   import type { TsCssOptions } from 'crosswind'
+   import type { TsCssOptions } from 'ts-css'
 
    const config = {
      content: ['./src/**/*.tsx'],
-     output: './dist/crosswind.css',
+     output: './dist/styles.css',
    } satisfies TsCssOptions
    ```### Build Errors
 
@@ -426,11 +426,11 @@ If the build fails:
 2. Ensure the output directory exists or can be created
 3. Run with`--verbose`for detailed error information:```bash
 
-   crosswind build --verbose
+   cssx build --verbose
    ```
 
 ## Support
 
 - [GitHub Issues](https://github.com/cwcss/crosswind/issues)
-- [Documentation](https://crosswind.sh)
+- [Documentation](https://crosswind.stacksjs.org)
 - [Discord Community](https://stacksjs.com/discord)

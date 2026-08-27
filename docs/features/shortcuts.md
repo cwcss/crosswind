@@ -17,7 +17,7 @@ Instead of writing the same combination of utilities multiple times:
 </button>
 ```Define a shortcut once and reuse it:```typescript
 
-// crosswind.config.ts
+// css.config.ts
 const config = {
   shortcuts: {
     'btn-primary': 'px-4 py-2 rounded font-semibold transition-colors bg-blue-500 text-white hover:bg-blue-600',
@@ -33,11 +33,11 @@ const config = {
 
 ```## Configuration
 
-Define shortcuts in your`crosswind.config.ts`:
+Define shortcuts in your`css.config.ts`:
 
 ```typescript
 
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   shortcuts: {
@@ -407,7 +407,7 @@ const config = {
 ### Separate Files```typescript
 
 // shortcuts/buttons.ts
-// crosswind.config.ts
+// css.config.ts
 import { buttonShortcuts } from './shortcuts/buttons'
 import { cardShortcuts } from './shortcuts/cards'
 
@@ -434,7 +434,7 @@ const config = {
 
 Share shortcuts across projects using presets:```typescript
 // presets/design-system.ts
-// crosswind.config.ts
+// css.config.ts
 import { designSystemPreset } from './presets/design-system'
 
 export const designSystemPreset = {
@@ -465,7 +465,7 @@ const config = {
    <button class="btn">✅ Works</button>
    <button class="BTN">❌ Wrong case</button>
    ```3. Config is loaded:```bash
-   crosswind build --verbose
+   cssx build --verbose
    ```
 
 ### Circular References**Problem:**```typescript

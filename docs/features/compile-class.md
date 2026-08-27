@@ -29,12 +29,12 @@ Add the`:tc:`trigger to mark utility groups for compilation:```html
 ```### 2. Build with Compile Class Enabled
 
 Configure the transformer in your config:```typescript
-// crosswind.config.ts
-import type { TsCssOptions } from 'crosswind'
+// css.config.ts
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
 
   compileClass: {
     enabled: true, // Enable the transformer
@@ -48,7 +48,7 @@ export default config
 ```### 3. Build Your Project
 
 Run the build command:```bash
-crosswind build
+cssx build
 ```The transformer will:
 
 1.**Scan Files**- Find all classes marked with`:tc:`2.**Generate Names**- Create deterministic hashed class names
@@ -202,11 +202,11 @@ export function Button({ children }: { children: React.ReactNode }) {
 ```## Build Output
 
 When compile class is enabled, you'll see statistics:```bash
-$ crosswind build
+$ cssx build
 
 🚀 Building CSS...
 ✅ Built 1243 classes in 8.45ms
-📝 Output: ./dist/crosswind.css
+📝 Output: ./dist/styles.css
 🔨 Compiled 15 class groups
 📝 Transformed 8 files
 📦 File size: 24.35 KB
@@ -370,7 +370,7 @@ Compile class adds minimal overhead:
 - <div class=":tc: flex items-center justify-between p-4 bg-white rounded shadow">
 
 ```Run build:```bash
-crosswind build
+cssx build
 ```Result:```html
 
 <div class="tc-abc123">

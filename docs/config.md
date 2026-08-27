@@ -1,20 +1,20 @@
 # Configuration
 
-Crosswind is configured using a `crosswind.config.ts`(or`crosswind.config.js`) file in your project root. The configuration file is automatically loaded when running any Crosswind command.
+ts-css is configured using a `css.config.ts`(or`css.config.js`) file in your project root. The configuration file is automatically loaded when running any ts-css command.
 
 ## Quick Start
 
 Create a configuration file using the init command:
 
 ```bash
-crosswind init
-```This creates a basic`crosswind.config.ts`file:```typescript
+cssx init
+```This creates a basic`css.config.ts`file:```typescript
 
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
 } satisfies TsCssOptions
 
 export default config
@@ -44,9 +44,9 @@ const config = {
 
 -**Type:**`string`
 -**Required:**Yes
--**Default:**`'./crosswind.css'`Path to the output CSS file.```typescript
+-**Default:**`'./styles.css'`Path to the output CSS file.```typescript
 const config = {
-  output: './dist/styles/crosswind.css',
+  output: './dist/styles/styles.css',
 } satisfies TsCssOptions
 
 ```
@@ -238,7 +238,7 @@ const config = {
 
 ```**Creating a Preset:**```typescript
 // presets/custom.ts
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 export const myCustomPreset: Partial<TsCssConfig> = {
   theme: {
@@ -252,12 +252,12 @@ export const myCustomPreset: Partial<TsCssConfig> = {
 }
 ```## Complete Configuration Example```typescript
 
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   // Required
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
 
   // Optional
   preflight: true,
@@ -306,14 +306,14 @@ export default config
 ```## Environment-Specific Configuration
 
 You can create different configurations for different environments:```typescript
-import type { TsCssOptions } from 'crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const isDev = process.env.NODE_ENV === 'development'
 const isProd = process.env.NODE_ENV === 'production'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: isProd ? './dist/crosswind.min.css' : './dist/crosswind.css',
+  output: isProd ? './dist/styles.min.css' : './dist/styles.css',
 
   preflight: true,
   minify: isProd,
@@ -326,34 +326,34 @@ const config = {
 export default config
 ```## TypeScript Support
 
-Crosswind provides full TypeScript support with type checking and autocomplete:```typescript
-import type { TsCssOptions } from 'crosswind'
+ts-css provides full TypeScript support with type checking and autocomplete:```typescript
+import type { TsCssOptions } from 'ts-css'
 
 // Use satisfies for type checking while preserving literal types
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
 } satisfies TsCssOptions
 
 export default config
 
 ```## Configuration Loading
 
-Crosswind automatically searches for configuration files in this order:
+ts-css automatically searches for configuration files in this order:
 
-1.`crosswind.config.ts`2.`crosswind.config.js`3.`crosswind.config.mjs`You can also specify a custom config path:```bash
-crosswind build --config ./config/custom.config.ts
+1.`css.config.ts`2.`css.config.js`3.`css.config.mjs`You can also specify a custom config path:```bash
+cssx build --config ./config/custom.config.ts
 ```## Configuration Override
 
 CLI options override configuration file settings:```bash
 
 # Override output path
 
-crosswind build --output ./dist/custom.css
+cssx build --output ./dist/custom.css
 
 # Override content patterns
 
-crosswind build --content "./src/**/*.tsx"
+cssx build --content "./src/**/*.tsx"
 
 ```## Best Practices
 
