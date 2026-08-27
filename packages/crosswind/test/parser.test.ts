@@ -891,6 +891,33 @@ describe('extractClasses expression attributes', () => {
     expect(result.has('active')).toBe(false)
   })
 
+  // stx picks an element's active-state classes in an `x-class` ternary. Left
+  // unscanned, the utility never generates and the element renders with its
+  // layout applied and its colour missing — white text on nothing.
+  //
+  // The plain `class=` pattern does not rescue this: its value matcher is
+  // `[^"']+`, so it stops at the ternary's first inner quote and never reaches
+  // the class strings that matter.
+  it('extracts from stx x-class bindings', () => {
+    const result = extractClasses(`<button x-class="tab === 'latest' ? 'bg-red-600 text-white' : 'bg-slate-100'">Go</button>`)
+    expect(result.has('bg-red-600')).toBe(true)
+    expect(result.has('text-white')).toBe(true)
+    expect(result.has('bg-slate-100')).toBe(true)
+  })
+
+  it('extracts from single-quoted x-class bindings', () => {
+    const result = extractClasses(`<div x-class='active ? "ring-2" : "opacity-50"'></div>`)
+    expect(result.has('ring-2')).toBe(true)
+    expect(result.has('opacity-50')).toBe(true)
+  })
+
+  // A ternary with no inner quotes is the case the plain `class=` pattern can
+  // reach, so both patterns fire; the classes still have to come out once.
+  it('extracts an x-class value that is a bare class list', () => {
+    const result = extractClasses(`<div x-class="isOpen && 'grid-cols-2'"></div>`)
+    expect(result.has('grid-cols-2')).toBe(true)
+  })
+
   it('still extracts plain and template-literal attributes', () => {
     expect(extractClasses('<div class="flex p-4" />').has('flex')).toBe(true)
     expect(extractClasses('<div className={`flex ${x} p-4`} />').has('p-4')).toBe(true)
