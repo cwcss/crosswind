@@ -1,8 +1,8 @@
-import type { CrosswindConfig } from './types'
+import type { TsCssConfig } from './types'
 import { loadConfig } from 'bunfig'
 import { tailwindPreflight } from './preflight'
 
-export const defaultConfig: CrosswindConfig = {
+export const defaultConfig: TsCssConfig = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx,stx}'],
   output: './dist/crosswind.css',
   minify: true,
@@ -526,9 +526,9 @@ export const defaultConfig: CrosswindConfig = {
 }
 
 // Lazy-loaded config to avoid top-level await (enables bun --compile)
-let _config: CrosswindConfig | null = null
+let _config: TsCssConfig | null = null
 
-export async function getConfig(): Promise<CrosswindConfig> {
+export async function getConfig(): Promise<TsCssConfig> {
   if (!_config) {
     _config = await loadConfig({
       name: 'crosswind',
@@ -541,4 +541,4 @@ export async function getConfig(): Promise<CrosswindConfig> {
 }
 
 // For backwards compatibility - synchronous access with default fallback
-export const config: CrosswindConfig = defaultConfig
+export const config: TsCssConfig = defaultConfig

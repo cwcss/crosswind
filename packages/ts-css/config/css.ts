@@ -1,6 +1,6 @@
-import type { CrosswindOptions } from '../src/types'
+import type { TsCssOptions } from '../src/types'
 
-const config: CrosswindOptions = {
+const config: TsCssOptions = {
   content: ['./example/**/*.html'],
   output: './example/output.css',
   minify: false,

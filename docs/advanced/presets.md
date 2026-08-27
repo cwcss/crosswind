@@ -82,14 +82,14 @@ export const minimalPreset: Preset = {
 ### Single Preset```typescript
 
 // crosswind.config.ts
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 import { minimalPreset } from './presets/minimal'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/crosswind.css',
   presets: [minimalPreset],
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 

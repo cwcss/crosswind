@@ -8,7 +8,7 @@ This document provides a complete reference for Crosswind's programmatic API. Us
 bun add crosswind
 ```## Core Functions
 
-### `build(config: CrosswindConfig): Promise<BuildResult>`Build CSS from content files and return the result.**Parameters:**-`config` - Complete Crosswind configuration object**Returns:**`Promise<BuildResult>`**Example:**```typescript
+### `build(config: TsCssConfig): Promise<BuildResult>`Build CSS from content files and return the result.**Parameters:**-`config` - Complete Crosswind configuration object**Returns:**`Promise<BuildResult>`**Example:**```typescript
 
 import { build } from 'crosswind'
 
@@ -38,7 +38,7 @@ const result = await build({
 console.log(`Built ${result.classes.size} classes in ${result.duration}ms`)
 console.log(`Generated CSS:\n${result.css}`)
 
-```###`buildAndWrite(config: CrosswindConfig): Promise<BuildResult>`Build CSS and write it to the output file.**Parameters:**-`config` - Complete Crosswind configuration object**Returns:**`Promise<BuildResult>`**Example:**```typescript
+```###`buildAndWrite(config: TsCssConfig): Promise<BuildResult>`Build CSS and write it to the output file.**Parameters:**-`config` - Complete Crosswind configuration object**Returns:**`Promise<BuildResult>`**Example:**```typescript
 import { buildAndWrite } from 'crosswind'
 
 const result = await buildAndWrite({
@@ -76,7 +76,7 @@ if (result.transformedFiles) {
 ### `CSSGenerator`
 
 Class responsible for generating CSS from utility classes.**Constructor:**```typescript
-new CSSGenerator(config: CrosswindConfig)
+new CSSGenerator(config: TsCssConfig)
 
 ```**Methods:**#### `generate(className: string): void`Generate CSS for a single utility class.```typescript
 import { CSSGenerator } from 'crosswind'
@@ -186,8 +186,8 @@ const config = {
   },
 }
 
-```###`loadConfig(options): Promise<CrosswindConfig>`Load configuration from file (used internally by CLI).**Parameters:**-`options.name`- Config name (default: 'crosswind')
--`options.defaultConfig` - Default configuration**Returns:**`Promise<CrosswindConfig>`**Example:**```typescript
+```###`loadConfig(options): Promise<TsCssConfig>`Load configuration from file (used internally by CLI).**Parameters:**-`options.name`- Config name (default: 'crosswind')
+-`options.defaultConfig` - Default configuration**Returns:**`Promise<TsCssConfig>`**Example:**```typescript
 import { defaultConfig, loadConfig } from 'crosswind'
 
 const config = await loadConfig({
@@ -225,9 +225,9 @@ for (const [hash, data] of compiled) {
 }
 ```## Types
 
-### `CrosswindConfig`Complete configuration interface.```typescript
+### `TsCssConfig`Complete configuration interface.```typescript
 
-interface CrosswindConfig {
+interface TsCssConfig {
   content: string[]
   output: string
   minify: boolean
@@ -244,8 +244,8 @@ interface CrosswindConfig {
   compileClass?: CompileClassConfig
 }
 
-```###`CrosswindOptions`Partial configuration for user configs.```typescript
-type CrosswindOptions = Partial<CrosswindConfig>
+```###`TsCssOptions`Partial configuration for user configs.```typescript
+type TsCssOptions = Partial<TsCssConfig>
 ```###`Theme`Theme configuration interface.```typescript
 
 interface Theme {
@@ -391,7 +391,7 @@ await analyzeUtilities()
 import { watch } from 'node:fs'
 import { buildAndWrite } from 'crosswind'
 
-async function watchMode(config: CrosswindConfig) {
+async function watchMode(config: TsCssConfig) {
   console.log('Watching for changes...')
 
   // Initial build
@@ -426,7 +426,7 @@ import { defineConfig } from 'vite'
 import { crosswindPlugin } from './plugins/crosswind'
 
 // Example Vite plugin
-export function crosswindPlugin(config: CrosswindOptions) {
+export function crosswindPlugin(config: TsCssOptions) {
   return {
     name: 'vite-plugin-crosswind',
 
@@ -547,7 +547,7 @@ import { build } from 'crosswind'
 
 const cache = new Map<string, BuildResult>()
 
-async function buildWithCache(config: CrosswindConfig) {
+async function buildWithCache(config: TsCssConfig) {
   const key = JSON.stringify(config)
 
   if (cache.has(key)) {

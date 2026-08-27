@@ -28,13 +28,13 @@ jobs:
         run: bun install
 
       - name: Build
-        run: cd packages/crosswind && bun run build
+        run: cd packages/ts-css && bun run build
 
       - name: Cross-compile Binaries
-        run: cd packages/crosswind && bun run compile:all
+        run: cd packages/ts-css && bun run compile:all
 
       - name: Package Binaries
-        run: cd packages/crosswind && bun run zip:all
+        run: cd packages/ts-css && bun run zip:all
 
       - name: Publish to npm
         run: pantry publish --npm --access public
@@ -48,10 +48,10 @@ jobs:
           install: 'false'
           release: 'true'
           release-files: |
-            packages/crosswind/bin/crosswind-linux-x64.zip
-            packages/crosswind/bin/crosswind-linux-arm64.zip
-            packages/crosswind/bin/crosswind-windows-x64.zip
-            packages/crosswind/bin/crosswind-darwin-x64.zip
-            packages/crosswind/bin/crosswind-darwin-arm64.zip
+            packages/ts-css/bin/cssx-linux-x64.zip
+            packages/ts-css/bin/cssx-linux-arm64.zip
+            packages/ts-css/bin/cssx-windows-x64.zip
+            packages/ts-css/bin/cssx-darwin-x64.zip
+            packages/ts-css/bin/cssx-darwin-arm64.zip
           release-changelog: CHANGELOG.md
           release-token: ${{ secrets.GITHUB_TOKEN }}

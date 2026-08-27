@@ -1,4 +1,4 @@
-import type { CSSRule, CrosswindConfig, ParsedClass } from './types'
+import type { CSSRule, TsCssConfig, ParsedClass } from './types'
 import type { UtilityRule } from './rules'
 import { parseClass } from './parser'
 import { defaultConfig } from './config'
@@ -1461,10 +1461,10 @@ const PREFIX_VARIANTS: Record<string, string> = {
 }
 
 // Cache for pre-processed configs to avoid redundant merging
-const processedConfigCache = new WeakMap<CrosswindConfig, ProcessedConfig>()
+const processedConfigCache = new WeakMap<TsCssConfig, ProcessedConfig>()
 
 interface ProcessedConfig {
-  config: CrosswindConfig
+  config: TsCssConfig
   variantEnabled: Record<string, boolean>
   spacingValues: Record<string, string>
   commonColors: Record<string, string>
@@ -1478,7 +1478,7 @@ interface ProcessedConfig {
   hasShortcuts: boolean
 }
 
-function processConfig(config: CrosswindConfig): ProcessedConfig {
+function processConfig(config: TsCssConfig): ProcessedConfig {
   const cached = processedConfigCache.get(config)
   if (cached) return cached
 
@@ -1724,7 +1724,7 @@ export class CSSGenerator {
   private extendColors: Record<string, string | Record<string, string>> | null = null
   private processed: ProcessedConfig
 
-  constructor(private config: CrosswindConfig) {
+  constructor(private config: TsCssConfig) {
     this.processed = processConfig(config)
     this.variantEnabled = this.processed.variantEnabled
     this.screenBreakpoints = this.processed.screenBreakpoints

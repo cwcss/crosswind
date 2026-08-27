@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-import type { CrosswindConfig } from '../src/types'
+import type { TsCssConfig } from '../src/types'
 import { existsSync, statSync, watch } from 'node:fs'
 import { unlink } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
@@ -38,7 +38,7 @@ interface AnalyzeOptions extends GlobalOptions {
 /**
  * Load custom config if specified
 */
-async function loadCustomConfig(configPath?: string): Promise<CrosswindConfig> {
+async function loadCustomConfig(configPath?: string): Promise<TsCssConfig> {
   if (configPath) {
     // Resolve against cwd — a bare `import('./x.ts')` resolves relative to
     // this module inside the installed package, so the documented
@@ -81,7 +81,7 @@ function resolveConfigPath(configPath?: string): string | null {
 /**
  * Merge CLI options with config
 */
-function mergeConfig(baseConfig: CrosswindConfig, options: BuildOptions): CrosswindConfig {
+function mergeConfig(baseConfig: TsCssConfig, options: BuildOptions): TsCssConfig {
   return {
     ...baseConfig,
     output: options.output || baseConfig.output,
@@ -100,7 +100,7 @@ function mergeConfig(baseConfig: CrosswindConfig, options: BuildOptions): Crossw
 /**
  * Run the build process
 */
-async function runBuild(buildConfig: CrosswindConfig, options: BuildOptions): Promise<void> {
+async function runBuild(buildConfig: TsCssConfig, options: BuildOptions): Promise<void> {
   // Honor verbose from the config file too — the field was typed and
   // merged but only the CLI flag was ever read.
   const verbose = options.verbose ?? buildConfig.verbose ?? false
@@ -165,7 +165,7 @@ async function runBuild(buildConfig: CrosswindConfig, options: BuildOptions): Pr
 /**
  * Setup file watching
 */
-function setupWatch(buildConfig: CrosswindConfig, options: BuildOptions): void {
+function setupWatch(buildConfig: TsCssConfig, options: BuildOptions): void {
   console.log('👀 Watching for changes...')
 
   // Reload the config file on change — the watcher previously closed over
@@ -309,14 +309,14 @@ cli
       process.exit(1)
     }
 
-    const defaultConfig = `import type { CrosswindOptions } from '@cwcss/crosswind'
+    const defaultConfig = `import type { TsCssOptions } from 'ts-css'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx,stx}'],
   output: './dist/crosswind.css',
   minify: false,
   watch: false,
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 `

@@ -125,14 +125,14 @@ Next steps:
 
 ```**Generated file:**```typescript
 
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/crosswind.css',
   minify: false,
   watch: false,
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 
@@ -494,12 +494,12 @@ const config = {
    ls -la ./src/**/*.tsx
    ```3. Validate config:```typescript
    // Use type checking
-   import type { CrosswindOptions } from 'crosswind'
+   import type { TsCssOptions } from 'crosswind'
 
    const config = {
      content: ['./src/**/*.tsx'],
      output: './dist/crosswind.css',
-   } satisfies CrosswindOptions // Type error will show if invalid
+   } satisfies TsCssOptions // Type error will show if invalid
    ```
 
 ## Performance Tips

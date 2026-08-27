@@ -33,7 +33,7 @@ When you start watch mode, Crosswind:
 
 Watch mode uses the content patterns from your configuration file:```typescript
 // crosswind.config.ts
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   content: [
@@ -42,7 +42,7 @@ const config = {
     './pages/**/*.svelte',
   ],
   output: './dist/crosswind.css',
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 
@@ -89,7 +89,7 @@ const config = {
     './pages/**/*.tsx', // Watches: ./pages
     './components/**/*.tsx', // Watches: ./components
   ],
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 ```## CLI Options
 
 Customize watch mode behavior with CLI options:```bash

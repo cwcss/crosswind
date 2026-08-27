@@ -1,15 +1,15 @@
 import type { BunPlugin } from 'bun'
-import type { CrosswindConfig, CrosswindOptions } from './types'
+import type { TsCssConfig, TsCssOptions } from './types'
 import { loadConfig } from 'bunfig'
 import { defaultConfig } from './config'
 import { CSSGenerator } from './generator'
 import { extractClasses } from './parser'
 
-export interface CrosswindPluginOptions {
+export interface TsCssPluginOptions {
   /**
    * Custom config to override default config
   */
-  config?: CrosswindOptions
+  config?: TsCssOptions
   /**
    * Include preflight CSS
    * @default true
@@ -22,7 +22,7 @@ export interface CrosswindPluginOptions {
  *
  * @example
  * ```typescript
- * import { plugin } from '@cwcss/crosswind'
+ * import { plugin } from 'ts-css'
  *
  * await Bun.build({
  *   entrypoints: ['./src/index.ts'],
@@ -31,12 +31,12 @@ export interface CrosswindPluginOptions {
  * })
  * ```
 */
-export function plugin(options: CrosswindPluginOptions = {}): BunPlugin {
+export function plugin(options: TsCssPluginOptions = {}): BunPlugin {
   return {
-    name: 'bun-plugin-crosswind',
+    name: 'bun-plugin-ts-css',
     async setup(build) {
     // Load configuration from crosswind.config.ts or use defaults
-      const loadedConfig = await loadConfig<CrosswindConfig>({
+      const loadedConfig = await loadConfig<TsCssConfig>({
         name: 'crosswind',
         defaultConfig,
       })
@@ -45,7 +45,7 @@ export function plugin(options: CrosswindPluginOptions = {}): BunPlugin {
       // shallow spread meant a partial override like
       // `theme: { colors: { brand: '#f00' } }` replaced the ENTIRE default
       // palette and every text-red-500 style stopped resolving.
-      const mergedTheme: CrosswindConfig['theme'] = { ...loadedConfig.theme }
+      const mergedTheme: TsCssConfig['theme'] = { ...loadedConfig.theme }
       if (options.config?.theme) {
         for (const [key, value] of Object.entries(options.config.theme)) {
           const base = (loadedConfig.theme as unknown as Record<string, unknown>)[key];
@@ -89,7 +89,7 @@ export function plugin(options: CrosswindPluginOptions = {}): BunPlugin {
           ...(loadedConfig.presets || []),
           ...(options.config?.presets || []),
         ],
-      } as CrosswindConfig
+      } as TsCssConfig
 
       const includePreflight = options.includePreflight ?? true
 

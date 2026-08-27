@@ -5,7 +5,7 @@ A Bun plugin that automatically generates and injects Crosswind CSS into your HT
 ## Installation
 
 ```bash
-bun add @cwcss/crosswind
+bun add ts-css
 ```
 
 ## Quick Start**1. Create your HTML file**(`src/template.html`)
@@ -32,7 +32,7 @@ document.body.innerHTML = template
 ```**3. Build with the plugin**:
 
 ```typescript
-import { plugin } from '@cwcss/crosswind'
+import { plugin } from 'ts-css'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],
@@ -49,7 +49,7 @@ await Bun.build({
 
 ### Basic Configuration```typescript
 
-import { plugin } from '@cwcss/crosswind'
+import { plugin } from 'ts-css'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],
@@ -62,7 +62,7 @@ await Bun.build({
 })
 
 ```### Custom Theme```typescript
-import { plugin } from '@cwcss/crosswind'
+import { plugin } from 'ts-css'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],
@@ -92,7 +92,7 @@ await Bun.build({
 })
 ```### Advanced Configuration```typescript
 
-import { plugin } from '@cwcss/crosswind'
+import { plugin } from 'ts-css'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],
@@ -130,7 +130,7 @@ Creates a Crosswind Bun plugin instance.
 
 #### Options
 
--**`config`**(`Partial<CrosswindConfig>`) - Custom Crosswind configuration
+-**`config`**(`Partial<TsCssConfig>`) - Custom Crosswind configuration
 
   - `minify`- Minify the generated CSS
 
@@ -186,9 +186,9 @@ The plugin is highly performant:
 ## TypeScript Support
 
 The plugin is fully typed. Import the types:```typescript
-import type { CrosswindPluginOptions } from '@cwcss/crosswind'
+import type { TsCssPluginOptions } from 'ts-css'
 
-const options: CrosswindPluginOptions = {
+const options: TsCssPluginOptions = {
   config: {
     minify: true,
   },
@@ -197,7 +197,7 @@ const options: CrosswindPluginOptions = {
 
 The plugin also respects`crosswind.config.ts`in your project root:```typescript
 // crosswind.config.ts
-import type { CrosswindOptions } from '@cwcss/crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 export default {
   minify: true,
@@ -206,7 +206,7 @@ export default {
       primary: '#3b82f6',
     },
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 ```
 

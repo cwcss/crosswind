@@ -1,4 +1,4 @@
-import type { CrosswindConfig, ParsedClass, UtilityRuleResult } from './types'
+import type { TsCssConfig, ParsedClass, UtilityRuleResult } from './types'
 import { colorModifierSlashIndex } from './color-modifier'
 import { advancedRules } from './rules-advanced'
 import { effectsRules } from './rules-effects'
@@ -32,7 +32,7 @@ const BORDER_SIDE_WIDTH_WIDTHMAP: Record<string, string> = {
 }
 
 
-export type UtilityRule = (_parsed: ParsedClass, _config: CrosswindConfig) => Record<string, string> | UtilityRuleResult | undefined
+export type UtilityRule = (_parsed: ParsedClass, _config: TsCssConfig) => Record<string, string> | UtilityRuleResult | undefined
 
 /**
  * Built-in utility rules

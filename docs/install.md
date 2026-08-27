@@ -85,12 +85,12 @@ crosswind watch
 ```## Configuration
 
 The`crosswind init`command creates a basic`crosswind.config.ts`file:```typescript
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/crosswind.css',
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 
@@ -110,7 +110,7 @@ crosswind init
 ```Update your`crosswind.config.ts`:
 
 ```typescript
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   content: [
@@ -120,7 +120,7 @@ const config = {
     './components/**/*.{js,ts,jsx,tsx}',
   ],
   output: './styles/crosswind.css',
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 ```Import the generated CSS in your app:```typescript
@@ -151,7 +151,7 @@ crosswind init
 ```Update your`crosswind.config.ts`:
 
 ```typescript
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   content: [
@@ -161,7 +161,7 @@ const config = {
     './app.vue',
   ],
   output: './assets/css/crosswind.css',
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 ```Import in your`app.vue`or main layout:```vue
@@ -182,14 +182,14 @@ crosswind init
 ```Update your`crosswind.config.ts`:
 
 ```typescript
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   content: [
     './src/**/*.{html,js,svelte,ts}',
   ],
   output: './static/crosswind.css',
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 ```Import in your root layout:```html
@@ -211,14 +211,14 @@ crosswind init
 ```Update your`crosswind.config.ts`:
 
 ```typescript
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   content: [
     './src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
   ],
   output: './public/crosswind.css',
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 
@@ -243,12 +243,12 @@ crosswind init
 ```Update your`crosswind.config.ts`:
 
 ```typescript
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   content: ['./src/**/*.html'],
   output: './dist/crosswind.css',
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 ```Link the CSS in your HTML:```html
@@ -376,7 +376,7 @@ const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/crosswind.css',
   minify: process.env.NODE_ENV === 'production',
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 ```## Next Steps
 
@@ -412,12 +412,12 @@ If you encounter TypeScript errors in your config file:
 
    bun add --dev typescript
    ```2. Use the`satisfies`keyword for type checking:```typescript
-   import type { CrosswindOptions } from 'crosswind'
+   import type { TsCssOptions } from 'crosswind'
 
    const config = {
      content: ['./src/**/*.tsx'],
      output: './dist/crosswind.css',
-   } satisfies CrosswindOptions
+   } satisfies TsCssOptions
    ```### Build Errors
 
 If the build fails:

@@ -1,11 +1,11 @@
-# @cwcss/crosswind
+# ts-css
 
 A performant utility-first CSS engine, compatible with Tailwind CSS. Built with TypeScript and optimized for Bun.
 
 ## Installation
 
 ```bash
-bun add @cwcss/crosswind
+bun add ts-css
 ```
 
 ## Quick Start
@@ -13,7 +13,7 @@ bun add @cwcss/crosswind
 ### Programmatic API
 
 ```typescript
-import { CSSGenerator, defaultConfig } from '@cwcss/crosswind'
+import { CSSGenerator, defaultConfig } from 'ts-css'
 
 const gen = new CSSGenerator(defaultConfig)
 gen.generate('flex')
@@ -32,7 +32,7 @@ const css = gen.toCSS(true) // true = include preflight
 ### Build API
 
 ```typescript
-import { build } from '@cwcss/crosswind'
+import { build } from 'ts-css'
 
 const result = await build({
   content: ['./src/**/*.html', './src/**/*.tsx'],
@@ -54,7 +54,7 @@ crosswind build --minify
 Create a `crosswind.config.ts` in your project root:
 
 ```typescript
-import type { CrosswindConfig } from '@cwcss/crosswind'
+import type { TsCssConfig } from 'ts-css'
 
 export default {
   content: ['./src/**/*.{html,tsx,stx}'],
@@ -79,7 +79,7 @@ export default {
 
   safelist: ['bg-brand-500', 'text-white'],
   blocklist: ['opacity-0'],
-} satisfies Partial<CrosswindConfig>
+} satisfies Partial<TsCssConfig>
 ```
 
 ### Theme
@@ -540,7 +540,7 @@ Prefix with `!` to apply `!important`:
 ## Presets
 
 ```typescript
-import type { Preset } from '@cwcss/crosswind'
+import type { Preset } from 'ts-css'
 
 const myPreset: Preset = {
   name: 'my-preset',

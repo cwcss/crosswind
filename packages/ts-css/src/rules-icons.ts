@@ -1,4 +1,4 @@
-import type { CrosswindConfig, ParsedClass } from './types'
+import type { TsCssConfig, ParsedClass } from './types'
 import type { UtilityRule } from './rules'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -176,7 +176,7 @@ function resolveIcon(base: string): { collection: IconifyJSONCollection, icon: I
   return undefined
 }
 
-export const iconRule: UtilityRule = (parsed: ParsedClass, _config: CrosswindConfig) => {
+export const iconRule: UtilityRule = (parsed: ParsedClass, _config: TsCssConfig) => {
   if (!ICON_RE.test(parsed.base)) return undefined
   const resolved = resolveIcon(parsed.base)
   if (!resolved) return undefined

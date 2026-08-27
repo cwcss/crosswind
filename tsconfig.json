@@ -6,7 +6,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "paths": {
-      "@cwcss/crosswind": ["./packages/crosswind/src/index.ts"]
+      "ts-css": ["./packages/ts-css/src/index.ts"]
     },
     "resolveJsonModule": true,
     "types": ["bun"],
@@ -26,7 +26,7 @@
   },
   "exclude": [
     "pantry",
-    "packages/crosswind/examples/**/*",
+    "packages/ts-css/examples/**/*",
     "benchmark"
   ]
 }

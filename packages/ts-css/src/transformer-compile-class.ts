@@ -1,4 +1,4 @@
-import type { CrosswindConfig } from './types'
+import type { TsCssConfig } from './types'
 
 export interface CompileClassOptions {
   /**
@@ -220,7 +220,7 @@ export class CompileClassTransformer {
   /**
    * Generate CSS for compiled classes
   */
-  generateCSS(config: CrosswindConfig, generator: any): string {
+  generateCSS(config: TsCssConfig, generator: any): string {
     const compiledClasses = this.getCompiledClasses()
     let css = ''
 

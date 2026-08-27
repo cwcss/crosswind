@@ -146,12 +146,12 @@ Create a configuration file:```bash
 crosswind init
 ```This creates a`crosswind.config.ts`file:```typescript
 
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/crosswind.css',
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 
@@ -272,7 +272,7 @@ const config = {
       mono: ['Fira Code', 'monospace'],
     },
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 ```### Shortcuts
 
 Create reusable utility combinations:```typescript
@@ -282,7 +282,7 @@ const config = {
     'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600',
     'card': 'rounded-lg shadow-md p-6 bg-white',
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 ```Use shortcuts like any other utility:```html
 <button class="btn-primary">Click Me</button>

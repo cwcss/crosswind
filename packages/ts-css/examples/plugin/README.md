@@ -20,7 +20,7 @@ The plugin works by intercepting HTML imports in your TypeScript/JavaScript code
 
 ### Basic Setup```typescript
 
-import { plugin } from '@cwcss/crosswind'
+import { plugin } from 'ts-css'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],
@@ -36,7 +36,7 @@ import html from './index.html'
 document.body.innerHTML = html
 ```### With Custom Configuration```typescript
 
-import { plugin } from '@cwcss/crosswind'
+import { plugin } from 'ts-css'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],

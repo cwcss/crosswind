@@ -9,6 +9,5 @@ lib-cov
 logs
 node_modules
 temp
-packages/crosswind/bin/crosswind
-packages/crosswind/bin/crosswind
+packages/ts-css/bin/cssx
 pantry
