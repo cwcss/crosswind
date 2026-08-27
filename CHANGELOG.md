@@ -1,3 +1,17 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.18...v0.2.19)
+
+## 🐛 Bug Fixes
+
+- **generator**: let an explicit utility override an icon's defaults ([fd033ff](https://github.com/cwcss/crosswind/commit/fd033ff)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.2.19 ([1e3a91e](https://github.com/cwcss/crosswind/commit/1e3a91e)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.17...v0.2.18)
 
 ## 🐛 Bug Fixes
