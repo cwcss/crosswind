@@ -35,9 +35,9 @@ export function plugin(options: TsCssPluginOptions = {}): BunPlugin {
   return {
     name: 'bun-plugin-ts-css',
     async setup(build) {
-    // Load configuration from crosswind.config.ts or use defaults
+    // Load configuration from css.config.ts or use defaults
       const loadedConfig = await loadConfig<TsCssConfig>({
-        name: 'crosswind',
+        name: 'css',
         defaultConfig,
       })
 

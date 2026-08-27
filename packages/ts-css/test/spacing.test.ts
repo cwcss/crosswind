@@ -222,7 +222,7 @@ describe('Spacing Utilities', () => {
 
   // Regression: decimal / off-scale numeric tokens. The Tailwind v3 spacing
   // table is fixed (`0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, ...`), so
-  // `p-4.5` falls off the table. Previously crosswind emitted the raw
+  // `p-4.5` falls off the table. Previously ts-css emitted the raw
   // number as the CSS value (`padding: 4.5;` — invalid CSS, silently
   // dropped by browsers). Tailwind v4's scaling behavior handles this by
   // multiplying by `0.25rem`, and we now mirror that so drivly-style

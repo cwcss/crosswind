@@ -39,7 +39,7 @@ describe('Grid Utilities', () => {
     // Regression: `grid-cols-[300px_1fr]` must emit a space-separated value.
     // Tailwind's arbitrary-value underscore convention requires `_` → ` `,
     // because CSS class names can't contain literal spaces. Previously
-    // crosswind preserved underscores inside any parentheses, which was fine
+    // ts-css preserved underscores inside any parentheses, which was fine
     // for `grid-cols-[300px_1fr]` (no parens) but still mis-emitted because
     // the grid-cols rule passed the value through verbatim.
     it('should convert underscores to spaces in arbitrary multi-track columns', () => {

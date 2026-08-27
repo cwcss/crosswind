@@ -4,7 +4,7 @@ import { join } from 'node:path'
 
 // End-to-end tests for the CLI config resolution (issue #15): `--config`
 // with a relative path must resolve from the invocation cwd (not the CLI's
-// install dir), and with no flag the cwd's crosswind.config.ts must be
+// install dir), and with no flag the cwd's css.config.ts must be
 // auto-discovered — including output path, safelist, and shortcuts.
 
 const CLI = join(import.meta.dir, '..', 'bin', 'cli.ts')
@@ -24,7 +24,7 @@ describe('CLI config resolution (issue #15)', () => {
   beforeAll(async () => {
     await mkdir(join(TEST_DIR, 'src'), { recursive: true })
     await writeFile(
-      join(TEST_DIR, 'crosswind.config.ts'),
+      join(TEST_DIR, 'css.config.ts'),
       `export default {
   content: ['./src/**/*.html'],
   output: './out/styles.css',
@@ -43,18 +43,18 @@ describe('CLI config resolution (issue #15)', () => {
 
   it('resolves a relative --config path against cwd', async () => {
     await rm(join(TEST_DIR, 'out'), { recursive: true, force: true })
-    const { exitCode, out } = await runCli(['build', '--config', './crosswind.config.ts'], TEST_DIR)
+    const { exitCode, out } = await runCli(['build', '--config', './css.config.ts'], TEST_DIR)
     expect(out).not.toContain('Failed to load config')
     expect(exitCode).toBe(0)
     const css = await Bun.file(join(TEST_DIR, 'out', 'styles.css')).text()
     expect(css).toContain('.bg-blue-500')
   })
 
-  it('auto-discovers crosswind.config.ts in cwd without --config', async () => {
+  it('auto-discovers css.config.ts in cwd without --config', async () => {
     await rm(join(TEST_DIR, 'out'), { recursive: true, force: true })
     const { exitCode } = await runCli(['build'], TEST_DIR)
     expect(exitCode).toBe(0)
-    // The config's output path was honored (not the ./dist/crosswind.css default)
+    // The config's output path was honored (not the ./dist/styles.css default)
     expect(await Bun.file(join(TEST_DIR, 'out', 'styles.css')).exists()).toBe(true)
   })
 

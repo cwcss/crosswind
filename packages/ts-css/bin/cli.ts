@@ -11,7 +11,7 @@ import { build, buildAndWrite } from '../src/build'
 import { config, getConfig } from '../src/config'
 import { tailwindPreflight } from '../src/preflight'
 
-const cli = new CLI('crosswind')
+const cli = new CLI('cssx')
 
 interface GlobalOptions {
   verbose?: boolean
@@ -42,7 +42,7 @@ async function loadCustomConfig(configPath?: string): Promise<TsCssConfig> {
   if (configPath) {
     // Resolve against cwd — a bare `import('./x.ts')` resolves relative to
     // this module inside the installed package, so the documented
-    // `--config ./crosswind.config.ts` form never found the project's file.
+    // `--config ./css.config.ts` form never found the project's file.
     const absolutePath = resolve(process.cwd(), configPath)
     if (!existsSync(absolutePath)) {
       console.error(`❌ Config file not found: ${absolutePath}`)
@@ -58,19 +58,19 @@ async function loadCustomConfig(configPath?: string): Promise<TsCssConfig> {
       process.exit(1)
     }
   }
-  // No --config: auto-discover crosswind.config.{ts,js,...} in cwd via
+  // No --config: auto-discover css.config.{ts,js,...} in cwd via
   // bunfig, so a project's output/content/theme/safelist are honored.
   return getConfig()
 }
 
 /**
  * Resolve the config file path in play (explicit --config or the
- * auto-discovered crosswind.config.* in cwd), if any.
+ * auto-discovered css.config.* in cwd), if any.
 */
 function resolveConfigPath(configPath?: string): string | null {
   if (configPath)
     return resolve(process.cwd(), configPath)
-  for (const candidate of ['crosswind.config.ts', 'crosswind.config.js', 'crosswind.config.mjs']) {
+  for (const candidate of ['css.config.ts', 'css.config.js', 'css.config.mjs']) {
     const abs = resolve(process.cwd(), candidate)
     if (existsSync(abs))
       return abs
@@ -169,7 +169,7 @@ function setupWatch(buildConfig: TsCssConfig, options: BuildOptions): void {
   console.log('👀 Watching for changes...')
 
   // Reload the config file on change — the watcher previously closed over
-  // the resolved config forever, so edits to crosswind.config.ts (theme,
+  // the resolved config forever, so edits to css.config.ts (theme,
   // content, safelist) were silently ignored until a restart. Re-imports
   // are cache-busted with a query param since Bun caches module imports.
   const configRef = { current: buildConfig }
@@ -258,11 +258,11 @@ cli
   .option('--config <path>', 'Path to config file')
   .option('--verbose', 'Show detailed output')
   .option('--no-preflight', 'Skip preflight CSS')
-  .example('crosswind build')
-  .example('crosswind build --output ./dist/styles.css')
-  .example('crosswind build --minify --watch')
-  .example('crosswind build --verbose')
-  .example('crosswind build --config ./custom.config.ts')
+  .example('cssx build')
+  .example('cssx build --output ./dist/styles.css')
+  .example('cssx build --minify --watch')
+  .example('cssx build --verbose')
+  .example('cssx build --config ./custom.config.ts')
   .action(async (options: BuildOptions) => {
     const baseConfig = await loadCustomConfig(options.config)
     const buildConfig = mergeConfig(baseConfig, options)
@@ -284,9 +284,9 @@ cli
   .option('--content <pattern>', 'Content file pattern')
   .option('--config <path>', 'Path to config file')
   .option('--verbose', 'Show detailed output')
-  .example('crosswind watch')
-  .example('crosswind watch --output ./dist/styles.css')
-  .example('crosswind watch --verbose')
+  .example('cssx watch')
+  .example('cssx watch --output ./dist/styles.css')
+  .example('cssx watch --verbose')
   .action(async (options: BuildOptions) => {
     const baseConfig = await loadCustomConfig(options.config)
     const buildConfig = mergeConfig(baseConfig, options)
@@ -297,12 +297,12 @@ cli
 
 // Init command - Create a config file
 cli
-  .command('init', 'Create a crosswind.config.ts file')
+  .command('init', 'Create a css.config.ts file')
   .option('--force', 'Overwrite existing config file')
-  .example('crosswind init')
-  .example('crosswind init --force')
+  .example('cssx init')
+  .example('cssx init --force')
   .action(async (options: InitOptions) => {
-    const configPath = './crosswind.config.ts'
+    const configPath = './css.config.ts'
 
     if (existsSync(configPath) && !options.force) {
       console.error('❌ Config file already exists. Use --force to overwrite.')
@@ -313,7 +313,7 @@ cli
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx,stx}'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
   minify: false,
   watch: false,
 } satisfies TsCssOptions
@@ -323,10 +323,10 @@ export default config
 
     try {
       await Bun.write(configPath, defaultConfig)
-      console.log('✅ Created crosswind.config.ts')
+      console.log('✅ Created css.config.ts')
       console.log('\nNext steps:')
-      console.log('  1. Update the content paths in crosswind.config.ts')
-      console.log('  2. Run: crosswind build')
+      console.log('  1. Update the content paths in css.config.ts')
+      console.log('  2. Run: cssx build')
     }
     catch (error) {
       console.error('❌ Failed to create config file:', error)
@@ -341,9 +341,9 @@ cli
   .option('--verbose', 'Show detailed output')
   .option('--json', 'Output as JSON')
   .option('--top <n>', 'Show top N most used classes', { default: 10 })
-  .example('crosswind analyze')
-  .example('crosswind analyze --top 20')
-  .example('crosswind analyze --json')
+  .example('cssx analyze')
+  .example('cssx analyze --top 20')
+  .example('cssx analyze --json')
   .action(async (options: AnalyzeOptions) => {
     try {
       const baseConfig = await loadCustomConfig(options.config)
@@ -457,7 +457,7 @@ cli
   .command('clean', 'Remove the output CSS file')
   .option('--config <path>', 'Path to config file')
   .option('--output <path>', 'Output CSS file path (defaults to the config output)')
-  .example('crosswind clean')
+  .example('cssx clean')
   .action(async (options: GlobalOptions & { output?: string }) => {
     try {
       const baseConfig = await loadCustomConfig(options.config)
@@ -482,8 +482,8 @@ cli
 cli
   .command('preflight', 'Generate preflight CSS only')
   .option('--output <path>', 'Output CSS file path', { default: './preflight.css' })
-  .example('crosswind preflight')
-  .example('crosswind preflight --output ./reset.css')
+  .example('cssx preflight')
+  .example('cssx preflight --output ./reset.css')
   .action(async (options: { output?: string }) => {
     try {
       const outputPath = options.output || './preflight.css'

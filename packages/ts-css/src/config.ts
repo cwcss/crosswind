@@ -4,7 +4,7 @@ import { tailwindPreflight } from './preflight'
 
 export const defaultConfig: TsCssConfig = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx,stx}'],
-  output: './dist/crosswind.css',
+  output: './dist/styles.css',
   minify: true,
   watch: false,
   theme: {
@@ -531,8 +531,7 @@ let _config: TsCssConfig | null = null
 export async function getConfig(): Promise<TsCssConfig> {
   if (!_config) {
     _config = await loadConfig({
-      name: 'crosswind',
-      alias: 'css',
+      name: 'css',
       defaultConfig,
     })
   }

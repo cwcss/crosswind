@@ -66,7 +66,7 @@ export interface BracketSyntaxConfig {
 
 /**
  * Web-font loading. Crosswind maps `font-*` utilities to family stacks, but it
- * never loaded the actual font files — declare them here and crosswind emits the
+ * never loaded the actual font files — declare them here and ts-css emits the
  * `@import` / `@font-face` so the fonts render with zero extra wiring.
  */
 export interface FontConfig {
