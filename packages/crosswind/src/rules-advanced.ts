@@ -262,6 +262,19 @@ function resolveDivideWidth(parsed: { value?: string, arbitrary: boolean }): str
   return undefined
 }
 
+// The parser strips the brackets off an arbitrary value only when there is no
+// opacity modifier, so `divide-[#262625]` arrives bare while
+// `divide-[#262625]/50` still arrives wrapped. Unwrap the colour half (leaving
+// any modifier attached) so both forms reach the shared resolver.
+function unwrapArbitraryColor(value: string): string {
+  const slashIdx = colorModifierSlashIndex(value)
+  const color = slashIdx === -1 ? value : value.slice(0, slashIdx)
+  if (color.charCodeAt(0) !== 91 || color.charCodeAt(color.length - 1) !== 93)
+    return value
+  const bare = color.slice(1, -1).replace(/_/g, ' ')
+  return slashIdx === -1 ? bare : bare + value.slice(slashIdx)
+}
+
 // Divide utilities (borders between children)
 export const divideRule: UtilityRule = (parsed, config) => {
   // Handle divide styles: divide-solid, divide-dashed, divide-dotted
@@ -330,74 +343,26 @@ export const divideRule: UtilityRule = (parsed, config) => {
   }
 
   if (parsed.utility === 'divide' && parsed.value) {
-    // Handle opacity modifier: divide-white/10, divide-blue-500/50
-    const slashIdx = colorModifierSlashIndex(parsed.value)
-    let colorKey = parsed.value
-    let opacity: number | undefined
+    // Divide colours used to re-implement the shared colour resolver inline,
+    // and had drifted out of sync with it: named colours and `divide-current`
+    // worked, but every arbitrary value (`divide-[#262625]`,
+    // `divide-[var(--line)]`) generated no CSS at all. That is worse than a
+    // wrong colour - a `divide-y divide-[var(--line)]` pair silently fell back
+    // to the preflight border colour, so a dark theme grew bright dividers.
+    // Delegating keeps divide at parity with bg/text/border/ring for free.
+    const value = unwrapArbitraryColor(parsed.value)
 
-    if (slashIdx !== -1) {
-      colorKey = parsed.value.slice(0, slashIdx)
-      const opacityStr = parsed.value.slice(slashIdx + 1)
-      if (opacityStr.charCodeAt(0) === 91 && opacityStr.charCodeAt(opacityStr.length - 1) === 93) {
-        opacity = Number.parseFloat(opacityStr.slice(1, -1))
-        if (Number.isNaN(opacity) || opacity < 0 || opacity > 1) return undefined
-      }
-      else if (parsed.modifierArbitrary) {
-        opacity = Number.parseFloat(opacityStr)
-        if (Number.isNaN(opacity) || opacity < 0 || opacity > 1) return undefined
-      }
-      else {
-        const opacityInt = Number.parseInt(opacityStr, 10)
-        if (Number.isNaN(opacityInt) || opacityInt < 0 || opacityInt > 100) return undefined
-        opacity = opacityInt / 100
-      }
-    }
+    // `auto` is a valid keyword for the resolver (accent-color takes it) but
+    // not for border-color, so it must not leak in here as invalid CSS.
+    if (value === 'auto')
+      return undefined
 
-    const makeDivideColor = (color: string) => {
-      // Apply opacity if present
-      if (opacity !== undefined) {
-        // Hex color -> rgb with alpha
-        if (color.charCodeAt(0) === 35) {
-          let hex = color.slice(1)
-          // Expand short hex (#rgb / #rgba) per digit; slicing #f00a as six
-          // digits produced a NaN channel.
-          if (hex.length === 3 || hex.length === 4) hex = hex.split('').map(c => c + c).join('')
-          const r = Number.parseInt(hex.slice(0, 2), 16)
-          const g = Number.parseInt(hex.slice(2, 4), 16)
-          const b = Number.parseInt(hex.slice(4, 6), 16)
-          color = `rgb(${r} ${g} ${b} / ${opacity})`
-        }
-        // oklch -> add alpha
-        else if (color.startsWith('oklch(')) {
-          color = color.replace(')', ` / ${opacity})`)
-        }
-      }
+    const color = resolveColorValue(value, config, parsed.modifierArbitrary)
+    if (color !== undefined) {
       return {
         properties: { 'border-color': color } as Record<string, string>,
         childSelector: '> :not([hidden]) ~ :not([hidden])',
       }
-    }
-
-    // Special color keywords
-    const specialColors: Record<string, string> = { current: 'currentColor', transparent: 'transparent', inherit: 'inherit' }
-    if (specialColors[colorKey]) return makeDivideColor(specialColors[colorKey])
-
-    // Direct color name (white, black, etc.)
-    const directColor = config.theme.colors[colorKey]
-    if (typeof directColor === 'string') return makeDivideColor(directColor)
-
-    // Nested color object referenced by its bare name → `DEFAULT` shade.
-    if (typeof directColor === 'object' && directColor !== null && typeof directColor.DEFAULT === 'string') {
-      return makeDivideColor(directColor.DEFAULT)
-    }
-
-    // divide-{color}-{shade}
-    const parts = colorKey.split('-')
-    if (parts.length >= 2) {
-      const shade = parts[parts.length - 1]
-      const colorName = parts.slice(0, -1).join('-')
-      const colorValue = config.theme.colors[colorName]
-      if (typeof colorValue === 'object' && colorValue[shade]) return makeDivideColor(colorValue[shade])
     }
   }
 }
