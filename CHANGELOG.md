@@ -1,3 +1,17 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.17...v0.2.18)
+
+## 🐛 Bug Fixes
+
+- **parser**: generate the classes an stx x-class binding names ([82f3077](https://github.com/cwcss/crosswind/commit/82f3077)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.2.18 ([b9c15b0](https://github.com/cwcss/crosswind/commit/b9c15b0)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.16...v0.2.17)
 
 ## 🐛 Bug Fixes
