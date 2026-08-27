@@ -1,3 +1,17 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.16...v0.2.17)
+
+## 🐛 Bug Fixes
+
+- **divide**: resolve arbitrary colours instead of re-implementing the resolver ([007fa2a](https://github.com/cwcss/crosswind/commit/007fa2a)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.2.17 ([2bc65d9](https://github.com/cwcss/crosswind/commit/2bc65d9)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.15...v0.2.16)
 
 ## 🐛 Bug Fixes
