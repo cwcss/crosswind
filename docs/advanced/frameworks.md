@@ -23,13 +23,13 @@ bunx crosswind init
 ```**Configuration:**```typescript
 
 // crosswind.config.ts
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   output: './src/crosswind.css',
   minify: process.env.NODE_ENV === 'production',
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 

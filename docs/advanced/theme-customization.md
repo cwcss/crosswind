@@ -8,7 +8,7 @@ The theme configuration defines the design tokens that utilities are generated f
 
 ```typescript
 // crosswind.config.ts
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   theme: {
@@ -21,7 +21,7 @@ const config = {
       8: '2rem', // p-8, m-8, etc.
     },
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 ```## Colors
@@ -339,7 +339,7 @@ const config = {
 </div>
 ```## Complete Theme Example```typescript
 
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   theme: {
@@ -481,7 +481,7 @@ const config = {
       '2xl': '1536px',
     },
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 

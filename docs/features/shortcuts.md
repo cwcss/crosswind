@@ -37,7 +37,7 @@ Define shortcuts in your`crosswind.config.ts`:
 
 ```typescript
 
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   shortcuts: {
@@ -56,7 +56,7 @@ const config = {
     'input': 'border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500',
     'input-error': 'input border-red-500 focus:ring-red-500',
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 

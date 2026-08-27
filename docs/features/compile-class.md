@@ -30,7 +30,7 @@ Add the`:cw:`trigger to mark utility groups for compilation:```html
 
 Configure the transformer in your config:```typescript
 // crosswind.config.ts
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
@@ -41,7 +41,7 @@ const config = {
     trigger: ':cw:', // Trigger string (default)
     classPrefix: 'cw-', // Prefix for generated names (default)
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 
@@ -84,7 +84,7 @@ const config = {
   compileClass: {
     enabled: true, // Enable compile class transformer
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 ```### Custom Trigger
 
@@ -94,7 +94,7 @@ const config = {
     enabled: true,
     trigger: ':compile:', // Use custom trigger
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 ```Usage:```html
 
 <div class=":compile: flex items-center p-4">Content</div>
@@ -107,7 +107,7 @@ const config = {
     enabled: true,
     classPrefix: 'c-', // Use 'c-' prefix instead of 'cw-'
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 ```Generated classes:`c-abc123`, `c-def456`, etc.
 
 ### Layer Configuration
@@ -120,7 +120,7 @@ const config = {
     enabled: true,
     layer: 'components', // Use 'components' layer
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 ```
 
 ## Benefits

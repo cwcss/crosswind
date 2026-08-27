@@ -18,8 +18,8 @@
 // @ts-ignore - mitata is an optional benchmark dependency
 import { bench, group, run } from 'mitata'
 import { readFileSync } from 'node:fs'
-import { CSSGenerator } from '../packages/crosswind/src/generator'
-import { defaultConfig } from '../packages/crosswind/src/config'
+import { CSSGenerator } from '../packages/ts-css/src/generator'
+import { defaultConfig } from '../packages/ts-css/src/config'
 
 // UnoCSS setup
 import { createGenerator } from '@unocss/core'

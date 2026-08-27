@@ -10,12 +10,12 @@ Create a configuration file using the init command:
 crosswind init
 ```This creates a basic`crosswind.config.ts`file:```typescript
 
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/crosswind.css',
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 
@@ -34,7 +34,7 @@ const config = {
     './components/**/*.vue',
     './pages/**/*.svelte',
   ],
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 ```**Tips:**- Use specific patterns to improve scan performance
 
 - Exclude `node_modules` and build directories
@@ -47,7 +47,7 @@ const config = {
 -**Default:**`'./crosswind.css'`Path to the output CSS file.```typescript
 const config = {
   output: './dist/styles/crosswind.css',
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 ```
 
@@ -101,7 +101,7 @@ const config = {
       full: '9999px',
     },
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 ```
 
 ### preflight
@@ -111,7 +111,7 @@ const config = {
 -**Default:**`true`Include CSS reset/normalize styles (similar to Tailwind's preflight).```typescript
 const config = {
   preflight: true, // Include reset styles
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 ```
 
@@ -129,7 +129,7 @@ Preflight includes:
 -**Default:**`false`Minify the output CSS for production.```typescript
 const config = {
   minify: true, // Enable minification
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 ```
 
 When enabled, the output CSS is minified by removing:
@@ -150,7 +150,7 @@ const config = {
     classPrefix: 'cw-', // Prefix for generated names (default)
     layer: 'shortcuts', // Layer name (default)
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 ```**Options:**-**enabled**- Enable or disable the transformer
 -**trigger**- String to mark classes for compilation (e.g., `:cw:`)
@@ -182,7 +182,7 @@ const config = {
     'card': 'rounded-lg shadow-md p-6 bg-white',
     'input': 'border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500',
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 ```**Usage:**```html
 <button class="btn-primary">Click Me</button>
@@ -206,7 +206,7 @@ const config = {
       'custom-property': match.groups.value,
     }),
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 ```**Example:**```typescript
 const config = {
@@ -220,7 +220,7 @@ const config = {
       margin: `${match.groups.size}px`,
     }),
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 ```
 
 ### presets
@@ -234,13 +234,13 @@ const config = {
   presets: [
     myCustomPreset,
   ],
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 ```**Creating a Preset:**```typescript
 // presets/custom.ts
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
-export const myCustomPreset: Partial<CrosswindConfig> = {
+export const myCustomPreset: Partial<TsCssConfig> = {
   theme: {
     colors: {
       brand: '#3b82f6',
@@ -252,7 +252,7 @@ export const myCustomPreset: Partial<CrosswindConfig> = {
 }
 ```## Complete Configuration Example```typescript
 
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   // Required
@@ -299,14 +299,14 @@ const config = {
       'background-image': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     },
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 
 ```## Environment-Specific Configuration
 
 You can create different configurations for different environments:```typescript
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const isDev = process.env.NODE_ENV === 'development'
 const isProd = process.env.NODE_ENV === 'production'
@@ -321,19 +321,19 @@ const config = {
   compileClass: {
     enabled: isProd, // Only compile in production
   },
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 ```## TypeScript Support
 
 Crosswind provides full TypeScript support with type checking and autocomplete:```typescript
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 // Use satisfies for type checking while preserving literal types
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   output: './dist/crosswind.css',
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 
@@ -357,7 +357,7 @@ crosswind build --content "./src/**/*.tsx"
 
 ```## Best Practices
 
-1.**Use TypeScript**- Enable type checking with`satisfies CrosswindOptions`
+1.**Use TypeScript**- Enable type checking with`satisfies TsCssOptions`
 2.**Specific Content Patterns**- Use precise glob patterns for better performance
 3.**Environment Variables**- Use environment variables for environment-specific settings
 4.**Organize Presets**- Extract common configurations into reusable presets

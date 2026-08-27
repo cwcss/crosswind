@@ -1,0 +1,225 @@
+import { describe, expect, it } from 'bun:test'
+import { defaultConfig } from '../src/config'
+import { CSSGenerator } from '../src/generator'
+
+describe('Pseudo-Class and Pseudo-Element Variants', () => {
+  describe('Form pseudo-classes', () => {
+    it('should handle placeholder variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('placeholder:text-gray-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('::placeholder')
+      expect(css).toContain('color: oklch(55.1% 0.027 264.364)')
+    })
+
+    it('should handle selection variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('selection:bg-blue-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('::selection')
+      expect(css).toContain('background-color: oklch(62.3% 0.214 259.815)')
+    })
+
+    it('should handle file variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('file:border-blue-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('::file-selector-button')
+    })
+
+    it('should handle required variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('required:border-red-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':required')
+      expect(css).toContain('border-color: oklch(63.7% 0.237 25.331)')
+    })
+
+    it('should handle valid variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('valid:border-green-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':valid')
+      expect(css).toContain('border-color: oklch(72.3% 0.219 149.579)')
+    })
+
+    it('should handle invalid variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('invalid:border-red-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':invalid')
+    })
+
+    it('should handle read-only variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('read-only:bg-gray-100')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':read-only')
+    })
+
+    it('should handle autofill variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('autofill:bg-yellow-100')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':autofill')
+    })
+  })
+
+  describe('State pseudo-classes', () => {
+    it('should handle open variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('open:bg-blue-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('[open]')
+    })
+
+    it('should handle closed variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('closed:hidden')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':not([open])')
+    })
+
+    it('should handle empty variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('empty:hidden')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':empty')
+    })
+
+    it('should handle enabled variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('enabled:bg-white')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':enabled')
+    })
+
+    it('should handle only variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('only:m-0')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':only-child')
+    })
+
+    it('should handle target variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('target:bg-yellow-100')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':target')
+    })
+
+    it('should handle indeterminate variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('indeterminate:bg-gray-300')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':indeterminate')
+    })
+
+    it('should handle default variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('default:border-2')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':default')
+    })
+
+    it('should handle optional variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('optional:border-gray-300')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':optional')
+    })
+  })
+
+  describe('Marker pseudo-element', () => {
+    it('should handle marker variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('marker:text-blue-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('::marker')
+      expect(css).toContain('color: oklch(62.3% 0.214 259.815)')
+    })
+
+    it('should handle marker with multiple properties', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('marker:text-red-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('::marker')
+      expect(css).toContain('color: oklch(63.7% 0.237 25.331)')
+    })
+  })
+
+  describe('Complex variant combinations', () => {
+    it('should handle multiple variants together', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('hover:focus:placeholder:text-gray-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':hover')
+      expect(css).toContain(':focus')
+      expect(css).toContain('::placeholder')
+    })
+
+    it('should handle responsive with new variants', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('md:required:border-red-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@media (min-width: 768px)')
+      expect(css).toContain(':required')
+    })
+
+    it('should handle important with variants', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('!placeholder:text-gray-400')
+      const css = gen.toCSS(false)
+      expect(css).toContain('!important')
+    })
+
+    it('should handle dark mode with form variants', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('dark:invalid:text-red-400')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.dark')
+      expect(css).toContain(':invalid')
+    })
+
+    it('should combine all new pseudo-classes', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('required:text-red-500')
+      gen.generate('valid:text-green-500')
+      gen.generate('invalid:text-red-700')
+      gen.generate('optional:text-gray-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':required')
+      expect(css).toContain(':valid')
+      expect(css).toContain(':invalid')
+      expect(css).toContain(':optional')
+    })
+  })
+
+  describe('Variant edge cases', () => {
+    it('should handle chained form variants', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('focus:required:invalid:border-red-700')
+      const css = gen.toCSS(false)
+      expect(css).toContain(':focus')
+      expect(css).toContain(':required')
+      expect(css).toContain(':invalid')
+    })
+
+    it('should handle responsive + dark + form variant', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('lg:dark:placeholder:text-gray-600')
+      const css = gen.toCSS(false)
+      expect(css).toContain('@media (min-width: 1024px)')
+      expect(css).toContain('.dark')
+      expect(css).toContain('::placeholder')
+    })
+
+    it('should handle group with new variants', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('group-hover:marker:text-blue-500')
+      const css = gen.toCSS(false)
+      expect(css).toContain('.group:hover')
+      expect(css).toContain('::marker')
+    })
+  })
+})

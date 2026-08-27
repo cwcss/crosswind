@@ -33,7 +33,7 @@ A blazingly fast, utility-first CSS framework built with Bun. Crosswind generate
 ### Installation
 
 ```bash
-bun add @cwcss/crosswind
+bun add ts-css
 ```
 
 ### Quick Start
@@ -47,14 +47,14 @@ bunx crosswind init
 This creates a `crosswind.config.ts` file:
 
 ```typescript
-import type { CrosswindOptions } from '@cwcss/crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx,stx}'],
   output: './dist/crosswind.css',
   minify: false,
   watch: false,
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 ```
@@ -83,7 +83,7 @@ bunx crosswind build --output ./dist/styles.css --minify
 ### Programmatic API
 
 ```typescript
-import { CSSGenerator, defaultConfig } from '@cwcss/crosswind'
+import { CSSGenerator, defaultConfig } from 'ts-css'
 
 const gen = new CSSGenerator(defaultConfig)
 gen.generate('flex')
@@ -99,7 +99,7 @@ const css = gen.toCSS(true) // true = include preflight
 Or use the build API:
 
 ```typescript
-import { build } from '@cwcss/crosswind'
+import { build } from 'ts-css'
 
 const result = await build({
   content: ['./src/**/*.html'],
@@ -126,7 +126,7 @@ crosswind --help           # Show help
 ## Configuration
 
 ```typescript
-import type { CrosswindOptions } from '@cwcss/crosswind'
+import type { TsCssOptions } from 'ts-css'
 
 export default {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
@@ -149,10 +149,10 @@ export default {
 
   safelist: ['bg-red-500', 'text-green-500'],
   blocklist: ['debug-*'],
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 ```
 
-For full configuration reference, see [packages/crosswind/README.md](packages/crosswind/README.md).
+For full configuration reference, see [packages/ts-css/README.md](packages/ts-css/README.md).
 
 ## Available Utilities
 
@@ -229,7 +229,7 @@ Crosswind wins all 20 benchmarks across all competitors.
 
 ```bash
 bun test                            # Run all 1470+ tests
-bun test packages/crosswind/        # Run crosswind tests only
+bun test packages/ts-css/        # Run crosswind tests only
 bun test --watch                    # Watch mode
 bun run benchmark                   # Run performance benchmarks
 ```
@@ -286,8 +286,8 @@ The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
 Made with 💙
 
 <!-- Badges -->
-[npm-version-src]: https://img.shields.io/npm/v/@cwcss/crosswind?style=flat-square
-[npm-version-href]: https://npmjs.com/package/@cwcss/crosswind
+[npm-version-src]: https://img.shields.io/npm/v/ts-css?style=flat-square
+[npm-version-href]: https://npmjs.com/package/ts-css
 [github-actions-src]: https://img.shields.io/github/actions/workflow/status/cwcss/crosswind/ci.yml?style=flat-square&branch=main
 [github-actions-href]: https://github.com/cwcss/crosswind/actions?query=workflow%3Aci
 

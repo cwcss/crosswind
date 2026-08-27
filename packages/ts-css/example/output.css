@@ -1,0 +1,236 @@
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.h-screen {
+  height: 100vh;
+}
+
+.bg-gray-100 {
+  background-color: #f3f4f6;
+}
+
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-gray-900 {
+  color: #111827;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-gray-600 {
+  color: #4b5563;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.bg-blue-500 {
+  background-color: blue-500;
+}
+
+.text-white {
+  color: #fff;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.hover\:bg-blue-600:hover {
+  background-color: blue-600;
+}
+
+.focus\:outline-none:focus {
+  outline-width: none;
+}
+
+.relative {
+  position: relative;
+}
+
+.top-4 {
+  top: 1rem;
+}
+
+.z-10 {
+  z-index: 10;
+}
+
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.grid {
+  display: grid;
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.col-span-2 {
+  grid-column: span 2 / span 2;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.underline {
+  text-decoration-line: underline;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scale-150 {
+  transform: scale(1.5);
+}
+
+.rotate-45 {
+  transform: rotate(45deg);
+}
+
+.translate-x-4 {
+  transform: translateX(1rem);
+}
+
+.skew-x-12 {
+  transform: skewX(12deg);
+}
+
+.transition-all {
+  transition-property: all;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+.ease-in-out {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover\:opacity-50:hover {
+  opacity: 0.5;
+}
+
+.blur-sm {
+  filter: blur(4px);
+}
+
+.grayscale-100 {
+  filter: grayscale(1);
+}
+
+.brightness-150 {
+  filter: brightness(1.5);
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.select-none {
+  user-select: none;
+}
+
+.pointer-events-auto {
+  pointer-events: auto;
+}
+
+.fill-current {
+  fill: currentColor;
+}
+
+.stroke-current {
+  stroke: currentColor;
+}
+
+.border-collapse {
+  border-collapse: collapse;
+}
+
+.table-fixed {
+  table-layout: fixed;
+}
+
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+.scroll-p-4 {
+  scroll-padding: 1rem;
+}
+
+.snap-y {
+  scroll-snap-type: y mandatory;
+}

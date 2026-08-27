@@ -16,7 +16,7 @@ While Crosswind includes comprehensive built-in utilities, you can add custom ru
 Define custom rules in your configuration:
 
 ```typescript
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   rules: [
@@ -36,7 +36,7 @@ const config = {
       }),
     ],
   ],
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 
 export default config
 ```## Rule Format
@@ -234,7 +234,7 @@ const config = {
 ```### Using Theme Values
 
 Access theme values in custom rules:```typescript
-import type { CrosswindOptions } from 'crosswind'
+import type { TsCssOptions } from 'crosswind'
 
 const config = {
   theme: {
@@ -262,7 +262,7 @@ const config = {
       },
     ],
   ],
-} satisfies CrosswindOptions
+} satisfies TsCssOptions
 ```### Vendor Prefixes
 
 Add vendor prefixes for experimental features:```typescript
