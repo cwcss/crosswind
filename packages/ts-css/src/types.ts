@@ -118,6 +118,13 @@ export interface TsCssConfig {
   codeStrings?: CodeStringsConfig
   /** Generate :root CSS variables from theme colors (e.g., --monokai-bg: #2d2a2e) */
   cssVariables?: boolean
+  /**
+   * Modules that declare styles through the `css.create()` API. They are
+   * evaluated at build time and their atomic CSS is appended to the output.
+   *
+   * e.g. `['./src/**\/*.styles.ts']`
+   */
+  styles?: string[]
 }
 
 export interface Theme {
