@@ -25,8 +25,10 @@ gh auth status >/dev/null 2>&1 || { echo "run 'gh auth login' first" >&2; exit 1
 TAG="${1:-$(git tag --list 'v*' --sort=-v:refname | head -1)}"
 [[ -n "$TAG" ]] || { echo "no v* tag found" >&2; exit 1; }
 
+VERSION="${TAG#v}"
+
 echo "Repository : $REPO"
-echo "Release tag: $TAG"
+echo "Release tag: $TAG (ts-css@$VERSION)"
 echo
 echo "Paste the npm token, then press Enter. It will not be displayed."
 echo "It needs permission to CREATE packages (Automation, or granular with"
@@ -123,6 +125,29 @@ else
   exit 1
 fi
 
+# Confirm the package actually landed. A green workflow is not proof: the
+# publish step has previously reported errors while the run itself succeeded,
+# and the registry is the only authority on whether the version exists.
 echo
-echo "Done. Verify with: curl -s https://registry.npmjs.org/ts-css | head -c 200"
-echo "Remember to rotate the token you pasted earlier in chat."
+echo "Confirming ts-css@$VERSION on the registry ..."
+for attempt in 1 2 3 4 5 6; do
+  STATUS="$(curl -s -o /dev/null -w '%{http_code}' "https://registry.npmjs.org/ts-css/$VERSION" || echo 000)"
+  if [[ "$STATUS" == "200" ]]; then
+    echo "  ts-css@$VERSION is live: https://www.npmjs.com/package/ts-css/v/$VERSION"
+    PUBLISHED=1
+    break
+  fi
+  echo "  not visible yet (HTTP $STATUS), retrying in 10s ... [$attempt/6]"
+  sleep 10
+done
+
+if [[ "${PUBLISHED:-0}" != "1" ]]; then
+  echo >&2
+  echo "The workflow finished but ts-css@$VERSION is not on the registry." >&2
+  echo "Inspect the publish step with:" >&2
+  echo "  gh run view $RUN_ID --log --repo $REPO | grep -A5 'Publish to npm'" >&2
+  exit 1
+fi
+
+echo
+echo "Done. Rotate the token you pasted in chat — it has been exposed."
