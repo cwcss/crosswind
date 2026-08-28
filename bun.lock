@@ -10,7 +10,7 @@
     },
     "packages/ts-css": {
       "name": "ts-css",
-      "version": "0.2.20",
+      "version": "0.2.21",
       "bin": {
         "cssx": "./dist/cli.js",
       },
@@ -21,7 +21,7 @@
     },
     "packages/vscode": {
       "name": "ts-css-vscode",
-      "version": "0.2.20",
+      "version": "0.2.21",
     },
   },
   "overrides": {
