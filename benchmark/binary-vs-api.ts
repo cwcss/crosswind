@@ -1,10 +1,10 @@
 #!/usr/bin/env bun
 /**
- * Crosswind: Compiled Binary vs JS/TS API Benchmark
+ * ts-css: Compiled Binary vs JS/TS API Benchmark
  *
  * Compares two execution modes:
  * 1. JS/TS API — import and call CSSGenerator directly from TypeScript
- * 2. Compiled Binary — run the `crosswind build` CLI binary (bun --compile)
+ * 2. Compiled Binary — run the `cssx build` CLI binary (bun --compile)
  *
  * This measures real-world end-to-end performance including:
  * - File I/O (reading HTML, writing CSS)
@@ -19,7 +19,7 @@ import { CSSGenerator } from '../packages/ts-css/src/generator'
 import { defaultConfig } from '../packages/ts-css/src/config'
 import { extractClasses } from '../packages/ts-css/src/parser'
 
-const BINARY = new URL('../packages/ts-css/bin/crosswind', import.meta.url).pathname
+const BINARY = new URL('../packages/ts-css/bin/cssx', import.meta.url).pathname
 const FIXTURES_DIR = new URL('./fixtures', import.meta.url).pathname
 
 const fixtures = [
@@ -33,7 +33,7 @@ function cleanup(path: string) {
 }
 
 console.log('='.repeat(70))
-console.log('Crosswind: Compiled Binary vs JS/TS API Benchmark')
+console.log('ts-css: Compiled Binary vs JS/TS API Benchmark')
 console.log('='.repeat(70))
 console.log(`Binary: ${BINARY}`)
 console.log(`Runtime: Bun ${Bun.version}`)
@@ -96,7 +96,7 @@ for (const fixture of fixtures) {
   const outputPath = `${FIXTURES_DIR}/_bench_output.css`
   cleanup(outputPath)
 
-  // Write a temp crosswind config
+  // Write a temp ts-css config
   const configPath = `${FIXTURES_DIR}/_bench_config.ts`
   writeFileSync(configPath, `
 export default {
