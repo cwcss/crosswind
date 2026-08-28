@@ -43,23 +43,23 @@ produced non-empty CSS before timing anything.
 
 | Scenario | ts-css | UnoCSS | Tailwind v4 | Tailwind v3 |
 | --- | ---: | ---: | ---: | ---: |
-| Simple utilities (10) | **86.80 µs** | 1.09 ms | 1.23 ms | 11.95 ms |
-| Complex variants (11) | **76.88 µs** | 1.14 ms | 1.09 ms | 11.74 ms |
-| Arbitrary values (10) | **79.52 µs** | 951.58 µs | 933.17 µs | 12.30 ms |
-| Real-world components (~60) | **153.88 µs** | 1.92 ms | 1.65 ms | 14.93 ms |
-| Large scale (500) | **429.41 µs** | 8.82 ms | 2.97 ms | 16.39 ms |
-| CSS output (1000 arbitrary values) | **1.60 ms** | 117.71 ms | 4.48 ms | 32.69 ms |
-| Full project (~800) | **414.22 µs** | 7.98 ms | 2.75 ms | 17.81 ms |
+| Simple utilities (10) | **11.52 µs** | 901.82 µs | 987.70 µs | 11.77 ms |
+| Complex variants (11) | **18.42 µs** | 991.46 µs | 943.48 µs | 11.15 ms |
+| Arbitrary values (10) | **20.10 µs** | 984.42 µs | 877.84 µs | 11.15 ms |
+| Real-world components (~60) | **64.95 µs** | 1.77 ms | 1.21 ms | 11.95 ms |
+| Large scale (500) | **200.82 µs** | 6.46 ms | 2.64 ms | 13.94 ms |
+| CSS output (1000 arbitrary values) | **992.54 µs** | 97.71 ms | 3.33 ms | 26.55 ms |
+| Full project (~800) | **208.23 µs** | 4.55 ms | 1.66 ms | 13.11 ms |
 
 ### Warm rebuild
 
 | Scenario | ts-css | Tailwind v4 | UnoCSS |
 | --- | ---: | ---: | ---: |
-| Simple utilities (10) | **45.02 ns** | 105.91 ns | 42.27 µs |
-| Real-world components (~60) | **306.43 ns** | 588.55 ns | 163.76 µs |
-| Color utilities (330) | **2.20 µs** | 4.31 µs | 1.47 ms |
-| Responsive utilities (500) | **1.25 µs** | 2.69 µs | 411.78 µs |
-| Full project (~800) | **1.23 µs** | 2.77 µs | 519.58 µs |
+| Simple utilities (10) | **34.47 ns** | 100.65 ns | 34.66 µs |
+| Real-world components (~60) | **266.31 ns** | 478.79 ns | 108.84 µs |
+| Color utilities (330) | **1.35 µs** | 2.90 µs | 770.05 µs |
+| Responsive utilities (500) | **964.04 ns** | 2.12 µs | 292.76 µs |
+| Full project (~800) | **796.45 ns** | 1.89 µs | 358.63 µs |
 
 ### Style objects vs StyleX
 
@@ -68,14 +68,14 @@ the same number of atomic rules before timing anything.
 
 | Workload | ts-css | StyleX | |
 | --- | ---: | ---: | ---: |
-| simple (2 declarations) | **4.62 µs** | 417.21 µs | 90× |
-| component (8) | **48.08 µs** | 1.05 ms | 22× |
-| conditional (18) | **39.05 µs** | 719.25 µs | 18× |
-| design system (200) | **759.11 µs** | 18.83 ms | 25× |
+| simple (2 declarations) | **2.68 µs** | 165.91 µs | 62× |
+| component (8) | **28.81 µs** | 507.29 µs | 18× |
+| conditional (18) | **30.03 µs** | 427.58 µs | 14× |
+| design system (200) | **531.81 µs** | 11.05 ms | 21× |
 
 StyleX's only path from a style object to CSS is its Babel transform, so that is
 what it is measured on. A second group makes ts-css parse its own source too;
-ts-css stays 8–14× ahead there.
+ts-css stays 7–15× ahead there.
 
 ## What this benchmark used to get wrong
 
