@@ -1,3 +1,38 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.19...v0.2.20)
+
+## 🚀 Features
+
+- **style**: collect and emit styles at build time ([2c0eca8](https://github.com/cwcss/crosswind/commit/2c0eca8)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **style**: add a StyleX-style typed style API ([0f5df5c](https://github.com/cwcss/crosswind/commit/0f5df5c)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## ⚡ Performance Improvements
+
+- **generator**: memoise toCSS output ([29b6e2f](https://github.com/cwcss/crosswind/commit/29b6e2f)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## ♻️ Code Refactoring
+
+- default the class prefix to tc ([5210211](https://github.com/cwcss/crosswind/commit/5210211)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **cli**: rename the binary to cssx and the config to css.config.ts ([c84d85f](https://github.com/cwcss/crosswind/commit/c84d85f)) _(by Chris <chrisbreuer93@gmail.com>)_
+- rename the package to ts-css ([6489387](https://github.com/cwcss/crosswind/commit/6489387)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 📚 Documentation
+
+- rewrite the READMEs around both APIs ([0833060](https://github.com/cwcss/crosswind/commit/0833060)) _(by Chris <chrisbreuer93@gmail.com>)_
+- complete the ts-css rename across the docs site ([6688376](https://github.com/cwcss/crosswind/commit/6688376)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.2.20 ([e6e2717](https://github.com/cwcss/crosswind/commit/e6e2717)) _(by Chris <chrisbreuer93@gmail.com>)_
+- untrack the compiled CLI binary ([70a5a2d](https://github.com/cwcss/crosswind/commit/70a5a2d)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## bench
+
+- fix the methodology and add a StyleX comparison ([18a7e6c](https://github.com/cwcss/crosswind/commit/18a7e6c)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.18...v0.2.19)
 
 ## 🐛 Bug Fixes
