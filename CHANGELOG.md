@@ -1,3 +1,23 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.21...v0.3.0)
+
+## ⚡ Performance Improvements
+
+- **generator**: memoise theme-derived tables and cut serialiser allocations ([1fb675c](https://github.com/cwcss/crosswind/commit/1fb675c)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 📝 Documentation
+
+- update benchmark numbers after the generator optimisations ([13258c3](https://github.com/cwcss/crosswind/commit/13258c3)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🔧 Chores
+
+- release v0.3.0 ([7b37ab8](https://github.com/cwcss/crosswind/commit/7b37ab8)) _(by Chris <chrisbreuer93@gmail.com>)_
+- add a release:minor script ([7c07dd6](https://github.com/cwcss/crosswind/commit/7c07dd6)) _(by Chris <chrisbreuer93@gmail.com>)_
+- gitignore env files ([449a297](https://github.com/cwcss/crosswind/commit/449a297)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.20...v0.2.21)
 
 ## 🐛 Bug Fixes
