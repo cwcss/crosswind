@@ -21,8 +21,15 @@ gh secret set NPM_TOKEN --repo cwcss/crosswind
 ```
 
 **Encrypted `.env.production` (committed).** `dotenvx` encrypts each value in
-place, so the committed file holds ciphertext plus a public key. Set it up
-once:
+place, so the committed file holds ciphertext plus a public key. One command
+does the whole setup — it prompts for the token without echoing it, encrypts,
+registers the decryption key as a secret, commits, and re-runs the release:
+
+```sh
+bash scripts/setup-publishing.sh
+```
+
+Or by hand:
 
 ```sh
 cp .env.example .env.production      # fill in NPM_TOKEN
