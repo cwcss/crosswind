@@ -2,11 +2,20 @@
 
 ## About
 
-A blazingly fast, on-demand utility-first CSS framework built with Bun that generates only the CSS classes actually used in your files. It provides Tailwind CSS-compatible utility classes with full variant support (responsive, state, dark mode, pseudo-elements), arbitrary values, shortcut aliases, compile-class HTML optimization, and both CLI and programmatic APIs. Zero runtime dependencies, with 1700+ tests and benchmarks showing it outperforms UnoCSS and Tailwind in all 20 benchmark scenarios.
+`ts-css` (published unscoped on npm; CLI binary `cssx`, config file `css.config.ts`, class prefix `tc`) is an on-demand CSS engine built with Bun, with two front ends over one atomic output:
+
+- **Utility classes** — Tailwind v4-compatible, with full variant support (responsive, state, dark mode, pseudo-elements), arbitrary values, shortcut aliases, and compile-class HTML optimization.
+- **Style objects** — a StyleX-shaped typed API (`css.create`, `css.props`, `css.defineVars`, `css.createTheme`, `css.keyframes`) in `src/style/`, collected at build time by evaluating the modules that declare them.
+
+Zero runtime dependencies, 1900+ tests, and both CLI and programmatic APIs.
+
+## Benchmarks
+
+Two modes, and they must stay separate: **cold** (every engine constructed per iteration — a production build) and **warm** (engines held open with no new classes — a watch rebuild). Comparing one engine's cold path against another's warm cache is how the old benchmark ended up claiming a 4-orders-of-magnitude win for Tailwind that did not exist. Tailwind v4's `build()` memoises per candidate set; ts-css's `toCSS()` memoises per revision. Never quote a number without saying which mode it came from.
 
 ## Semantics compass
 
-**Crosswind targets Tailwind v4 semantics.** When a utility's behavior, value scale, or validity is in question, Tailwind v4 is the reference: a class Tailwind rejects should generate nothing (never pass raw words through to CSS), and a class Tailwind accepts should produce the same declarations. Bracket syntax (`flex[col jc-center]`), colon syntax (`bg:black`), attributify mode, the compile-class transformer, and the `text-shadow-*` / `word-spacing-*` utilities are deliberate extensions beyond Tailwind — keep them working, but design them to be consistent with the same validation rules (numbers/keywords/theme values/arbitrary `[...]` only).
+**ts-css targets Tailwind v4 semantics.** When a utility's behavior, value scale, or validity is in question, Tailwind v4 is the reference: a class Tailwind rejects should generate nothing (never pass raw words through to CSS), and a class Tailwind accepts should produce the same declarations. Bracket syntax (`flex[col jc-center]`), colon syntax (`bg:black`), attributify mode, the compile-class transformer, and the `text-shadow-*` / `word-spacing-*` utilities are deliberate extensions beyond Tailwind — keep them working, but design them to be consistent with the same validation rules (numbers/keywords/theme values/arbitrary `[...]` only).
 
 ## Linting
 
@@ -17,7 +26,7 @@ A blazingly fast, on-demand utility-first CSS framework built with Bun that gene
 ## Frontend
 
 - Use **stx** for templating — never write vanilla JS (`var`, `document.*`, `window.*`) in stx templates
-- Use **crosswind** as the default CSS framework which enables standard Tailwind-like utility classes
+- Use **ts-css** as the default CSS framework which enables standard Tailwind-like utility classes
 - stx `<script>` tags should only contain stx-compatible code (signals, composables, directives)
 
 ## Dependencies

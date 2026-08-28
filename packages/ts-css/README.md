@@ -1,6 +1,6 @@
 # ts-css
 
-A performant utility-first CSS engine, compatible with Tailwind CSS. Built with TypeScript and optimized for Bun.
+A CSS engine with two front ends and one atomic output: Tailwind-compatible **utility classes** for laying out markup, and StyleX-style **typed style objects** for styles that have to be computed, tokenised, or merged across a component boundary. Both compile into the same deduplicated atomic CSS, with nothing left at runtime.
 
 ## Installation
 
@@ -41,23 +41,71 @@ const result = await build({
 })
 ```
 
+### Style API
+
+```typescript
+import { css } from 'ts-css'
+
+const theme = css.defineVars({
+  accent: '#0b7',
+  surface: { default: '#fff', '@media (prefers-color-scheme: dark)': '#111' },
+})
+
+const styles = css.create({
+  card: {
+    padding: 16,
+    backgroundColor: theme.surface,
+    ':hover': { transform: 'translateY(-2px)' },
+    '@media (min-width: 768px)': { padding: 24 },
+  },
+  danger: { color: 'red' },
+  sized: (width: number) => ({ width }),
+})
+
+// { className: 'tc9faijott tcze3ap6z …', style: { '--tc2hxvo7bz': '120px' } }
+css.props(styles.card, isDangerous && styles.danger, styles.sized(120))
+```
+
+`css.props()` merges **per property**, not per class: a later argument replaces
+an earlier one's `color` class outright rather than relying on the cascade to
+outrank it. `null` removes a property, and falsy arguments are skipped.
+
+Style factories turn their arguments into inline custom properties, so a
+component rendered at a thousand widths still emits one rule.
+
+| | |
+| --- | --- |
+| `css.create(styles)` | compile named style objects into atomic classes |
+| `css.props(...styles)` | merge compiled styles into `className` / `style` |
+| `css.defineVars(vars)` | declare custom properties, get typed `var()` references |
+| `css.createTheme(vars, overrides)` | redeclare a variable group under a generated class |
+| `css.keyframes(frames)` | declare an animation, get its generated name |
+| `css.firstThatWorks(...values)` | progressive-enhancement fallbacks, in CSS order |
+| `css.defineConsts(consts)` | build-time constants that never become CSS |
+
+Point `styles` at the modules that declare them and `cssx build` emits their
+CSS alongside the utilities. Outside the CLI, `collectStyles(patterns)` returns
+the stylesheet directly and `stylePlugin()` collects styles during a
+`Bun.build()`.
+
 ### CLI
 
 ```bash
-crosswind build
-crosswind build --watch
-crosswind build --minify
+cssx build
+cssx build --watch
+cssx build --minify
 ```
 
 ## Configuration
 
-Create a `crosswind.config.ts` in your project root:
+Create a `css.config.ts` in your project root:
 
 ```typescript
 import type { TsCssConfig } from 'ts-css'
 
 export default {
   content: ['./src/**/*.{html,tsx,stx}'],
+  styles: ['./src/**/*.styles.ts'],
   output: './dist/styles.css',
   minify: false,
 
@@ -577,19 +625,48 @@ export default {
 
 ## Performance
 
-Crosswind uses several optimizations for fast CSS generation:
+Optimisations that carry the most weight:
 
 - **O(1) static utility map** for ~80% of common utilities (display, flex, grid, transitions, etc.)
-- **Pre-computed color map** with flat cache for instant color lookups
+- **Pre-computed color map** with a flat cache for instant colour lookups
 - **Class-level caching** prevents duplicate generation
-- **Selector caching** avoids rebuilding selectors with variants
-- **Media query caching** for responsive and feature variants
+- **Selector and media-query caching** avoids rebuilding either across rebuilds
 - **Negative match cache** to skip known-unmatched utilities
+- **Memoised `toCSS()`** — serialising is O(rules) and watch mode calls it every
+  pass, usually with nothing new to say; a revision counter turns an unchanged
+  rebuild into three integer comparisons
+- **Content-hashed atomic rules** so two components declaring `padding: 16`
+  share one class
 
-Benchmarks (1000 utilities):
-- Simple utilities: ~0.7ms
-- Complex utilities: ~4.5ms
-- Arbitrary values: ~0.6ms
+Cold build, Apple M3 Pro, Bun 1.3.14 — every engine constructed from scratch
+per iteration, all given a utilities-only input so they are asked for the same
+thing:
+
+| Scenario | ts-css | UnoCSS | Tailwind v4 | Tailwind v3 |
+| --- | ---: | ---: | ---: | ---: |
+| Simple utilities (10) | **86.80 µs** | 1.09 ms | 1.23 ms | 11.95 ms |
+| Real-world components (~60) | **153.88 µs** | 1.92 ms | 1.65 ms | 14.93 ms |
+| Full project (~800) | **414.22 µs** | 7.98 ms | 2.75 ms | 17.81 ms |
+| 1000 arbitrary values | **1.60 ms** | 117.71 ms | 4.48 ms | 32.69 ms |
+
+Warm rebuild — engines held open the way watch mode holds them, every one
+answering from its own cache:
+
+| Scenario | ts-css | Tailwind v4 | UnoCSS |
+| --- | ---: | ---: | ---: |
+| Simple utilities (10) | **45.02 ns** | 105.91 ns | 42.27 µs |
+| Full project (~800) | **1.23 µs** | 2.77 µs | 519.58 µs |
+
+Style objects vs StyleX, with a correctness gate asserting both emit the same
+number of atomic rules:
+
+| Workload | ts-css | StyleX |
+| --- | ---: | ---: |
+| component (8 declarations) | **48.08 µs** | 1.05 ms |
+| design system (200) | **759.11 µs** | 18.83 ms |
+
+Full methodology, including the two flaws an earlier revision of the benchmark
+had, is in the [repository README](https://github.com/cwcss/crosswind#performance).
 
 ## License
 
