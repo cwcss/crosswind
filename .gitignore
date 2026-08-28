@@ -9,5 +9,9 @@ lib-cov
 logs
 node_modules
 temp
+# Compiled CLI binaries and their release archives — build artifacts, and the
+# standalone binary is ~64MB, which is far past what belongs in a git object.
 packages/ts-css/bin/cssx
+packages/ts-css/bin/cssx-*
+packages/ts-css/bin/*.zip
 pantry
