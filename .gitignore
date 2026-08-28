@@ -2,6 +2,12 @@
 .DS_Store
 .idea
 *.log
+
+# Secrets. Nothing here was ignored before, so a stray `.env` holding a
+# publish token would have been committable to a public repo.
+.env
+.env.*
+!.env.example
 *.tgz
 coverage
 dist
