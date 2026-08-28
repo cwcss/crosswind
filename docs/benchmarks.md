@@ -4,70 +4,96 @@ ts-css is built for speed. This page provides performance benchmarks comparing t
 
 ## Methodology
 
-- **Tool**: [Mitata](https://github.com/evanwashere/mitata) benchmarking library
-- **Runtime**: Bun 1.3.11
+- **Tool**: [Mitata](https://github.com/evanwashere/mitata)
+- **Runtime**: Bun 1.3.14
 - **Hardware**: Apple M3 Pro
-- **Each framework uses its native API**:
-  - **ts-css**: Pre-warmed `CSSGenerator` with `reset()` + `generateBatch()` + `toCSS()`
-  - **UnoCSS**: Pre-warmed `createGenerator()` + `generate()` with joined class string
-  - **Tailwind v4**: Pre-compiled `compile()` + `build(candidates)` — Oxide engine, no PostCSS
-  - **Tailwind v3**: Pre-warmed `postcss.process()` — PostCSS is the only available API
-- **All frameworks are pre-warmed** before benchmarking (config processed, caches initialized)
+
+Two modes are measured, and keeping them apart is the whole point.
+
+**Cold build** — every engine is constructed from scratch on each iteration and
+produces a stylesheet. This is a production build, and it is the number that
+decides CI time.
+
+| Engine | Cold path |
+| --- | --- |
+| ts-css | `new CSSGenerator(config)` + `generateBatch()` + `toCSS()` |
+| UnoCSS | `await createGenerator({ presets })` + `generate()` |
+| Tailwind v4 | `await compile(css)` + `build(candidates)` |
+| Tailwind v3 | `postcss([tailwindcss(…)])` + `process()` |
+
+ts-css is handed a fresh `{ ...defaultConfig }` object rather than the shared
+one. Theme processing is memoised per config object, so reusing the module-level
+`defaultConfig` would skip it and understate the cold cost by about half.
+Tailwind re-parses its design system on every `compile()`; this makes ts-css pay
+the same way.
+
+**Warm rebuild** — a watch-mode pass over an already-built project where no new
+class appeared. Every engine keeps its caches and answers from them.
+
+Every engine is given a **utilities-only input**, so all four are asked for the
+same thing. Tailwind's default entry also pulls in preflight and the full theme
+layer; left alone it emitted 5,370 bytes of reset and custom properties where
+ts-css emitted 397 bytes of utilities. With a utilities-only input the outputs
+land within a few rules of each other, and the benchmark asserts every engine
+produced non-empty CSS before timing anything.
 
 ## Results
 
+### Cold build
+
 | Scenario | ts-css | UnoCSS | Tailwind v4 | Tailwind v3 |
-|----------|----------|--------|-------------|-------------|
-| Simple Utilities (10 classes) | **1.76us** | 15.44us | 0.08us | 8.10ms |
-| Complex Variants (11 classes) | **6.27us** | 21.28us | 0.08us | 8.00ms |
-| Arbitrary Values (10 classes) | **12.10us** | 32.36us | 0.07us | 7.89ms |
-| Real-world Components (~60 classes) | **17.49us** | 55.01us | 0.36us | 8.33ms |
-| Large Scale (500 classes) | **66.70us** | 115.34us | 2.10us | 9.17ms |
-| CSS Output Generation (1000 values) | **663us** | 66.03ms | 8.00us | 17.20ms |
-| Color Utilities (330 classes) | **77.51us** | 361.19us | 2.32us | 9.75ms |
-| Responsive Utilities (500 classes) | **80.97us** | 123.16us | 1.25us | 9.03ms |
-| Duplicate Handling (6000 classes) | **22.17us** | 1.37ms | 32.64us | 11.57ms |
-| Full Project (~800 classes) | **168.46us** | 297.67us | 1.86us | 8.90ms |
+| --- | ---: | ---: | ---: | ---: |
+| Simple utilities (10) | **86.80 µs** | 1.09 ms | 1.23 ms | 11.95 ms |
+| Complex variants (11) | **76.88 µs** | 1.14 ms | 1.09 ms | 11.74 ms |
+| Arbitrary values (10) | **79.52 µs** | 951.58 µs | 933.17 µs | 12.30 ms |
+| Real-world components (~60) | **153.88 µs** | 1.92 ms | 1.65 ms | 14.93 ms |
+| Large scale (500) | **429.41 µs** | 8.82 ms | 2.97 ms | 16.39 ms |
+| CSS output (1000 arbitrary values) | **1.60 ms** | 117.71 ms | 4.48 ms | 32.69 ms |
+| Full project (~800) | **414.22 µs** | 7.98 ms | 2.75 ms | 17.81 ms |
 
-**Bold** = fastest pure-TypeScript engine.
+### Warm rebuild
 
-## Analysis
+| Scenario | ts-css | Tailwind v4 | UnoCSS |
+| --- | ---: | ---: | ---: |
+| Simple utilities (10) | **45.02 ns** | 105.91 ns | 42.27 µs |
+| Real-world components (~60) | **306.43 ns** | 588.55 ns | 163.76 µs |
+| Color utilities (330) | **2.20 µs** | 4.31 µs | 1.47 ms |
+| Responsive utilities (500) | **1.25 µs** | 2.69 µs | 411.78 µs |
+| Full project (~800) | **1.23 µs** | 2.77 µs | 519.58 µs |
 
-### Tailwind v4 — Fastest warm generation (Rust/WASM)
+### Style objects vs StyleX
 
-Tailwind v4's Oxide engine dominates warm generation benchmarks. After a one-time `compile()` step (~9ms), the `build()` API uses Rust-compiled code that processes candidates at native speed. This is a fundamentally different architecture — compiled machine code vs interpreted JavaScript.
+Both engines compile the same style objects, and the benchmark asserts they emit
+the same number of atomic rules before timing anything.
 
-### ts-css — Fastest TypeScript engine
+| Workload | ts-css | StyleX | |
+| --- | ---: | ---: | ---: |
+| simple (2 declarations) | **4.62 µs** | 417.21 µs | 90× |
+| component (8) | **48.08 µs** | 1.05 ms | 22× |
+| conditional (18) | **39.05 µs** | 719.25 µs | 18× |
+| design system (200) | **759.11 µs** | 18.83 ms | 25× |
 
-ts-css is the **fastest pure-TypeScript/JavaScript CSS engine**:
+StyleX's only path from a style object to CSS is its Babel transform, so that is
+what it is measured on. A second group makes ts-css parse its own source too;
+ts-css stays 8–14× ahead there.
 
-| vs UnoCSS | Speedup |
-|-----------|---------|
-| Simple utilities | **8.8x** faster |
-| Colors | **4.7x** faster |
-| Responsive | **1.5x** faster |
-| Duplicates | **62x** faster |
-| CSS Output | **100x** faster |
-| Full project | **1.8x** faster |
+## What this benchmark used to get wrong
 
-ts-css also **beats Tailwind v4 on duplicate handling** (22us vs 33us) thanks to its multi-layer caching architecture.
+Worth stating plainly, because the old numbers on this page were not meaningful:
 
-### Cold Start Advantage
+- **Cold and warm were mixed.** Tailwind v4's `build()` memoises its result for a
+  candidate set it has already seen, returning in ~0.1 µs without generating
+  anything. The old file pre-warmed Tailwind once and then compared that cache
+  hit against a full ts-css regeneration, which flattered Tailwind by four orders
+  of magnitude.
+- **The engines were not asked for the same thing.** Tailwind was emitting
+  preflight and the entire theme layer alongside the utilities it was being timed
+  on.
 
-ts-css has the fastest initialization of any framework:
-
-| Framework | Init Cost |
-|-----------|-----------|
-| **ts-css** | **~0.1ms** |
-| UnoCSS | ~3ms |
-| Tailwind v4 | ~9ms |
-| Tailwind v3 | ~70ms |
-
-For dev servers, serverless functions, and on-demand generation, cold start matters. ts-css's near-zero init means it can create a fresh generator, process classes, and output CSS faster end-to-end than frameworks that need expensive initialization.
-
-### Tailwind v3 — PostCSS overhead
-
-Tailwind v3 numbers (~8-17ms per invocation) reflect PostCSS pipeline overhead. There is no lower-level API available in v3 — this is the only way to use the framework.
+A third mode — warm engine, previously unseen classes — is deliberately absent.
+Feeding each iteration a new class grows the stylesheet without bound, so the
+measurement never converges. The marginal cost of generating genuinely new
+classes is what the cold group already measures, minus engine setup.
 
 ## Why ts-css Is Fast
 
@@ -78,6 +104,8 @@ Tailwind v3 numbers (~8-17ms per invocation) reflect PostCSS pipeline overhead. 
 5. **Batch API** — `generateBatch()` processes arrays without per-call overhead
 6. **Skip-on-empty checks** — blocklist/shortcut checks are skipped entirely if config has none
 7. **Charcode-first variant resolution** — avoids string operations on the hot path
+8. **Memoised `toCSS()`** — serialising is O(rules) and watch mode calls it every pass, usually with nothing new to say; a revision counter turns an unchanged rebuild into three integer comparisons
+9. **Content-hashed atomic rules** — two components declaring `padding: 16` share one class
 
 ## JS/TS API vs Compiled Binary
 
@@ -108,8 +136,11 @@ The ~31ms overhead is process startup cost (Bun runtime initialization). The act
 ## Running Benchmarks
 
 ```bash
-# Framework comparison (ts-css vs UnoCSS vs Tailwind)
+# Framework comparison (ts-css vs UnoCSS vs Tailwind) — takes about 40s
 bun run benchmark
+
+# Style objects (ts-css vs StyleX)
+bun run benchmark:style
 
 # Binary vs API comparison
 bun run benchmark:binary
