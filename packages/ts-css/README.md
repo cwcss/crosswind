@@ -635,6 +635,10 @@ Optimisations that carry the most weight:
 - **Memoised `toCSS()`** — serialising is O(rules) and watch mode calls it every
   pass, usually with nothing new to say; a revision counter turns an unchanged
   rebuild into three integer comparisons
+- **Theme-derived tables memoised per sub-object** — a build reusing the default
+  theme skips the palette scan entirely, which was two thirds of a cold build
+- **Allocation-lean serialiser** — sorts an index array and groups in one pass,
+  rather than a wrapper object per rule plus two intermediate arrays
 - **Content-hashed atomic rules** so two components declaring `padding: 16`
   share one class
 
@@ -644,26 +648,26 @@ thing:
 
 | Scenario | ts-css | UnoCSS | Tailwind v4 | Tailwind v3 |
 | --- | ---: | ---: | ---: | ---: |
-| Simple utilities (10) | **86.80 µs** | 1.09 ms | 1.23 ms | 11.95 ms |
-| Real-world components (~60) | **153.88 µs** | 1.92 ms | 1.65 ms | 14.93 ms |
-| Full project (~800) | **414.22 µs** | 7.98 ms | 2.75 ms | 17.81 ms |
-| 1000 arbitrary values | **1.60 ms** | 117.71 ms | 4.48 ms | 32.69 ms |
+| Simple utilities (10) | **11.52 µs** | 901.82 µs | 987.70 µs | 11.77 ms |
+| Real-world components (~60) | **64.95 µs** | 1.77 ms | 1.21 ms | 11.95 ms |
+| Full project (~800) | **208.23 µs** | 4.55 ms | 1.66 ms | 13.11 ms |
+| 1000 arbitrary values | **992.54 µs** | 97.71 ms | 3.33 ms | 26.55 ms |
 
 Warm rebuild — engines held open the way watch mode holds them, every one
 answering from its own cache:
 
 | Scenario | ts-css | Tailwind v4 | UnoCSS |
 | --- | ---: | ---: | ---: |
-| Simple utilities (10) | **45.02 ns** | 105.91 ns | 42.27 µs |
-| Full project (~800) | **1.23 µs** | 2.77 µs | 519.58 µs |
+| Simple utilities (10) | **34.47 ns** | 100.65 ns | 34.66 µs |
+| Full project (~800) | **796.45 ns** | 1.89 µs | 358.63 µs |
 
 Style objects vs StyleX, with a correctness gate asserting both emit the same
 number of atomic rules:
 
 | Workload | ts-css | StyleX |
 | --- | ---: | ---: |
-| component (8 declarations) | **48.08 µs** | 1.05 ms |
-| design system (200) | **759.11 µs** | 18.83 ms |
+| component (8 declarations) | **28.81 µs** | 507.29 µs |
+| design system (200) | **531.81 µs** | 11.05 ms |
 
 Full methodology, including the two flaws an earlier revision of the benchmark
 had, is in the [repository README](https://github.com/cwcss/crosswind#performance).
