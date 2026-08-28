@@ -46,7 +46,8 @@
     "preview:docs": "bun --bun bunpress preview docs",
     "typecheck": "bun --bun tsc --noEmit",
     "benchmark": "bun run benchmark/framework-comparison.bench.ts",
-    "benchmark:binary": "bun run benchmark/binary-vs-api.ts"
+    "benchmark:binary": "bun run benchmark/binary-vs-api.ts",
+    "benchmark:style": "bun run benchmark/style-api.bench.ts"
   },
   "devDependencies": {
     "better-dx": "^0.2.15"

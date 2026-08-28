@@ -1,7 +1,7 @@
 {
   "name": "ts-css-vscode",
   "version": "0.2.19",
-  "description": "VS Code extension for Crosswind (placeholder package)",
+  "description": "VS Code extension for ts-css (placeholder package)",
   "license": "MIT",
   "repository": {
     "type": "git",

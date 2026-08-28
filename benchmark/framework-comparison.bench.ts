@@ -1,18 +1,40 @@
 /* eslint-disable no-console */
 /**
- * Fair Framework Comparison Benchmark
+ * Framework Comparison Benchmark
  *
- * Compares Crosswind, UnoCSS, Tailwind v4, and Tailwind v3.
+ * Compares ts-css, UnoCSS, Tailwind v4, and Tailwind v3 on two workloads that
+ * correspond to the two things a CSS engine actually does.
  *
- * Methodology:
- * - Crosswind: new CSSGenerator() + generate() per class + toCSS()
- * - UnoCSS: createGenerator() pre-warmed + generate() with joined string
- * - Tailwind v4: compile() pre-warmed + build() with candidates array
- * - Tailwind v3: PostCSS processor pre-warmed + process() (no lower-level API available)
+ * COLD BUILD — every engine starts from nothing and produces a stylesheet.
+ * This is a production build, and it is the number that decides CI time. Each
+ * iteration constructs a fresh engine, so nobody is allowed to answer from a
+ * cache the previous iteration filled.
  *
- * Note: Tailwind v3 uses PostCSS which adds inherent overhead. This is not a flaw
- * in the benchmark — it's how the framework works. Tailwind v4 moved away from
- * PostCSS for exactly this reason.
+ *   ts-css       new CSSGenerator(config) + generateBatch() + toCSS()
+ *   UnoCSS       await createGenerator({ presets }) + generate()
+ *   Tailwind v4  await compile(css) + build(candidates)
+ *   Tailwind v3  postcss([tailwindcss(...)]) + process()
+ *
+ * ts-css is handed a fresh `{ ...defaultConfig }` object rather than the
+ * shared one. Theme processing is memoised per config object, so reusing the
+ * module-level `defaultConfig` would skip it and quietly understate our cold
+ * cost by about half (0.06 ms vs 0.13 ms on ten classes). Tailwind re-parses
+ * its design system on every `compile()`; this makes ts-css pay the same way.
+ *
+ * WARM REBUILD — a watch-mode pass over an already-built project where no new
+ * class appeared. Every engine keeps its caches and gets to answer from them.
+ *
+ * Reporting both modes is the point. Tailwind v4's `build()` memoises its
+ * result for a candidate set it has already seen, returning in microseconds
+ * without generating anything. An earlier revision of this file pre-warmed
+ * Tailwind once and then compared that cache hit against a full ts-css
+ * regeneration — which flattered Tailwind by four orders of magnitude and made
+ * the file worse than useless. Measuring cold and warm separately is what stops
+ * either engine from being judged on the other's terms.
+ *
+ * Tailwind v3 appears only in the cold group: PostCSS is the only API it
+ * offers, so it has no warm path to measure. That overhead is not a flaw in
+ * the benchmark — it is why Tailwind v4 left PostCSS behind.
  */
 
 // @ts-ignore - mitata is an optional benchmark dependency
@@ -35,23 +57,24 @@ import postcss from 'postcss'
 import tailwindcss from 'tailwindcss'
 
 // =============================================================================
-// INITIALIZE ALL FRAMEWORKS (pre-warm for fair comparison)
+// FRAMEWORK SETUP
 // =============================================================================
 
-// UnoCSS: pre-warmed generator
-const unoGen = await createGenerator({
-  presets: [presetWind()],
-})
+// Utilities-only input, so every engine is asked for the same thing.
+// Tailwind's own `index.css` also pulls in preflight and the full theme layer,
+// which made it emit 5370 bytes of reset and custom properties where ts-css
+// emitted 397 bytes of utilities — timing that would have been charging
+// Tailwind for work nobody asked it to do. Inlined rather than `@import`ed
+// because `compile()` needs a stylesheet loader to resolve imports.
+const tw4dir = new URL('./node_modules/tailwindcss-v4/', import.meta.url)
+const tw4css = [
+  '@layer theme, utilities;',
+  `@layer theme {\n${readFileSync(new URL('theme.css', tw4dir), 'utf8')}\n}`,
+  `@layer utilities {\n${readFileSync(new URL('utilities.css', tw4dir), 'utf8')}\n}`,
+].join('\n')
 
-// Tailwind v4: pre-compiled design system
-const tw4css = readFileSync(
-  new URL('./node_modules/tailwindcss-v4/index.css', import.meta.url),
-  'utf8',
-)
-const tw4compiled = await compile(tw4css, { base: process.cwd() })
-
-// Tailwind v3: pre-warmed PostCSS processor
-// Note: v3 has no lower-level API — PostCSS is the only way to use it
+// Tailwind v3 has no lower-level API — PostCSS is the only way in, and the
+// processor is bound to its content, so it cannot be reused across workloads.
 function createTw3Processor(classes: string[]) {
   const html = `<div class="${classes.join(' ')}"></div>`
   return postcss([
@@ -113,186 +136,200 @@ const validShades = ['50', '100', '200', '300', '400', '500', '600', '700', '800
 // BENCHMARK HELPERS
 // =============================================================================
 
-// Pre-warmed Crosswind generator (same pattern as TW4's pre-compiled instance)
-const cwGen = new CSSGenerator(defaultConfig)
-
-function benchmarkCrosswind(classes: string[]): void {
-  cwGen.reset()
-  cwGen.generateBatch(classes)
+/**
+ * Cold: construct the engine and produce a stylesheet, per iteration.
+ *
+ * The config is spread into a new object so ts-css re-runs theme processing
+ * instead of hitting the per-config memo — see the note at the top of the file.
+ */
+function coldTsCss(classes: string[]): string {
+  const gen = new CSSGenerator({ ...defaultConfig })
+  gen.generateBatch(classes)
+  return gen.toCSS(false)
 }
 
-function benchmarkCrosswindWithOutput(classes: string[]): string {
-  cwGen.reset()
-  cwGen.generateBatch(classes)
-  return cwGen.toCSS(false)
+async function coldUnoCSS(classes: string[]): Promise<string> {
+  const gen = await createGenerator({ presets: [presetWind()] })
+  return (await gen.generate(classes.join(' '))).css
 }
 
-async function benchmarkUnoCSS(classes: string[]): Promise<void> {
-  await unoGen.generate(classes.join(' '))
+async function coldTailwindV4(classes: string[]): Promise<string> {
+  const compiled = await compile(tw4css, { base: tw4dir.pathname })
+  return compiled.build(classes)
 }
 
-function benchmarkTailwindV4(classes: string[]): void {
-  tw4compiled.build(classes)
+async function coldTailwindV3(classes: string[]): Promise<void> {
+  await createTw3Processor(classes).process('@tailwind utilities;', { from: undefined })
 }
 
-async function benchmarkTailwindV3(classes: string[]): Promise<void> {
-  const processor = createTw3Processor(classes)
-  await processor.process('@tailwind utilities;', { from: undefined })
+/** Warm: one engine, reused, the way a watch process holds it open. */
+interface WarmEngines {
+  tsCss: CSSGenerator
+  uno: Awaited<ReturnType<typeof createGenerator>>
+  tw4: Awaited<ReturnType<typeof compile>>
+}
+
+async function warmUp(classes: string[]): Promise<WarmEngines> {
+  const tsCss = new CSSGenerator({ ...defaultConfig })
+  tsCss.generateBatch(classes)
+  tsCss.toCSS(false)
+
+  const uno = await createGenerator({ presets: [presetWind()] })
+  await uno.generate(classes.join(' '))
+
+  const tw4 = await compile(tw4css, { base: tw4dir.pathname })
+  tw4.build(classes)
+
+  return { tsCss, uno, tw4 }
 }
 
 // =============================================================================
-// BENCHMARKS
+// WORKLOADS
 // =============================================================================
 
-// 1. Simple utilities
-group('Simple Utilities (10 classes)', () => {
-  bench('Crosswind', () => { benchmarkCrosswind(simpleUtilities) })
-  bench('UnoCSS', async () => { await benchmarkUnoCSS(simpleUtilities) })
-  bench('Tailwind v4', () => { benchmarkTailwindV4(simpleUtilities) })
-  bench('Tailwind v3', async () => { await benchmarkTailwindV3(simpleUtilities) })
-})
+const largeSet: string[] = []
+for (const size of validSizeValues.slice(0, 25)) largeSet.push(`w-${size}`)
+for (const size of validSizeValues.slice(0, 25)) largeSet.push(`h-${size}`)
+for (const size of validSpacingValues) largeSet.push(`p-${size}`)
+for (const size of validSpacingValues) largeSet.push(`m-${size}`)
+for (const size of validSpacingValues.slice(0, 20)) largeSet.push(`gap-${size}`)
+for (const size of validSpacingValues.slice(0, 20)) largeSet.push(`px-${size}`, `py-${size}`)
+for (const size of validSpacingValues.slice(0, 20)) largeSet.push(`mx-${size}`, `my-${size}`)
+for (const size of validSpacingValues.slice(0, 15)) largeSet.push(`top-${size}`, `right-${size}`, `bottom-${size}`, `left-${size}`)
 
-// 2. Complex utilities with variants
-group('Complex Utilities with Variants (11 classes)', () => {
-  bench('Crosswind', () => { benchmarkCrosswind(complexUtilities) })
-  bench('UnoCSS', async () => { await benchmarkUnoCSS(complexUtilities) })
-  bench('Tailwind v4', () => { benchmarkTailwindV4(complexUtilities) })
-  bench('Tailwind v3', async () => { await benchmarkTailwindV3(complexUtilities) })
-})
+const colorUtilities: string[] = []
+for (const color of ['gray', 'red', 'blue', 'green', 'yellow', 'purple', 'pink', 'indigo', 'cyan', 'emerald']) {
+  for (const shade of validShades) {
+    colorUtilities.push(`bg-${color}-${shade}`, `text-${color}-${shade}`, `border-${color}-${shade}`)
+  }
+}
 
-// 3. Arbitrary values
-group('Arbitrary Values (10 classes)', () => {
-  bench('Crosswind', () => { benchmarkCrosswind(arbitraryValues) })
-  bench('UnoCSS', async () => { await benchmarkUnoCSS(arbitraryValues) })
-  bench('Tailwind v4', () => { benchmarkTailwindV4(arbitraryValues) })
-  bench('Tailwind v3', async () => { await benchmarkTailwindV3(arbitraryValues) })
-})
+const responsiveUtilities: string[] = []
+for (const bp of ['sm', 'md', 'lg', 'xl', '2xl']) {
+  for (const size of validSizeValues.slice(0, 20)) responsiveUtilities.push(`${bp}:w-${size}`)
+  for (const size of validSpacingValues.slice(0, 15)) responsiveUtilities.push(`${bp}:p-${size}`)
+  for (const size of ['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl']) responsiveUtilities.push(`${bp}:text-${size}`)
+}
 
-// 4. Real-world components
-group('Real-world Components (~60 classes)', () => {
-  const allClasses = realWorldComponents.flat()
+const outputUtilities: string[] = []
+for (let i = 0; i < 1000; i++) outputUtilities.push(`w-[${i}px]`)
 
-  bench('Crosswind', () => { benchmarkCrosswind(allClasses) })
-  bench('UnoCSS', async () => { await unoGen.generate(allClasses.join(' ')) })
-  bench('Tailwind v4', () => { benchmarkTailwindV4(allClasses) })
-  bench('Tailwind v3', async () => { await benchmarkTailwindV3(allClasses) })
-})
+const projectClasses = [
+  ...simpleUtilities,
+  ...complexUtilities,
+  ...arbitraryValues,
+  ...realWorldComponents.flat(),
+]
+for (const color of ['gray', 'blue', 'red', 'green']) {
+  for (const shade of validShades) projectClasses.push(`bg-${color}-${shade}`, `text-${color}-${shade}`)
+}
+for (const bp of ['sm', 'md', 'lg']) {
+  projectClasses.push(`${bp}:w-full`, `${bp}:flex`, `${bp}:hidden`, `${bp}:block`, `${bp}:text-lg`, `${bp}:p-4`)
+}
 
-// 5. Large scale
-group('Large Scale (500 classes)', () => {
-  const largeSet: string[] = []
-  for (const size of validSizeValues.slice(0, 25)) largeSet.push(`w-${size}`)
-  for (const size of validSizeValues.slice(0, 25)) largeSet.push(`h-${size}`)
-  for (const size of validSpacingValues) largeSet.push(`p-${size}`)
-  for (const size of validSpacingValues) largeSet.push(`m-${size}`)
-  for (const size of validSpacingValues.slice(0, 20)) largeSet.push(`gap-${size}`)
-  for (const size of validSpacingValues.slice(0, 20)) largeSet.push(`px-${size}`, `py-${size}`)
-  for (const size of validSpacingValues.slice(0, 20)) largeSet.push(`mx-${size}`, `my-${size}`)
-  for (const size of validSpacingValues.slice(0, 15)) largeSet.push(`top-${size}`, `right-${size}`, `bottom-${size}`, `left-${size}`)
+interface Scenario { name: string, classes: string[] }
 
-  bench('Crosswind', () => { benchmarkCrosswind(largeSet) })
-  bench('UnoCSS', async () => { await benchmarkUnoCSS(largeSet) })
-  bench('Tailwind v4', () => { benchmarkTailwindV4(largeSet) })
-  bench('Tailwind v3', async () => { await benchmarkTailwindV3(largeSet) })
-})
+/**
+ * Cold is the expensive group by construction: three of the four engines cost
+ * 30-150 ms to stand up, and mitata insists on at least 12 samples, so every
+ * scenario added here costs minutes. These are the ones that say something
+ * distinct — trivial, variant-heavy, arbitrary, component-shaped, bulk, and a
+ * whole project.
+ */
+const COLD_SCENARIOS: Scenario[] = [
+  { name: 'Simple Utilities (10 classes)', classes: simpleUtilities },
+  { name: 'Complex Utilities with Variants (11 classes)', classes: complexUtilities },
+  { name: 'Arbitrary Values (10 classes)', classes: arbitraryValues },
+  { name: 'Real-world Components (~60 classes)', classes: realWorldComponents.flat() },
+  { name: 'Large Scale (500 classes)', classes: largeSet },
+  { name: 'CSS Output Generation (1000 arbitrary values)', classes: outputUtilities },
+  { name: 'Full Project Simulation (~800 unique classes)', classes: projectClasses },
+]
 
-// 6. CSS output generation
-group('CSS Output Generation (1000 arbitrary values)', () => {
-  const utilities: string[] = []
-  for (let i = 0; i < 1000; i++) utilities.push(`w-[${i}px]`)
+/** Warm reuses one engine, so breadth is nearly free here. */
+const WARM_SCENARIOS: Scenario[] = [
+  { name: 'Simple Utilities (10 classes)', classes: simpleUtilities },
+  { name: 'Real-world Components (~60 classes)', classes: realWorldComponents.flat() },
+  { name: 'Color Utilities (330 classes)', classes: colorUtilities },
+  { name: 'Responsive Utilities (500 classes)', classes: responsiveUtilities },
+  { name: 'Full Project Simulation (~800 unique classes)', classes: projectClasses },
+]
 
-  bench('Crosswind', () => { benchmarkCrosswindWithOutput(utilities) })
-  bench('UnoCSS', async () => { const r = await unoGen.generate(utilities.join(' ')); r.css })
-  bench('Tailwind v4', () => { benchmarkTailwindV4(utilities) })
-  bench('Tailwind v3', async () => { await benchmarkTailwindV3(utilities) })
-})
+// =============================================================================
+// CORRECTNESS GATE
+//
+// Timing an engine that generated nothing is the easiest way to publish a
+// meaningless win, so every engine has to emit a non-empty stylesheet that
+// actually mentions the utilities it was given.
+// =============================================================================
 
-// 7. Color utilities
-group('Color Utilities (330 classes)', () => {
-  const colorUtilities: string[] = []
-  const colors = ['gray', 'red', 'blue', 'green', 'yellow', 'purple', 'pink', 'indigo', 'cyan', 'emerald']
-  for (const color of colors) {
-    for (const shade of validShades) {
-      colorUtilities.push(`bg-${color}-${shade}`, `text-${color}-${shade}`, `border-${color}-${shade}`)
-    }
+console.log('\n Verifying every engine generates real CSS...\n')
+
+for (const { name, classes } of COLD_SCENARIOS.slice(0, 4)) {
+  const results: Record<string, string> = {
+    'ts-css': coldTsCss(classes),
+    'UnoCSS': await coldUnoCSS(classes),
+    'Tailwind v4': await coldTailwindV4(classes),
   }
 
-  bench('Crosswind', () => { benchmarkCrosswind(colorUtilities) })
-  bench('UnoCSS', async () => { await benchmarkUnoCSS(colorUtilities) })
-  bench('Tailwind v4', () => { benchmarkTailwindV4(colorUtilities) })
-  bench('Tailwind v3', async () => { await benchmarkTailwindV3(colorUtilities) })
-})
+  // Rule count rather than a substring probe: selectors are escaped
+  // differently by each engine (`.sm\\:w-full`, `.w-\\[123px\\]`), so matching
+  // on the raw class name reports a false negative for every variant and
+  // arbitrary value.
+  const summary = Object.entries(results)
+    .map(([label, css]) => `${label}: ${(css.match(/\{/g) ?? []).length} rules, ${css.length}b`)
+    .join('  ')
 
-// 8. Responsive utilities
-group('Responsive Utilities (500 classes)', () => {
-  const breakpoints = ['sm', 'md', 'lg', 'xl', '2xl']
-  const responsiveUtilities: string[] = []
-  for (const bp of breakpoints) {
-    for (const size of validSizeValues.slice(0, 20)) responsiveUtilities.push(`${bp}:w-${size}`)
-  }
-  for (const bp of breakpoints) {
-    for (const size of validSpacingValues.slice(0, 15)) responsiveUtilities.push(`${bp}:p-${size}`)
-  }
-  for (const bp of breakpoints) {
-    for (const size of ['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl']) {
-      responsiveUtilities.push(`${bp}:text-${size}`)
-    }
+  for (const [label, css] of Object.entries(results)) {
+    if (css.length === 0)
+      throw new Error(`${label} generated nothing for "${name}" — the benchmark below would be meaningless`)
   }
 
-  bench('Crosswind', () => { benchmarkCrosswind(responsiveUtilities) })
-  bench('UnoCSS', async () => { await benchmarkUnoCSS(responsiveUtilities) })
-  bench('Tailwind v4', () => { benchmarkTailwindV4(responsiveUtilities) })
-  bench('Tailwind v3', async () => { await benchmarkTailwindV3(responsiveUtilities) })
-})
+  console.log(`  ${name.padEnd(46)} ${summary}`)
+}
 
-// 9. Duplicate handling
-group('Duplicate Handling (6 classes x 1000 = 6000)', () => {
-  const duplicates = ['w-4', 'h-4', 'p-4', 'm-4', 'text-lg', 'bg-blue-500']
-  const manyDuplicates: string[] = []
-  for (let i = 0; i < 1000; i++) manyDuplicates.push(...duplicates)
+// =============================================================================
+// COLD BUILD — every engine from scratch
+// =============================================================================
 
-  bench('Crosswind', () => { benchmarkCrosswind(manyDuplicates) })
-  bench('UnoCSS', async () => { await benchmarkUnoCSS(manyDuplicates) })
-  bench('Tailwind v4', () => { benchmarkTailwindV4(manyDuplicates) })
-  bench('Tailwind v3', async () => { await benchmarkTailwindV3(manyDuplicates) })
-})
+for (const { name, classes } of COLD_SCENARIOS) {
+  group(`Cold build: ${name}`, () => {
+    bench('ts-css', () => { coldTsCss(classes) })
+    bench('UnoCSS', async () => { await coldUnoCSS(classes) })
+    bench('Tailwind v4', async () => { await coldTailwindV4(classes) })
+    bench('Tailwind v3', async () => { await coldTailwindV3(classes) })
+  })
+}
 
-// 10. Full project simulation
-group('Full Project Simulation (~800 unique classes)', () => {
-  const projectClasses = [
-    ...simpleUtilities, ...complexUtilities, ...arbitraryValues,
-    ...realWorldComponents.flat(),
-  ]
-  const colors = ['gray', 'blue', 'red', 'green']
-  for (const color of colors) {
-    for (const shade of validShades) {
-      projectClasses.push(`bg-${color}-${shade}`, `text-${color}-${shade}`)
-    }
-  }
-  for (const bp of ['sm', 'md', 'lg']) {
-    projectClasses.push(`${bp}:w-full`, `${bp}:flex`, `${bp}:hidden`, `${bp}:block`, `${bp}:text-lg`, `${bp}:p-4`)
-  }
+// =============================================================================
+// WARM REBUILD — engines held open, as a watch process does
+// =============================================================================
 
-  bench('Crosswind', () => { benchmarkCrosswindWithOutput(projectClasses) })
-  bench('UnoCSS', async () => { const r = await unoGen.generate(projectClasses.join(' ')); r.css })
-  bench('Tailwind v4', () => { benchmarkTailwindV4(projectClasses) })
-  bench('Tailwind v3', async () => { await benchmarkTailwindV3(projectClasses) })
-})
+for (const { name, classes } of WARM_SCENARIOS) {
+  const engines = await warmUp(classes)
+
+  group(`Warm rebuild, unchanged: ${name}`, () => {
+    bench('ts-css', () => { engines.tsCss.generateBatch(classes); engines.tsCss.toCSS(false) })
+    bench('UnoCSS', async () => { (await engines.uno.generate(classes.join(' '))).css })
+    bench('Tailwind v4', () => { engines.tw4.build(classes) })
+  })
+}
+
+// A third mode — "warm engine, previously unseen classes" — is deliberately
+// absent. Feeding each iteration a new class grows the stylesheet without
+// bound, so every iteration is slower than the last and the measurement never
+// converges on anything; mitata's minimum CPU budget just makes the sheet
+// enormous. The marginal cost of generating classes that are genuinely new is
+// what the cold group already measures, minus engine setup.
 
 console.log('\n Running Framework Comparison Benchmarks...\n')
-console.log('Comparing: Crosswind vs UnoCSS vs Tailwind v4 vs Tailwind v3')
+console.log('Comparing: ts-css vs UnoCSS vs Tailwind v4 vs Tailwind v3')
 console.log('')
-console.log('Architecture notes:')
-console.log('  Crosswind  — in-memory: new CSSGenerator() + generate() per class')
-console.log('  UnoCSS     — in-memory: pre-warmed createGenerator() + generate()')
-console.log('  Tailwind v4 — in-memory: pre-compiled compile() + build(candidates)')
-console.log('  Tailwind v3 — PostCSS:  processor.process() (no lower-level API)\n')
+console.log('Cold build — engine constructed per iteration; nobody reuses a cache.')
+console.log('Warm rebuild — engine held open, as a watch process does, with no')
+console.log('               new classes to generate. Every engine answers from')
+console.log('               its own cache here, Tailwind v4 included.\n')
 
-await run({
-  colors: true,
-})
+await run({ colors: true })
 
 console.log('\n Benchmark completed!\n')
-console.log('Note: Tailwind v3 numbers include PostCSS overhead because that\'s')
-console.log('the only API available. Tailwind v4 uses the new compile/build API')
-console.log('which is a direct in-memory operation like Crosswind and UnoCSS.\n')
