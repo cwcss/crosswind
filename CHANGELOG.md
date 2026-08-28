@@ -1,3 +1,18 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.20...v0.2.21)
+
+## 🐛 Bug Fixes
+
+- **test**: narrow iconRule's return type for the typechecker ([68ced3b](https://github.com/cwcss/crosswind/commit/68ced3b)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **ci**: regenerate the lockfile for the renamed workspace ([4450160](https://github.com/cwcss/crosswind/commit/4450160)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🔧 Chores
+
+- release v0.2.21 ([960b911](https://github.com/cwcss/crosswind/commit/960b911)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.19...v0.2.20)
 
 ## 🚀 Features
