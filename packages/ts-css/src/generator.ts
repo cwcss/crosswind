@@ -1463,6 +1463,131 @@ const PREFIX_VARIANTS: Record<string, string> = {
 // Cache for pre-processed configs to avoid redundant merging
 const processedConfigCache = new WeakMap<TsCssConfig, ProcessedConfig>()
 
+/**
+ * Each derived lookup table below is a pure function of exactly one theme
+ * sub-object, so it is cached on that object rather than on the whole config.
+ *
+ * This is what makes a cold build cheap. `processConfig` was ~67% of the time
+ * to build a small stylesheet, and most of that was the colour scan walking
+ * every palette entry — 22 palettes by 11 shades, building a template string
+ * per shade — only to conclude that nothing differed from the defaults. A
+ * config that spreads the defaults (`{ ...defaultConfig }`, which is what a
+ * fresh build does) shares every theme sub-object by reference and now skips
+ * all of it. A theme that genuinely extends one of these gets a new object
+ * out of `deepMerge` and correctly misses, per sub-object rather than all or
+ * nothing.
+ *
+ * Safe to share because every one of these is read-only after construction.
+ */
+const spacingValuesCache = new WeakMap<object, Record<string, string>>()
+const commonColorsCache = new WeakMap<object, Record<string, string>>()
+const skipStaticRadiusCache = new WeakMap<object, boolean>()
+const skipStaticShadowCache = new WeakMap<object, boolean>()
+const screenBreakpointsCache = new WeakMap<object, Map<string, string>>()
+
+function resolveSpacingValues(spacing: Record<string, string>): Record<string, string> {
+  const cached = spacingValuesCache.get(spacing)
+  if (cached)
+    return cached
+
+  let custom = false
+  for (const key in spacing) {
+    if (SPACING_VALUES[key] !== spacing[key]) {
+      custom = true
+      break
+    }
+  }
+
+  const result = custom ? { ...SPACING_VALUES, ...spacing } : SPACING_VALUES
+  spacingValuesCache.set(spacing, result)
+  return result
+}
+
+function resolveCommonColors(
+  colors: Record<string, string | Record<string, string>>,
+): Record<string, string> {
+  const cached = commonColorsCache.get(colors)
+  if (cached)
+    return cached
+
+  // `for…in` rather than Object.entries: entries allocates a pair array per
+  // palette, and this runs over every colour in the theme.
+  let diffs: Record<string, string> | null = null
+  for (const name in colors) {
+    const value = colors[name]
+    if (typeof value === 'string') {
+      if (COMMON_COLORS[name] !== undefined && COMMON_COLORS[name] !== value) {
+        diffs ??= {}
+        diffs[name] = value
+      }
+      continue
+    }
+    if (!value || typeof value !== 'object')
+      continue
+    for (const shade in value) {
+      const shadeValue = value[shade]
+      if (typeof shadeValue !== 'string')
+        continue
+      const key = shade === 'DEFAULT' ? name : `${name}-${shade}`
+      if (COMMON_COLORS[key] !== undefined && COMMON_COLORS[key] !== shadeValue) {
+        diffs ??= {}
+        diffs[key] = shadeValue
+      }
+    }
+  }
+
+  const result = diffs ? { ...COMMON_COLORS, ...diffs } : COMMON_COLORS
+  commonColorsCache.set(colors, result)
+  return result
+}
+
+function resolveSkipStaticRadius(borderRadius: Record<string, string>): boolean {
+  const cached = skipStaticRadiusCache.get(borderRadius)
+  if (cached !== undefined)
+    return cached
+
+  let skip = false
+  for (const key in borderRadius) {
+    const cls = key === 'DEFAULT' ? 'rounded' : `rounded-${key}`
+    if (BORDER_RADIUS_MAP[cls]?.['border-radius'] !== borderRadius[key]) {
+      skip = true
+      break
+    }
+  }
+
+  skipStaticRadiusCache.set(borderRadius, skip)
+  return skip
+}
+
+function resolveSkipStaticShadow(boxShadow: Record<string, string>): boolean {
+  const cached = skipStaticShadowCache.get(boxShadow)
+  if (cached !== undefined)
+    return cached
+
+  let skip = false
+  for (const key in boxShadow) {
+    const cls = key === 'DEFAULT' ? 'shadow' : `shadow-${key}`
+    const entry = SHADOW_MAP[cls]
+    if (entry !== undefined && entry['--tc-shadow'] !== boxShadow[key]) {
+      skip = true
+      break
+    }
+  }
+
+  skipStaticShadowCache.set(boxShadow, skip)
+  return skip
+}
+
+function resolveScreenBreakpoints(screens: Record<string, string>): Map<string, string> {
+  const cached = screenBreakpointsCache.get(screens)
+  if (cached)
+    return cached
+
+  const result = new Map(Object.entries(screens))
+  screenBreakpointsCache.set(screens, result)
+  return result
+}
+
 interface ProcessedConfig {
   config: TsCssConfig
   variantEnabled: Record<string, boolean>
@@ -1531,50 +1656,18 @@ function processConfig(config: TsCssConfig): ProcessedConfig {
     }
   }
 
-  // Re-base the fast-path lookup tables on the user's theme when it
-  // diverges from the built-in copies (which previously shadowed theme
-  // overrides). Computed here — cached per config object — so generator
-  // construction stays O(1).
-  let spacingCustom = false
-  for (const [k, v] of Object.entries(config.theme.spacing)) {
-    if (SPACING_VALUES[k] !== v) {
-      spacingCustom = true
-      break
-    }
-  }
-  const spacingValues = spacingCustom ? { ...SPACING_VALUES, ...config.theme.spacing } : SPACING_VALUES
-
-  const colorDiffs: Record<string, string> = {}
-  for (const [name, value] of Object.entries(config.theme.colors)) {
-    if (typeof value === 'string') {
-      if (COMMON_COLORS[name] !== undefined && COMMON_COLORS[name] !== value) {
-        colorDiffs[name] = value
-      }
-    }
-    else if (value && typeof value === 'object') {
-      for (const [shade, shadeValue] of Object.entries(value)) {
-        if (typeof shadeValue !== 'string')
-          continue
-        const key = shade === 'DEFAULT' ? name : `${name}-${shade}`
-        if (COMMON_COLORS[key] !== undefined && COMMON_COLORS[key] !== shadeValue) {
-          colorDiffs[key] = shadeValue
-        }
-      }
-    }
-  }
-  const commonColors = Object.keys(colorDiffs).length > 0 ? { ...COMMON_COLORS, ...colorDiffs } : COMMON_COLORS
+  // Re-base the fast-path lookup tables on the user's theme when it diverges
+  // from the built-in copies (which previously shadowed theme overrides).
+  // Each is memoised on the theme sub-object it derives from, so a config
+  // that reuses the default theme pays nothing here.
+  const spacingValues = resolveSpacingValues(config.theme.spacing)
+  const commonColors = resolveCommonColors(config.theme.colors)
 
   // Radius/shadow static entries can't be patched cheaply (multi-property
   // outputs), so a customized theme skips the static map and lets the
   // theme-driven rule handlers resolve those classes.
-  const skipStaticRadius = Object.entries(config.theme.borderRadius).some(([k, v]) => {
-    const cls = k === 'DEFAULT' ? 'rounded' : `rounded-${k}`
-    return BORDER_RADIUS_MAP[cls]?.['border-radius'] !== v
-  })
-  const skipStaticShadow = Object.entries(config.theme.boxShadow).some(([k, v]) => {
-    const cls = k === 'DEFAULT' ? 'shadow' : `shadow-${k}`
-    return SHADOW_MAP[cls] !== undefined && SHADOW_MAP[cls]['--tc-shadow'] !== v
-  })
+  const skipStaticRadius = resolveSkipStaticRadius(config.theme.borderRadius)
+  const skipStaticShadow = resolveSkipStaticShadow(config.theme.boxShadow)
 
   const result: ProcessedConfig = {
     config,
@@ -1583,7 +1676,7 @@ function processConfig(config: TsCssConfig): ProcessedConfig {
     commonColors,
     skipStaticRadius,
     skipStaticShadow,
-    screenBreakpoints: new Map(Object.entries(config.theme.screens)),
+    screenBreakpoints: resolveScreenBreakpoints(config.theme.screens),
     blocklistRegexCache,
     blocklistExact,
     extendColors,
@@ -2384,8 +2477,14 @@ export class CSSGenerator {
     }
     // Use cached selector if available. Shortcut expansion changes the base
     // selector for the same parsed class, so it needs its own cache slot.
+    //
+    // The plain case — no shortcut, no child selector, no pseudo-element — is
+    // the overwhelming majority and its key is exactly `parsed.raw`, so it
+    // skips building an identical string.
     const cacheKey = this.shortcutSelectorRaw === null
-      ? `${parsed.raw}${childSelector || ''}${pseudoElement || ''}`
+      ? (childSelector === undefined && pseudoElement === undefined
+          ? parsed.raw
+          : `${parsed.raw}${childSelector || ''}${pseudoElement || ''}`)
       : `${this.shortcutSelectorRaw}>${parsed.raw}${childSelector || ''}${pseudoElement || ''}`
     let selector = this.selectorCache.get(cacheKey)
     if (!selector) {
@@ -2621,8 +2720,10 @@ export class CSSGenerator {
       return undefined
     }
 
-    // Use cached media query if available
-    const cacheKey = variants.join(':')
+    // Use cached media query if available. A single variant is the common
+    // case by a wide margin, and `join` on a one-element array still
+    // allocates a string that is byte-identical to the element itself.
+    const cacheKey = variantsLen === 1 ? variants[0] : variants.join(':')
     const cached = this.mediaQueryCache.get(cacheKey)
     if (cached !== undefined) {
       return cached || undefined // Convert empty string to undefined
@@ -2946,52 +3047,66 @@ export class CSSGenerator {
   }
 
   /**
-   * Convert rules to CSS string
+   * Convert rules to CSS string.
+   *
+   * Written against index arrays rather than the obvious
+   * `map -> sort -> map -> group` chain: that allocated a wrapper object per
+   * rule plus two intermediate arrays, and this runs over every rule in the
+   * stylesheet on each uncached `toCSS()`.
   */
   private rulesToCSS(rules: CSSRule[], minify: boolean): string {
+    const count = rules.length
+
     // Stable sort by utility rank so shorthand utilities emit before their
-    // axis/side counterparts. Stable so that within the same rank, original
-    // insertion order (which drives other cascade semantics) is preserved.
-    const ranked = rules.map((r, i) => ({ r, i, rank: this.getUtilityRank(r.selector) }))
-    ranked.sort((a, b) => a.rank - b.rank || a.i - b.i)
-    const sorted = ranked.map(x => x.r)
+    // axis/side counterparts. The index tiebreak is what keeps it stable, so
+    // that within a rank the original insertion order — which drives other
+    // cascade semantics — is preserved.
+    const ranks: number[] = Array.from({ length: count })
+    const order: number[] = Array.from({ length: count })
+    for (let i = 0; i < count; i++) {
+      ranks[i] = this.getUtilityRank(rules[i].selector)
+      order[i] = i
+    }
+    order.sort((a, b) => ranks[a] - ranks[b] || a - b)
 
-    const grouped = this.groupRulesBySelector(sorted)
+    // Group by selector, merging properties, in the same pass.
+    const grouped = new Map<string, Map<string, string>>()
+    for (let i = 0; i < count; i++) {
+      const rule = rules[order[i]]
+      let properties = grouped.get(rule.selector)
+      if (properties === undefined) {
+        properties = new Map<string, string>()
+        grouped.set(rule.selector, properties)
+      }
+      // `for…in` rather than Object.entries: entries allocates a pair array
+      // per rule, and a large sheet has thousands of them.
+      const source = rule.properties
+      for (const property in source)
+        properties.set(property, source[property])
+    }
+
     const parts: string[] = []
-
-    for (const [selector, properties] of grouped.entries()) {
-      const props = Array.from(properties.entries())
-        .map(([prop, value]) => minify ? `${prop}:${value}` : `  ${prop}: ${value};`)
-        .join(minify ? ';' : '\n')
-
-      if (minify) {
-        parts.push(`${selector}{${props}}`)
+    for (const [selector, properties] of grouped) {
+      let body = ''
+      let first = true
+      for (const [property, value] of properties) {
+        if (minify) {
+          if (!first)
+            body += ';'
+          body += `${property}:${value}`
+        }
+        else {
+          if (!first)
+            body += '\n'
+          body += `  ${property}: ${value};`
+        }
+        first = false
       }
-      else {
-        parts.push(`${selector} {\n${props}\n}`)
-      }
+
+      parts.push(minify ? `${selector}{${body}}` : `${selector} {\n${body}\n}`)
     }
 
     return minify ? parts.join('') : parts.join('\n\n')
-  }
-
-  /**
-   * Group rules by selector and merge properties
-  */
-  private groupRulesBySelector(rules: CSSRule[]): Map<string, Map<string, string>> {
-    const grouped = new Map<string, Map<string, string>>()
-
-    for (const rule of rules) {
-      if (!grouped.has(rule.selector)) {
-        grouped.set(rule.selector, new Map())
-      }
-      const props = grouped.get(rule.selector)!
-      for (const [prop, value] of Object.entries(rule.properties)) {
-        props.set(prop, value)
-      }
-    }
-
-    return grouped
   }
 
   /**
