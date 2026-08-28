@@ -36,10 +36,28 @@ jobs:
       - name: Package Binaries
         run: cd packages/ts-css && bun run zip:all
 
+      # Credentials can come from either place. `.env.production` is committed
+      # with its values encrypted by dotenvx, and is decrypted here with the
+      # private key held as a repo secret. If that file or the key is absent,
+      # this falls straight through to the plain NPM_TOKEN secret, so neither
+      # setup is required and switching between them breaks nothing.
+      #
+      # `--overload` matters: GitHub defines an unset secret as the empty
+      # string, and dotenvx leaves an already-defined variable alone unless
+      # told to override it.
       - name: Publish to npm
-        run: pantry publish --npm --access public
+        run: |
+          if [ -f .env.production ] && [ -n "$DOTENV_PRIVATE_KEY_PRODUCTION" ]; then
+            echo "Using credentials from .env.production"
+            bunx --bun @dotenvx/dotenvx run -f .env.production --overload -- \
+              pantry publish --npm --access public
+          else
+            echo "Using credentials from repository secrets"
+            pantry publish --npm --access public
+          fi
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          DOTENV_PRIVATE_KEY_PRODUCTION: ${{ secrets.DOTENV_PRIVATE_KEY_PRODUCTION }}
           PANTRY_REGISTRY_TOKEN: ${{ secrets.PANTRY_TOKEN }}
 
       - name: Create GitHub Release

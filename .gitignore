@@ -3,11 +3,20 @@
 .idea
 *.log
 
-# Secrets. Nothing here was ignored before, so a stray `.env` holding a
-# publish token would have been committable to a public repo.
+# Secrets.
+#
+# Plaintext env files stay out of the repo. `.env.production` is the exception:
+# dotenvx encrypts its values in place, so the committed file holds ciphertext
+# plus a public key and is meant to be version-controlled — that is the whole
+# point of the format.
+#
+# `.env.keys` is the one file that must never be committed. It holds the
+# PRIVATE keys, and anyone with it can decrypt every committed env file.
 .env
 .env.*
+.env.keys
 !.env.example
+!.env.production
 *.tgz
 coverage
 dist
