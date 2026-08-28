@@ -41,6 +41,31 @@ case "$NPM_TOKEN_VALUE" in
   *) echo "warning: token does not start with 'npm_' — continuing anyway" >&2 ;;
 esac
 
+# Verify the token before anything is encrypted, committed, or pushed. An
+# invalid token otherwise surfaces as a 401/404 several minutes into a CI run,
+# with the failure looking like a workflow problem rather than a credential
+# one. This is exactly how the previous two releases failed.
+echo "Verifying the token with npm ..."
+WHOAMI_FILE="/tmp/npm-whoami.$$"
+WHOAMI_AUTH="Authorization: Bearer $NPM_TOKEN_VALUE"
+WHOAMI_URL="https://registry.npmjs.org/-/whoami"
+WHOAMI_STATUS="$(curl -s -o "$WHOAMI_FILE" -w '%{http_code}' -H "$WHOAMI_AUTH" "$WHOAMI_URL" || echo 000)"
+WHOAMI_BODY="$(cat "$WHOAMI_FILE" 2>/dev/null || true)"
+rm -f "$WHOAMI_FILE"
+unset WHOAMI_AUTH
+
+if [[ "$WHOAMI_STATUS" != "200" ]]; then
+  unset NPM_TOKEN_VALUE
+  echo >&2
+  echo "npm rejected the token (HTTP $WHOAMI_STATUS)." >&2
+  echo "Create a fresh one at https://www.npmjs.com/settings/~/tokens" >&2
+  echo "It must be an Automation token, or granular with read/write on ALL" >&2
+  echo "packages — 'ts-css' does not exist yet, so a token scoped to existing" >&2
+  echo "packages cannot create it." >&2
+  exit 1
+fi
+echo "  authenticated as: $(printf '%s' "$WHOAMI_BODY" | sed -E 's/.*"username":"([^"]*)".*/\1/')"
+
 # Write, encrypt, and immediately drop the plaintext from this shell.
 umask 077
 printf 'NPM_TOKEN=%s\n' "$NPM_TOKEN_VALUE" > "$ENV_FILE"
