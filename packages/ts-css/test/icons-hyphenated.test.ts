@@ -20,8 +20,12 @@ describe('icon collection names with hyphens', () => {
     // ever return undefined for this class.
     const result = rule('i-simple-icons-bluesky')
     if (result) {
-      expect(result).toHaveProperty('mask')
-      expect(String(result.mask)).toContain('data:image/svg+xml')
+      // `UtilityRule` is declared as returning a flat declaration map OR a
+      // `UtilityRuleResult`; iconRule only ever produces the former, so narrow
+      // to it rather than reading `mask` off the union.
+      const declarations = result as Record<string, string>
+      expect(declarations).toHaveProperty('mask')
+      expect(declarations.mask).toContain('data:image/svg+xml')
     }
   })
 
