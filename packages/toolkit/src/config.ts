@@ -11,7 +11,7 @@ let _config: CSSConfig | null = null
 export async function getConfig(): Promise<CSSConfig> {
   if (!_config) {
     _config = await loadConfig({
-      name: 'css',
+      name: 'ts-css',
       defaultConfig,
     })
   }

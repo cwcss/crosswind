@@ -73,6 +73,7 @@
   },
   "dependencies": {
     "@stacksjs/clapp": "^0.2.0",
+    "@stacksjs/ts-css": "workspace:*",
     "bunfig": "^0.15.17"
   },
   "lint-staged": {

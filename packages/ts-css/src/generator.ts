@@ -1,5 +1,6 @@
 import type { CSSRule, TsCssConfig, ParsedClass } from './types'
 import type { UtilityRule } from './rules'
+import { minifyBlock } from '@stacksjs/ts-css/optimize'
 import { parseClass } from './parser'
 import { defaultConfig } from './config'
 import { builtInRules } from './rules'
@@ -1436,17 +1437,13 @@ const NOT_VARIANT_SELECTORS: Record<string, string> = {
 // around syntax characters. Used for preflight and keyframes, which were
 // previously only whitespace-collapsed (comments and per-declaration
 // spacing survived into "minified" output).
+/**
+ * Minification is delegated to the toolkit's AST-based optimiser rather than
+ * squeezed with regexes. The old inline version could not tell a space inside
+ * a string or `url()` from a space between tokens.
+ */
 function minifyCSSBlock(css: string): string {
-  return css
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/\s+/g, ' ')
-    .replace(/\s*\{\s*/g, '{')
-    .replace(/\s*\}\s*/g, '}')
-    .replace(/;\s*/g, ';')
-    .replace(/:\s+/g, ':')
-    .replace(/,\s+/g, ',')
-    .replace(/;\}/g, '}')
-    .trim()
+  return minifyBlock(css).css
 }
 
 // Separator between stacked at-rule wrappers in a rule-group key

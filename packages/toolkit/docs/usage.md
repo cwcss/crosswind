@@ -144,10 +144,10 @@ ts-css format src/app.css
 
 ## Configuration
 
-You can drop a `css.config.ts` at the project root for defaults:
+You can drop a `ts-css.config.ts` at the project root for defaults:
 
 ```ts
-// css.config.ts
+// ts-css.config.ts
 import type { CSSOptions } from '@stacksjs/ts-css'
 
 const config: CSSOptions = {
