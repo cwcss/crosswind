@@ -22,7 +22,7 @@ export interface TsCssPluginOptions {
  *
  * @example
  * ```typescript
- * import { plugin } from 'ts-css'
+ * import { plugin } from '@ts-css/core'
  *
  * await Bun.build({
  *   entrypoints: ['./src/index.ts'],

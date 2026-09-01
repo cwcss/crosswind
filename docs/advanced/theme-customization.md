@@ -8,7 +8,7 @@ The theme configuration defines the design tokens that utilities are generated f
 
 ```typescript
 // css.config.ts
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   theme: {
@@ -339,7 +339,7 @@ const config = {
 </div>
 ```## Complete Theme Example```typescript
 
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   theme: {
@@ -530,7 +530,7 @@ const config = {
 ```### Extending Default Theme
 
 Merge with the default theme:```typescript
-import { defaultConfig } from 'ts-css'
+import { defaultConfig } from '@ts-css/core'
 
 const config = {
   theme: {

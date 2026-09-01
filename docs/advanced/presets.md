@@ -31,7 +31,7 @@ const config = {
 ### Basic Preset Structure
 
 A preset is an object that implements the`Preset`interface:```typescript
-import type { Preset } from 'ts-css'
+import type { Preset } from '@ts-css/core'
 
 export const myPreset: Preset = {
   name: 'my-preset',
@@ -54,7 +54,7 @@ export const myPreset: Preset = {
 
 ```### Simple Example```typescript
 // presets/minimal.ts
-import type { Preset } from 'ts-css'
+import type { Preset } from '@ts-css/core'
 
 export const minimalPreset: Preset = {
   name: 'minimal',
@@ -82,7 +82,7 @@ export const minimalPreset: Preset = {
 ### Single Preset```typescript
 
 // css.config.ts
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 import { minimalPreset } from './presets/minimal'
 
 const config = {
@@ -133,7 +133,7 @@ const config = {
 ### Design System Preset```typescript
 
 // presets/design-system.ts
-import type { Preset } from 'ts-css'
+import type { Preset } from '@ts-css/core'
 
 export const designSystemPreset: Preset = {
   name: 'design-system',
@@ -212,7 +212,7 @@ export const designSystemPreset: Preset = {
 ```### Component Library Preset```typescript
 
 // presets/components.ts
-import type { Preset } from 'ts-css'
+import type { Preset } from '@ts-css/core'
 
 export const componentsPreset: Preset = {
   name: 'components',
@@ -254,7 +254,7 @@ export const componentsPreset: Preset = {
 
 ```### Utility Preset```typescript
 // presets/utilities.ts
-import type { Preset } from 'ts-css'
+import type { Preset } from '@ts-css/core'
 
 export const utilitiesPreset: Preset = {
   name: 'utilities',
@@ -307,7 +307,7 @@ export const utilitiesPreset: Preset = {
 ```### Framework-Specific Preset```typescript
 
 // presets/react.ts
-import type { Preset } from 'ts-css'
+import type { Preset } from '@ts-css/core'
 
 export const reactPreset: Preset = {
   name: 'react',
@@ -360,7 +360,7 @@ my-ts-css-preset/
 
 ```typescript
 // src/index.ts
-import type { Preset } from 'ts-css'
+import type { Preset } from '@ts-css/core'
 
 export const myPreset: Preset = {
   name: 'my-preset',
@@ -389,10 +389,10 @@ export default myPreset
     "prepublishOnly": "bun run build"
   },
   "peerDependencies": {
-    "ts-css": ">=1.0.0"
+    "@ts-css/core": ">=1.0.0"
   },
   "devDependencies": {
-    "ts-css": "latest",
+    "@ts-css/core": "latest",
     "typescript": "latest"
   }
 }
@@ -459,7 +459,7 @@ const config = {
 
 ### Preset with Custom Preflight```typescript
 
-import type { Preflight, Preset } from 'ts-css'
+import type { Preflight, Preset } from '@ts-css/core'
 
 const customPreflight: Preflight = {
   getCSS: () => `/*Custom reset*/*{
@@ -593,7 +593,7 @@ const config = {
 }
 ```### Type Errors**Problem:**TypeScript errors when creating preset**Solution:**Import and use the`Preset`type:```typescript
 
-import type { Preset } from 'ts-css'
+import type { Preset } from '@ts-css/core'
 
 export const myPreset: Preset = {
   name: 'my-preset',

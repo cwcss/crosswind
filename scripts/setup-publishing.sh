@@ -28,11 +28,11 @@ TAG="${1:-$(git tag --list 'v*' --sort=-v:refname | head -1)}"
 VERSION="${TAG#v}"
 
 echo "Repository : $REPO"
-echo "Release tag: $TAG (ts-css@$VERSION)"
+echo "Release tag: $TAG (@ts-css/core@$VERSION)"
 echo
 echo "Paste the npm token, then press Enter. It will not be displayed."
 echo "It needs permission to CREATE packages (Automation, or granular with"
-echo "read/write on all packages) — 'ts-css' does not exist on npm yet."
+echo "read/write on all packages) — '@ts-css/core' does not exist on npm yet."
 printf 'npm token: '
 read -rs NPM_TOKEN_VALUE
 echo
@@ -62,7 +62,7 @@ if [[ "$WHOAMI_STATUS" != "200" ]]; then
   echo "npm rejected the token (HTTP $WHOAMI_STATUS)." >&2
   echo "Create a fresh one at https://www.npmjs.com/settings/~/tokens" >&2
   echo "It must be an Automation token, or granular with read/write on ALL" >&2
-  echo "packages — 'ts-css' does not exist yet, so a token scoped to existing" >&2
+  echo "packages — '@ts-css/core' does not exist yet, so a token scoped to existing" >&2
   echo "packages cannot create it." >&2
   exit 1
 fi
@@ -129,11 +129,11 @@ fi
 # publish step has previously reported errors while the run itself succeeded,
 # and the registry is the only authority on whether the version exists.
 echo
-echo "Confirming ts-css@$VERSION on the registry ..."
+echo "Confirming @ts-css/core@$VERSION on the registry ..."
 for attempt in 1 2 3 4 5 6; do
-  STATUS="$(curl -s -o /dev/null -w '%{http_code}' "https://registry.npmjs.org/ts-css/$VERSION" || echo 000)"
+  STATUS="$(curl -s -o /dev/null -w '%{http_code}' "https://registry.npmjs.org/@ts-css%2Fcore/$VERSION" || echo 000)"
   if [[ "$STATUS" == "200" ]]; then
-    echo "  ts-css@$VERSION is live: https://www.npmjs.com/package/ts-css/v/$VERSION"
+    echo "  @ts-css/core@$VERSION is live: https://www.npmjs.com/package/@ts-css/core/v/$VERSION"
     PUBLISHED=1
     break
   fi
@@ -143,7 +143,7 @@ done
 
 if [[ "${PUBLISHED:-0}" != "1" ]]; then
   echo >&2
-  echo "The workflow finished but ts-css@$VERSION is not on the registry." >&2
+  echo "The workflow finished but @ts-css/core@$VERSION is not on the registry." >&2
   echo "Inspect the publish step with:" >&2
   echo "  gh run view $RUN_ID --log --repo $REPO | grep -A5 'Publish to npm'" >&2
   exit 1

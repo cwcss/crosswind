@@ -1,5 +1,5 @@
 {
-  "name": "ts-css",
+  "name": "@ts-css/core",
   "type": "module",
   "sideEffects": false,
   "version": "0.3.0",

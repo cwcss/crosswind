@@ -130,15 +130,15 @@ Install ts-css via your package manager:```bash
 
 # Using Bun (recommended)
 
-bun add ts-css
+bun add @ts-css/core
 
 # Using npm
 
-npm install ts-css
+npm install @ts-css/core
 
 # Using pnpm
 
-pnpm add ts-css
+pnpm add @ts-css/core
 
 ```### Configuration
 
@@ -146,7 +146,7 @@ Create a configuration file:```bash
 cssx init
 ```This creates a`css.config.ts`file:```typescript
 
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],

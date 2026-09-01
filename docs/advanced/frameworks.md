@@ -15,7 +15,7 @@ cd my-app
 
 # Install ts-css
 
-bun add ts-css
+bun add @ts-css/core
 
 # Initialize ts-css
 
@@ -23,7 +23,7 @@ bunx cssx init
 ```**Configuration:**```typescript
 
 // css.config.ts
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
@@ -90,7 +90,7 @@ bun install
 
 # Install ts-css
 
-bun add ts-css
+bun add @ts-css/core
 bunx cssx init
 
 ```**Configuration:**```typescript
@@ -118,7 +118,7 @@ cd my-app
 
 # Install ts-css
 
-bun add ts-css
+bun add @ts-css/core
 bunx cssx init
 ```**Configuration:**```typescript
 
@@ -191,7 +191,7 @@ bun install
 
 # Install ts-css
 
-bun add ts-css
+bun add @ts-css/core
 bunx cssx init
 
 ```**Configuration:**```typescript
@@ -263,7 +263,7 @@ bun install
 
 # Install ts-css
 
-bun add ts-css
+bun add @ts-css/core
 bunx cssx init
 ```**Configuration:**```typescript
 
@@ -307,7 +307,7 @@ bun install
 
 # Install ts-css
 
-bun add ts-css
+bun add @ts-css/core
 bunx cssx init
 ```**Configuration:**```typescript
 
@@ -358,7 +358,7 @@ const config = {
 bun create vite my-app --template svelte-ts
 cd my-app
 bun install
-bun add ts-css
+bun add @ts-css/core
 bunx cssx init
 
 ```**Configuration:**```typescript
@@ -377,7 +377,7 @@ bun install
 
 # Install ts-css
 
-bun add ts-css
+bun add @ts-css/core
 bunx cssx init
 
 ```**Configuration:**```typescript
@@ -444,7 +444,7 @@ bun install
 
 # Install ts-css
 
-bun add ts-css
+bun add @ts-css/core
 bunx cssx init
 ```**Configuration:**```typescript
 
@@ -471,7 +471,7 @@ bun install
 
 # Install ts-css
 
-bun add ts-css
+bun add @ts-css/core
 bunx cssx init
 
 ```**Configuration:**```typescript
@@ -491,7 +491,7 @@ import './styles.css'
 
 # Install ts-css
 
-bun add ts-css
+bun add @ts-css/core
 bunx cssx init
 ```**Configuration:**```typescript
 
@@ -525,7 +525,7 @@ const config = {
 
 # In your Hugo project
 
-bun add ts-css
+bun add @ts-css/core
 bunx cssx init
 ```**Configuration:**```typescript
 

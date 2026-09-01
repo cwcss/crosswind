@@ -9,31 +9,31 @@ Install ts-css as a development dependency in your project:
 ::: code-group
 
 ```sh [bun]
-bun add ts-css
+bun add @ts-css/core
 
 # or
 
-bun install --dev ts-css
+bun install --dev @ts-css/core
 ```
 
 ```sh [npm]
-npm install ts-css
+npm install @ts-css/core
 
 # or
 
-npm i -D ts-css
+npm i -D @ts-css/core
 ```
 
 ```sh [pnpm]
-pnpm add ts-css
+pnpm add @ts-css/core
 
 # or
 
-pnpm add -D ts-css
+pnpm add -D @ts-css/core
 ```
 
 ```sh [yarn]
-yarn add ts-css
+yarn add @ts-css/core
 ```:::
 
 ### Global Installation
@@ -41,29 +41,29 @@ yarn add ts-css
 For global installation (to use the CLI anywhere):
 
 ::: code-group```sh [bun]
-bun add --global ts-css
+bun add --global @ts-css/core
 
 ```
 
 ```sh [npm]
 
-npm install --global ts-css
+npm install --global @ts-css/core
 
 # or
 
-npm i -g ts-css
+npm i -g @ts-css/core
 
 ```
 
 ```sh [pnpm]
 
-pnpm add --global ts-css
+pnpm add --global @ts-css/core
 
 ```
 
 ```sh [yarn]
 
-yarn global add ts-css
+yarn global add @ts-css/core
 
 ```:::
 
@@ -85,7 +85,7 @@ cssx watch
 ```## Configuration
 
 The`cssx init`command creates a basic`css.config.ts`file:```typescript
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
@@ -102,7 +102,7 @@ export default config
 
 # Install ts-css
 
-bun add ts-css
+bun add @ts-css/core
 
 # Create config
 
@@ -110,7 +110,7 @@ cssx init
 ```Update your`css.config.ts`:
 
 ```typescript
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   content: [
@@ -143,7 +143,7 @@ import './styles/styles.css'
 
 # Install ts-css
 
-bun add ts-css
+bun add @ts-css/core
 
 # Create config
 
@@ -151,7 +151,7 @@ cssx init
 ```Update your`css.config.ts`:
 
 ```typescript
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   content: [
@@ -174,7 +174,7 @@ export default config
 
 # Install ts-css
 
-bun add ts-css
+bun add @ts-css/core
 
 # Create config
 
@@ -182,7 +182,7 @@ cssx init
 ```Update your`css.config.ts`:
 
 ```typescript
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   content: [
@@ -203,7 +203,7 @@ export default config
 
 # Install ts-css
 
-bun add ts-css
+bun add @ts-css/core
 
 # Create config
 
@@ -211,7 +211,7 @@ cssx init
 ```Update your`css.config.ts`:
 
 ```typescript
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   content: [
@@ -235,7 +235,7 @@ import '/styles.css'
 
 # Install ts-css globally
 
-bun add --global ts-css
+bun add --global @ts-css/core
 
 # Create config
 
@@ -243,7 +243,7 @@ cssx init
 ```Update your`css.config.ts`:
 
 ```typescript
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   content: ['./src/**/*.html'],
@@ -397,11 +397,11 @@ If you get permission errors when installing globally:```bash
 
 # Use sudo on macOS/Linux
 
-sudo bun add --global ts-css
+sudo bun add --global @ts-css/core
 
 # Or install locally and use npx
 
-bun add ts-css
+bun add @ts-css/core
 bunx cssx build
 
 ```### TypeScript Errors
@@ -412,7 +412,7 @@ If you encounter TypeScript errors in your config file:
 
    bun add --dev typescript
    ```2. Use the`satisfies`keyword for type checking:```typescript
-   import type { TsCssOptions } from 'ts-css'
+   import type { TsCssOptions } from '@ts-css/core'
 
    const config = {
      content: ['./src/**/*.tsx'],

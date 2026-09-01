@@ -10,11 +10,11 @@ Install ts-css globally or locally:
 
 # Global (use anywhere)
 
-bun add --global ts-css
+bun add --global @ts-css/core
 
 # Local (project-specific)
 
-bun add ts-css
+bun add @ts-css/core
 ```## Commands
 
 ### `build`Build CSS from your content files.```bash
@@ -125,7 +125,7 @@ Next steps:
 
 ```**Generated file:**```typescript
 
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
@@ -403,7 +403,7 @@ cssx build --config ./css.test.config.ts
 ```### Programmatic Usage
 
 While the CLI is convenient, you can also use ts-css programmatically:```typescript
-import { build, buildAndWrite } from 'ts-css'
+import { build, buildAndWrite } from '@ts-css/core'
 
 // Build only (get result)
 const result = await build({
@@ -459,7 +459,7 @@ const config = {
 ### Command Not Found**Problem:**`command not found: cssx`**Solutions:**1. Install globally
 
    ```bash
-   bun add --global ts-css
+   bun add --global @ts-css/core
    ```2. Or use with package runner:```bash
    bunx cssx build
 
@@ -494,7 +494,7 @@ const config = {
    ls -la ./src/**/*.tsx
    ```3. Validate config:```typescript
    // Use type checking
-   import type { TsCssOptions } from 'ts-css'
+   import type { TsCssOptions } from '@ts-css/core'
 
    const config = {
      content: ['./src/**/*.tsx'],

@@ -37,7 +37,7 @@ Define shortcuts in your`css.config.ts`:
 
 ```typescript
 
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   shortcuts: {

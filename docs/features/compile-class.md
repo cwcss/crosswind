@@ -30,7 +30,7 @@ Add the`:tc:`trigger to mark utility groups for compilation:```html
 
 Configure the transformer in your config:```typescript
 // css.config.ts
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],

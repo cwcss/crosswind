@@ -8,7 +8,7 @@ Use TypeScript for your configuration file to get autocompletion and type checki
 
 ```typescript
 // css.config.ts
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
@@ -31,7 +31,7 @@ export default config
 ```## Type Checking
 
 The`satisfies`keyword provides type checking while preserving literal types:```typescript
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 // ✅ Type-safe with autocompletion
 const config = {
@@ -107,7 +107,7 @@ Get IntelliSense and autocompletion in your IDE:
 1. Install the TypeScript extension (comes pre-installed)
 2. Create`css.config.ts`with the type import:```typescript
 
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   // Press Ctrl+Space here for autocompletion
@@ -161,8 +161,8 @@ const config = {
 
 ### Build Function```typescript
 
-import type { BuildResult, TsCssConfig } from 'ts-css'
-import { build } from 'ts-css'
+import type { BuildResult, TsCssConfig } from '@ts-css/core'
+import { build } from '@ts-css/core'
 
 const result: BuildResult = await build({
   content: ['./src/**/*.tsx'],
@@ -185,7 +185,7 @@ interface BuildResult {
 }
 
 ```### Using with async/await```typescript
-import { build, buildAndWrite } from 'ts-css'
+import { build, buildAndWrite } from '@ts-css/core'
 
 async function buildStyles() {
   // With build
@@ -207,7 +207,7 @@ async function buildStyles() {
 ```## Custom Rules with Types
 
 Define type-safe custom rules:```typescript
-import type { CustomRule, TsCssConfig } from 'ts-css'
+import type { CustomRule, TsCssConfig } from '@ts-css/core'
 
 const customRules: CustomRule[] = [
   // Pattern and handler with types
@@ -229,7 +229,7 @@ const config = {
 ```## Preset Types
 
 Create type-safe presets:```typescript
-import type { Preset, Theme } from 'ts-css'
+import type { Preset, Theme } from '@ts-css/core'
 
 const myPreset: Preset = {
   name: 'my-design-system',
@@ -264,7 +264,7 @@ const config = {
 ### Custom Theme Values
 
 Extend the theme with custom properties:```typescript
-import type { TsCssOptions, Theme } from 'ts-css'
+import type { TsCssOptions, Theme } from '@ts-css/core'
 
 interface CustomTheme extends Theme {
   customSpacing: Record<string, string>
@@ -286,7 +286,7 @@ const config = {
 ```### Custom Config
 
 Create a custom config interface:```typescript
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 interface MyConfig extends Partial<TsCssConfig> {
   // Add custom properties
@@ -310,7 +310,7 @@ const config: MyConfig = {
 ```## Type Guards
 
 Use type guards for runtime type checking:```typescript
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 function isValidConfig(config: unknown): config is TsCssConfig {
   return (
@@ -333,7 +333,7 @@ if (isValidConfig(config)) {
 ```## Generics
 
 Use generics for flexible, type-safe functions:```typescript
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 function createConfig<T extends Partial<TsCssConfig>>(config: T): T {
   return {
@@ -356,12 +356,12 @@ const config = createConfig({
 
 Extend ts-css types globally:```typescript
 // Now use in config
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 // types/ts-css.d.ts
-import 'ts-css'
+import '@ts-css/core'
 
-declare module 'ts-css' {
+declare module '@ts-css/core' {
   interface TsCssConfig {
     // Add your custom properties
     customFeature?: {
@@ -392,8 +392,8 @@ const config = {
 
 ### Vite```typescript
 
-import type { TsCssOptions } from 'ts-css'
-import { build } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
+import { build } from '@ts-css/core'
 // vite.config.ts
 import { defineConfig } from 'vite'
 
@@ -415,10 +415,10 @@ export default defineConfig({
 })
 ```### Next.js```typescript
 
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 // next.config.ts
 import type { NextConfig } from 'next'
-import { buildAndWrite } from 'ts-css'
+import { buildAndWrite } from '@ts-css/core'
 
 const tsCssConfig: TsCssConfig = {
   content: ['./src/**/*.tsx', './app/**/*.tsx'],
@@ -446,7 +446,7 @@ import type {
   ParsedClass,
   Preset,
   Theme,
-} from 'ts-css'
+} from '@ts-css/core'
 
 // Extract specific types
 type ConfigColors = Theme['colors']
@@ -460,10 +460,10 @@ type PartialTheme = Partial<Theme>
 ### 1. Always Use Type Imports```typescript
 
 // ✅ Type-only import
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 // ❌ Value import (unnecessary)
-import { TsCssConfig } from 'ts-css'
+import { TsCssConfig } from '@ts-css/core'
 
 ```### 2. Use`satisfies`for Validation```typescript
 // ✅ Validates types while preserving literals
@@ -478,7 +478,7 @@ const config: Partial<TsCssConfig> = {
 ```### 3. Separate Type Definitions```typescript
 
 // types/ts-css.ts
-import type { TsCssOptions, Preset } from 'ts-css'
+import type { TsCssOptions, Preset } from '@ts-css/core'
 
 // css.config.ts
 import type { MyConfig } from './types/ts-css'
@@ -528,14 +528,14 @@ bun add --dev typescript
 
 # Ensure types are imported
 
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 ```### Autocomplete Not Working**Problem:**No autocompletion in IDE**Solutions:**1. Restart TypeScript server
 
 2. Check tsconfig.json includes the config file
 3. Ensure proper imports:```typescript
 
-   import type { TsCssOptions } from 'ts-css'
+   import type { TsCssOptions } from '@ts-css/core'
    ```
 
 ## Related*[Configuration](../config.md) - Full configuration guide*[Custom Rules](../advanced/custom-rules.md) - Creating custom utilities*[Presets](../advanced/presets.md) - Reusable configurations*[API Reference](../api-reference.md) - Programmatic API

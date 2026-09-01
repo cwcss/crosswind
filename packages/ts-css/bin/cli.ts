@@ -309,7 +309,7 @@ cli
       process.exit(1)
     }
 
-    const defaultConfig = `import type { TsCssOptions } from 'ts-css'
+    const defaultConfig = `import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx,stx}'],
