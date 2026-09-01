@@ -29,4 +29,7 @@ temp
 packages/ts-css/bin/cssx
 packages/ts-css/bin/cssx-*
 packages/ts-css/bin/*.zip
+packages/toolkit/bin/ts-css
+packages/toolkit/bin/ts-css-*
+packages/toolkit/bin/*.zip
 pantry
