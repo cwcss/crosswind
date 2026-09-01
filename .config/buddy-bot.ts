@@ -2,8 +2,8 @@ import type { BuddyBotConfig } from 'buddy-bot'
 
 const config: BuddyBotConfig = {
   repository: {
-    owner: 'stacksjs',
-    name: 'ts-css',
+    owner: 'cwcss',
+    name: 'crosswind',
     provider: 'github',
     // Uses GITHUB_TOKEN by default
   },
