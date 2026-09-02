@@ -33,7 +33,7 @@ When you start watch mode, ts-css:
 
 Watch mode uses the content patterns from your configuration file:```typescript
 // css.config.ts
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   content: [

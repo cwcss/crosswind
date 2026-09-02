@@ -1,5 +1,5 @@
 {
-  "name": "ts-css-vscode",
+  "name": "@ts-css/vscode",
   "version": "0.3.0",
   "description": "VS Code extension for ts-css (placeholder package)",
   "license": "MIT",

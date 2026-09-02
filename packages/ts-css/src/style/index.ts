@@ -51,7 +51,7 @@ import { renderStyles, resetStyles } from './registry'
  *
  * @example
  * ```ts
- * import { css } from 'ts-css'
+ * import { css } from '@ts-css/core'
  *
  * const styles = css.create({ card: { padding: 16 } })
  * <div {...css.props(styles.card)} />

@@ -11,7 +11,7 @@ A CSS engine with two front ends and one atomic output.
 Write **utility classes** when you are laying out markup, and Tailwind v4 semantics apply unchanged. Write **typed style objects** when a style has to be computed, tokenised, or merged across a component boundary, and you get StyleX's authoring model. Both compile through the same pipeline into the same deduplicated atomic CSS, in one stylesheet, with nothing left at runtime.
 
 ```bash
-bun add ts-css
+bun add @ts-css/core
 ```
 
 ## Why two APIs
@@ -43,7 +43,7 @@ bunx cssx watch    # rebuilds on change
 
 ```ts
 // css.config.ts
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 export default {
   content: ['./src/**/*.{html,ts,tsx,stx}'],
@@ -57,7 +57,7 @@ export default {
 ## Style objects
 
 ```ts
-import { css } from 'ts-css'
+import { css } from '@ts-css/core'
 
 const theme = css.defineVars({
   accent: '#0b7',
@@ -223,7 +223,7 @@ cssx clean          # remove the output file
 ## Configuration
 
 ```ts
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 export default {
   content: ['./src/**/*.{html,ts,tsx}'],
@@ -296,7 +296,7 @@ The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
 Made with 💙
 
 <!-- Badges -->
-[npm-version-src]: https://img.shields.io/npm/v/ts-css?style=flat-square
-[npm-version-href]: https://npmjs.com/package/ts-css
+[npm-version-src]: https://img.shields.io/npm/v/@ts-css/core?style=flat-square
+[npm-version-href]: https://npmjs.com/package/@ts-css/core
 [github-actions-src]: https://img.shields.io/github/actions/workflow/status/cwcss/crosswind/ci.yml?style=flat-square&branch=main
 [github-actions-href]: https://github.com/cwcss/crosswind/actions?query=workflow%3Aci

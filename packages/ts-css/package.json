@@ -1,5 +1,5 @@
 {
-  "name": "ts-css",
+  "name": "@ts-css/core",
   "type": "module",
   "version": "0.3.0",
   "description": "A blazingly fast utility-first CSS engine with a StyleX-style typed API. Tailwind-compatible utilities, zero runtime.",
@@ -73,6 +73,7 @@
   },
   "dependencies": {
     "@stacksjs/clapp": "^0.2.0",
+    "@stacksjs/ts-css": "workspace:*",
     "bunfig": "^0.15.17"
   },
   "lint-staged": {

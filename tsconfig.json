@@ -6,7 +6,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "paths": {
-      "ts-css": ["./packages/ts-css/src/index.ts"]
+      "@ts-css/core": ["./packages/ts-css/src/index.ts"]
     },
     "resolveJsonModule": true,
     "types": ["bun"],

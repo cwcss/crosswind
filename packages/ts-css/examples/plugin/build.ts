@@ -1,4 +1,4 @@
-import { plugin } from 'ts-css'
+import { plugin } from '@ts-css/core'
 
 // Build with the ts-css plugin
 // The plugin will automatically process HTML files that are imported in your TypeScript/JavaScript code

@@ -5,7 +5,7 @@ A Bun plugin that automatically generates and injects Crosswind CSS into your HT
 ## Installation
 
 ```bash
-bun add ts-css
+bun add @ts-css/core
 ```
 
 ## Quick Start**1. Create your HTML file**(`src/template.html`)
@@ -32,7 +32,7 @@ document.body.innerHTML = template
 ```**3. Build with the plugin**:
 
 ```typescript
-import { plugin } from 'ts-css'
+import { plugin } from '@ts-css/core'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],
@@ -49,7 +49,7 @@ await Bun.build({
 
 ### Basic Configuration```typescript
 
-import { plugin } from 'ts-css'
+import { plugin } from '@ts-css/core'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],
@@ -62,7 +62,7 @@ await Bun.build({
 })
 
 ```### Custom Theme```typescript
-import { plugin } from 'ts-css'
+import { plugin } from '@ts-css/core'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],
@@ -92,7 +92,7 @@ await Bun.build({
 })
 ```### Advanced Configuration```typescript
 
-import { plugin } from 'ts-css'
+import { plugin } from '@ts-css/core'
 
 await Bun.build({
   entrypoints: ['./src/index.ts'],
@@ -186,7 +186,7 @@ The plugin is highly performant:
 ## TypeScript Support
 
 The plugin is fully typed. Import the types:```typescript
-import type { TsCssPluginOptions } from 'ts-css'
+import type { TsCssPluginOptions } from '@ts-css/core'
 
 const options: TsCssPluginOptions = {
   config: {
@@ -197,7 +197,7 @@ const options: TsCssPluginOptions = {
 
 The plugin also respects`crosswind.config.ts`in your project root:```typescript
 // crosswind.config.ts
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 export default {
   minify: true,

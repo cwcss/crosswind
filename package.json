@@ -1,5 +1,5 @@
 {
-  "name": "ts-css",
+  "name": "@ts-css/core",
   "type": "module",
   "sideEffects": false,
   "version": "0.3.0",
@@ -29,7 +29,7 @@
     "zero-runtime"
   ],
   "scripts": {
-    "build": "cd packages/ts-css && bun run build",
+    "build": "bun run build:toolkit && cd packages/ts-css && bun run build",
     "fresh": "bunx rimraf node_modules/ bun.lock && bun i",
     "test": "bun test",
     "lint": "bunx --bun pickier .",
@@ -48,7 +48,9 @@
     "typecheck": "bun --bun tsc --noEmit",
     "benchmark": "bun run benchmark/framework-comparison.bench.ts",
     "benchmark:binary": "bun run benchmark/binary-vs-api.ts",
-    "benchmark:style": "bun run benchmark/style-api.bench.ts"
+    "benchmark:style": "bun run benchmark/style-api.bench.ts",
+    "build:toolkit": "cd packages/toolkit && bun run build",
+    "prepare": "bun run build:toolkit"
   },
   "devDependencies": {
     "better-dx": "^0.2.15"

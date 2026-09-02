@@ -28,7 +28,7 @@ jobs:
         run: bun install
 
       - name: Build
-        run: cd packages/ts-css && bun run build
+        run: bun run build
 
       - name: Cross-compile Binaries
         run: cd packages/ts-css && bun run compile:all

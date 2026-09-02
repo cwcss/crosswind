@@ -10,7 +10,7 @@ Create a configuration file using the init command:
 cssx init
 ```This creates a basic`css.config.ts`file:```typescript
 
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
@@ -238,7 +238,7 @@ const config = {
 
 ```**Creating a Preset:**```typescript
 // presets/custom.ts
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 export const myCustomPreset: Partial<TsCssConfig> = {
   theme: {
@@ -252,7 +252,7 @@ export const myCustomPreset: Partial<TsCssConfig> = {
 }
 ```## Complete Configuration Example```typescript
 
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const config = {
   // Required
@@ -306,7 +306,7 @@ export default config
 ```## Environment-Specific Configuration
 
 You can create different configurations for different environments:```typescript
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 const isDev = process.env.NODE_ENV === 'development'
 const isProd = process.env.NODE_ENV === 'production'
@@ -327,7 +327,7 @@ export default config
 ```## TypeScript Support
 
 ts-css provides full TypeScript support with type checking and autocomplete:```typescript
-import type { TsCssOptions } from 'ts-css'
+import type { TsCssOptions } from '@ts-css/core'
 
 // Use satisfies for type checking while preserving literal types
 const config = {

@@ -5,7 +5,7 @@ A CSS engine with two front ends and one atomic output: Tailwind-compatible **ut
 ## Installation
 
 ```bash
-bun add ts-css
+bun add @ts-css/core
 ```
 
 ## Quick Start
@@ -13,7 +13,7 @@ bun add ts-css
 ### Programmatic API
 
 ```typescript
-import { CSSGenerator, defaultConfig } from 'ts-css'
+import { CSSGenerator, defaultConfig } from '@ts-css/core'
 
 const gen = new CSSGenerator(defaultConfig)
 gen.generate('flex')
@@ -32,7 +32,7 @@ const css = gen.toCSS(true) // true = include preflight
 ### Build API
 
 ```typescript
-import { build } from 'ts-css'
+import { build } from '@ts-css/core'
 
 const result = await build({
   content: ['./src/**/*.html', './src/**/*.tsx'],
@@ -44,7 +44,7 @@ const result = await build({
 ### Style API
 
 ```typescript
-import { css } from 'ts-css'
+import { css } from '@ts-css/core'
 
 const theme = css.defineVars({
   accent: '#0b7',
@@ -101,7 +101,7 @@ cssx build --minify
 Create a `css.config.ts` in your project root:
 
 ```typescript
-import type { TsCssConfig } from 'ts-css'
+import type { TsCssConfig } from '@ts-css/core'
 
 export default {
   content: ['./src/**/*.{html,tsx,stx}'],
@@ -588,7 +588,7 @@ Prefix with `!` to apply `!important`:
 ## Presets
 
 ```typescript
-import type { Preset } from 'ts-css'
+import type { Preset } from '@ts-css/core'
 
 const myPreset: Preset = {
   name: 'my-preset',
