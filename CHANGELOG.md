@@ -1,3 +1,17 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.3.2...v0.3.3)
+
+## 🐛 Bug Fixes
+
+- **config**: follow the CssOptions rename in the repo's own config ([759cc86](https://github.com/cwcss/crosswind/commit/759cc86)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🔧 Chores
+
+- release v0.3.3 ([388137c](https://github.com/cwcss/crosswind/commit/388137c)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.3.1...v0.3.2)
 
 ## 💥 Breaking Changes
