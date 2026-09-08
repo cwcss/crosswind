@@ -65,14 +65,7 @@ jobs:
         with:
           install: 'false'
           release: 'true'
-          # Both CLIs now ship from this package: `ts-css` (toolkit) and
-          # `cssx` (utility engine).
           release-files: |
-            packages/toolkit/bin/ts-css-linux-x64.zip
-            packages/toolkit/bin/ts-css-linux-arm64.zip
-            packages/toolkit/bin/ts-css-windows-x64.zip
-            packages/toolkit/bin/ts-css-darwin-x64.zip
-            packages/toolkit/bin/ts-css-darwin-arm64.zip
             packages/toolkit/bin/cssx-linux-x64.zip
             packages/toolkit/bin/cssx-linux-arm64.zip
             packages/toolkit/bin/cssx-windows-x64.zip
