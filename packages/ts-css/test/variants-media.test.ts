@@ -88,6 +88,26 @@ describe('Media Query and Feature Variants', () => {
       expect(css).toContain('@media (min-width: 768px)')
       expect(css).toContain(':hover')
     })
+
+    it('should match the element that carries dir, not only its descendants', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('rtl:text-end')
+      const css = gen.toCSS(false)
+      // A descendant combinator (`[dir="rtl"] .rtl\:text-end`) cannot style
+      // `<html dir="rtl" class="rtl:text-end">` — the element declaring the
+      // direction is never its own descendant.
+      expect(css).toContain(':is([dir="rtl"], [dir="rtl"] *)')
+      expect(css).not.toContain('[dir="rtl"] .rtl')
+    })
+
+    it('should keep a pseudo-element last regardless of variant order', () => {
+      for (const cls of ['rtl:before:underline', 'before:rtl:underline']) {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate(cls)
+        const css = gen.toCSS(false)
+        expect(css).toContain(':is([dir="rtl"], [dir="rtl"] *)::before')
+      }
+    })
   })
 
   describe('Motion variants', () => {

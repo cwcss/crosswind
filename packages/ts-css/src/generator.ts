@@ -1453,8 +1453,23 @@ const AT_RULE_SEPARATOR = '\u0001'
 const PREFIX_VARIANTS: Record<string, string> = {
   'dark': '.dark ',
   'light': '.light ',
-  'rtl': '[dir="rtl"] ',
-  'ltr': '[dir="ltr"] ',
+}
+
+/**
+ * Direction variants match the element carrying `dir` AND everything under it.
+ *
+ * These used to be prefix variants (`[dir="rtl"] .rtl\:x`), a plain descendant
+ * combinator, so the element that declares the direction could never style
+ * itself: `<html dir="rtl" class="rtl:..">` and `<div dir="rtl" class="rtl:..">`
+ * both silently did nothing — the common case for a per-block direction
+ * override. Wrapping in `:is()` rather than `:where()` is deliberate: `:is()`
+ * takes the specificity of its most specific argument, so the emitted rule
+ * keeps the (0,2,0) it had as a descendant selector and continues to win over
+ * the undirected utility it is meant to override.
+ */
+const DIRECTION_VARIANTS: Record<string, string> = {
+  rtl: ':is([dir="rtl"], [dir="rtl"] *)',
+  ltr: ':is([dir="ltr"], [dir="ltr"] *)',
 }
 
 // Cache for pre-processed configs to avoid redundant merging
@@ -2453,6 +2468,7 @@ export class CSSGenerator {
     const known
       = VARIANT_SELECTORS[variant] !== undefined
         || PREFIX_VARIANTS[variant] !== undefined
+        || DIRECTION_VARIANTS[variant] !== undefined
         || NOT_VARIANT_SELECTORS[variant] !== undefined
         || this.screenBreakpoints.has(variant)
         || (variant.startsWith('max-') && this.screenBreakpoints.has(variant.slice(4)))
@@ -2566,7 +2582,22 @@ export class CSSGenerator {
         continue
       }
 
-      // Try prefix selector lookup (dark, rtl, ltr)
+      // Direction variants attach to the selector itself, so that an element
+      // with `dir` set matches its own rtl:/ltr: utilities. A pseudo-element
+      // has to stay last in a selector, so splice in ahead of one if the
+      // variants seen so far already appended it (`before:rtl:...`).
+      const directionSelector = DIRECTION_VARIANTS[variant]
+      if (directionSelector !== undefined) {
+        if (this.variantEnabled[variant]) {
+          const pseudoElementAt = selector.indexOf('::')
+          selector = pseudoElementAt === -1
+            ? selector + directionSelector
+            : selector.slice(0, pseudoElementAt) + directionSelector + selector.slice(pseudoElementAt)
+        }
+        continue
+      }
+
+      // Try prefix selector lookup (dark, light)
       const prefixSelector = PREFIX_VARIANTS[variant]
       if (prefixSelector !== undefined) {
         // Under darkMode: 'media', dark:/light: scope via a
