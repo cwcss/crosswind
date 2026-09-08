@@ -409,6 +409,45 @@ const COLOR_PROPS: Record<string, string> = {
   border: 'border-color',
 }
 
+/**
+ * Where a typed arbitrary value lands, per colour utility.
+ *
+ * `bg-[…]`, `text-[…]` and `border-[…]` all default to a colour, so a value
+ * that announces itself as something else — `bg-[position:right_1rem_center]`,
+ * `border-[length:3px]` — used to fall through the colour resolver and be
+ * emitted as `background-color: right 1rem center` / `border-color: 3px`:
+ * declarations the browser drops, silently costing the author the utility they
+ * asked for. The parser already separates the hint from the value; this is the
+ * table that says what each hint means.
+ */
+const TYPE_HINT_PROPS: Record<string, Record<string, string>> = {
+  bg: {
+    color: 'background-color',
+    image: 'background-image',
+    url: 'background-image',
+    position: 'background-position',
+    length: 'background-size',
+  },
+  text: {
+    color: 'color',
+    length: 'font-size',
+    'absolute-size': 'font-size',
+    'relative-size': 'font-size',
+    'family-name': 'font-family',
+  },
+  border: {
+    color: 'border-color',
+    length: 'border-width',
+    'line-width': 'border-width',
+  },
+}
+
+/** Type hints that make `text-[…]` a font-size rather than something else. */
+const FONT_SIZE_TYPE_HINTS = new Set(['length', 'absolute-size', 'relative-size', 'percentage', 'number'])
+
+/** CSS functions that produce an <image>, so `bg-[…]` means background-image. */
+const IMAGE_VALUE_RE = /^(?:url|(?:repeating-)?(?:linear|radial|conic)-gradient|image-set|-webkit-image-set|cross-fade|element|paint)\(/i
+
 // Special color keywords (pre-defined)
 const SPECIAL_COLORS: Record<string, string> = {
   current: 'currentColor',
@@ -444,9 +483,18 @@ export const colorRule: UtilityRule = (parsed, config) => {
 
   const value = parsed.value
 
-  // Handle type hint for color: text-[color:var(--muted)] -> color: var(--muted)
-  if (parsed.arbitrary && parsed.typeHint === 'color') {
-    return { [prop]: value }
+  // A typed arbitrary value names its own property (see TYPE_HINT_PROPS).
+  // An unrecognised hint means the author asked for something this utility
+  // cannot express, so drop the rule rather than emit a bogus colour.
+  if (parsed.arbitrary && parsed.typeHint) {
+    const hintedProp = TYPE_HINT_PROPS[parsed.utility]?.[parsed.typeHint]
+    return hintedProp ? { [hintedProp]: value } : undefined
+  }
+
+  // An untyped `bg-[…]` holding an image function is a background-image;
+  // only the colour utilities' default reading made it a background-color.
+  if (parsed.arbitrary && parsed.utility === 'bg' && IMAGE_VALUE_RE.test(value)) {
+    return { 'background-image': value }
   }
 
   // Build/update flat color cache if needed
@@ -788,11 +836,12 @@ export const fontSizeRule: UtilityRule = (parsed, config) => {
 
     // Handle arbitrary values first
     if (parsed.arbitrary) {
-      // If there's a type hint, only handle font-size if it's a length-related type
-      // For 'color' type hint, let colorRule handle it
+      // A type hint is only ours when it names a size. Every other hint —
+      // `color`, and `family-name`, which this branch used to turn into
+      // `font-size: Inter` — belongs to colorRule's TYPE_HINT_PROPS table.
       if (parsed.typeHint) {
-        if (parsed.typeHint === 'color') {
-          return undefined // Let colorRule handle it
+        if (!FONT_SIZE_TYPE_HINTS.has(parsed.typeHint)) {
+          return undefined
         }
         const out: Record<string, string> = { 'font-size': sizeValue }
         if (lineHeightOverride) out['line-height'] = lineHeightOverride

@@ -146,6 +146,14 @@ export const backgroundImageRule: UtilityRule = (parsed) => {
     angle = parsed.value
   }
   else if (parsed.utility === 'bg') {
+    // `bg-[image:linear-gradient(…)]` and `bg-[url(…)]` are complete image
+    // values, not the `bg-linear-<angle>` shorthand. Without this guard the
+    // shorthand regex chewed `linear-gradient(red,blue)` down to
+    // `gradient(red,blue)` and re-wrapped it as
+    // `linear-gradient(gradient(red,blue), var(--tc-gradient-stops))`.
+    if (parsed.typeHint || parsed.value.includes('('))
+      return undefined
+
     // A leading `-` belongs to the angle, not to the family name.
     const negative = parsed.value.startsWith('-')
     const token = negative ? parsed.value.slice(1) : parsed.value

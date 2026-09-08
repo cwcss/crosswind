@@ -4,6 +4,46 @@ import { CSSGenerator } from '../src/generator'
 import { parseClass } from '../src/parser'
 
 describe('Arbitrary Values and Properties', () => {
+  describe('Data-type hints', () => {
+    // Every one of these used to fall through to the colour resolver and be
+    // emitted as background-color / border-color / font-size.
+    const cases: Array<[string, string]> = [
+      ['bg-[position:right_0.85rem_center]', 'background-position: right 0.85rem center;'],
+      ['bg-[length:1.1rem]', 'background-size: 1.1rem;'],
+      ['bg-[image:linear-gradient(red,blue)]', 'background-image: linear-gradient(red,blue);'],
+      ['bg-[url(/a.png)]', 'background-image: url(/a.png);'],
+      ['border-[length:3px]', 'border-width: 3px;'],
+      ['text-[family-name:Inter]', 'font-family: Inter;'],
+    ]
+
+    for (const [cls, declaration] of cases) {
+      it(`should route ${cls} to the property its hint names`, () => {
+        const gen = new CSSGenerator(defaultConfig)
+        gen.generate(cls)
+        expect(gen.toCSS(false)).toContain(declaration)
+      })
+    }
+
+    it('should leave untyped and colour-typed values on the colour property', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('bg-[#f00]')
+      gen.generate('bg-[var(--c)]')
+      gen.generate('text-[color:var(--x)]')
+      gen.generate('text-[length:14px]')
+      const css = gen.toCSS(false)
+      expect(css).toContain('background-color: #f00;')
+      expect(css).toContain('background-color: var(--c);')
+      expect(css).toContain('color: var(--x);')
+      expect(css).toContain('font-size: 14px;')
+    })
+
+    it('should not mistake a complete gradient for the bg-linear shorthand', () => {
+      const gen = new CSSGenerator(defaultConfig)
+      gen.generate('bg-[image:linear-gradient(red,blue)]')
+      expect(gen.toCSS(false)).not.toContain('gradient(gradient')
+    })
+  })
+
   describe('Arbitrary values', () => {
     it('should support arbitrary width', () => {
       const gen = new CSSGenerator(defaultConfig)
