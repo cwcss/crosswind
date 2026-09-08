@@ -1,3 +1,14 @@
+[Compare changes](https://github.com/stacksjs/ts-css/compare/v0.3.3...v0.3.4)
+
+## 🔧 Chores
+
+- release v0.3.4 ([19d3516](https://github.com/stacksjs/ts-css/commit/19d3516)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: declare bun.sh ^1.4.1 ([b7681a8](https://github.com/stacksjs/ts-css/commit/b7681a8)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.3.2...v0.3.3)
 
 ## 🐛 Bug Fixes
