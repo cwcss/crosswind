@@ -431,6 +431,63 @@ document.documentElement.classList.add('dark')
 // Disable dark mode
 document.documentElement.classList.remove('dark')
 
+```## Text Direction (RTL & LTR)
+
+Write layout once and let it mirror. The logical utilities resolve against the
+document direction, so nothing needs a second set of classes:
+
+| Physical            | Logical              | Resolves to                    |
+| ------------------- | -------------------- | ------------------------------ |
+| `pl-6` / `pr-6`     | `ps-6` / `pe-6`      | `padding-inline-start` / `-end` |
+| `ml-6` / `mr-6`     | `ms-6` / `me-6`      | `margin-inline-start` / `-end`  |
+| `left-0` / `right-0`| `start-0` / `end-0`  | `inset-inline-start` / `-end`   |
+| `border-l`/`border-r`| `border-s`/`border-e`| `border-inline-start-width` / `-end-width` |
+| `text-left`/`text-right`| `text-start`/`text-end` | `text-align: start` / `end` |
+| `rounded-l-lg`      | `rounded-s-lg`       | `border-*-start-radius`         |
+| `float-left`/`float-right` | `float-start`/`float-end` | `float: inline-start` / `end` |
+
+```html
+<!-- Mirrors automatically under dir="rtl" -->
+<ol class="ps-6 border-s-2 border-gray-200">
+  <li class="relative">
+    <span class="absolute -start-8 h-3 w-3 rounded-full bg-blue-500"></span>
+    Timeline entry
+  </li>
+</ol>
+```
+
+Set the direction on the document:
+
+```html
+<html lang="ar" dir="rtl">
+```
+
+Or per subtree — a quoted passage, a code block, a user-submitted comment:
+
+```html
+<blockquote dir="rtl">…</blockquote>
+<textarea dir="auto"></textarea>
+```
+
+`dir="auto"` lets the browser pick the direction from the first strong character,
+which is what you want for anything a person types.
+
+### Direction variants
+
+For the rare property with no logical form — `background-position` is the usual
+one — reach for the `rtl:` and `ltr:` variants:
+
+```html
+<select class="bg-[position:right_0.85rem_center] rtl:bg-[position:left_0.85rem_center]">
+```
+
+Both variants match the element carrying `dir` **and** everything beneath it, so
+they work on the same element that declares the direction:
+
+```html
+<div dir="rtl" class="rtl:text-end">Styles itself</div>
+```
+
 ```## Group & Peer Variants
 
 Create parent-child interactions:```html
