@@ -1,7 +1,7 @@
-import type { TsCssOptions } from '../packages/toolkit/src/engine/types'
+import type { CssOptions } from '../packages/toolkit/src/engine/types'
 
 const config = {
   verbose: true,
-} satisfies Partial<TsCssOptions>
+} satisfies Partial<CssOptions>
 
-export default config as Partial<TsCssOptions>
+export default config as Partial<CssOptions>
