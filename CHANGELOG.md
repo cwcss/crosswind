@@ -1,3 +1,17 @@
+[Compare changes](https://github.com/stacksjs/ts-css/compare/v0.3.4...v0.3.5)
+
+## 💚 Continuous Integration
+
+- publish with the npm token, not OIDC ([9e33fdb](https://github.com/stacksjs/ts-css/commit/9e33fdb)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🔧 Chores
+
+- release v0.3.5 ([d5aea94](https://github.com/stacksjs/ts-css/commit/d5aea94)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/stacksjs/ts-css/compare/v0.3.3...v0.3.4)
 
 ## 🔧 Chores
