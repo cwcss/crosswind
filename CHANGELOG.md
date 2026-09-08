@@ -1,3 +1,207 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.3.0...v0.3.1)
+
+## 💥 Breaking Changes
+
+- refactor(ts-css)!: fold the utility engine into @stacksjs/ts-css ([b234a9b](https://github.com/cwcss/crosswind/commit/b234a9b)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## ✨ Features
+
+- merge @stacksjs/ts-css as packages/toolkit ([aa959a0](https://github.com/cwcss/crosswind/commit/aa959a0)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **style**: collect and emit styles at build time ([47ac1ab](https://github.com/cwcss/crosswind/commit/47ac1ab)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **style**: add a StyleX-style typed style API ([ee04754](https://github.com/cwcss/crosswind/commit/ee04754)) _(by Chris <chrisbreuer93@gmail.com>)_
+- extract utility classes from string literals in code ([e3de131](https://github.com/cwcss/crosswind/commit/e3de131)) _(by Chris <chrisbreuer93@gmail.com>)_
+- fill in missing Tailwind v4 utility families ([4597589](https://github.com/cwcss/crosswind/commit/4597589)) _(by Chris <chrisbreuer93@gmail.com>)_
+- support the v4 bg-linear-* gradient spelling ([90aae7d](https://github.com/cwcss/crosswind/commit/90aae7d)) _(by Chris <chrisbreuer93@gmail.com>)_
+- add CSS containment utilities ([b647e3b](https://github.com/cwcss/crosswind/commit/b647e3b)) _(by Chris <chrisbreuer93@gmail.com>)_
+- reload the config file during watch mode ([90f1b6b](https://github.com/cwcss/crosswind/commit/90f1b6b)) _(by Chris <chrisbreuer93@gmail.com>)_
+- adopt the Tailwind v4 radius and shadow scales ([b2c62ea](https://github.com/cwcss/crosswind/commit/b2c62ea)) _(by Chris <chrisbreuer93@gmail.com>)_
+- nest stacked at-rule variants and add darkMode media strategy ([e319366](https://github.com/cwcss/crosswind/commit/e319366)) _(by Chris <chrisbreuer93@gmail.com>)_
+- support max-* breakpoint variants and order media types first ([ded1272](https://github.com/cwcss/crosswind/commit/ded1272)) _(by Chris <chrisbreuer93@gmail.com>)_
+- extract classes from clsx/array/class:list/:class expressions ([a24a2cc](https://github.com/cwcss/crosswind/commit/a24a2cc)) _(by Chris <chrisbreuer93@gmail.com>)_
+- load web fonts via a `fonts` config ([504a485](https://github.com/cwcss/crosswind/commit/504a485)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **rules**: table display family, flow-root/list-item/contents, arbitrary accent/caret ([b5b0d5d](https://github.com/cwcss/crosswind/commit/b5b0d5d)) _(by Chris <chrisbreuer93@gmail.com>)_
+- add `css` alias ([a20c714](https://github.com/cwcss/crosswind/commit/a20c714)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **rules**: pure-CSS iconify rule for any @iconify-json/* collection ([6986e44](https://github.com/cwcss/crosswind/commit/6986e44)) _(by Chris <chrisbreuer93@gmail.com>)_
+- improve arbitrary values ([ac5f9a2](https://github.com/cwcss/crosswind/commit/ac5f9a2)) _(by Chris <chrisbreuer93@gmail.com>)_
+- handle arbitrary bracket opacity on named colors ([74046a9](https://github.com/cwcss/crosswind/commit/74046a9)) _(by Chris <chrisbreuer93@gmail.com>)_
+- add bun plugin ([9fbc89a](https://github.com/cwcss/crosswind/commit/9fbc89a)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🐛 Bug Fixes
+
+- **css**: route a typed arbitrary value to the property its hint names ([fe664e9](https://github.com/cwcss/crosswind/commit/fe664e9)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **css**: make rtl:/ltr: match the element that carries dir ([8f06123](https://github.com/cwcss/crosswind/commit/8f06123)) _(by Chris <chrisbreuer93@gmail.com>)_
+- build the toolkit on install so a clean checkout can run tests ([82b369e](https://github.com/cwcss/crosswind/commit/82b369e)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **build**: build the toolkit before the package that imports it ([48872c2](https://github.com/cwcss/crosswind/commit/48872c2)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- silence an inherited lint error and point buddy-bot at this repo ([cc68883](https://github.com/cwcss/crosswind/commit/cc68883)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **test**: narrow iconRule's return type for the typechecker ([2f09533](https://github.com/cwcss/crosswind/commit/2f09533)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **ci**: regenerate the lockfile for the renamed workspace ([6a8a05f](https://github.com/cwcss/crosswind/commit/6a8a05f)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **generator**: let an explicit utility override an icon's defaults ([67ff161](https://github.com/cwcss/crosswind/commit/67ff161)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **parser**: generate the classes an stx x-class binding names ([f74e77f](https://github.com/cwcss/crosswind/commit/f74e77f)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **divide**: resolve arbitrary colours instead of re-implementing the resolver ([eb41f41](https://github.com/cwcss/crosswind/commit/eb41f41)) _(by Chris <chrisbreuer93@gmail.com>)_ ([#262625](https://github.com/cwcss/crosswind/issues/262625), [#262625](https://github.com/cwcss/crosswind/issues/262625))
+- **build**: build the CLI the bin field points at ([72c2f9c](https://github.com/cwcss/crosswind/commit/72c2f9c)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **preflight**: default uncoloured borders to grey, not currentColor ([26c031f](https://github.com/cwcss/crosswind/commit/26c031f)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **icons**: resolve collections whose names contain hyphens ([de69481](https://github.com/cwcss/crosswind/commit/de69481)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **parser**: ignore unrelated markup attributes ([236cb5d](https://github.com/cwcss/crosswind/commit/236cb5d)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **types**: declare transform constants ([dd8bae9](https://github.com/cwcss/crosswind/commit/dd8bae9)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **colors**: preserve functional slash alpha ([3bb83bd](https://github.com/cwcss/crosswind/commit/3bb83bd)) _(by Chris <chrisbreuer93@gmail.com>)_
+- normalize arbitrary math operators ([5a5c6e1](https://github.com/cwcss/crosswind/commit/5a5c6e1)) _(by Chris <chrisbreuer93@gmail.com>)_
+- rank stateful utilities by their class, not their pseudo-class ([c2b2086](https://github.com/cwcss/crosswind/commit/c2b2086)) _(by Chris <chrisbreuer93@gmail.com>)_
+- bring the scroll-snap fallback rule back in step with the fast path ([7529e10](https://github.com/cwcss/crosswind/commit/7529e10)) _(by Chris <chrisbreuer93@gmail.com>)_
+- register font-stretch and list-image as compound utilities ([f034685](https://github.com/cwcss/crosswind/commit/f034685)) _(by Chris <chrisbreuer93@gmail.com>)_
+- cap generated percentages at six decimals ([4f165de](https://github.com/cwcss/crosswind/commit/4f165de)) _(by Chris <chrisbreuer93@gmail.com>)_
+- match whole-class utilities on the variant-stripped class ([089bdb7](https://github.com/cwcss/crosswind/commit/089bdb7)) _(by Chris <chrisbreuer93@gmail.com>)_
+- compose filter utilities instead of overwriting each other ([3689be1](https://github.com/cwcss/crosswind/commit/3689be1)) _(by Chris <chrisbreuer93@gmail.com>)_
+- give the scroll-snap strictness variable a proximity fallback ([40ba80c](https://github.com/cwcss/crosswind/commit/40ba80c)) _(by Chris <chrisbreuer93@gmail.com>)_
+- emit CSS for arbitrary box shadows and shadow colors ([43e5118](https://github.com/cwcss/crosswind/commit/43e5118)) _(by Chris <chrisbreuer93@gmail.com>)_
+- remove consumer postinstall hook ([44d1ee3](https://github.com/cwcss/crosswind/commit/44d1ee3)) _(by Chris <chrisbreuer93@gmail.com>)_
+- use Tailwind v4's adaptive placeholder color in preflight ([8aa005f](https://github.com/cwcss/crosswind/commit/8aa005f)) _(by Chris <chrisbreuer93@gmail.com>)_ ([#9](https://github.com/cwcss/crosswind/issues/9))
+- resolve iconify collections from Bun's isolated-install store ([d3c255d](https://github.com/cwcss/crosswind/commit/d3c255d)) _(by Chris <chrisbreuer93@gmail.com>)_
+- compose touch pan/pinch utilities through variables ([a2e85da](https://github.com/cwcss/crosswind/commit/a2e85da)) _(by Chris <chrisbreuer93@gmail.com>)_
+- emit only custom colors as :root CSS variables ([e74963c](https://github.com/cwcss/crosswind/commit/e74963c)) _(by Chris <chrisbreuer93@gmail.com>)_
+- canonical colon-syntax negatives and valid bracket color families ([ba2745f](https://github.com/cwcss/crosswind/commit/ba2745f)) _(by Chris <chrisbreuer93@gmail.com>)_
+- correct utility cascade ranking for important, rounded corners, and gaps ([90bb970](https://github.com/cwcss/crosswind/commit/90bb970)) _(by Chris <chrisbreuer93@gmail.com>)_
+- stop fast-path lookup tables shadowing theme overrides ([07dc355](https://github.com/cwcss/crosswind/commit/07dc355)) _(by Chris <chrisbreuer93@gmail.com>)_
+- compose ring utilities through the variable system with fallbacks ([1a0aed7](https://github.com/cwcss/crosswind/commit/1a0aed7)) _(by Chris <chrisbreuer93@gmail.com>)_
+- give transition utilities Tailwind's default duration and easing ([b4992a7](https://github.com/cwcss/crosswind/commit/b4992a7)) _(by Chris <chrisbreuer93@gmail.com>)_
+- make form-* utilities generate CSS at all ([e377b3c](https://github.com/cwcss/crosswind/commit/e377b3c)) _(by Chris <chrisbreuer93@gmail.com>)_
+- reject negative padding utilities ([7b44148](https://github.com/cwcss/crosswind/commit/7b44148)) _(by Chris <chrisbreuer93@gmail.com>)_
+- clear compiled-class state in generator reset ([afdf839](https://github.com/cwcss/crosswind/commit/afdf839)) _(by Chris <chrisbreuer93@gmail.com>)_
+- honor config watch/verbose fields and warn on zero-match content patterns ([a6e0b9a](https://github.com/cwcss/crosswind/commit/a6e0b9a)) _(by Chris <chrisbreuer93@gmail.com>)_
+- apply preset rules, shortcuts, variants, and preflights ([f7bdac5](https://github.com/cwcss/crosswind/commit/f7bdac5)) _(by Chris <chrisbreuer93@gmail.com>)_
+- make analyze stats honest and dedupe overlapping scan patterns ([dd1eac1](https://github.com/cwcss/crosswind/commit/dd1eac1)) _(by Chris <chrisbreuer93@gmail.com>)_
+- ignore non-string safelist entries instead of crashing the build ([ff8d776](https://github.com/cwcss/crosswind/commit/ff8d776)) _(by Chris <chrisbreuer93@gmail.com>)_
+- emit real CSS for compile-class groups under the hashed selector ([c43b839](https://github.com/cwcss/crosswind/commit/c43b839)) _(by Chris <chrisbreuer93@gmail.com>)_
+- deep-merge plugin theme overrides, honor extract options, inject into fragments ([17c5ab7](https://github.com/cwcss/crosswind/commit/17c5ab7)) _(by Chris <chrisbreuer93@gmail.com>)_
+- stop watch mode crashing on non-** content patterns and debounce rebuilds ([9182ef1](https://github.com/cwcss/crosswind/commit/9182ef1)) _(by Chris <chrisbreuer93@gmail.com>)_
+- make --no-preflight work and scan .stx in the init template ([8907d4e](https://github.com/cwcss/crosswind/commit/8907d4e)) _(by Chris <chrisbreuer93@gmail.com>)_
+- validate decoration, SVG dash, and text-emphasis values; accept hwb() and short-hex alpha ([6dec71a](https://github.com/cwcss/crosswind/commit/6dec71a)) _(by Chris <chrisbreuer93@gmail.com>)_
+- validate border-radius side/corner values and support bare side forms ([771decc](https://github.com/cwcss/crosswind/commit/771decc)) _(by Chris <chrisbreuer93@gmail.com>)_
+- validate outline, mask, and text-shadow values ([5a30c72](https://github.com/cwcss/crosswind/commit/5a30c72)) _(by Chris <chrisbreuer93@gmail.com>)_
+- drop rules with unknown variants and support arbitrary variants ([d6c3ed8](https://github.com/cwcss/crosswind/commit/d6c3ed8)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## ⚡ Performance Improvements
+
+- **generator**: memoise theme-derived tables and cut serialiser allocations ([36a854d](https://github.com/cwcss/crosswind/commit/36a854d)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **generator**: memoise toCSS output ([5fede11](https://github.com/cwcss/crosswind/commit/5fede11)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **build**: cut the waste out of the published output ([4f2d4e9](https://github.com/cwcss/crosswind/commit/4f2d4e9)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **build**: minify the published bundles ([ab79be3](https://github.com/cwcss/crosswind/commit/ab79be3)) _(by Chris <chrisbreuer93@gmail.com>)_
+- read scanned files through a bounded pool ([0bcb3de](https://github.com/cwcss/crosswind/commit/0bcb3de)) _(by Chris <chrisbreuer93@gmail.com>)_
+- split utility and value in linear time ([28e7a16](https://github.com/cwcss/crosswind/commit/28e7a16)) _(by Chris <chrisbreuer93@gmail.com>)_
+- hoist rule lookup tables to module scope ([720a73f](https://github.com/cwcss/crosswind/commit/720a73f)) _(by Chris <chrisbreuer93@gmail.com>)_
+- memoize utility cascade ranking per selector ([7209b48](https://github.com/cwcss/crosswind/commit/7209b48)) _(by Chris <chrisbreuer93@gmail.com>)_
+- bound the parse caches and memoize bracket alias resolution ([f60ab05](https://github.com/cwcss/crosswind/commit/f60ab05)) _(by Chris <chrisbreuer93@gmail.com>)_
+- actually minify preflight and keyframes in minified output ([f64c006](https://github.com/cwcss/crosswind/commit/f64c006)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## ♻️ Code Refactoring
+
+- use the toolkit's optimiser and free up css.config.ts ([2be5e9c](https://github.com/cwcss/crosswind/commit/2be5e9c)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- publish under a scoped name ([99415b3](https://github.com/cwcss/crosswind/commit/99415b3)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- default the class prefix to tc ([c846c2d](https://github.com/cwcss/crosswind/commit/c846c2d)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **cli**: rename the binary to cssx and the config to css.config.ts ([94056cc](https://github.com/cwcss/crosswind/commit/94056cc)) _(by Chris <chrisbreuer93@gmail.com>)_
+- rename the package to ts-css ([6a17895](https://github.com/cwcss/crosswind/commit/6a17895)) _(by Chris <chrisbreuer93@gmail.com>)_
+- rename Headwind/hw to Crosswind/cw ([4d71e0b](https://github.com/cwcss/crosswind/commit/4d71e0b)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 📝 Documentation
+
+- document text direction, logical utilities and the rtl:/ltr: variants ([b6afc1f](https://github.com/cwcss/crosswind/commit/b6afc1f)) _(by Chris <chrisbreuer93@gmail.com>)_
+- update benchmark numbers after the generator optimisations ([1534796](https://github.com/cwcss/crosswind/commit/1534796)) _(by Chris <chrisbreuer93@gmail.com>)_
+- rewrite the READMEs around both APIs ([0643cb3](https://github.com/cwcss/crosswind/commit/0643cb3)) _(by Chris <chrisbreuer93@gmail.com>)_
+- complete the ts-css rename across the docs site ([5af78f6](https://github.com/cwcss/crosswind/commit/5af78f6)) _(by Chris <chrisbreuer93@gmail.com>)_
+- link the community as stacksjs.com/discord ([01f92f4](https://github.com/cwcss/crosswind/commit/01f92f4)) _(by Chris <chrisbreuer93@gmail.com>)_
+- declare Tailwind v4 semantics as the compass ([af77e90](https://github.com/cwcss/crosswind/commit/af77e90)) _(by Chris <chrisbreuer93@gmail.com>)_
+- align README init snippet with the actual scaffold ([36058eb](https://github.com/cwcss/crosswind/commit/36058eb)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 💄 Styles
+
+- build the color fast-path overlay from a diff map ([7a0da30](https://github.com/cwcss/crosswind/commit/7a0da30)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## ✅ Tests
+
+- **variants**: cover the cursor family under variants ([fc14dab](https://github.com/cwcss/crosswind/commit/fc14dab)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **performance**: account for CI scheduler variance ([376694e](https://github.com/cwcss/crosswind/commit/376694e)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 💚 Continuous Integration
+
+- confirm the package reached the registry before reporting success ([9807e65](https://github.com/cwcss/crosswind/commit/9807e65)) _(by Chris <chrisbreuer93@gmail.com>)_
+- verify the npm token before writing or pushing anything ([96f3fc6](https://github.com/cwcss/crosswind/commit/96f3fc6)) _(by Chris <chrisbreuer93@gmail.com>)_
+- add a one-command publishing setup script ([dd9ff95](https://github.com/cwcss/crosswind/commit/dd9ff95)) _(by Chris <chrisbreuer93@gmail.com>)_
+- let the release read credentials from an encrypted .env.production ([3068893](https://github.com/cwcss/crosswind/commit/3068893)) _(by Chris <chrisbreuer93@gmail.com>)_
+- drop redundant setup-bun (pantry installs bun via deps.yaml) ([711b697](https://github.com/cwcss/crosswind/commit/711b697)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- drop redundant setup-bun (pantry installs bun via deps.yaml) ([7fafadf](https://github.com/cwcss/crosswind/commit/7fafadf)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+
+## 🔧 Chores
+
+- release v0.3.1 ([8223c1e](https://github.com/cwcss/crosswind/commit/8223c1e)) _(by Chris <chrisbreuer93@gmail.com>)_
+- drop the grafted .github and repoint the toolkit at this repo ([0de9558](https://github.com/cwcss/crosswind/commit/0de9558)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- release v0.3.0 ([30964cf](https://github.com/cwcss/crosswind/commit/30964cf)) _(by Chris <chrisbreuer93@gmail.com>)_
+- add a release:minor script ([e4986c0](https://github.com/cwcss/crosswind/commit/e4986c0)) _(by Chris <chrisbreuer93@gmail.com>)_
+- gitignore env files ([d9da68b](https://github.com/cwcss/crosswind/commit/d9da68b)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.2.21 ([161a5a3](https://github.com/cwcss/crosswind/commit/161a5a3)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.2.20 ([4f0c2bb](https://github.com/cwcss/crosswind/commit/4f0c2bb)) _(by Chris <chrisbreuer93@gmail.com>)_
+- untrack the compiled CLI binary ([ee98c52](https://github.com/cwcss/crosswind/commit/ee98c52)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.2.19 ([98d3e72](https://github.com/cwcss/crosswind/commit/98d3e72)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.2.18 ([5d830f8](https://github.com/cwcss/crosswind/commit/5d830f8)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.2.17 ([5b2d5a2](https://github.com/cwcss/crosswind/commit/5b2d5a2)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.1.4 ([817e67e](https://github.com/cwcss/crosswind/commit/817e67e)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.1.3 ([ec02452](https://github.com/cwcss/crosswind/commit/ec02452)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.1.2 ([6486b75](https://github.com/cwcss/crosswind/commit/6486b75)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.2.16 ([403e997](https://github.com/cwcss/crosswind/commit/403e997)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.2.15 ([93a2bb3](https://github.com/cwcss/crosswind/commit/93a2bb3)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: raise the bunfig floor to 0.15.17 ([414ec12](https://github.com/cwcss/crosswind/commit/414ec12)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.2.14 ([35f6257](https://github.com/cwcss/crosswind/commit/35f6257)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.2.13 ([b51fcac](https://github.com/cwcss/crosswind/commit/b51fcac)) _(by Chris <chrisbreuer93@gmail.com>)_
+- drop a scratch probe script committed by accident ([21f303e](https://github.com/cwcss/crosswind/commit/21f303e)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.2.12 ([f393969](https://github.com/cwcss/crosswind/commit/f393969)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.2.11 ([de33fd0](https://github.com/cwcss/crosswind/commit/de33fd0)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.1.1 ([d9d2b0c](https://github.com/cwcss/crosswind/commit/d9d2b0c)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: refresh pantry lockfile ([15ee434](https://github.com/cwcss/crosswind/commit/15ee434)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: update bunfig to 0.15.15 ([70fa775](https://github.com/cwcss/crosswind/commit/70fa775)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: declare bun ^1.3.14 in deps.yaml ([83f0002](https://github.com/cwcss/crosswind/commit/83f0002)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: declare bun ^1.3.14 in deps.yaml ([c4a8f31](https://github.com/cwcss/crosswind/commit/c4a8f31)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.2.10 ([5df6bc3](https://github.com/cwcss/crosswind/commit/5df6bc3)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **pkg**: add sideEffects:false for bundler tree-shaking (publint) ([a3712cf](https://github.com/cwcss/crosswind/commit/a3712cf)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.2.9 ([669ef64](https://github.com/cwcss/crosswind/commit/669ef64)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.2.8 ([26bf736](https://github.com/cwcss/crosswind/commit/26bf736)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.2.7 ([c530097](https://github.com/cwcss/crosswind/commit/c530097)) _(by Chris <chrisbreuer93@gmail.com>)_
+- upgrade to TypeScript 7 ([c19c6b2](https://github.com/cwcss/crosswind/commit/c19c6b2)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: refresh bun.lock to pick up pickier 0.1.37 ([6b8d86c](https://github.com/cwcss/crosswind/commit/6b8d86c)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **deps**: refresh bun.lock to pick up pickier 0.1.37 ([99f1169](https://github.com/cwcss/crosswind/commit/99f1169)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **config**: move crosswind.config.ts to config/crosswind.ts ([e623a3e](https://github.com/cwcss/crosswind/commit/e623a3e)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- release v0.2.6 ([d755a58](https://github.com/cwcss/crosswind/commit/d755a58)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **deps**: refresh bun.lock to pick up pickier 0.1.35 ([2dc313e](https://github.com/cwcss/crosswind/commit/2dc313e)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **deps**: refresh bun.lock to pick up pickier 0.1.35 ([e5e3b52](https://github.com/cwcss/crosswind/commit/e5e3b52)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **deps**: refresh bun.lock to pick up pickier 0.1.33 ([a89a742](https://github.com/cwcss/crosswind/commit/a89a742)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **deps**: refresh bun.lock to pick up pickier 0.1.33 ([eacc15f](https://github.com/cwcss/crosswind/commit/eacc15f)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- release v0.2.5 ([86d3905](https://github.com/cwcss/crosswind/commit/86d3905)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: refresh bun.lock to pick up @stacksjs/logsmith 0.2.3 ([0b2e754](https://github.com/cwcss/crosswind/commit/0b2e754)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **deps**: refresh bun.lock to pick up @stacksjs/logsmith 0.2.3 ([557588f](https://github.com/cwcss/crosswind/commit/557588f)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **deps**: refresh bun.lock to pick up buddy-bot 0.9.20 ([66d94f2](https://github.com/cwcss/crosswind/commit/66d94f2)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **deps**: refresh bun.lock to pick up buddy-bot 0.9.20 ([172a40f](https://github.com/cwcss/crosswind/commit/172a40f)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- wip ([2b9a1c0](https://github.com/cwcss/crosswind/commit/2b9a1c0)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: bump better-dx to ^0.2.15 ([cbe57f9](https://github.com/cwcss/crosswind/commit/cbe57f9)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **deps**: bump better-dx to ^0.2.15 ([42844fe](https://github.com/cwcss/crosswind/commit/42844fe)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- **ci**: bump actions/checkout to v6, actions/cache to v5 ([7ed4b33](https://github.com/cwcss/crosswind/commit/7ed4b33)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+
+## ⏪ Reverts
+
+- keep staged-lint kebab + bunx gitlint shorthand ([cb5bcc0](https://github.com/cwcss/crosswind/commit/cb5bcc0)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+
+## 🎉 Miscellaneous
+
+- Merge @stacksjs/ts-css into this repo as packages/toolkit (#27) ([e210205](https://github.com/cwcss/crosswind/commit/e210205)) _(by Glenn Michael Torregosa <gtorregosa@gmail.com>)_ ([#27](https://github.com/cwcss/crosswind/issues/27), [#27](https://github.com/cwcss/crosswind/issues/27))
+- Update release.yml ([78805d4](https://github.com/cwcss/crosswind/commit/78805d4)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+- Merge pull request #14 from cwcss/feat/pantry-release ([8c7ae71](https://github.com/cwcss/crosswind/commit/8c7ae71)) _(by Glenn Michael Torregosa <gtorregosa@gmail.com>)_ ([#14](https://github.com/cwcss/crosswind/issues/14), [#14](https://github.com/cwcss/crosswind/issues/14))
+
+## bench
+
+- fix the methodology and add a StyleX comparison ([4afe0c0](https://github.com/cwcss/crosswind/commit/4afe0c0)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+- _Glenn Michael Torregosa <gtorregosa@gmail.com>_
+- _glennmichael123 <gtorregosa@gmail.com>_
+
 [Compare changes](https://github.com/cwcss/crosswind/compare/v0.2.21...v0.3.0)
 
 ## ⚡ Performance Improvements
