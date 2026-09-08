@@ -1,3 +1,21 @@
+[Compare changes](https://github.com/stacksjs/ts-css/compare/v0.3.5...v0.3.6)
+
+## 💚 Continuous Integration
+
+- drop dotenvx from the release, publish on OIDC alone ([04403c1](https://github.com/stacksjs/ts-css/commit/04403c1)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🔧 Chores
+
+- release v0.3.6 ([01e636e](https://github.com/stacksjs/ts-css/commit/01e636e)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🎉 Miscellaneous
+
+- Revert "ci: publish with the npm token, not OIDC" ([b307233](https://github.com/stacksjs/ts-css/commit/b307233)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/stacksjs/ts-css/compare/v0.3.4...v0.3.5)
 
 ## 💚 Continuous Integration
