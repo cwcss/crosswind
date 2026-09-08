@@ -45,15 +45,26 @@ jobs:
       # `--overload` matters: GitHub defines an unset secret as the empty
       # string, and dotenvx leaves an already-defined variable alone unless
       # told to override it.
+      # `--no-oidc` publishes with NPM_TOKEN instead of trusted publishing.
+      #
+      # The trusted publisher for @stacksjs/ts-css is bound to the repository
+      # that used to hold this name, not to the name itself, so every OIDC
+      # attempt from here answers 401 — and pantry reports success anyway,
+      # which is how v0.2.20, v0.2.21, v0.3.0, v0.3.2 and v0.3.4 all went out
+      # green having published nothing. Until the publisher is re-pointed at
+      # this repository on npm, the token is the path that actually works.
+      #
+      # Once it is re-pointed, drop the flag: OIDC needs no long-lived secret
+      # and restores Sigstore provenance, which token publishing does not get.
       - name: Publish to npm
         run: |
           if [ -f .env.production ] && [ -n "$DOTENV_PRIVATE_KEY_PRODUCTION" ]; then
             echo "Using credentials from .env.production"
             bunx --bun @dotenvx/dotenvx run -f .env.production --overload -- \
-              pantry publish --npm --access public
+              pantry publish --npm --access public --no-oidc
           else
             echo "Using credentials from repository secrets"
-            pantry publish --npm --access public
+            pantry publish --npm --access public --no-oidc
           fi
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
