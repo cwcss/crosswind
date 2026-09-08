@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cwcss/crosswind.git",
+    "url": "git+https://github.com/stacksjs/ts-css.git",
     "directory": "packages/vscode"
   },
   "private": true

@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-REPO="cwcss/crosswind"
+REPO="stacksjs/ts-css"
 ENV_FILE=".env.production"
 KEYS_FILE=".env.keys"
 

@@ -273,7 +273,7 @@ Pre-built binaries are available for different platforms. Download the binary th
 
 # Download the binary
 
-curl -L <https://github.com/cwcss/crosswind/releases/latest/download/cssx-darwin-arm64> -o crosswind
+curl -L <https://github.com/stacksjs/ts-css/releases/latest/download/cssx-darwin-arm64> -o crosswind
 
 # Make it executable
 
@@ -288,7 +288,7 @@ sudo mv cssx /usr/local/bin/cssx
 
 # Download the binary
 
-curl -L <https://github.com/cwcss/crosswind/releases/latest/download/cssx-darwin-x64> -o crosswind
+curl -L <https://github.com/stacksjs/ts-css/releases/latest/download/cssx-darwin-x64> -o crosswind
 
 # Make it executable
 
@@ -303,7 +303,7 @@ sudo mv cssx /usr/local/bin/cssx
 
 # Download the binary
 
-curl -L <https://github.com/cwcss/crosswind/releases/latest/download/cssx-linux-arm64> -o crosswind
+curl -L <https://github.com/stacksjs/ts-css/releases/latest/download/cssx-linux-arm64> -o crosswind
 
 # Make it executable
 
@@ -318,7 +318,7 @@ sudo mv cssx /usr/local/bin/cssx
 
 # Download the binary
 
-curl -L <https://github.com/cwcss/crosswind/releases/latest/download/cssx-linux-x64> -o crosswind
+curl -L <https://github.com/stacksjs/ts-css/releases/latest/download/cssx-linux-x64> -o crosswind
 
 # Make it executable
 
@@ -333,7 +333,7 @@ sudo mv cssx /usr/local/bin/cssx
 
 # Download the binary
 
-curl -L <https://github.com/cwcss/crosswind/releases/latest/download/cssx-windows-x64.exe> -o cssx.exe
+curl -L <https://github.com/stacksjs/ts-css/releases/latest/download/cssx-windows-x64.exe> -o cssx.exe
 
 # Move it to your PATH (adjust the path as needed)
 
@@ -341,7 +341,7 @@ move cssx.exe C:\Windows\System32\cssx.exe
 ```:::
 
 ::: tip
-You can also find ts-css binaries in [GitHub releases](https://github.com/cwcss/crosswind/releases).
+You can also find ts-css binaries in [GitHub releases](https://github.com/stacksjs/ts-css/releases).
 :::
 
 ## Verify Installation
@@ -431,6 +431,6 @@ If the build fails:
 
 ## Support
 
-- [GitHub Issues](https://github.com/cwcss/crosswind/issues)
+- [GitHub Issues](https://github.com/stacksjs/ts-css/issues)
 - [Documentation](https://crosswind.stacksjs.org)
 - [Discord Community](https://stacksjs.com/discord)

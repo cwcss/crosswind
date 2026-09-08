@@ -17,7 +17,7 @@ hero:
     - theme: alt
 
       text: View on GitHub
-      link: <https://github.com/cwcss/crosswind>
+      link: <https://github.com/stacksjs/ts-css>
 
 features:
 

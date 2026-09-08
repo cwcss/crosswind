@@ -5,14 +5,14 @@
   "description": "Pure-TypeScript CSS toolkit and utility-first CSS engine for Bun/Node \u2014 parser, walker, generator, selector engine, minifier, and a Tailwind-compatible utility engine. Zero runtime deps.",
   "author": "Chris Breuer <chris@stacksjs.org>",
   "license": "MIT",
-  "homepage": "https://github.com/cwcss/crosswind/tree/main/packages/toolkit#readme",
+  "homepage": "https://github.com/stacksjs/ts-css/tree/main/packages/toolkit#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cwcss/crosswind.git",
+    "url": "git+https://github.com/stacksjs/ts-css.git",
     "directory": "packages/toolkit"
   },
   "bugs": {
-    "url": "https://github.com/cwcss/crosswind/issues"
+    "url": "https://github.com/stacksjs/ts-css/issues"
   },
   "keywords": [
     "typescript",

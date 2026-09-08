@@ -670,7 +670,7 @@ number of atomic rules:
 | design system (200) | **531.81 µs** | 11.05 ms |
 
 Full methodology, including the two flaws an earlier revision of the benchmark
-had, is in the [repository README](https://github.com/cwcss/crosswind#performance).
+had, is in the [repository README](https://github.com/stacksjs/ts-css#performance).
 
 ## License
 

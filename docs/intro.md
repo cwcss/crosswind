@@ -313,11 +313,11 @@ Now that you understand what ts-css is and how it works, explore:
 
 ## Community & Support
 
--**GitHub**- [github.com/cwcss/crosswind](https://github.com/cwcss/crosswind)
+-**GitHub**- [github.com/stacksjs/ts-css](https://github.com/stacksjs/ts-css)
 -**Discord**- [Join the Stacks Discord](https://stacksjs.com/discord)
--**Issues**- [Report bugs or request features](https://github.com/cwcss/crosswind/issues)
--**Discussions**- [Ask questions and share ideas](https://github.com/cwcss/crosswind/discussions)
+-**Issues**- [Report bugs or request features](https://github.com/stacksjs/ts-css/issues)
+-**Discussions**- [Ask questions and share ideas](https://github.com/stacksjs/ts-css/discussions)
 
 ## License
 
-ts-css is open-source software licensed under the [MIT license](https://github.com/cwcss/crosswind/blob/main/LICENSE.md).
+ts-css is open-source software licensed under the [MIT license](https://github.com/stacksjs/ts-css/blob/main/LICENSE.md).

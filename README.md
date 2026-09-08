@@ -252,7 +252,7 @@ Full reference: [packages/toolkit/ENGINE.md](packages/toolkit/ENGINE.md).
 ## Development
 
 ```bash
-git clone https://github.com/cwcss/crosswind.git
+git clone https://github.com/stacksjs/ts-css.git
 cd crosswind
 bun install
 bun test                    # 1900+ tests
@@ -266,7 +266,7 @@ bun run benchmark:style     # vs StyleX
 
 ## Changelog
 
-See [releases](https://github.com/cwcss/crosswind/releases).
+See [releases](https://github.com/stacksjs/ts-css/releases).
 
 ## Contributing
 
@@ -274,7 +274,7 @@ See [CONTRIBUTING](.github/CONTRIBUTING.md).
 
 ## Community
 
-[Discussions on GitHub](https://github.com/cwcss/crosswind/discussions) · [Stacks Discord](https://stacksjs.com/discord)
+[Discussions on GitHub](https://github.com/stacksjs/ts-css/discussions) · [Stacks Discord](https://stacksjs.com/discord)
 
 ## Postcardware
 
@@ -298,5 +298,5 @@ Made with 💙
 <!-- Badges -->
 [npm-version-src]: https://img.shields.io/npm/v/@ts-css/core?style=flat-square
 [npm-version-href]: https://npmjs.com/package/@ts-css/core
-[github-actions-src]: https://img.shields.io/github/actions/workflow/status/cwcss/crosswind/ci.yml?style=flat-square&branch=main
-[github-actions-href]: https://github.com/cwcss/crosswind/actions?query=workflow%3Aci
+[github-actions-src]: https://img.shields.io/github/actions/workflow/status/stacksjs/ts-css/ci.yml?style=flat-square&branch=main
+[github-actions-href]: https://github.com/stacksjs/ts-css/actions?query=workflow%3Aci

@@ -3,7 +3,7 @@
   "lockfileVersion": 2,
   "workspaces": {
     "": {
-      "name": "@cwcss/crosswind",
+      "name": "@stacksjs/ts-css",
       "devDependencies": {
         "better-dx": "^0.2.15"
       },
@@ -12,7 +12,7 @@
       }
     },
     "packages/crosswind": {
-      "name": "@cwcss/crosswind",
+      "name": "@stacksjs/ts-css",
       "version": "0.2.10",
       "dependencies": {
         "@stacksjs/clapp": "^0.2.0",

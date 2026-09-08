@@ -17,7 +17,7 @@ picks whichever is available.
 **Repository secret (simplest).** Set `NPM_TOKEN` and nothing else is needed:
 
 ```sh
-gh secret set NPM_TOKEN --repo cwcss/crosswind
+gh secret set NPM_TOKEN --repo stacksjs/ts-css
 ```
 
 **Encrypted `.env.production` (committed).** `dotenvx` encrypts each value in
@@ -34,7 +34,7 @@ Or by hand:
 ```sh
 cp .env.example .env.production      # fill in NPM_TOKEN
 bunx @dotenvx/dotenvx encrypt -f .env.production
-gh secret set DOTENV_PRIVATE_KEY_PRODUCTION --repo cwcss/crosswind  # from .env.keys
+gh secret set DOTENV_PRIVATE_KEY_PRODUCTION --repo stacksjs/ts-css  # from .env.keys
 git add .env.production && git commit -m "chore: add encrypted production env"
 ```
 

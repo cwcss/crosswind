@@ -19,7 +19,7 @@ const config: BunPressOptions = {
         { text: 'Stacks Framework', link: 'https://stacksjs.org' },
       ],
     },
-    { text: 'GitHub', link: 'https://github.com/cwcss/crosswind' },
+    { text: 'GitHub', link: 'https://github.com/stacksjs/ts-css' },
   ],
 
   markdown: {
