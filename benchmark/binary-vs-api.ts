@@ -15,11 +15,11 @@
 
 import { readFileSync, writeFileSync, unlinkSync, existsSync } from 'node:fs'
 import { execSync } from 'node:child_process'
-import { CSSGenerator } from '../packages/ts-css/src/generator'
-import { defaultConfig } from '../packages/ts-css/src/config'
-import { extractClasses } from '../packages/ts-css/src/parser'
+import { CSSGenerator } from '../packages/toolkit/src/engine/generator'
+import { defaultConfig } from '../packages/toolkit/src/engine/config'
+import { extractClasses } from '../packages/toolkit/src/engine/parser'
 
-const BINARY = new URL('../packages/ts-css/bin/cssx', import.meta.url).pathname
+const BINARY = new URL('../packages/toolkit/bin/cssx', import.meta.url).pathname
 const FIXTURES_DIR = new URL('./fixtures', import.meta.url).pathname
 
 const fixtures = [

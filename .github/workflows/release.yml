@@ -31,10 +31,10 @@ jobs:
         run: bun run build
 
       - name: Cross-compile Binaries
-        run: cd packages/ts-css && bun run compile:all
+        run: cd packages/toolkit && bun run compile:all
 
       - name: Package Binaries
-        run: cd packages/ts-css && bun run zip:all
+        run: cd packages/toolkit && bun run zip:all
 
       # Credentials can come from either place. `.env.production` is committed
       # with its values encrypted by dotenvx, and is decrypted here with the
@@ -65,11 +65,18 @@ jobs:
         with:
           install: 'false'
           release: 'true'
+          # Both CLIs now ship from this package: `ts-css` (toolkit) and
+          # `cssx` (utility engine).
           release-files: |
-            packages/ts-css/bin/cssx-linux-x64.zip
-            packages/ts-css/bin/cssx-linux-arm64.zip
-            packages/ts-css/bin/cssx-windows-x64.zip
-            packages/ts-css/bin/cssx-darwin-x64.zip
-            packages/ts-css/bin/cssx-darwin-arm64.zip
+            packages/toolkit/bin/ts-css-linux-x64.zip
+            packages/toolkit/bin/ts-css-linux-arm64.zip
+            packages/toolkit/bin/ts-css-windows-x64.zip
+            packages/toolkit/bin/ts-css-darwin-x64.zip
+            packages/toolkit/bin/ts-css-darwin-arm64.zip
+            packages/toolkit/bin/cssx-linux-x64.zip
+            packages/toolkit/bin/cssx-linux-arm64.zip
+            packages/toolkit/bin/cssx-windows-x64.zip
+            packages/toolkit/bin/cssx-darwin-x64.zip
+            packages/toolkit/bin/cssx-darwin-arm64.zip
           release-changelog: CHANGELOG.md
           release-token: ${{ secrets.GITHUB_TOKEN }}

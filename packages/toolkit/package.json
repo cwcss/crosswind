@@ -1,8 +1,8 @@
 {
   "name": "@stacksjs/ts-css",
   "type": "module",
-  "version": "0.1.4",
-  "description": "Pure-TypeScript CSS toolkit for Bun/Node \u2014 parser, walker, generator, selector engine, and minifier. Zero runtime deps.",
+  "version": "0.2.0",
+  "description": "Pure-TypeScript CSS toolkit and utility-first CSS engine for Bun/Node \u2014 parser, walker, generator, selector engine, minifier, and a Tailwind-compatible utility engine. Zero runtime deps.",
   "author": "Chris Breuer <chris@stacksjs.org>",
   "license": "MIT",
   "homepage": "https://github.com/cwcss/crosswind/tree/main/packages/toolkit#readme",
@@ -27,7 +27,13 @@
     "csso",
     "css-tree",
     "css-select",
-    "css-what"
+    "css-what",
+    "utility-first",
+    "tailwind",
+    "atomic-css",
+    "css-in-ts",
+    "stylex",
+    "crosswind"
   ],
   "exports": {
     ".": {
@@ -50,6 +56,10 @@
       "types": "./dist/optimize/index.d.ts",
       "import": "./dist/optimize/index.js"
     },
+    "./engine": {
+      "types": "./dist/engine/index.d.ts",
+      "import": "./dist/engine/index.js"
+    },
     "./*": {
       "import": "./dist/*"
     }
@@ -57,28 +67,31 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "ts-css": "./dist/bin/cli.js"
+    "ts-css": "./dist/bin/cli.js",
+    "cssx": "./dist/bin/cssx.js"
   },
   "files": [
     "README.md",
+    "ENGINE.md",
+    "PLUGIN.md",
     "dist"
   ],
   "scripts": {
     "build": "bun --bun build.ts && bun run compile",
     "compile": "bun build ./bin/cli.ts --compile --minify --outfile bin/ts-css",
     "compile:all": "bun run compile:linux-x64 && bun run compile:linux-arm64 && bun run compile:windows-x64 && bun run compile:darwin-x64 && bun run compile:darwin-arm64",
-    "compile:linux-x64": "bun build ./bin/cli.ts --compile --minify --target=bun-linux-x64 --outfile bin/ts-css-linux-x64",
-    "compile:linux-arm64": "bun build ./bin/cli.ts --compile --minify --target=bun-linux-arm64 --outfile bin/ts-css-linux-arm64",
-    "compile:windows-x64": "bun build ./bin/cli.ts --compile --minify --target=bun-windows-x64 --outfile bin/ts-css-windows-x64.exe",
-    "compile:darwin-x64": "bun build ./bin/cli.ts --compile --minify --target=bun-darwin-x64 --outfile bin/ts-css-darwin-x64",
-    "compile:darwin-arm64": "bun build ./bin/cli.ts --compile --minify --target=bun-darwin-arm64 --outfile bin/ts-css-darwin-arm64",
+    "compile:linux-x64": "bun build ./bin/cli.ts --compile --minify --target=bun-linux-x64 --outfile bin/ts-css-linux-x64 && bun build ./bin/cssx.ts --compile --minify --target=bun-linux-x64 --outfile bin/cssx-linux-x64",
+    "compile:linux-arm64": "bun build ./bin/cli.ts --compile --minify --target=bun-linux-arm64 --outfile bin/ts-css-linux-arm64 && bun build ./bin/cssx.ts --compile --minify --target=bun-linux-arm64 --outfile bin/cssx-linux-arm64",
+    "compile:windows-x64": "bun build ./bin/cli.ts --compile --minify --target=bun-windows-x64 --outfile bin/ts-css-windows-x64.exe && bun build ./bin/cssx.ts --compile --minify --target=bun-windows-x64 --outfile bin/cssx-windows-x64.exe",
+    "compile:darwin-x64": "bun build ./bin/cli.ts --compile --minify --target=bun-darwin-x64 --outfile bin/ts-css-darwin-x64 && bun build ./bin/cssx.ts --compile --minify --target=bun-darwin-x64 --outfile bin/cssx-darwin-x64",
+    "compile:darwin-arm64": "bun build ./bin/cli.ts --compile --minify --target=bun-darwin-arm64 --outfile bin/ts-css-darwin-arm64 && bun build ./bin/cssx.ts --compile --minify --target=bun-darwin-arm64 --outfile bin/cssx-darwin-arm64",
     "zip": "bun run zip:all",
     "zip:all": "bun run zip:linux-x64 && bun run zip:linux-arm64 && bun run zip:windows-x64 && bun run zip:darwin-x64 && bun run zip:darwin-arm64",
-    "zip:linux-x64": "zip -j bin/ts-css-linux-x64.zip bin/ts-css-linux-x64",
-    "zip:linux-arm64": "zip -j bin/ts-css-linux-arm64.zip bin/ts-css-linux-arm64",
-    "zip:windows-x64": "zip -j bin/ts-css-windows-x64.zip bin/ts-css-windows-x64.exe",
-    "zip:darwin-x64": "zip -j bin/ts-css-darwin-x64.zip bin/ts-css-darwin-x64",
-    "zip:darwin-arm64": "zip -j bin/ts-css-darwin-arm64.zip bin/ts-css-darwin-arm64",
+    "zip:linux-x64": "zip -j bin/ts-css-linux-x64.zip bin/ts-css-linux-x64 && zip -j bin/cssx-linux-x64.zip bin/cssx-linux-x64",
+    "zip:linux-arm64": "zip -j bin/ts-css-linux-arm64.zip bin/ts-css-linux-arm64 && zip -j bin/cssx-linux-arm64.zip bin/cssx-linux-arm64",
+    "zip:windows-x64": "zip -j bin/ts-css-windows-x64.zip bin/ts-css-windows-x64.exe && zip -j bin/cssx-windows-x64.zip bin/cssx-windows-x64.exe",
+    "zip:darwin-x64": "zip -j bin/ts-css-darwin-x64.zip bin/ts-css-darwin-x64 && zip -j bin/cssx-darwin-x64.zip bin/cssx-darwin-x64",
+    "zip:darwin-arm64": "zip -j bin/ts-css-darwin-arm64.zip bin/ts-css-darwin-arm64 && zip -j bin/cssx-darwin-arm64.zip bin/cssx-darwin-arm64",
     "fresh": "bunx rimraf node_modules/ bun.lock && bun i",
     "prepublishOnly": "bun --bun run build && bun run compile:all && bun run zip",
     "test": "bun test",
@@ -95,10 +108,12 @@
     "preview:docs": "bun --bun bunpress preview docs",
     "typecheck": "bun --bun tsc --noEmit",
     "format": "bunx --bun pickier . --format",
-    "format:fix": "bunx --bun pickier . --format --write"
+    "format:fix": "bunx --bun pickier . --format --write",
+    "benchmark": "bun run ../../benchmark/framework-comparison.bench.ts"
   },
   "dependencies": {
-    "bunfig": "^0.15.6"
+    "@stacksjs/clapp": "^0.2.0",
+    "bunfig": "^0.15.17"
   },
   "devDependencies": {
     "@types/bun": "latest",

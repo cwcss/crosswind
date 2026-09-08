@@ -24,7 +24,7 @@ import { bench, group, run } from 'mitata'
 import { transformSync } from '@babel/core'
 // @ts-ignore - no bundled types
 import styleXPlugin from '@stylexjs/babel-plugin'
-import { css, renderStyles, resetStyles } from '../packages/ts-css/src/style'
+import { css, renderStyles, resetStyles } from '../packages/toolkit/src/engine/style'
 
 // =============================================================================
 // WORKLOADS

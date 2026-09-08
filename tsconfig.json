@@ -6,7 +6,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "paths": {
-      "@ts-css/core": ["./packages/ts-css/src/index.ts"]
+      "@stacksjs/ts-css": ["./packages/toolkit/src/index.ts"]
     },
     "resolveJsonModule": true,
     "types": ["bun"],
@@ -26,7 +26,7 @@
   },
   "exclude": [
     "pantry",
-    "packages/ts-css/examples/**/*",
+    "packages/toolkit/examples/**/*",
     "benchmark"
   ]
 }

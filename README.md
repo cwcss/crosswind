@@ -247,7 +247,7 @@ export default {
 } satisfies TsCssOptions
 ```
 
-Full reference: [packages/ts-css/README.md](packages/ts-css/README.md).
+Full reference: [packages/toolkit/ENGINE.md](packages/toolkit/ENGINE.md).
 
 ## Development
 

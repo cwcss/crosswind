@@ -1,4 +1,4 @@
-import type { TsCssOptions } from '../packages/ts-css/src/types'
+import type { TsCssOptions } from '../packages/toolkit/src/engine/types'
 
 const config = {
   verbose: true,

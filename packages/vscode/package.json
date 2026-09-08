@@ -7,5 +7,6 @@
     "type": "git",
     "url": "git+https://github.com/cwcss/crosswind.git",
     "directory": "packages/vscode"
-  }
+  },
+  "private": true
 }

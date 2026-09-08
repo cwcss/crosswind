@@ -9,6 +9,8 @@ await Bun.build({
     'src/what/index.ts',
     'src/select/index.ts',
     'src/optimize/index.ts',
+    // The utility engine, exposed at `@stacksjs/ts-css/engine`.
+    'src/engine/index.ts',
   ],
   outdir: './dist',
   target: 'bun',
@@ -21,7 +23,7 @@ await Bun.build({
 // which is where the manifest already looks for it.
 await Bun.build({
   minify: true,
-  entrypoints: ['bin/cli.ts'],
+  entrypoints: ['bin/cli.ts', 'bin/cssx.ts'],
   outdir: './dist/bin',
   target: 'bun',
 })

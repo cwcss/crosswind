@@ -29,7 +29,7 @@
     "zero-runtime"
   ],
   "scripts": {
-    "build": "bun run build:toolkit && cd packages/ts-css && bun run build",
+    "build": "bun run build:toolkit",
     "fresh": "bunx rimraf node_modules/ bun.lock && bun i",
     "test": "bun test",
     "lint": "bunx --bun pickier .",
