@@ -1,3 +1,23 @@
+[Compare changes](https://github.com/cwcss/crosswind/compare/v0.3.1...v0.3.2)
+
+## 💥 Breaking Changes
+
+- refactor!: rename the TsCss type family to Css ([6758e2b](https://github.com/cwcss/crosswind/commit/6758e2b)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 👷 Build System
+
+- ship only the cssx binary, not a ts-css one ([f511c0e](https://github.com/cwcss/crosswind/commit/f511c0e)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🔧 Chores
+
+- release v0.3.2 ([26559ed](https://github.com/cwcss/crosswind/commit/26559ed)) _(by Chris <chrisbreuer93@gmail.com>)_
+- update links ([5051d5a](https://github.com/cwcss/crosswind/commit/5051d5a)) _(by Chris <chrisbreuer93@gmail.com>)_
+- adjust name ([07b0128](https://github.com/cwcss/crosswind/commit/07b0128)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/stacksjs/ts-css/compare/v0.3.0...v0.3.1)
 
 ## 💥 Breaking Changes
