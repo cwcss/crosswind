@@ -1,4 +1,4 @@
-import type { TsCssConfig } from '../../src/engine/types'
+import type { CssConfig } from '../../src/engine/types'
 import { describe, expect, it } from 'bun:test'
 import { defaultConfig } from '../../src/engine/config'
 import { CSSGenerator } from '../../src/engine/generator'
@@ -11,7 +11,7 @@ import { CSSGenerator } from '../../src/engine/generator'
  * project's colours, not as an exception. These pin the boundaries.
  */
 describe('theme-derived caches', () => {
-  function css(config: TsCssConfig, classes: string[]): string {
+  function css(config: CssConfig, classes: string[]): string {
     const gen = new CSSGenerator(config)
     gen.generateBatch(classes)
     return gen.toCSS(false)

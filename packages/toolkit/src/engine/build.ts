@@ -1,4 +1,4 @@
-import type { TsCssConfig } from './types'
+import type { CssConfig } from './types'
 import { CSSGenerator } from './generator'
 import { Scanner } from './scanner'
 import { collectStyles } from './style/collect'
@@ -20,7 +20,7 @@ export interface BuildResult {
 /**
  * Build CSS from content patterns
 */
-export async function build(config: TsCssConfig): Promise<BuildResult> {
+export async function build(config: CssConfig): Promise<BuildResult> {
   const startTime = performance.now()
 
   // Initialize compile class transformer if enabled
@@ -124,7 +124,7 @@ export async function writeTransformedFiles(transformedFiles: Map<string, string
 /**
  * Build and write CSS to output file
 */
-export async function buildAndWrite(config: TsCssConfig): Promise<BuildResult> {
+export async function buildAndWrite(config: CssConfig): Promise<BuildResult> {
   const result = await build(config)
   await writeCSS(result.css, config.output)
 

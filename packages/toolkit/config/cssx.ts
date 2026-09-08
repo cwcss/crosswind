@@ -1,6 +1,6 @@
-import type { TsCssOptions } from '../src/types'
+import type { CssOptions } from '../src/types'
 
-const config: TsCssOptions = {
+const config: CssOptions = {
   content: ['./example/**/*.html'],
   output: './example/output.css',
   minify: false,

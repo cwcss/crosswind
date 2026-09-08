@@ -85,7 +85,7 @@ export interface FontConfig {
   faces?: string[]
 }
 
-export interface TsCssConfig {
+export interface CssConfig {
   content: string[]
   output: string
   minify: boolean
@@ -260,4 +260,4 @@ type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
 }
 
-export type TsCssOptions = DeepPartial<TsCssConfig>
+export type CssOptions = DeepPartial<CssConfig>

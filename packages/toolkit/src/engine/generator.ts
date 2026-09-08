@@ -1,4 +1,4 @@
-import type { CSSRule, TsCssConfig, ParsedClass } from './types'
+import type { CSSRule, CssConfig, ParsedClass } from './types'
 import type { UtilityRule } from './rules'
 import { minifyBlock } from '../optimize'
 import { parseClass } from './parser'
@@ -1473,7 +1473,7 @@ const DIRECTION_VARIANTS: Record<string, string> = {
 }
 
 // Cache for pre-processed configs to avoid redundant merging
-const processedConfigCache = new WeakMap<TsCssConfig, ProcessedConfig>()
+const processedConfigCache = new WeakMap<CssConfig, ProcessedConfig>()
 
 /**
  * Each derived lookup table below is a pure function of exactly one theme
@@ -1601,7 +1601,7 @@ function resolveScreenBreakpoints(screens: Record<string, string>): Map<string, 
 }
 
 interface ProcessedConfig {
-  config: TsCssConfig
+  config: CssConfig
   variantEnabled: Record<string, boolean>
   spacingValues: Record<string, string>
   commonColors: Record<string, string>
@@ -1615,7 +1615,7 @@ interface ProcessedConfig {
   hasShortcuts: boolean
 }
 
-function processConfig(config: TsCssConfig): ProcessedConfig {
+function processConfig(config: CssConfig): ProcessedConfig {
   const cached = processedConfigCache.get(config)
   if (cached) return cached
 
@@ -1842,7 +1842,7 @@ export class CSSGenerator {
   private cssCachePreflight = false
   private cssCacheMinify = false
 
-  constructor(private config: TsCssConfig) {
+  constructor(private config: CssConfig) {
     this.processed = processConfig(config)
     this.variantEnabled = this.processed.variantEnabled
     this.screenBreakpoints = this.processed.screenBreakpoints

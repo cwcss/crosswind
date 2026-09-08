@@ -1,4 +1,4 @@
-import type { TsCssConfig } from './types'
+import type { CssConfig } from './types'
 
 export interface CompileClassOptions {
   /**
@@ -220,7 +220,7 @@ export class CompileClassTransformer {
   /**
    * Generate CSS for compiled classes
   */
-  generateCSS(config: TsCssConfig, generator: any): string {
+  generateCSS(config: CssConfig, generator: any): string {
     const compiledClasses = this.getCompiledClasses()
     let css = ''
 

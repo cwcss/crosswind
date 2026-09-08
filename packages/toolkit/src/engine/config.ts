@@ -1,8 +1,8 @@
-import type { TsCssConfig } from './types'
+import type { CssConfig } from './types'
 import { loadConfig } from 'bunfig'
 import { tailwindPreflight } from './preflight'
 
-export const defaultConfig: TsCssConfig = {
+export const defaultConfig: CssConfig = {
   content: ['./src/**/*.{html,js,ts,jsx,tsx,stx}'],
   output: './dist/styles.css',
   minify: true,
@@ -526,9 +526,9 @@ export const defaultConfig: TsCssConfig = {
 }
 
 // Lazy-loaded config to avoid top-level await (enables bun --compile)
-let _config: TsCssConfig | null = null
+let _config: CssConfig | null = null
 
-export async function getConfig(): Promise<TsCssConfig> {
+export async function getConfig(): Promise<CssConfig> {
   if (!_config) {
     _config = await loadConfig({
       name: 'css',
@@ -540,4 +540,4 @@ export async function getConfig(): Promise<TsCssConfig> {
 }
 
 // For backwards compatibility - synchronous access with default fallback
-export const config: TsCssConfig = defaultConfig
+export const config: CssConfig = defaultConfig

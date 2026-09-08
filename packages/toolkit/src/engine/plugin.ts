@@ -1,15 +1,15 @@
 import type { BunPlugin } from 'bun'
-import type { TsCssConfig, TsCssOptions } from './types'
+import type { CssConfig, CssOptions } from './types'
 import { loadConfig } from 'bunfig'
 import { defaultConfig } from './config'
 import { CSSGenerator } from './generator'
 import { extractClasses } from './parser'
 
-export interface TsCssPluginOptions {
+export interface CssPluginOptions {
   /**
    * Custom config to override default config
   */
-  config?: TsCssOptions
+  config?: CssOptions
   /**
    * Include preflight CSS
    * @default true
@@ -31,12 +31,12 @@ export interface TsCssPluginOptions {
  * })
  * ```
 */
-export function plugin(options: TsCssPluginOptions = {}): BunPlugin {
+export function plugin(options: CssPluginOptions = {}): BunPlugin {
   return {
     name: 'bun-plugin-ts-css',
     async setup(build) {
     // Load configuration from css.config.ts or use defaults
-      const loadedConfig = await loadConfig<TsCssConfig>({
+      const loadedConfig = await loadConfig<CssConfig>({
         name: 'css',
         defaultConfig,
       })
@@ -45,7 +45,7 @@ export function plugin(options: TsCssPluginOptions = {}): BunPlugin {
       // shallow spread meant a partial override like
       // `theme: { colors: { brand: '#f00' } }` replaced the ENTIRE default
       // palette and every text-red-500 style stopped resolving.
-      const mergedTheme: TsCssConfig['theme'] = { ...loadedConfig.theme }
+      const mergedTheme: CssConfig['theme'] = { ...loadedConfig.theme }
       if (options.config?.theme) {
         for (const [key, value] of Object.entries(options.config.theme)) {
           const base = (loadedConfig.theme as unknown as Record<string, unknown>)[key];
@@ -89,7 +89,7 @@ export function plugin(options: TsCssPluginOptions = {}): BunPlugin {
           ...(loadedConfig.presets || []),
           ...(options.config?.presets || []),
         ],
-      } as TsCssConfig
+      } as CssConfig
 
       const includePreflight = options.includePreflight ?? true
 
